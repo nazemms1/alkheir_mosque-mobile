@@ -1,0 +1,4104 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "AlKhair Mobile API - Complete",
+    "description": "Complete collection for every route in routes/api.php. Login stores the Sanctum bearer token automatically. Requests inherit Bearer {{token}} unless marked otherwise.",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/base_url/api/v1/auth/token": {
+      "post": {
+        "summary": "Login - Create Token",
+        "deprecated": false,
+        "description": "Creates a Laravel Sanctum token. User must be active and have at least one API-enabled permission.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "device_name": {
+                    "type": "string"
+                  },
+                  "login": {
+                    "type": "string"
+                  },
+                  "password": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "device_name",
+                  "login",
+                  "password"
+                ]
+              },
+              "example": {
+                "device_name": "{{device_name}}",
+                "login": "{{login}}",
+                "password": "{{password}}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      },
+      "delete": {
+        "summary": "Logout - Revoke Current Token",
+        "deprecated": false,
+        "description": "Revokes the bearer token used for this request.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/user": {
+      "get": {
+        "summary": "Current User",
+        "deprecated": false,
+        "description": "Returns the authenticated user.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/reports/overview": {
+      "get": {
+        "summary": "Overview",
+        "deprecated": false,
+        "description": "Permission: reports.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "academic_year_id",
+            "in": "query",
+            "description": "Academic year ID",
+            "required": false,
+            "example": "{{academic_year_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "example": "{{group_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/reports/teachers/daily-summary": {
+      "get": {
+        "summary": "Teachers Daily Summary",
+        "deprecated": false,
+        "description": "Permission: reports.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "date",
+            "in": "query",
+            "description": "Date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "include_empty",
+            "in": "query",
+            "description": "Include teachers without activity",
+            "required": false,
+            "example": "false",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teacher_id",
+            "in": "query",
+            "description": "Teacher ID",
+            "required": false,
+            "example": "{{teacher_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/students": {
+      "get": {
+        "summary": "List Students",
+        "deprecated": false,
+        "description": "Permission: students.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "example": "{{group_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parent_id",
+            "in": "query",
+            "description": "Parent ID",
+            "required": false,
+            "example": "{{parent_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "active|inactive|graduated|blocked",
+            "required": false,
+            "example": "active",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Student",
+        "deprecated": false,
+        "description": "Permission: students.create",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "birth_date": {
+                    "type": "string"
+                  },
+                  "parent_id": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "grade_level_id": {
+                    "type": "string"
+                  },
+                  "joined_at": {
+                    "type": "string"
+                  },
+                  "school_name": {
+                    "type": "string"
+                  },
+                  "quran_current_juz_id": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "null"
+                  },
+                  "photo_path": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "first_name",
+                  "last_name",
+                  "birth_date",
+                  "parent_id",
+                  "gender",
+                  "grade_level_id",
+                  "joined_at",
+                  "school_name",
+                  "quran_current_juz_id",
+                  "status",
+                  "notes",
+                  "photo_path"
+                ]
+              },
+              "example": {
+                "first_name": "أحمد",
+                "last_name": "الخطيب",
+                "birth_date": "2012-05-15",
+                "parent_id": "{{parent_id}}",
+                "gender": "male",
+                "grade_level_id": "{{grade_level_id}}",
+                "joined_at": "{{date}}",
+                "school_name": "Example School",
+                "quran_current_juz_id": "{{juz_id}}",
+                "status": "active",
+                "notes": null,
+                "photo_path": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/groups": {
+      "get": {
+        "summary": "List Groups",
+        "deprecated": false,
+        "description": "Permission: groups.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "academic_year_id",
+            "in": "query",
+            "description": "Academic year ID",
+            "required": false,
+            "example": "{{academic_year_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "description": "Boolean",
+            "required": false,
+            "example": "true",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "teacher_id",
+            "in": "query",
+            "description": "Teacher or assistant teacher ID",
+            "required": false,
+            "example": "{{teacher_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Group",
+        "deprecated": false,
+        "description": "Permission: groups.create",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "academic_year_id": {
+                    "type": "string"
+                  },
+                  "course_id": {
+                    "type": "string"
+                  },
+                  "teacher_id": {
+                    "type": "string"
+                  },
+                  "assistant_teacher_id": {
+                    "type": "null"
+                  },
+                  "grade_level_id": {
+                    "type": "string"
+                  },
+                  "capacity": {
+                    "type": "integer"
+                  },
+                  "monthly_fee": {
+                    "type": "integer"
+                  },
+                  "starts_on": {
+                    "type": "string"
+                  },
+                  "ends_on": {
+                    "type": "string"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "academic_year_id",
+                  "course_id",
+                  "teacher_id",
+                  "assistant_teacher_id",
+                  "grade_level_id",
+                  "capacity",
+                  "monthly_fee",
+                  "starts_on",
+                  "ends_on",
+                  "is_active"
+                ]
+              },
+              "example": {
+                "name": "Mobile Group",
+                "academic_year_id": "{{academic_year_id}}",
+                "course_id": "{{course_id}}",
+                "teacher_id": "{{teacher_id}}",
+                "assistant_teacher_id": null,
+                "grade_level_id": "{{grade_level_id}}",
+                "capacity": 25,
+                "monthly_fee": 100,
+                "starts_on": "{{date_from}}",
+                "ends_on": "{{date_to}}",
+                "is_active": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/enrollments": {
+      "get": {
+        "summary": "List Enrollments",
+        "deprecated": false,
+        "description": "Permission: enrollments.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "example": "{{group_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "student_id",
+            "in": "query",
+            "description": "Student ID",
+            "required": false,
+            "example": "{{student_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Enrollment status",
+            "required": false,
+            "example": "active",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "post": {
+        "summary": "Create Enrollment",
+        "deprecated": false,
+        "description": "Permission: enrollments.create",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "group_id": {
+                    "type": "string"
+                  },
+                  "enrolled_at": {
+                    "type": "string"
+                  },
+                  "left_at": {
+                    "type": "null"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "student_id",
+                  "group_id",
+                  "enrolled_at",
+                  "left_at",
+                  "status",
+                  "notes"
+                ]
+              },
+              "example": {
+                "student_id": "{{student_id}}",
+                "group_id": "{{group_id}}",
+                "enrolled_at": "{{date}}",
+                "left_at": null,
+                "status": "active",
+                "notes": "Created from mobile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/assessments": {
+      "get": {
+        "summary": "List Assessments",
+        "deprecated": false,
+        "description": "Permission: assessments.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "assessment_type_id",
+            "in": "query",
+            "description": "Assessment type ID",
+            "required": false,
+            "example": "{{assessment_type_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "example": "{{group_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "description": "Boolean",
+            "required": false,
+            "example": "true",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities": {
+      "get": {
+        "summary": "List Activities",
+        "deprecated": false,
+        "description": "Permission: activities.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "group_id",
+            "in": "query",
+            "description": "Group ID",
+            "required": false,
+            "example": "{{group_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "is_active",
+            "in": "query",
+            "description": "Boolean",
+            "required": false,
+            "example": "true",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/invoices": {
+      "get": {
+        "summary": "List Invoices",
+        "deprecated": false,
+        "description": "Permission: invoices.view",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "invoice_type",
+            "in": "query",
+            "description": "Invoice type",
+            "required": false,
+            "example": "tuition",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "parent_id",
+            "in": "query",
+            "description": "Parent ID",
+            "required": false,
+            "example": "{{parent_id}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Invoice status",
+            "required": false,
+            "example": "open",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/profile": {
+      "get": {
+        "summary": "Profile",
+        "deprecated": false,
+        "description": "Requires an active parent profile linked to the authenticated account.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/summary": {
+      "get": {
+        "summary": "Dashboard Summary",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children": {
+      "get": {
+        "summary": "Children",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id": {
+      "get": {
+        "summary": "Child Details",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id/attendance": {
+      "get": {
+        "summary": "Child Attendance",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Items per page (1-100)",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id/memorization": {
+      "get": {
+        "summary": "Child Memorization",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "entry_type",
+            "in": "query",
+            "description": "new|review|correction",
+            "required": false,
+            "example": "new",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id/points": {
+      "get": {
+        "summary": "Child Points",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Items per page (1-100)",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id/assessments": {
+      "get": {
+        "summary": "Child Assessments",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Items per page (1-100)",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id/quran-tests": {
+      "get": {
+        "summary": "Child Quran Tests",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Items per page (1-100)",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/children/student_id/notes": {
+      "get": {
+        "summary": "Child Notes",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date YYYY-MM-DD",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Pagination page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "Items per page (1-100)",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/invoices": {
+      "get": {
+        "summary": "Invoices",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "description": "Invoice status",
+            "required": false,
+            "example": "open",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_from",
+            "in": "query",
+            "description": "Start date",
+            "required": false,
+            "example": "{{date_from}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "date_to",
+            "in": "query",
+            "description": "End date",
+            "required": false,
+            "example": "{{date_to}}",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page",
+            "required": false,
+            "example": "1",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "per_page",
+            "in": "query",
+            "description": "1-100",
+            "required": false,
+            "example": "25",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/invoices/invoice_id": {
+      "get": {
+        "summary": "Invoice Details",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/activities": {
+      "get": {
+        "summary": "Available Activities",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/parent/activities/activity_id/responses": {
+      "post": {
+        "summary": "Respond to Activity",
+        "deprecated": false,
+        "description": "Permission: activities.responses.respond. response: registered|declined",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "response": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "student_id",
+                  "response"
+                ]
+              },
+              "example": {
+                "student_id": "{{student_id}}",
+                "response": "registered"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/students/student_id": {
+      "patch": {
+        "summary": "Update Student",
+        "deprecated": false,
+        "description": "Permission: students.update",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "birth_date": {
+                    "type": "string"
+                  },
+                  "parent_id": {
+                    "type": "string"
+                  },
+                  "gender": {
+                    "type": "string"
+                  },
+                  "grade_level_id": {
+                    "type": "string"
+                  },
+                  "joined_at": {
+                    "type": "string"
+                  },
+                  "school_name": {
+                    "type": "string"
+                  },
+                  "quran_current_juz_id": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "photo_path": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "first_name",
+                  "last_name",
+                  "birth_date",
+                  "parent_id",
+                  "gender",
+                  "grade_level_id",
+                  "joined_at",
+                  "school_name",
+                  "quran_current_juz_id",
+                  "status",
+                  "notes",
+                  "photo_path"
+                ]
+              },
+              "example": {
+                "first_name": "أحمد",
+                "last_name": "الخطيب",
+                "birth_date": "2012-05-15",
+                "parent_id": "{{parent_id}}",
+                "gender": "male",
+                "grade_level_id": "{{grade_level_id}}",
+                "joined_at": "{{date}}",
+                "school_name": "Example School",
+                "quran_current_juz_id": "{{juz_id}}",
+                "status": "active",
+                "notes": "Updated from mobile",
+                "photo_path": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Student",
+        "deprecated": false,
+        "description": "Permission: students.delete. Fails with 422 while enrollments exist.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/groups/group_id": {
+      "patch": {
+        "summary": "Update Group",
+        "deprecated": false,
+        "description": "Permission: groups.update",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "academic_year_id": {
+                    "type": "string"
+                  },
+                  "course_id": {
+                    "type": "string"
+                  },
+                  "teacher_id": {
+                    "type": "string"
+                  },
+                  "assistant_teacher_id": {
+                    "type": "null"
+                  },
+                  "grade_level_id": {
+                    "type": "string"
+                  },
+                  "capacity": {
+                    "type": "integer"
+                  },
+                  "monthly_fee": {
+                    "type": "integer"
+                  },
+                  "starts_on": {
+                    "type": "string"
+                  },
+                  "ends_on": {
+                    "type": "string"
+                  },
+                  "is_active": {
+                    "type": "boolean"
+                  }
+                },
+                "required": [
+                  "name",
+                  "academic_year_id",
+                  "course_id",
+                  "teacher_id",
+                  "assistant_teacher_id",
+                  "grade_level_id",
+                  "capacity",
+                  "monthly_fee",
+                  "starts_on",
+                  "ends_on",
+                  "is_active"
+                ]
+              },
+              "example": {
+                "name": "Mobile Group",
+                "academic_year_id": "{{academic_year_id}}",
+                "course_id": "{{course_id}}",
+                "teacher_id": "{{teacher_id}}",
+                "assistant_teacher_id": null,
+                "grade_level_id": "{{grade_level_id}}",
+                "capacity": 30,
+                "monthly_fee": 100,
+                "starts_on": "{{date_from}}",
+                "ends_on": "{{date_to}}",
+                "is_active": true
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Group",
+        "deprecated": false,
+        "description": "Permission: groups.delete. Fails when linked enrollments or schedules exist.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/enrollments/enrollment_id": {
+      "patch": {
+        "summary": "Update Enrollment",
+        "deprecated": false,
+        "description": "Permission: enrollments.update",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "group_id": {
+                    "type": "string"
+                  },
+                  "enrolled_at": {
+                    "type": "string"
+                  },
+                  "left_at": {
+                    "type": "null"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "student_id",
+                  "group_id",
+                  "enrolled_at",
+                  "left_at",
+                  "status",
+                  "notes"
+                ]
+              },
+              "example": {
+                "student_id": "{{student_id}}",
+                "group_id": "{{group_id}}",
+                "enrolled_at": "{{date}}",
+                "left_at": null,
+                "status": "active",
+                "notes": "Updated from mobile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Enrollment",
+        "deprecated": false,
+        "description": "Permission: enrollments.delete",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/groups/group_id/attendance": {
+      "post": {
+        "summary": "Record Group Attendance",
+        "deprecated": false,
+        "description": "Permission: attendance.student.take. Records must belong to active enrollments in this group.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "attendance_date": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "enrollment_id": {
+                          "type": "string"
+                        },
+                        "attendance_status_id": {
+                          "type": "string"
+                        },
+                        "notes": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "attendance_date",
+                  "notes",
+                  "records"
+                ]
+              },
+              "example": {
+                "attendance_date": "{{date}}",
+                "notes": "Recorded from mobile",
+                "records": [
+                  {
+                    "enrollment_id": "{{enrollment_id}}",
+                    "attendance_status_id": "{{attendance_status_id}}",
+                    "notes": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/teacher-attendance": {
+      "post": {
+        "summary": "Record Teacher Attendance",
+        "deprecated": false,
+        "description": "Permission: attendance.teacher.take",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "attendance_date": {
+                    "type": "string"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  },
+                  "records": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "teacher_id": {
+                          "type": "string"
+                        },
+                        "attendance_status_id": {
+                          "type": "string"
+                        },
+                        "notes": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "attendance_date",
+                  "status",
+                  "notes",
+                  "records"
+                ]
+              },
+              "example": {
+                "attendance_date": "{{date}}",
+                "status": "completed",
+                "notes": "Recorded from mobile",
+                "records": [
+                  {
+                    "teacher_id": "{{teacher_id}}",
+                    "attendance_status_id": "{{teacher_attendance_status_id}}",
+                    "notes": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/enrollments/enrollment_id/memorization": {
+      "post": {
+        "summary": "Record Memorization",
+        "deprecated": false,
+        "description": "Permission: memorization.record. entry_type: new|review",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "entry_type": {
+                    "type": "string"
+                  },
+                  "from_page": {
+                    "type": "integer"
+                  },
+                  "to_page": {
+                    "type": "integer"
+                  },
+                  "recorded_on": {
+                    "type": "string"
+                  },
+                  "teacher_id": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "entry_type",
+                  "from_page",
+                  "to_page",
+                  "recorded_on",
+                  "teacher_id",
+                  "notes"
+                ]
+              },
+              "example": {
+                "entry_type": "new",
+                "from_page": 1,
+                "to_page": 2,
+                "recorded_on": "{{date}}",
+                "teacher_id": "{{teacher_id}}",
+                "notes": "Recorded from mobile"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/enrollments/enrollment_id/quran-tests": {
+      "post": {
+        "summary": "Record Quran Test",
+        "deprecated": false,
+        "description": "Permission: quran-tests.record or quran-awqaf-tests.record depending on test type.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "juz_id": {
+                    "type": "string"
+                  },
+                  "quran_test_type_id": {
+                    "type": "string"
+                  },
+                  "teacher_id": {
+                    "type": "string"
+                  },
+                  "tested_on": {
+                    "type": "string"
+                  },
+                  "score": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "juz_id",
+                  "quran_test_type_id",
+                  "teacher_id",
+                  "tested_on",
+                  "score",
+                  "status",
+                  "notes"
+                ]
+              },
+              "example": {
+                "juz_id": "{{juz_id}}",
+                "quran_test_type_id": "{{quran_test_type_id}}",
+                "teacher_id": "{{teacher_id}}",
+                "tested_on": "{{date}}",
+                "score": 85,
+                "status": "passed",
+                "notes": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/enrollments/enrollment_id/points/manual": {
+      "post": {
+        "summary": "Add Manual Points",
+        "deprecated": false,
+        "description": "Permission: points.create-manual. Negative values require a point type that allows negatives.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "point_type_id": {
+                    "type": "string"
+                  },
+                  "points": {
+                    "type": "integer"
+                  },
+                  "notes": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "point_type_id",
+                  "points",
+                  "notes"
+                ]
+              },
+              "example": {
+                "point_type_id": "{{point_type_id}}",
+                "points": 10,
+                "notes": "Mobile adjustment"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/points/point_transaction_id/void": {
+      "post": {
+        "summary": "Void Point Transaction",
+        "deprecated": false,
+        "description": "Permission: points.void",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/assessments/assessment_id/results": {
+      "post": {
+        "summary": "Save Assessment Results",
+        "deprecated": false,
+        "description": "Permission: assessment-results.record. score max is the assessment total mark.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "results": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "enrollment_id": {
+                          "type": "string"
+                        },
+                        "score": {
+                          "type": "integer"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "attempt_no": {
+                          "type": "integer"
+                        },
+                        "notes": {
+                          "type": "null"
+                        }
+                      }
+                    }
+                  }
+                },
+                "required": [
+                  "results"
+                ]
+              },
+              "example": {
+                "results": [
+                  {
+                    "enrollment_id": "{{enrollment_id}}",
+                    "score": 85,
+                    "status": "passed",
+                    "attempt_no": 1,
+                    "notes": null
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities/activity_id/registrations": {
+      "post": {
+        "summary": "Create Activity Registration",
+        "deprecated": false,
+        "description": "Permission: activities.registrations.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "enrollment_id": {
+                    "type": "string"
+                  },
+                  "fee_amount": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "student_id",
+                  "enrollment_id",
+                  "fee_amount",
+                  "status",
+                  "notes"
+                ]
+              },
+              "example": {
+                "student_id": "{{student_id}}",
+                "enrollment_id": "{{enrollment_id}}",
+                "fee_amount": 50,
+                "status": "registered",
+                "notes": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities/activity_id/registrations/registration_id": {
+      "patch": {
+        "summary": "Update Activity Registration",
+        "deprecated": false,
+        "description": "Permission: activities.registrations.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "enrollment_id": {
+                    "type": "string"
+                  },
+                  "fee_amount": {
+                    "type": "integer"
+                  },
+                  "status": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "student_id",
+                  "enrollment_id",
+                  "fee_amount",
+                  "status",
+                  "notes"
+                ]
+              },
+              "example": {
+                "student_id": "{{student_id}}",
+                "enrollment_id": "{{enrollment_id}}",
+                "fee_amount": 50,
+                "status": "attended",
+                "notes": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Activity Registration",
+        "deprecated": false,
+        "description": "Permission: activities.registrations.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities/activity_id/payments": {
+      "post": {
+        "summary": "Create Activity Payment",
+        "deprecated": false,
+        "description": "Permission: activities.payments.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "activity_registration_id": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "paid_at": {
+                    "type": "string"
+                  },
+                  "payment_method_id": {
+                    "type": "string"
+                  },
+                  "reference_no": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "activity_registration_id",
+                  "amount",
+                  "paid_at",
+                  "payment_method_id",
+                  "reference_no",
+                  "notes"
+                ]
+              },
+              "example": {
+                "activity_registration_id": "{{registration_id}}",
+                "amount": 50,
+                "paid_at": "{{date}}",
+                "payment_method_id": "{{payment_method_id}}",
+                "reference_no": "MOBILE-001",
+                "notes": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities/activity_id/payments/activity_payment_id/void": {
+      "post": {
+        "summary": "Void Activity Payment",
+        "deprecated": false,
+        "description": "Permission: activities.payments.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities/activity_id/expenses": {
+      "post": {
+        "summary": "Create Activity Expense",
+        "deprecated": false,
+        "description": "Permission: activities.expenses.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "expense_category_id": {
+                    "type": "string"
+                  },
+                  "spent_on": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "description",
+                  "expense_category_id",
+                  "spent_on"
+                ]
+              },
+              "example": {
+                "amount": 25,
+                "description": "Transport",
+                "expense_category_id": "{{expense_category_id}}",
+                "spent_on": "{{date}}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/activities/activity_id/expenses/activity_expense_id": {
+      "patch": {
+        "summary": "Update Activity Expense",
+        "deprecated": false,
+        "description": "Permission: activities.expenses.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "description": {
+                    "type": "string"
+                  },
+                  "expense_category_id": {
+                    "type": "string"
+                  },
+                  "spent_on": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "description",
+                  "expense_category_id",
+                  "spent_on"
+                ]
+              },
+              "example": {
+                "amount": 30,
+                "description": "Transport updated",
+                "expense_category_id": "{{expense_category_id}}",
+                "spent_on": "{{date}}"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Activity Expense",
+        "deprecated": false,
+        "description": "Permission: activities.expenses.manage",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/invoices/invoice_id/items": {
+      "post": {
+        "summary": "Create Invoice Item",
+        "deprecated": false,
+        "description": "Permission: invoices.update",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  },
+                  "unit_price": {
+                    "type": "integer"
+                  },
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "enrollment_id": {
+                    "type": "string"
+                  },
+                  "activity_id": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "description",
+                  "quantity",
+                  "unit_price",
+                  "student_id",
+                  "enrollment_id",
+                  "activity_id"
+                ]
+              },
+              "example": {
+                "description": "Course fee",
+                "quantity": 1,
+                "unit_price": 100,
+                "student_id": "{{student_id}}",
+                "enrollment_id": "{{enrollment_id}}",
+                "activity_id": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/invoices/invoice_id/items/invoice_item_id": {
+      "patch": {
+        "summary": "Update Invoice Item",
+        "deprecated": false,
+        "description": "Permission: invoices.update",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "description": {
+                    "type": "string"
+                  },
+                  "quantity": {
+                    "type": "integer"
+                  },
+                  "unit_price": {
+                    "type": "integer"
+                  },
+                  "student_id": {
+                    "type": "string"
+                  },
+                  "enrollment_id": {
+                    "type": "string"
+                  },
+                  "activity_id": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "description",
+                  "quantity",
+                  "unit_price",
+                  "student_id",
+                  "enrollment_id",
+                  "activity_id"
+                ]
+              },
+              "example": {
+                "description": "Course fee updated",
+                "quantity": 1,
+                "unit_price": 120,
+                "student_id": "{{student_id}}",
+                "enrollment_id": "{{enrollment_id}}",
+                "activity_id": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "summary": "Delete Invoice Item",
+        "deprecated": false,
+        "description": "Permission: invoices.update",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/invoices/invoice_id/payments": {
+      "post": {
+        "summary": "Create Invoice Payment",
+        "deprecated": false,
+        "description": "Permission: payments.create",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "integer"
+                  },
+                  "paid_at": {
+                    "type": "string"
+                  },
+                  "payment_method_id": {
+                    "type": "string"
+                  },
+                  "reference_no": {
+                    "type": "string"
+                  },
+                  "notes": {
+                    "type": "null"
+                  }
+                },
+                "required": [
+                  "amount",
+                  "paid_at",
+                  "payment_method_id",
+                  "reference_no",
+                  "notes"
+                ]
+              },
+              "example": {
+                "amount": 100,
+                "paid_at": "{{date}}",
+                "payment_method_id": "{{payment_method_id}}",
+                "reference_no": "MOBILE-002",
+                "notes": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/api/v1/invoices/invoice_id/payments/payment_id/void": {
+      "post": {
+        "summary": "Void Invoice Payment",
+        "deprecated": false,
+        "description": "Permission: payments.void",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Content-Type",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {}
+              },
+              "example": {}
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          }
+        ]
+      }
+    },
+    "/base_url/docs/api": {
+      "get": {
+        "summary": "Interactive API Documentation",
+        "deprecated": false,
+        "description": "Browser-friendly interactive API documentation.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "text/html",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    },
+    "/base_url/docs/api.json": {
+      "get": {
+        "summary": "OpenAPI Specification",
+        "deprecated": false,
+        "description": "Generated OpenAPI JSON specification.",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "Accept",
+            "in": "header",
+            "description": "",
+            "required": true,
+            "example": "application/json",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {}
+                }
+              }
+            }
+          }
+        },
+        "security": []
+      }
+    }
+  },
+  "components": {
+    "schemas": {},
+    "responses": {},
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      }
+    }
+  },
+  "servers": [],
+  "security": [
+    {
+      "bearer": []
+    }
+  ]
+}
