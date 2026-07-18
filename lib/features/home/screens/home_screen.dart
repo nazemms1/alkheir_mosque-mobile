@@ -2,9 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:percent_indicator/percent_indicator.dart';
+import '../../../core/navigation/app_tab.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../shared/widgets/rating_badge.dart';
+import '../home_widget_registry.dart';
 
 part 'widgets/home_hero_card.dart';
 part 'widgets/home_quick_stats.dart';
@@ -12,107 +14,142 @@ part 'widgets/home_memorization_card.dart';
 part 'widgets/home_tiles.dart';
 part 'widgets/home_shared.dart';
 
+/// ويدجتس الشاشة الرئيسية لولي الأمر/الطالب — مرتّبة حسب ظهورها.
+/// لإضافة ويدجت جديد: أنشئ الويدجت ثم أضف HomeWidgetDef هنا فقط.
+final List<HomeWidgetDef<TabContext>> parentHomeWidgets = [
+  // البطاقة الترحيبية العلوية
+  HomeWidgetDef(
+    id: 'parent-hero',
+    slivers: (context, ctx) => [
+      SliverToBoxAdapter(
+        child: _HeroCard(child: ctx.activeChild)
+            .animate()
+            .fadeIn(duration: 500.ms, curve: Curves.easeOut)
+            .slideY(begin: -0.04, end: 0, duration: 500.ms),
+      ),
+      // Spacer to clear the floating stats card (bottom: -48 + safe margin)
+      const SliverToBoxAdapter(child: SizedBox(height: 64)),
+    ],
+  ),
+  // شريط اختيار الابن — يظهر فقط عند وجود أكثر من ابن
+  HomeWidgetDef(
+    id: 'parent-child-selector',
+    visibleWhen: (_, ctx) => ctx.parentData!.children.length > 1,
+    slivers: (context, ctx) => [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _ChildSelectorStrip(
+            children: ctx.parentData!.children,
+            selectedIndex: ctx.selectedChildIndex,
+            onSelected: ctx.onChildSelected,
+          ).animate().fadeIn(delay: 80.ms, duration: 400.ms),
+        ),
+      ),
+    ],
+  ),
+  // صف الإحصائيات السريعة
+  HomeWidgetDef(
+    id: 'parent-quick-stats',
+    slivers: (context, ctx) => [
+      SliverPadding(
+        padding: EdgeInsets.fromLTRB(
+            16, ctx.parentData!.children.length > 1 ? 16 : 0, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _QuickStatsRow(child: ctx.activeChild, onTabChange: ctx.onTabChange)
+              .animate()
+              .fadeIn(delay: 120.ms, duration: 450.ms)
+              .slideY(begin: 0.06, end: 0, delay: 120.ms, duration: 450.ms),
+        ),
+      ),
+    ],
+  ),
+  // بطاقة تقدم الحفظ
+  HomeWidgetDef(
+    id: 'parent-memorization',
+    slivers: (context, ctx) => [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _MemorizationCard(
+                  child: ctx.activeChild, onTap: () => ctx.onTabChange(3))
+              .animate()
+              .fadeIn(delay: 220.ms, duration: 450.ms)
+              .slideY(begin: 0.06, end: 0, delay: 220.ms, duration: 450.ms),
+        ),
+      ),
+    ],
+  ),
+  // آخر الإشعارات (عنوان + أحدث 3)
+  HomeWidgetDef(
+    id: 'parent-notifications',
+    slivers: (context, ctx) => [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _SectionLabel(title: 'آخر الإشعارات', onMore: () {})
+              .animate()
+              .fadeIn(delay: 320.ms, duration: 400.ms),
+        ),
+      ),
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) => _NotifTile(n: ctx.parentData!.notifications[i])
+                .animate()
+                .fadeIn(delay: (360 + i * 60).ms, duration: 380.ms)
+                .slideX(begin: 0.05, end: 0, delay: (360 + i * 60).ms),
+            childCount: math.min(3, ctx.parentData!.notifications.length),
+          ),
+        ),
+      ),
+    ],
+  ),
+  // آخر التقييمات (عنوان + أحدث 2)
+  HomeWidgetDef(
+    id: 'parent-evaluations',
+    slivers: (context, ctx) => [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _SectionLabel(
+                  title: 'آخر التقييمات', onMore: () => ctx.onTabChange(4))
+              .animate()
+              .fadeIn(delay: 550.ms, duration: 400.ms),
+        ),
+      ),
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 10, 16, 120),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) => _EvalTile(eval: ctx.activeChild.evaluations[i])
+                .animate()
+                .fadeIn(delay: (590 + i * 60).ms, duration: 380.ms)
+                .slideX(begin: 0.05, end: 0, delay: (590 + i * 60).ms),
+            childCount: math.min(2, ctx.activeChild.evaluations.length),
+          ),
+        ),
+      ),
+    ],
+  ),
+];
+
 class HomeScreen extends StatelessWidget {
-  final ParentDashboardData data;
-  final int selectedChildIndex;
-  final void Function(int) onChildSelected;
-  final void Function(int) onTabChange;
+  final TabContext ctx;
 
-  const HomeScreen({
-    super.key,
-    required this.data,
-    required this.selectedChildIndex,
-    required this.onChildSelected,
-    required this.onTabChange,
-  });
-
-  ChildData get _child => data.children[selectedChildIndex];
+  const HomeScreen({super.key, required this.ctx});
 
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       physics: const BouncingScrollPhysics(),
-      slivers: [
-        SliverToBoxAdapter(
-          child: _HeroCard(child: _child)
-              .animate()
-              .fadeIn(duration: 500.ms, curve: Curves.easeOut)
-              .slideY(begin: -0.04, end: 0, duration: 500.ms),
-        ),
-        // Spacer to clear the floating stats card (bottom: -48 + safe margin)
-        const SliverToBoxAdapter(child: SizedBox(height: 64)),
-        // Horizontal child selector (only when more than one child)
-        if (data.children.length > 1)
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 0),
-            sliver: SliverToBoxAdapter(
-              child: _ChildSelectorStrip(
-                children: data.children,
-                selectedIndex: selectedChildIndex,
-                onSelected: onChildSelected,
-              ).animate().fadeIn(delay: 80.ms, duration: 400.ms),
-            ),
-          ),
-        SliverPadding(
-          padding: EdgeInsets.fromLTRB(16, data.children.length > 1 ? 16 : 0, 16, 0),
-          sliver: SliverToBoxAdapter(
-            child: _QuickStatsRow(child: _child, onTabChange: onTabChange)
-                .animate()
-                .fadeIn(delay: 120.ms, duration: 450.ms)
-                .slideY(begin: 0.06, end: 0, delay: 120.ms, duration: 450.ms),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-          sliver: SliverToBoxAdapter(
-            child: _MemorizationCard(child: _child, onTap: () => onTabChange(3))
-                .animate()
-                .fadeIn(delay: 220.ms, duration: 450.ms)
-                .slideY(begin: 0.06, end: 0, delay: 220.ms, duration: 450.ms),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
-          sliver: SliverToBoxAdapter(
-            child: _SectionLabel(title: 'آخر الإشعارات', onMore: () {})
-                .animate()
-                .fadeIn(delay: 320.ms, duration: 400.ms),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 0),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (_, i) => _NotifTile(n: data.notifications[i])
-                  .animate()
-                  .fadeIn(delay: (360 + i * 60).ms, duration: 380.ms)
-                  .slideX(begin: 0.05, end: 0, delay: (360 + i * 60).ms),
-              childCount: math.min(3, data.notifications.length),
-            ),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
-          sliver: SliverToBoxAdapter(
-            child: _SectionLabel(
-                    title: 'آخر التقييمات', onMore: () => onTabChange(4))
-                .animate()
-                .fadeIn(delay: 550.ms, duration: 400.ms),
-          ),
-        ),
-        SliverPadding(
-          padding: const EdgeInsets.fromLTRB(16, 10, 16, 120),
-          sliver: SliverList(
-            delegate: SliverChildBuilderDelegate(
-              (_, i) => _EvalTile(eval: _child.evaluations[i])
-                  .animate()
-                  .fadeIn(delay: (590 + i * 60).ms, duration: 380.ms)
-                  .slideX(begin: 0.05, end: 0, delay: (590 + i * 60).ms),
-              childCount: math.min(2, _child.evaluations.length),
-            ),
-          ),
-        ),
-      ],
+      slivers: buildHomeSlivers(
+        context: context,
+        token: ctx.token,
+        registry: parentHomeWidgets,
+        data: ctx,
+      ),
     );
   }
 }

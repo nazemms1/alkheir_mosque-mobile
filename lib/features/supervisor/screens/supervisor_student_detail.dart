@@ -4,7 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/models/auth_token.dart';
-import '../../../data/models/permissions.dart';
+import '../../../core/rbac/permissions.dart';
 import '../../../data/models/student_model.dart' show StudentParentInfo;
 import '../../../data/services/admin_service.dart';
 

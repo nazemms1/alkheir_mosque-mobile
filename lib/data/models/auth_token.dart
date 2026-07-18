@@ -1,3 +1,5 @@
+import '../../core/rbac/app_role.dart';
+
 class AuthUser {
   final int id;
   final String name;
@@ -51,57 +53,45 @@ class AuthToken {
   String get authorizationHeader => '$tokenType $token';
 
   // ─── Role helpers ─────────────────────────────────────────────────────────
+  // ترجمة أسماء الأدوار تتم مركزياً في AppRole (core/rbac/app_role.dart) —
+  // لا تضف مقارنة نصية لدور هنا؛ أضف الاسم الجديد إلى AppRole._apiAliases.
   List<String> get roles => user?.roles ?? const [];
 
-  bool get isParent  => roles.contains('parent');
-  bool get isStudent => roles.contains('student');
-  bool get isTeacher => roles.contains('teacher');
+  /// أدوار الحساب بعد ترجمتها من نصوص الـ API.
+  Set<AppRole> get appRoles => AppRole.fromApiStrings(roles);
 
-  bool get isAdmin =>
-      roles.contains('admin') ||
-      roles.contains('manager') ||
-      roles.contains('super_admin') ||
-      roles.contains('مشرف-إداري');
+  bool hasRole(AppRole role) => appRoles.contains(role);
 
-  /// مشرف الحلقة — يرى بيانات الطلاب وتسجيل التسميع والتقارير
-  bool get isSupervisor =>
-      roles.contains('مشرف-حلقة') || roles.contains('supervisor');
-
-  /// مساعد مشرف الحلقة — ملاحظات وحضور
-  bool get isAssistantSupervisor =>
-      roles.contains('مساعد-مشرف-حلقة') || roles.contains('assistant_supervisor');
-
-  /// مسمّع — تسجيل التسميع وتقدم الطالب
-  bool get isReciter =>
-      roles.contains('مسمع') || roles.contains('reciter');
-
-  /// مشرف سبر تجريبي
-  bool get isTrialExamSupervisor =>
-      roles.contains('مشرف-سبر-تجريبي') || roles.contains('trial_exam_supervisor');
-
-  /// مشرف سير نهائي
-  bool get isFinalExamSupervisor =>
-      roles.contains('مشرف-سير-نهائي') || roles.contains('final_exam_supervisor');
+  bool get isParent  => hasRole(AppRole.parent);
+  bool get isStudent => hasRole(AppRole.student);
+  bool get isTeacher => hasRole(AppRole.teacher);
+  bool get isAdmin   => hasRole(AppRole.admin);
+  bool get isSupervisor => hasRole(AppRole.supervisor);
+  bool get isAssistantSupervisor => hasRole(AppRole.assistantSupervisor);
+  bool get isReciter => hasRole(AppRole.reciter);
+  bool get isTrialExamSupervisor => hasRole(AppRole.trialExamSupervisor);
+  bool get isFinalExamSupervisor => hasRole(AppRole.finalExamSupervisor);
 
   /// أي دور إشرافي (ليس والد/طالب)
-  bool get isAnyStaff =>
-      isAdmin ||
-      isSupervisor ||
-      isAssistantSupervisor ||
-      isReciter ||
-      isTrialExamSupervisor ||
-      isFinalExamSupervisor;
+  bool get isAnyStaff => appRoles.any(AppRole.staffRoles.contains);
+
+  /// الاسم المعروض للدور — عند تعدد الأدوار يُعرض الأعلى صلاحيةً أولاً.
+  static const List<AppRole> _displayPriority = [
+    AppRole.admin,
+    AppRole.supervisor,
+    AppRole.assistantSupervisor,
+    AppRole.reciter,
+    AppRole.trialExamSupervisor,
+    AppRole.finalExamSupervisor,
+    AppRole.teacher,
+    AppRole.parent,
+    AppRole.student,
+  ];
 
   String get displayRole {
-    if (isAdmin) return 'مشرف إداري';
-    if (isSupervisor) return 'مشرف حلقة';
-    if (isAssistantSupervisor) return 'مساعد مشرف حلقة';
-    if (isReciter) return 'مسمّع';
-    if (isTrialExamSupervisor) return 'مشرف سبر تجريبي';
-    if (isFinalExamSupervisor) return 'مشرف سير نهائي';
-    if (isTeacher) return 'معلم';
-    if (isParent) return 'ولي أمر';
-    if (isStudent) return 'طالب';
+    for (final role in _displayPriority) {
+      if (hasRole(role)) return role.displayName;
+    }
     return roles.join(', ');
   }
 

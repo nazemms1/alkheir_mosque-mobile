@@ -4,6 +4,105 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/models/auth_token.dart';
 import '../../../data/services/admin_service.dart';
+import '../../home/home_widget_registry.dart';
+
+/// بيانات لوحة الإداري بعد جلبها — تُمرَّر لويدجتس [adminHomeWidgets].
+class AdminHomeData {
+  final String userName;
+  final AdminStats stats;
+  final List<AdminGroupItem> groups;
+  final List<AdminStudentItem> students;
+  const AdminHomeData({
+    required this.userName,
+    required this.stats,
+    required this.groups,
+    required this.students,
+  });
+}
+
+/// ويدجتس الشاشة الرئيسية للمشرف الإداري — مرتّبة حسب ظهورها.
+/// لإضافة ويدجت جديد: أنشئ الويدجت ثم أضف HomeWidgetDef هنا فقط.
+final List<HomeWidgetDef<AdminHomeData>> adminHomeWidgets = [
+  // البطاقة الترحيبية
+  HomeWidgetDef(
+    id: 'admin-welcome',
+    slivers: (context, d) => [
+      SliverToBoxAdapter(
+        child: _WelcomeBanner(userName: d.userName, stats: d.stats)
+            .animate()
+            .fadeIn(duration: 450.ms)
+            .slideY(begin: -0.04, end: 0, duration: 450.ms),
+      ),
+    ],
+  ),
+  // شبكة الإحصائيات
+  HomeWidgetDef(
+    id: 'admin-stats',
+    slivers: (context, d) => [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _StatsGrid(stats: d.stats)
+              .animate()
+              .fadeIn(delay: 100.ms, duration: 400.ms)
+              .slideY(begin: 0.05, end: 0, delay: 100.ms),
+        ),
+      ),
+    ],
+  ),
+  // الحلقات النشطة
+  HomeWidgetDef(
+    id: 'admin-groups',
+    slivers: (context, d) => [
+      const SliverPadding(
+        padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
+        sliver: SliverToBoxAdapter(
+            child: _SectionHeader(
+                title: 'الحلقات النشطة',
+                icon: Icons.groups_rounded,
+                color: AppColors.primaryLight)),
+      ),
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) => _MiniGroupTile(group: d.groups[i])
+                .animate()
+                .fadeIn(delay: (160 + i * 45).ms, duration: 360.ms)
+                .slideX(begin: 0.04, end: 0, delay: (160 + i * 45).ms),
+            childCount: d.groups.length,
+          ),
+        ),
+      ),
+    ],
+  ),
+  // آخر الطلاب المسجّلين
+  HomeWidgetDef(
+    id: 'admin-recent-students',
+    slivers: (context, d) => [
+      const SliverPadding(
+        padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
+        sliver: SliverToBoxAdapter(
+            child: _SectionHeader(
+                title: 'آخر الطلاب المسجّلين',
+                icon: Icons.school_rounded,
+                color: AppColors.gold)),
+      ),
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) => _MiniStudentTile(student: d.students[i])
+                .animate()
+                .fadeIn(delay: (300 + i * 45).ms, duration: 360.ms)
+                .slideX(begin: 0.04, end: 0, delay: (300 + i * 45).ms),
+            childCount: d.students.length,
+          ),
+        ),
+      ),
+    ],
+  ),
+];
 
 // ─── Home tab (overview) ──────────────────────────────────────────────────────
 class AdminHomeTab extends StatefulWidget {
@@ -64,67 +163,24 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
       );
     }
 
-    final stats    = _stats!;
-    final userName = widget.token.user?.name ?? 'المدير';
+    final data = AdminHomeData(
+      userName: widget.token.user?.name ?? 'المدير',
+      stats: _stats!,
+      groups: _groups,
+      students: _students,
+    );
 
     return RefreshIndicator(
       onRefresh: _load,
       color: AppColors.primaryLight,
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        slivers: [
-          // ── Welcome banner ─────────────────────────────────────────
-          SliverToBoxAdapter(
-            child: _WelcomeBanner(userName: userName, stats: stats)
-                .animate()
-                .fadeIn(duration: 450.ms)
-                .slideY(begin: -0.04, end: 0, duration: 450.ms),
-          ),
-          // ── Stats grid ─────────────────────────────────────────────
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-            sliver: SliverToBoxAdapter(
-              child: _StatsGrid(stats: stats)
-                  .animate()
-                  .fadeIn(delay: 100.ms, duration: 400.ms)
-                  .slideY(begin: 0.05, end: 0, delay: 100.ms),
-            ),
-          ),
-          // ── Active groups ───────────────────────────────────────────
-          const SliverPadding(
-            padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
-            sliver: SliverToBoxAdapter(child: _SectionHeader(title: 'الحلقات النشطة', icon: Icons.groups_rounded, color: AppColors.primaryLight)),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (_, i) => _MiniGroupTile(group: _groups[i])
-                    .animate()
-                    .fadeIn(delay: (160 + i * 45).ms, duration: 360.ms)
-                    .slideX(begin: 0.04, end: 0, delay: (160 + i * 45).ms),
-                childCount: _groups.length,
-              ),
-            ),
-          ),
-          // ── Recent students ─────────────────────────────────────────
-          const SliverPadding(
-            padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
-            sliver: SliverToBoxAdapter(child: _SectionHeader(title: 'آخر الطلاب المسجّلين', icon: Icons.school_rounded, color: AppColors.gold)),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-            sliver: SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (_, i) => _MiniStudentTile(student: _students[i])
-                    .animate()
-                    .fadeIn(delay: (300 + i * 45).ms, duration: 360.ms)
-                    .slideX(begin: 0.04, end: 0, delay: (300 + i * 45).ms),
-                childCount: _students.length,
-              ),
-            ),
-          ),
-        ],
+        slivers: buildHomeSlivers(
+          context: context,
+          token: widget.token,
+          registry: adminHomeWidgets,
+          data: data,
+        ),
       ),
     );
   }

@@ -1,20 +1,21 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
+import '../../../core/session/auth_session.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../data/services/auth_service.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../home/screens/main_shell.dart';
 
-class SplashScreen extends StatefulWidget {
+class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
 
   @override
-  State<SplashScreen> createState() => _SplashScreenState();
+  ConsumerState<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen>
+class _SplashScreenState extends ConsumerState<SplashScreen>
     with TickerProviderStateMixin {
   late AnimationController _rotationController;
   late AnimationController _pulseController;
@@ -52,7 +53,8 @@ class _SplashScreenState extends State<SplashScreen>
 
   Future<void> _navigateToLogin() async {
     if (!mounted) return;
-    final token = await AuthService().getSavedToken();
+    // استرجاع الجلسة المحفوظة إلى المزوّد المركزي قبل الدخول للتطبيق
+    final token = await ref.read(authSessionProvider.notifier).restore();
     if (!mounted) return;
     final Widget destination = token != null
         ? MainShell(token: token)
@@ -336,137 +338,6 @@ class _IslamicRingPainter extends CustomPainter {
       final y2 = center.dy + maxR * 0.98 * math.sin(angle + math.pi);
       canvas.drawLine(Offset(x1, y1), Offset(x2, y2), linePaint);
     }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
-
-// ── أيقونة قبة المسجد ──
-class _MosqueDomeIcon extends StatelessWidget {
-  const _MosqueDomeIcon();
-
-  @override
-  Widget build(BuildContext context) {
-    return CustomPaint(
-      painter: _MosquePainter(),
-    );
-  }
-}
-
-class _MosquePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final w = size.width;
-    final h = size.height;
-
-    final paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFFD4A843).withOpacity(0.92);
-
-    final strokePaint = Paint()
-      ..style = PaintingStyle.stroke
-      ..strokeWidth = 1.5
-      ..color = const Color(0xFFFFD97D).withOpacity(0.7);
-
-    // القبة الرئيسية
-    final domePath = Path();
-    domePath.moveTo(w * 0.15, h * 0.60);
-    domePath.quadraticBezierTo(w * 0.15, h * 0.28, w * 0.50, h * 0.18);
-    domePath.quadraticBezierTo(w * 0.85, h * 0.28, w * 0.85, h * 0.60);
-    domePath.close();
-    canvas.drawPath(domePath, paint);
-    canvas.drawPath(domePath, strokePaint);
-
-    // الهلال
-    final moonPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFFFFD97D);
-
-    canvas.drawCircle(Offset(w * 0.50, h * 0.11), w * 0.07, moonPaint);
-    canvas.drawCircle(
-      Offset(w * 0.55, h * 0.10),
-      w * 0.055,
-      Paint()
-        ..style = PaintingStyle.fill
-        ..color = const Color(0xFF0D5016),
-    );
-
-    // النجمة
-    final starPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFFFFD97D);
-
-    _drawStar(canvas, Offset(w * 0.63, h * 0.08), w * 0.022, starPaint);
-
-    // الجدار الرئيسي
-    final wallPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFFD4A843).withOpacity(0.85);
-
-    final wallRect =
-        RRect.fromRectAndRadius(
-      Rect.fromLTWH(w * 0.20, h * 0.60, w * 0.60, h * 0.22),
-      const Radius.circular(2),
-    );
-    canvas.drawRRect(wallRect, wallPaint);
-
-    // الباب
-    final doorPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFF0D5016);
-
-    final doorPath = Path();
-    doorPath.moveTo(w * 0.42, h * 0.82);
-    doorPath.lineTo(w * 0.42, h * 0.67);
-    doorPath.quadraticBezierTo(w * 0.42, h * 0.61, w * 0.50, h * 0.61);
-    doorPath.quadraticBezierTo(w * 0.58, h * 0.61, w * 0.58, h * 0.67);
-    doorPath.lineTo(w * 0.58, h * 0.82);
-    doorPath.close();
-    canvas.drawPath(doorPath, doorPaint);
-
-    // المآذن الجانبية
-    _drawMinaret(canvas, Offset(w * 0.10, h * 0.60), w * 0.10, h * 0.30);
-    _drawMinaret(canvas, Offset(w * 0.80, h * 0.60), w * 0.10, h * 0.30);
-  }
-
-  void _drawMinaret(
-      Canvas canvas, Offset base, double width, double height) {
-    final paint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFFD4A843).withOpacity(0.75);
-
-    final rect = Rect.fromLTWH(
-        base.dx, base.dy - height, width, height);
-    canvas.drawRect(rect, paint);
-
-    // رأس المئذنة
-    final tipPaint = Paint()
-      ..style = PaintingStyle.fill
-      ..color = const Color(0xFFFFD97D);
-
-    final tipPath = Path();
-    tipPath.moveTo(base.dx, base.dy - height);
-    tipPath.lineTo(base.dx + width / 2, base.dy - height - width * 0.7);
-    tipPath.lineTo(base.dx + width, base.dy - height);
-    tipPath.close();
-    canvas.drawPath(tipPath, tipPaint);
-  }
-
-  void _drawStar(Canvas canvas, Offset center, double r, Paint paint) {
-    final path = Path();
-    for (int i = 0; i < 5; i++) {
-      final angle = (i * 4 * math.pi / 5) - math.pi / 2;
-      final x = center.dx + r * math.cos(angle);
-      final y = center.dy + r * math.sin(angle);
-      if (i == 0) {
-        path.moveTo(x, y);
-      } else {
-        path.lineTo(x, y);
-      }
-    }
-    path.close();
-    canvas.drawPath(path, paint);
   }
 
   @override

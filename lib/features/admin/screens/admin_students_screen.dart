@@ -67,7 +67,7 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
     setState(() { _loading = true; _error = null; });
     try {
       final r = await _service.fetchStudents(
-          page: 1, perPage: 20, search: _search, groupId: widget.groupId);
+          page: 1, perPage: 20, search: _search, groupId: widget.groupId, status: 'active');
       if (!mounted) return;
       setState(() {
         _items    = r.items;
@@ -89,7 +89,8 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
           page: _page + 1,
           perPage: 20,
           search: _search,
-          groupId: widget.groupId);
+          groupId: widget.groupId,
+          status: 'active');
       if (!mounted) return;
       setState(() {
         _items.addAll(r.items);

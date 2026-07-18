@@ -4,175 +4,119 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../core/widgets/app_toast.dart';
 import '../../../data/models/auth_token.dart';
-import '../../../data/models/permissions.dart';
 import '../../../data/services/admin_service.dart';
 import '../../../data/models/admin_dashboard_model.dart';
+import '../../home/home_widget_registry.dart';
 import 'supervisor_student_detail.dart';
 
-// ─── Supervisor nav tab definition (nav config + screen, permission-gated) ────
-class SupervisorNavTab {
-  final IconData icon;
-  final IconData activeIcon;
-  final String label;
-  final String subtitle;
-  final Widget body;
-  const SupervisorNavTab({
-    required this.icon,
-    required this.activeIcon,
-    required this.label,
-    required this.subtitle,
-    required this.body,
+/// بيانات لوحة الدور الإشرافي بعد جلبها — تُمرَّر لويدجتس [supervisorHomeWidgets].
+class SupervisorHomeData {
+  final String userName;
+  final String roleLabel;
+  final AdminStats stats;
+  final List<AdminGroupItem> groups;
+  final List<AdminStudentItem> students;
+  const SupervisorHomeData({
+    required this.userName,
+    required this.roleLabel,
+    required this.stats,
+    required this.groups,
+    required this.students,
   });
 }
 
-/// يبني تبويبات شريط التنقل السفلي المناسبة لدور المستخدم الإشرافي، كل
-/// تبويب مرتبط بالصلاحية المطلوبة للوصول إليه (نفس نمط تبويبات المدير).
-List<SupervisorNavTab> supervisorNavTabs(AuthToken t) {
-  final tabs = <SupervisorNavTab>[
-    // الرئيسية — لوحة تحكم موجزة، متاحة للجميع
-    SupervisorNavTab(
-      icon: Icons.dashboard_outlined,
-      activeIcon: Icons.dashboard_rounded,
-      label: 'الرئيسية',
-      subtitle: 'لوحة التحكم',
-      body: SupervisorHomeTab(token: t),
-    ),
-    // تقدم الطالب — متاح للجميع
-    SupervisorNavTab(
-      icon: Icons.trending_up_outlined,
-      activeIcon: Icons.trending_up_rounded,
-      label: 'التقدم',
-      subtitle: 'تقدّم الطلاب',
-      body: _StudentsProgressTab(token: t),
-    ),
-  ];
-
-  // التسميع (الحفظ واختبارات القرآن) — تظهر لمن يملك صلاحية عرض أو تسجيل
-  final canRecordRecitation = t.hasPermission(Permissions.assessmentsView) ||
-      t.hasPermission(Permissions.quranTestsRecord) ||
-      t.hasPermission(Permissions.quranAwqafTestsRecord);
-  final canViewRecitation = canRecordRecitation ||
-      t.hasPermission(Permissions.memorizationView) ||
-      t.hasPermission(Permissions.quranTestsView) ||
-      t.hasPermission(Permissions.quranAwqafTestsView);
-  if ((t.isSupervisor ||
-          t.isAssistantSupervisor ||
-          t.isReciter ||
-          t.isTrialExamSupervisor ||
-          t.isFinalExamSupervisor ||
-          t.isAdmin) &&
-      canViewRecitation) {
-    tabs.add(SupervisorNavTab(
-      icon: Icons.record_voice_over_outlined,
-      activeIcon: Icons.record_voice_over_rounded,
-      label: 'التسميع',
-      subtitle: 'الحفظ واختبارات القرآن',
-      body: _RecitationTab(
-        token: t,
-        canRecordMemorization: t.hasPermission(Permissions.assessmentsView),
+/// ويدجتس الشاشة الرئيسية للأدوار الإشرافية — مرتّبة حسب ظهورها.
+/// لإضافة ويدجت جديد: أنشئ الويدجت ثم أضف HomeWidgetDef هنا فقط.
+final List<HomeWidgetDef<SupervisorHomeData>> supervisorHomeWidgets = [
+  // البطاقة الترحيبية
+  HomeWidgetDef(
+    id: 'sup-welcome',
+    slivers: (context, d) => [
+      SliverToBoxAdapter(
+        child: _SupervisorWelcomeBanner(
+          userName: d.userName,
+          roleLabel: d.roleLabel,
+          stats: d.stats,
+        )
+            .animate()
+            .fadeIn(duration: 450.ms)
+            .slideY(begin: -0.04, end: 0, duration: 450.ms),
       ),
-    ));
-  }
-
-  // ملاحظات — مشرف الحلقة ومساعده والإداري
-  if (t.isSupervisor || t.isAssistantSupervisor || t.isAdmin) {
-    tabs.add(const SupervisorNavTab(
-      icon: Icons.note_alt_outlined,
-      activeIcon: Icons.note_alt_rounded,
-      label: 'الملاحظات',
-      subtitle: 'ملاحظات الطلاب والحلقة',
-      body: _NotesTab(),
-    ));
-  }
-
-  // حضور الحلقة — يتطلب صلاحية تسجيل حضور الطلاب
-  if ((t.isSupervisor || t.isAssistantSupervisor || t.isAdmin) &&
-      t.hasPermission(Permissions.attendanceStudentTake)) {
-    tabs.add(const SupervisorNavTab(
-      icon: Icons.event_available_outlined,
-      activeIcon: Icons.event_available_rounded,
-      label: 'الحضور',
-      subtitle: 'سجل حضور الطلاب',
-      body: _AttendanceTab(),
-    ));
-  }
-
-  // سبر تجريبي — يظهر لمن يملك صلاحية عرض أو تسجيل اختبارات القرآن
-  final canRecordExams = t.hasPermission(Permissions.quranTestsRecord) ||
-      t.hasPermission(Permissions.quranAwqafTestsRecord);
-  final canViewExams = canRecordExams ||
-      t.hasPermission(Permissions.quranTestsView) ||
-      t.hasPermission(Permissions.quranAwqafTestsView);
-  if ((t.isTrialExamSupervisor || t.isFinalExamSupervisor || t.isAdmin) &&
-      canViewExams) {
-    tabs.add(SupervisorNavTab(
-      icon: Icons.science_outlined,
-      activeIcon: Icons.science_rounded,
-      label: 'تجريبي',
-      subtitle: 'نتائج السبر التجريبي',
-      body: _TrialExamTab(canRecord: canRecordExams),
-    ));
-  }
-
-  // سير نهائي — يظهر لمن يملك صلاحية عرض أو تسجيل اختبارات القرآن
-  if ((t.isFinalExamSupervisor || t.isAdmin) && canViewExams) {
-    tabs.add(SupervisorNavTab(
-      icon: Icons.verified_outlined,
-      activeIcon: Icons.verified_rounded,
-      label: 'نهائي',
-      subtitle: 'نتائج السير النهائي',
-      body: _FinalExamTab(canRecord: canRecordExams),
-    ));
-  }
-
-  // تقارير الحلقة — يتطلب صلاحية عرض التقارير
-  if ((t.isSupervisor || t.isAdmin) &&
-      t.hasPermission(Permissions.reportsView)) {
-    tabs.add(const SupervisorNavTab(
-      icon: Icons.bar_chart_outlined,
-      activeIcon: Icons.bar_chart_rounded,
-      label: 'التقارير',
-      subtitle: 'تقارير الحلقة',
-      body: _ReportsTab(),
-    ));
-  }
-
-  // نقاط الطلاب — تظهر لمن يملك صلاحية عرض النقاط
-  if (t.hasPermission(Permissions.pointsView)) {
-    tabs.add(const SupervisorNavTab(
-      icon: Icons.star_outline_rounded,
-      activeIcon: Icons.star_rounded,
-      label: 'النقاط',
-      subtitle: 'نقاط الطلاب',
-      body: _PointsTab(),
-    ));
-  }
-
-  // الأنشطة — تظهر لمن يملك صلاحية عرض الأنشطة
-  if (t.hasPermission(Permissions.activitiesView)) {
-    tabs.add(const SupervisorNavTab(
-      icon: Icons.event_note_outlined,
-      activeIcon: Icons.event_note_rounded,
-      label: 'الأنشطة',
-      subtitle: 'أنشطة المسجد',
-      body: _ActivitiesTab(),
-    ));
-  }
-
-  // التقييمات — تظهر لمن يملك صلاحية عرض التقييمات أو نتائجها
-  if (t.hasPermission(Permissions.assessmentsView) ||
-      t.hasPermission(Permissions.assessmentResultsView)) {
-    tabs.add(const SupervisorNavTab(
-      icon: Icons.assignment_outlined,
-      activeIcon: Icons.assignment_rounded,
-      label: 'التقييمات',
-      subtitle: 'التقييمات والاختبارات',
-      body: _AssessmentsTab(),
-    ));
-  }
-
-  return tabs;
-}
+    ],
+  ),
+  // شبكة الإحصائيات
+  HomeWidgetDef(
+    id: 'sup-stats',
+    slivers: (context, d) => [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _SupervisorStatsGrid(stats: d.stats)
+              .animate()
+              .fadeIn(delay: 100.ms, duration: 400.ms)
+              .slideY(begin: 0.05, end: 0, delay: 100.ms),
+        ),
+      ),
+    ],
+  ),
+  // الحلقات — يظهر فقط عند وجود حلقات
+  HomeWidgetDef(
+    id: 'sup-groups',
+    visibleWhen: (_, d) => d.groups.isNotEmpty,
+    slivers: (context, d) => [
+      const SliverPadding(
+        padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
+        sliver: SliverToBoxAdapter(
+          child: _SectionHeader(
+              title: 'الحلقات',
+              icon: Icons.groups_rounded,
+              color: AppColors.primaryLight),
+        ),
+      ),
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (_, i) => _MiniGroupTile(group: d.groups[i])
+                .animate()
+                .fadeIn(delay: (160 + i * 45).ms, duration: 360.ms)
+                .slideX(begin: 0.04, end: 0, delay: (160 + i * 45).ms),
+            childCount: d.groups.length,
+          ),
+        ),
+      ),
+    ],
+  ),
+  // آخر الطلاب — يظهر فقط عند وجود طلاب، وإلا مسافة سفلية فقط
+  HomeWidgetDef(
+    id: 'sup-recent-students',
+    slivers: (context, d) => d.students.isNotEmpty
+        ? [
+            const SliverPadding(
+              padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
+              sliver: SliverToBoxAdapter(
+                child: _SectionHeader(
+                    title: 'آخر الطلاب',
+                    icon: Icons.school_rounded,
+                    color: AppColors.gold),
+              ),
+            ),
+            SliverPadding(
+              padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+              sliver: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (_, i) => _MiniStudentTile(student: d.students[i])
+                      .animate()
+                      .fadeIn(delay: (300 + i * 45).ms, duration: 360.ms)
+                      .slideX(begin: 0.04, end: 0, delay: (300 + i * 45).ms),
+                  childCount: d.students.length,
+                ),
+              ),
+            ),
+          ]
+        : [const SliverPadding(padding: EdgeInsets.only(bottom: 120))],
+  ),
+];
 
 // ─── Home tab (overview dashboard) ─────────────────────────────────────────────
 class SupervisorHomeTab extends StatefulWidget {
@@ -207,7 +151,7 @@ class _SupervisorHomeTabState extends State<SupervisorHomeTab> {
       final results = await Future.wait([
         _service.fetchSupervisorStats(),
         _service.fetchGroups(perPage: 6, isActive: true),
-        _service.fetchStudents(perPage: 6),
+        _service.fetchStudents(perPage: 6, status: 'active'),
       ]);
       if (!mounted) return;
       setState(() {
@@ -242,82 +186,25 @@ class _SupervisorHomeTabState extends State<SupervisorHomeTab> {
       return _PermissionAwareError(message: _error!, onRetry: _load);
     }
 
-    final stats = _stats!;
-    final userName = widget.token.user?.name ?? 'المشرف';
+    final data = SupervisorHomeData(
+      userName: widget.token.user?.name ?? 'المشرف',
+      roleLabel: widget.token.displayRole,
+      stats: _stats!,
+      groups: _groups,
+      students: _students,
+    );
 
     return RefreshIndicator(
       onRefresh: _load,
       color: AppColors.primaryLight,
       child: CustomScrollView(
         physics: const BouncingScrollPhysics(),
-        slivers: [
-          SliverToBoxAdapter(
-            child: _SupervisorWelcomeBanner(
-              userName: userName,
-              roleLabel: widget.token.displayRole,
-              stats: stats,
-            )
-                .animate()
-                .fadeIn(duration: 450.ms)
-                .slideY(begin: -0.04, end: 0, duration: 450.ms),
-          ),
-          SliverPadding(
-            padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
-            sliver: SliverToBoxAdapter(
-              child: _SupervisorStatsGrid(stats: stats)
-                  .animate()
-                  .fadeIn(delay: 100.ms, duration: 400.ms)
-                  .slideY(begin: 0.05, end: 0, delay: 100.ms),
-            ),
-          ),
-          if (_groups.isNotEmpty) ...[
-            const SliverPadding(
-              padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
-              sliver: SliverToBoxAdapter(
-                child: _SectionHeader(
-                    title: 'الحلقات',
-                    icon: Icons.groups_rounded,
-                    color: AppColors.primaryLight),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (_, i) => _MiniGroupTile(group: _groups[i])
-                      .animate()
-                      .fadeIn(delay: (160 + i * 45).ms, duration: 360.ms)
-                      .slideX(begin: 0.04, end: 0, delay: (160 + i * 45).ms),
-                  childCount: _groups.length,
-                ),
-              ),
-            ),
-          ],
-          if (_students.isNotEmpty) ...[
-            const SliverPadding(
-              padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
-              sliver: SliverToBoxAdapter(
-                child: _SectionHeader(
-                    title: 'آخر الطلاب',
-                    icon: Icons.school_rounded,
-                    color: AppColors.gold),
-              ),
-            ),
-            SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-              sliver: SliverList(
-                delegate: SliverChildBuilderDelegate(
-                  (_, i) => _MiniStudentTile(student: _students[i])
-                      .animate()
-                      .fadeIn(delay: (300 + i * 45).ms, duration: 360.ms)
-                      .slideX(begin: 0.04, end: 0, delay: (300 + i * 45).ms),
-                  childCount: _students.length,
-                ),
-              ),
-            ),
-          ] else
-            const SliverPadding(padding: EdgeInsets.only(bottom: 120)),
-        ],
+        slivers: buildHomeSlivers(
+          context: context,
+          token: widget.token,
+          registry: supervisorHomeWidgets,
+          data: data,
+        ),
       ),
     );
   }
@@ -760,15 +647,15 @@ class _MiniStudentTile extends StatelessWidget {
 }
 
 // ─── Students Progress Tab ────────────────────────────────────────────────────
-class _StudentsProgressTab extends StatefulWidget {
+class StudentsProgressTab extends StatefulWidget {
   final AuthToken token;
-  const _StudentsProgressTab({required this.token});
+  const StudentsProgressTab({super.key, required this.token});
 
   @override
-  State<_StudentsProgressTab> createState() => _StudentsProgressTabState();
+  State<StudentsProgressTab> createState() => StudentsProgressTabState();
 }
 
-class _StudentsProgressTabState extends State<_StudentsProgressTab> {
+class StudentsProgressTabState extends State<StudentsProgressTab> {
   final _service = AdminService();
   List<AdminStudentItem> _students = [];
   List<AdminGroupItem> _groups = [];
@@ -789,7 +676,7 @@ class _StudentsProgressTabState extends State<_StudentsProgressTab> {
     });
     try {
       final results = await Future.wait([
-        _service.fetchStudents(perPage: 50, groupId: _selectedGroupId),
+        _service.fetchStudents(perPage: 50, groupId: _selectedGroupId, status: 'active'),
         _service.fetchGroups(perPage: 100),
       ]);
       if (!mounted) return;
@@ -1090,17 +977,17 @@ class _StudentProgressCard extends StatelessWidget {
 }
 
 // ─── Recitation Tab — نموذج واحد: اختيار طالب (قائمة بحث منسدلة) + صفحات + إرسال
-class _RecitationTab extends StatefulWidget {
+class RecitationTab extends StatefulWidget {
   final AuthToken token;
   final bool canRecordMemorization;
-  const _RecitationTab(
-      {required this.token, required this.canRecordMemorization});
+  const RecitationTab(
+      {super.key, required this.token, required this.canRecordMemorization});
 
   @override
-  State<_RecitationTab> createState() => _RecitationTabState();
+  State<RecitationTab> createState() => RecitationTabState();
 }
 
-class _RecitationTabState extends State<_RecitationTab> {
+class RecitationTabState extends State<RecitationTab> {
   final _service = AdminService();
   final _formKey = GlobalKey<FormState>();
   final _fromPageCtrl = TextEditingController();
@@ -1120,7 +1007,7 @@ class _RecitationTabState extends State<_RecitationTab> {
 
   Future<List<AdminStudentItem>> _searchStudents(String query) async {
     if (query.trim().isEmpty) return const [];
-    final result = await _service.fetchStudents(search: query.trim(), perPage: 20);
+    final result = await _service.fetchStudents(search: query.trim(), perPage: 20, status: 'active');
     return result.items;
   }
 
@@ -1509,8 +1396,8 @@ class _EntryTypeChip extends StatelessWidget {
 }
 
 // ─── Notes Tab ────────────────────────────────────────────────────────────────
-class _NotesTab extends StatelessWidget {
-  const _NotesTab();
+class NotesTab extends StatelessWidget {
+  const NotesTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -1523,8 +1410,8 @@ class _NotesTab extends StatelessWidget {
 }
 
 // ─── Attendance Tab ───────────────────────────────────────────────────────────
-class _AttendanceTab extends StatelessWidget {
-  const _AttendanceTab();
+class SupervisorAttendanceTab extends StatelessWidget {
+  const SupervisorAttendanceTab({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -1537,9 +1424,9 @@ class _AttendanceTab extends StatelessWidget {
 }
 
 // ─── Trial Exam Tab ───────────────────────────────────────────────────────────
-class _TrialExamTab extends StatelessWidget {
+class TrialExamTab extends StatelessWidget {
   final bool canRecord;
-  const _TrialExamTab({this.canRecord = false});
+  const TrialExamTab({super.key, this.canRecord = false});
 
   @override
   Widget build(BuildContext context) {
@@ -1554,9 +1441,9 @@ class _TrialExamTab extends StatelessWidget {
 }
 
 // ─── Final Exam Tab ───────────────────────────────────────────────────────────
-class _FinalExamTab extends StatelessWidget {
+class FinalExamTab extends StatelessWidget {
   final bool canRecord;
-  const _FinalExamTab({this.canRecord = false});
+  const FinalExamTab({super.key, this.canRecord = false});
 
   @override
   Widget build(BuildContext context) {
@@ -1571,14 +1458,14 @@ class _FinalExamTab extends StatelessWidget {
 }
 
 // ─── Points Tab — نقاط الطلاب من enrollments (final_points/memorized_pages) ──
-class _PointsTab extends StatefulWidget {
-  const _PointsTab();
+class SupervisorPointsTab extends StatefulWidget {
+  const SupervisorPointsTab({super.key});
 
   @override
-  State<_PointsTab> createState() => _PointsTabState();
+  State<SupervisorPointsTab> createState() => SupervisorPointsTabState();
 }
 
-class _PointsTabState extends State<_PointsTab> {
+class SupervisorPointsTabState extends State<SupervisorPointsTab> {
   final _service = AdminService();
   List<AdminEnrollmentItem> _enrollments = [];
   bool _loading = true;
@@ -1703,14 +1590,14 @@ class _PointsCard extends StatelessWidget {
 }
 
 // ─── Activities Tab ───────────────────────────────────────────────────────────
-class _ActivitiesTab extends StatefulWidget {
-  const _ActivitiesTab();
+class ActivitiesTab extends StatefulWidget {
+  const ActivitiesTab({super.key});
 
   @override
-  State<_ActivitiesTab> createState() => _ActivitiesTabState();
+  State<ActivitiesTab> createState() => ActivitiesTabState();
 }
 
-class _ActivitiesTabState extends State<_ActivitiesTab> {
+class ActivitiesTabState extends State<ActivitiesTab> {
   final _service = AdminService();
   List<AdminActivityItem> _activities = [];
   bool _loading = true;
@@ -1829,14 +1716,14 @@ class _ActivityCard extends StatelessWidget {
 }
 
 // ─── Assessments Tab ──────────────────────────────────────────────────────────
-class _AssessmentsTab extends StatefulWidget {
-  const _AssessmentsTab();
+class SupervisorAssessmentsTab extends StatefulWidget {
+  const SupervisorAssessmentsTab({super.key});
 
   @override
-  State<_AssessmentsTab> createState() => _AssessmentsTabState();
+  State<SupervisorAssessmentsTab> createState() => SupervisorAssessmentsTabState();
 }
 
-class _AssessmentsTabState extends State<_AssessmentsTab> {
+class SupervisorAssessmentsTabState extends State<SupervisorAssessmentsTab> {
   final _service = AdminService();
   List<AdminAssessmentItem> _assessments = [];
   bool _loading = true;
@@ -1984,14 +1871,14 @@ class _AssessmentCard extends StatelessWidget {
 }
 
 // ─── Reports Tab ──────────────────────────────────────────────────────────────
-class _ReportsTab extends StatefulWidget {
-  const _ReportsTab();
+class ReportsTab extends StatefulWidget {
+  const ReportsTab({super.key});
 
   @override
-  State<_ReportsTab> createState() => _ReportsTabState();
+  State<ReportsTab> createState() => ReportsTabState();
 }
 
-class _ReportsTabState extends State<_ReportsTab> {
+class ReportsTabState extends State<ReportsTab> {
   final _service = AdminService();
   List<AdminGroupItem> _groups = [];
   bool _loading = true;

@@ -3,10 +3,9 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/models/auth_token.dart';
-import '../../../data/models/permissions.dart';
+import '../../../core/rbac/permissions.dart';
 import '../../../data/services/admin_service.dart';
 import 'group_form_screen.dart';
-import 'qr_scanner_screen.dart';
 
 class GroupDetailScreen extends StatefulWidget {
   final AdminGroupItem group;
@@ -130,16 +129,6 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         onPressed: () => Navigator.pop(context),
       ),
       actions: [
-        if (group.isActive)
-          IconButton(
-            icon: const Icon(Icons.qr_code_scanner_rounded, color: Colors.white),
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (_) => QrScannerScreen(groupId: group.id, groupName: group.name),
-              ),
-            ),
-          ),
         if (_canDelete)
           _deleting
               ? const Padding(

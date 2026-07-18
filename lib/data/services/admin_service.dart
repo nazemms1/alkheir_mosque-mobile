@@ -339,6 +339,29 @@ class AdminService {
     });
   }
 
+  // ─── Attendance ───────────────────────────────────────────────────────────
+  /// تسجيل حضور طالب واحد في حلقته عبر مسح QR — سجل واحد لكل استدعاء.
+  /// attendance_date بصيغة YYYY-MM-DD.
+  Future<void> recordGroupAttendance({
+    required int groupId,
+    required int enrollmentId,
+    required String attendanceStatusId,
+    required String attendanceDate,
+    String notes = '',
+  }) async {
+    await _api.post('groups/$groupId/attendance', body: {
+      'attendance_date': attendanceDate,
+      'notes': notes,
+      'records': [
+        {
+          'enrollment_id': '$enrollmentId',
+          'attendance_status_id': attendanceStatusId,
+          'notes': null,
+        }
+      ],
+    });
+  }
+
   // ─── Assessments ──────────────────────────────────────────────────────────
   Future<({List<AdminAssessmentItem> items, int total, int lastPage})>
       fetchAssessments({

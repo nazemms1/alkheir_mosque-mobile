@@ -1,37 +1,28 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../../core/navigation/app_tab.dart';
+import '../../../core/navigation/tab_registry.dart';
+import '../../../core/session/auth_session.dart';
+import '../../../core/session/theme_provider.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../main.dart' show themeNotifier;
 import '../../../data/models/student_model.dart';
 import '../../../data/models/auth_token.dart';
-import '../../../data/models/permissions.dart';
 import '../../../data/services/student_service.dart';
-import '../../../data/services/auth_service.dart';
 import '../../auth/screens/login_screen.dart';
-import 'home_screen.dart';
-import '../../child_profile/screens/child_profile_screen.dart';
-import '../../attendance/screens/attendance_screen.dart';
-import '../../memorization/screens/memorization_screen.dart';
-import '../../points/screens/points_screen.dart';
 import '../../notifications/screens/notifications_screen.dart';
-import '../../admin/screens/admin_dashboard_screen.dart';
-import '../../admin/screens/admin_groups_screen.dart';
-import '../../admin/screens/admin_students_screen.dart';
-import '../../admin/screens/admin_assessments_screen.dart';
-import '../../admin/screens/admin_finance_screen.dart';
-import '../../supervisor/screens/supervisor_shell.dart';
 
-class MainShell extends StatefulWidget {
+class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
   const MainShell({super.key, required this.token});
 
   @override
-  State<MainShell> createState() => _MainShellState();
+  ConsumerState<MainShell> createState() => _MainShellState();
 }
 
-class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
+class _MainShellState extends ConsumerState<MainShell>
+    with TickerProviderStateMixin {
   int _currentIndex = 0;
   int _selectedChildIndex = 0;
   ParentDashboardData? _data;
@@ -366,7 +357,7 @@ class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
           ElevatedButton(
             onPressed: () async {
               Navigator.pop(ctx);
-              await AuthService().logout();
+              await ref.read(authSessionProvider.notifier).logout();
               if (!mounted) return;
               Navigator.of(context).pushAndRemoveUntil(
                 MaterialPageRoute(builder: (_) => const LoginScreen()),
@@ -399,145 +390,19 @@ class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
 
   bool get _isStaff => widget.token.isAnyStaff;
 
-  /// تبويبات لوحة المدير — كل تبويب مرتبط بالصلاحية المطلوبة للوصول إليه.
-  /// التبويب الأول (الرئيسية) متاح دائماً للمدير.
-  List<_AdminTabDef> get _adminTabs {
-    final token = widget.token;
-    return [
-      _AdminTabDef(
-        nav: const _NavConfig(
-            icon: Icons.dashboard_outlined,
-            activeIcon: Icons.dashboard_rounded,
-            label: 'الرئيسية'),
-        title: 'الرئيسية',
-        subtitle: 'لوحة التحكم',
-        screen: AdminHomeTab(token: token),
-      ),
-      if (token.hasPermission(Permissions.groupsView))
-        _AdminTabDef(
-          nav: const _NavConfig(
-              icon: Icons.groups_outlined,
-              activeIcon: Icons.groups_rounded,
-              label: 'الحلقات'),
-          title: 'الحلقات',
-          subtitle: 'إدارة الحلقات',
-          screen: AdminGroupsScreen(token: token),
-        ),
-      if (token.hasPermission(Permissions.studentsView))
-        _AdminTabDef(
-          nav: const _NavConfig(
-              icon: Icons.people_outline_rounded,
-              activeIcon: Icons.people_rounded,
-              label: 'الطلاب'),
-          title: 'الطلاب',
-          subtitle: 'قائمة الطلاب',
-          screen: const AdminStudentsScreen(),
-        ),
-      if (token.hasPermission(Permissions.assessmentsView))
-        _AdminTabDef(
-          nav: const _NavConfig(
-              icon: Icons.assignment_outlined,
-              activeIcon: Icons.assignment_rounded,
-              label: 'التقييمات'),
-          title: 'التقييمات',
-          subtitle: 'التقييمات والاختبارات',
-          screen: const AdminAssessmentsScreen(),
-        ),
-      if (token.hasPermission(Permissions.invoicesView))
-        _AdminTabDef(
-          nav: const _NavConfig(
-              icon: Icons.account_balance_wallet_outlined,
-              activeIcon: Icons.account_balance_wallet_rounded,
-              label: 'المالية'),
-          title: 'المالية',
-          subtitle: 'الفواتير والأنشطة',
-          screen: const AdminFinanceScreen(),
-        ),
-    ];
-  }
+  /// تبويبات الحساب الحالي — تأتي جاهزة ومرشَّحة بالأدوار والصلاحيات من
+  /// السجل المركزي (core/navigation/tab_registry.dart). لإضافة صفحة جديدة
+  /// عدّل السجل هناك فقط؛ لا شيء هنا يحتاج تعديلاً.
+  List<AppTab> get _tabs => tabsFor(widget.token);
 
-  /// تبويبات الأدوار الإشرافية (مشرف حلقة/مساعد/مسمّع/مشرف سبر...) — كل
-  /// تبويب مرتبط بالصلاحية المطلوبة للوصول إليه، والأول (الرئيسية) دائماً متاح.
-  List<SupervisorNavTab> get _supervisorTabs => supervisorNavTabs(widget.token);
-
-  List<Widget> get _screens {
-    if (_isParentOrStudent && _data != null) {
-      return [
-        HomeScreen(
-          data: _data!,
-          selectedChildIndex: _selectedChildIndex,
-          onChildSelected: _onChildSelected,
-          onTabChange: _changeTab,
-        ),
-        ChildProfileScreen(student: _activeChild.student),
-        AttendanceScreen(
-          records: _activeChild.attendanceRecords,
-          studentId: int.tryParse(_activeChild.student.id),
-        ),
-        MemorizationScreen(
-          progress: _activeChild.memorizationProgress,
-          studentId: int.tryParse(_activeChild.student.id),
-        ),
-        PointsScreen(
-          pointRecords: _activeChild.pointRecords,
-          evaluations: _activeChild.evaluations,
-          totalPoints: _activeChild.totalPoints,
-          studentId: int.tryParse(_activeChild.student.id),
-        ),
-      ];
-    }
-    // مشرف إداري — لوحة تحكم كاملة (كل تبويب مرتبط بصلاحية الوصول إليه)
-    if (widget.token.isAdmin) {
-      return _adminTabs.map((t) => t.screen).toList();
-    }
-    // أي دور إشرافي آخر — تبويبات مرتبطة بصلاحيات الحساب
-    if (_isStaff) {
-      return _supervisorTabs.map((t) => t.body).toList();
-    }
-    return [_RoleComingSoon(role: widget.token.roles.join(', '))];
-  }
-
-  List<_NavConfig> get _navItems {
-    if (_isParentOrStudent) {
-      return const [
-        _NavConfig(
-            icon: Icons.home_outlined,
-            activeIcon: Icons.home_rounded,
-            label: 'الرئيسية'),
-        _NavConfig(
-            icon: Icons.person_outline_rounded,
-            activeIcon: Icons.person_rounded,
-            label: 'الطالب'),
-        _NavConfig(
-            icon: Icons.calendar_month_outlined,
-            activeIcon: Icons.calendar_month_rounded,
-            label: 'الحضور'),
-        _NavConfig(
-            icon: Icons.menu_book_outlined,
-            activeIcon: Icons.menu_book_rounded,
-            label: 'الحفظ'),
-        _NavConfig(
-            icon: Icons.star_outline_rounded,
-            activeIcon: Icons.star_rounded,
-            label: 'النقاط'),
-      ];
-    }
-    if (widget.token.isAdmin) {
-      return _adminTabs.map((t) => t.nav).toList();
-    }
-    // أدوار إشرافية — تبويبات مرتبطة بصلاحيات الحساب
-    if (_isStaff) {
-      return _supervisorTabs
-          .map((t) => _NavConfig(icon: t.icon, activeIcon: t.activeIcon, label: t.label))
-          .toList();
-    }
-    return const [
-      _NavConfig(
-          icon: Icons.home_outlined,
-          activeIcon: Icons.home_rounded,
-          label: 'الرئيسية'),
-    ];
-  }
+  /// السياق الذي تُبنى به شاشات التبويبات (الجلسة + بيانات ولي الأمر + التنقل).
+  TabContext get _tabContext => TabContext(
+        token: widget.token,
+        parentData: _data,
+        selectedChildIndex: _selectedChildIndex,
+        onChildSelected: _onChildSelected,
+        onTabChange: _changeTab,
+      );
 
   @override
   Widget build(BuildContext context) {
@@ -575,38 +440,38 @@ class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
         ),
       );
     }
+    final tabs = _tabs;
+    // دور بلا تبويبات معرّفة في السجل — شاشة "قيد الإنشاء"
+    if (tabs.isEmpty || (_isParentOrStudent && _data == null)) {
+      return Scaffold(
+        body: _RoleComingSoon(role: widget.token.roles.join(', ')),
+      );
+    }
+    final ctx = _tabContext;
+    final safeIndex = _currentIndex.clamp(0, tabs.length - 1);
+
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
-      appBar: _buildAppBar(),
+      appBar: _buildAppBar(tabs, safeIndex),
       body: IndexedStack(
           key: ValueKey(_selectedChildIndex),
-          index: _currentIndex,
-          children: _screens),
+          index: safeIndex,
+          children: tabs.map((t) => t.builder(ctx)).toList()),
       bottomNavigationBar: _PremiumNavBar(
-        items: _navItems,
-        currentIndex: _currentIndex,
+        items: tabs
+            .map((t) => _NavConfig(
+                icon: t.icon, activeIcon: t.activeIcon, label: t.label))
+            .toList(),
+        currentIndex: safeIndex,
         onTap: _changeTab,
       ),
     );
   }
 
-  PreferredSizeWidget _buildAppBar() {
-    final List<String> titles;
-    final List<String> subtitles;
-
-    if (widget.token.isAdmin) {
-      final tabs = _adminTabs;
-      titles    = tabs.map((t) => t.title).toList();
-      subtitles = tabs.map((t) => t.subtitle).toList();
-    } else if (_isStaff) {
-      final tabs = _supervisorTabs;
-      titles    = tabs.map((t) => t.label).toList();
-      subtitles = tabs.map((t) => t.subtitle).toList();
-    } else {
-      titles    = ['الرئيسية', 'بيانات الطالب', 'سجل الحضور', 'المحفوظات', 'النقاط والتقييمات'];
-      subtitles = ['مرحباً بك في مسجد الخير', 'ملفات أبنائك', 'سجلات الحضور', 'سجلات الحفظ', 'النقاط والتقييمات'];
-    }
+  PreferredSizeWidget _buildAppBar(List<AppTab> tabs, int index) {
+    final titles = tabs.map((t) => t.effectiveTitle).toList();
+    final subtitles = tabs.map((t) => t.subtitle).toList();
 
     return PreferredSize(
       preferredSize: const Size.fromHeight(72),
@@ -707,7 +572,7 @@ class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
                                   ),
                                 ),
                                 Text(
-                                  subtitles[_currentIndex],
+                                  subtitles[index],
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.6),
                                     fontSize: 10,
@@ -732,7 +597,7 @@ class _MainShellState extends State<MainShell> with TickerProviderStateMixin {
                                 color: Colors.white.withOpacity(0.15)),
                           ),
                           child: Text(
-                            titles[_currentIndex],
+                            titles[index],
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.white,
@@ -1265,23 +1130,18 @@ class _SheetMenuItem extends StatelessWidget {
 }
 
 // ─── Theme Toggle Item ────────────────────────────────────────────────────────
-class _ThemeToggleItem extends StatelessWidget {
+class _ThemeToggleItem extends ConsumerWidget {
   final bool isDark;
   const _ThemeToggleItem({required this.isDark});
 
-  Future<void> _toggle() async {
-    themeNotifier.value = isDark ? ThemeMode.light : ThemeMode.dark;
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setBool('isDarkMode', !isDark);
-  }
-
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    Future<void> toggle() => ref.read(themeModeProvider.notifier).toggle();
     final color = isDark ? AppColors.goldLight : AppColors.gold;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: GestureDetector(
-        onTap: _toggle,
+        onTap: toggle,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           decoration: BoxDecoration(
@@ -1346,7 +1206,7 @@ class _ThemeToggleItem extends StatelessWidget {
               ),
               Switch.adaptive(
                 value: isDark,
-                onChanged: (_) => _toggle(),
+                onChanged: (_) => toggle(),
                 activeColor: AppColors.primaryGlow,
                 activeTrackColor: AppColors.primaryLight.withOpacity(0.4),
               ),
@@ -1364,20 +1224,6 @@ class _NavConfig {
   final String label;
   const _NavConfig(
       {required this.icon, required this.activeIcon, required this.label});
-}
-
-// ─── Admin Tab Definition (nav + title/subtitle + screen, permission-gated) ───
-class _AdminTabDef {
-  final _NavConfig nav;
-  final String title;
-  final String subtitle;
-  final Widget screen;
-  const _AdminTabDef({
-    required this.nav,
-    required this.title,
-    required this.subtitle,
-    required this.screen,
-  });
 }
 
 // ─── Premium Nav Bar ──────────────────────────────────────────────────────────

@@ -1,17 +1,20 @@
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../home/screens/main_shell.dart';
+import '../../../core/session/auth_session.dart';
+import '../../../core/session/service_providers.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/services/auth_service.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  ConsumerState<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen>
+class _LoginScreenState extends ConsumerState<LoginScreen>
     with TickerProviderStateMixin {
   final _formKey = GlobalKey<FormState>();
   final _loginCtrl = TextEditingController();
@@ -26,7 +29,7 @@ class _LoginScreenState extends State<LoginScreen>
   late final Animation<double> _fadeAnim;
   late final Animation<Offset> _slideAnim;
 
-  final _authService = AuthService();
+  AuthService get _authService => ref.read(authServiceProvider);
 
   @override
   void initState() {
@@ -74,6 +77,9 @@ class _LoginScreenState extends State<LoginScreen>
       );
 
       if (!mounted) return;
+
+      // تخزين الجلسة مركزياً — أي شاشة تقرأ الدور/الصلاحيات من authSessionProvider
+      ref.read(authSessionProvider.notifier).setToken(token);
 
       // التوجيه حسب الدور — MainShell يعرض الشاشات المناسبة لكل دور
       Navigator.of(context).pushReplacement(

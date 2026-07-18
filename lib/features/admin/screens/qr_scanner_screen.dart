@@ -2,31 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import '../../../core/config/attendance_config.dart';
 import '../../../core/theme/app_theme.dart';
-import '../../../data/services/api_service.dart';
+import '../../../data/services/admin_service.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// نتيجة مسح QR — ستُحدَّث لاحقاً بعد معرفة بنية الـ payload من الـ API
+// نتيجة مسح QR — يُفترض أن يحتوي رمز QR الخاص بالطالب على معرّفه (student_id)
+// مباشرة أو ضمن رابط/JSON بسيط.
 // ─────────────────────────────────────────────────────────────────────────────
 class QrScanResult {
   final String raw;          // المحتوى الخام من الـ QR
   final String? studentName;
   final String? studentId;
-  final String? groupId;
-  const QrScanResult({required this.raw, this.studentName, this.studentId, this.groupId});
+  const QrScanResult({required this.raw, this.studentName, this.studentId});
 
-  // TODO: parse real QR content once API format is confirmed
   factory QrScanResult.fromRaw(String raw) {
-    // محاولة قراءة JSON بسيط أو استخراج id مباشر
     try {
-      // إذا كان JSON مثل {"student_id":5,"name":"أحمد"}
       final uri = Uri.tryParse(raw);
       if (uri != null && uri.queryParameters.isNotEmpty) {
         return QrScanResult(
           raw: raw,
           studentId: uri.queryParameters['student_id'] ?? uri.queryParameters['id'],
           studentName: uri.queryParameters['name'],
-          groupId: uri.queryParameters['group_id'],
         );
       }
     } catch (_) {}
@@ -35,11 +32,24 @@ class QrScanResult {
   }
 }
 
+/// نوع حالة الحضور المختارة قبل بدء المسح
+enum ScanAttendanceKind { present, late }
+
+extension on ScanAttendanceKind {
+  String get statusId => this == ScanAttendanceKind.present
+      ? AttendanceConfig.presentStatusId
+      : AttendanceConfig.lateStatusId;
+  String get label => this == ScanAttendanceKind.present ? 'حضور' : 'تأخر';
+  IconData get icon => this == ScanAttendanceKind.present
+      ? Icons.check_circle_rounded
+      : Icons.schedule_rounded;
+}
+
 // ─────────────────────────────────────────────────────────────────────────────
 // شاشة مسح QR الرئيسية
 // ─────────────────────────────────────────────────────────────────────────────
 class QrScannerScreen extends StatefulWidget {
-  final int? groupId;      // اختياري — إذا عُرف مسبقاً يُرسل مع الحضور
+  final int? groupId;      // اختياري — إذا عُرف مسبقاً يُستخدم كحلقة التسجيل
   final String? groupName;
   const QrScannerScreen({super.key, this.groupId, this.groupName});
 
@@ -53,10 +63,12 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     detectionSpeed: DetectionSpeed.noDuplicates,
     facing: CameraFacing.back,
   );
+  final _service = AdminService();
 
   bool _torchOn   = false;
   bool _paused    = false;
   bool _sending   = false;
+  ScanAttendanceKind? _kind; // null = لم يُختر النوع بعد
 
   // سجل الحضور المُسجَّل في هذه الجلسة
   final List<_AttendanceRecord> _sessionRecords = [];
@@ -84,7 +96,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
   Future<void> _onDetect(BarcodeCapture capture) async {
     final barcode = capture.barcodes.firstOrNull;
     if (barcode == null || barcode.rawValue == null) return;
-    if (_sending || _paused) return;
+    if (_sending || _paused || _kind == null) return;
 
     final raw = barcode.rawValue!;
     HapticFeedback.mediumImpact();
@@ -96,33 +108,39 @@ class _QrScannerScreenState extends State<QrScannerScreen>
   }
 
   Future<void> _submitAttendance(QrScanResult result) async {
+    final displayName = result.studentName ?? result.studentId ?? result.raw;
     try {
-      // TODO: استبدل هذا الـ endpoint والـ payload بعد تأكيد بنية الـ API
-      final api = ApiService();
-      final groupId = widget.groupId ?? int.tryParse(result.groupId ?? '');
-
-      if (groupId != null) {
-        // POST /groups/{id}/attendance
-        await api.post(
-          'groups/$groupId/attendance',
-          body: {
-            'student_id': result.studentId,
-            'qr_code': result.raw,
-            // TODO: أضف أي حقول إضافية يتطلبها الـ API
-          },
-        );
-      } else {
-        // fallback: أرسل QR مباشرة بدون group_id
-        await api.post(
-          'attendance/scan',
-          body: {'qr_code': result.raw},
-        );
+      final studentId = int.tryParse(result.studentId ?? '');
+      if (studentId == null) {
+        throw Exception('رمز QR غير صالح');
       }
+
+      final enrollments = await _service.fetchEnrollments(
+        studentId: studentId,
+        status: 'active',
+        perPage: 5,
+      );
+      if (enrollments.items.isEmpty) {
+        throw Exception('لا يوجد تسجيل نشط لهذا الطالب');
+      }
+      final enrollment = enrollments.items.first;
+      final groupId = widget.groupId ?? enrollment.groupId;
+
+      final now = DateTime.now();
+      final attendanceDate =
+          '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
+
+      await _service.recordGroupAttendance(
+        groupId: groupId,
+        enrollmentId: enrollment.id,
+        attendanceStatusId: _kind!.statusId,
+        attendanceDate: attendanceDate,
+      );
 
       if (!mounted) return;
       final record = _AttendanceRecord(
-        studentName: result.studentName ?? result.studentId ?? result.raw,
-        time: DateTime.now(),
+        studentName: enrollment.studentName.isNotEmpty ? enrollment.studentName : displayName,
+        time: now,
         status: _RecordStatus.success,
       );
       setState(() {
@@ -134,7 +152,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     } catch (e) {
       if (!mounted) return;
       final record = _AttendanceRecord(
-        studentName: result.studentId ?? result.raw,
+        studentName: displayName,
         time: DateTime.now(),
         status: _RecordStatus.error,
         error: e.toString(),
@@ -204,8 +222,23 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     });
   }
 
+  void _selectKind(ScanAttendanceKind kind) {
+    setState(() => _kind = kind);
+  }
+
   @override
   Widget build(BuildContext context) {
+    if (_kind == null) {
+      return Scaffold(
+        backgroundColor: Colors.black,
+        body: _AttendanceKindPicker(
+          groupName: widget.groupName,
+          onSelected: _selectKind,
+          onClose: () => Navigator.pop(context),
+        ),
+      );
+    }
+
     return Scaffold(
       backgroundColor: Colors.black,
       body: Stack(
@@ -222,11 +255,13 @@ class _QrScannerScreenState extends State<QrScannerScreen>
           // ── Overlay (viewfinder + controls) ────────────────────────────
           _ScanOverlay(
             groupName: widget.groupName,
+            kind: _kind!,
             torchOn: _torchOn,
             paused: _paused,
             sending: _sending,
             onToggleTorch: _toggleTorch,
             onTogglePause: _togglePause,
+            onChangeKind: () => setState(() => _kind = null),
             onClose: () => Navigator.pop(context),
           ),
 
@@ -245,19 +280,122 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// شاشة اختيار نوع الحضور قبل بدء المسح
+// ─────────────────────────────────────────────────────────────────────────────
+class _AttendanceKindPicker extends StatelessWidget {
+  final String? groupName;
+  final ValueChanged<ScanAttendanceKind> onSelected;
+  final VoidCallback onClose;
+  const _AttendanceKindPicker({
+    required this.groupName,
+    required this.onSelected,
+    required this.onClose,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Row(
+              children: [
+                _CircleBtn(icon: Icons.close_rounded, onTap: onClose),
+                const Spacer(),
+                if (groupName != null)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                    decoration: BoxDecoration(
+                      color: Colors.black54,
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(color: Colors.white24),
+                    ),
+                    child: Text(
+                      groupName!,
+                      style: const TextStyle(color: Colors.white, fontSize: 13, fontFamily: 'Cairo', fontWeight: FontWeight.w700),
+                    ),
+                  ),
+                const Spacer(),
+                const SizedBox(width: 44),
+              ],
+            ),
+            const Spacer(),
+            Icon(Icons.qr_code_scanner_rounded, size: 64, color: Colors.white.withOpacity(0.5)),
+            const SizedBox(height: 20),
+            const Text(
+              'اختر نوع الحضور قبل بدء المسح',
+              style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Cairo', fontWeight: FontWeight.w700),
+            ),
+            const SizedBox(height: 32),
+            _KindButton(
+              kind: ScanAttendanceKind.present,
+              onTap: () => onSelected(ScanAttendanceKind.present),
+            ),
+            const SizedBox(height: 14),
+            _KindButton(
+              kind: ScanAttendanceKind.late,
+              onTap: () => onSelected(ScanAttendanceKind.late),
+            ),
+            const Spacer(flex: 2),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _KindButton extends StatelessWidget {
+  final ScanAttendanceKind kind;
+  final VoidCallback onTap;
+  const _KindButton({required this.kind, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold;
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(vertical: 18),
+        decoration: BoxDecoration(
+          color: color.withOpacity(0.12),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: color.withOpacity(0.5), width: 1.5),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(kind.icon, color: color, size: 24),
+            const SizedBox(width: 10),
+            Text(
+              kind.label,
+              style: TextStyle(color: color, fontSize: 16, fontFamily: 'Cairo', fontWeight: FontWeight.w800),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // Overlay (viewfinder + controls)
 // ─────────────────────────────────────────────────────────────────────────────
 class _ScanOverlay extends StatelessWidget {
   final String? groupName;
+  final ScanAttendanceKind kind;
   final bool torchOn, paused, sending;
-  final VoidCallback onToggleTorch, onTogglePause, onClose;
+  final VoidCallback onToggleTorch, onTogglePause, onChangeKind, onClose;
   const _ScanOverlay({
     required this.groupName,
+    required this.kind,
     required this.torchOn,
     required this.paused,
     required this.sending,
     required this.onToggleTorch,
     required this.onTogglePause,
+    required this.onChangeKind,
     required this.onClose,
   });
 
@@ -297,6 +435,40 @@ class _ScanOverlay extends StatelessWidget {
                   onTap: onToggleTorch,
                   active: torchOn,
                 ),
+              ],
+            ),
+          ),
+        ),
+
+        // ── Attendance kind badge ────────────────────────────────────────
+        GestureDetector(
+          onTap: sending ? null : onChangeKind,
+          child: Container(
+            margin: const EdgeInsets.only(top: 4),
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+            decoration: BoxDecoration(
+              color: (kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold).withOpacity(0.18),
+              borderRadius: BorderRadius.circular(20),
+              border: Border.all(
+                color: (kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold).withOpacity(0.5),
+              ),
+            ),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(kind.icon, size: 16, color: kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold),
+                const SizedBox(width: 6),
+                Text(
+                  'تسجيل: ${kind.label}',
+                  style: TextStyle(
+                    color: kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold,
+                    fontSize: 12.5,
+                    fontFamily: 'Cairo',
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(width: 6),
+                Icon(Icons.edit_rounded, size: 13, color: Colors.white.withOpacity(0.6)),
               ],
             ),
           ),
