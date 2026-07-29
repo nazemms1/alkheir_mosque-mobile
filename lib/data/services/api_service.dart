@@ -10,7 +10,8 @@ class ApiException implements Exception {
 
   bool get isForbidden => statusCode == 403;
   bool get isUnauthorized => statusCode == 401;
-  bool get hasDuplicatePages => duplicatePages != null && duplicatePages!.isNotEmpty;
+  bool get hasDuplicatePages =>
+      duplicatePages != null && duplicatePages!.isNotEmpty;
 
   @override
   String toString() => message;
@@ -89,9 +90,11 @@ class ApiService {
     }
     final message = (body is Map ? body['message'] as String? : null) ??
         'خطأ في الخادم (${response.statusCode})';
-    final duplicates = (body is Map ? body['duplicates'] as List<dynamic>? : null)
-        ?.map((e) => (e as num).toInt())
-        .toList();
-    throw ApiException(message, statusCode: response.statusCode, duplicatePages: duplicates);
+    final duplicates =
+        (body is Map ? body['duplicates'] as List<dynamic>? : null)
+            ?.map((e) => (e as num).toInt())
+            .toList();
+    throw ApiException(message,
+        statusCode: response.statusCode, duplicatePages: duplicates);
   }
 }

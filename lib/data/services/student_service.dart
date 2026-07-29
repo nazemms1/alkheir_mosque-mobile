@@ -180,6 +180,48 @@ class StudentService {
     return result;
   }
 
+  /// جلب الأنشطة المتاحة لأبناء ولي الأمر مع أهلية كل ابن للتسجيل
+  Future<List<ParentActivity>> fetchActivities() async {
+    final json = await _api.get('parent/activities') as Map<String, dynamic>;
+    final list = json['data'] as List<dynamic>;
+    return list
+        .map((e) => ParentActivity.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// تسجيل أو اعتذار ابن عن نشاط. response: registered | declined
+  Future<void> respondToActivity(
+    int activityId, {
+    required int studentId,
+    required String response,
+  }) async {
+    await _api.post('parent/activities/$activityId/responses', body: {
+      'student_id': studentId,
+      'response': response,
+    });
+  }
+
+  /// جلب فواتير ولي الأمر
+  Future<List<InvoiceListItem>> fetchInvoices({
+    String? status,
+    int perPage = 50,
+  }) async {
+    final query = <String, dynamic>{'per_page': perPage};
+    if (status != null) query['status'] = status;
+    final json =
+        await _api.get('parent/invoices', query: query) as Map<String, dynamic>;
+    final list = json['data'] as List<dynamic>;
+    return list
+        .map((e) => InvoiceListItem.fromJson(e as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// جلب تفاصيل فاتورة محددة (بنودها ودفعاتها)
+  Future<InvoiceDetail> fetchInvoiceDetail(int invoiceId) async {
+    final json = await _api.get('parent/invoices/$invoiceId') as Map<String, dynamic>;
+    return InvoiceDetail.fromJson(json['data'] as Map<String, dynamic>);
+  }
+
   /// جلب كل البيانات اللازمة للـ Dashboard دفعة واحدة
   Future<({ParentProfile profile, ParentSummary summary, List<ChildDetail> children})>
       fetchDashboard() async {

@@ -1041,7 +1041,7 @@ class RecitationTabState extends State<RecitationTab> {
         fromPage: int.parse(_fromPageCtrl.text),
         toPage: int.parse(_toPageCtrl.text),
         recordedOn: recordedOn,
-        teacherId: '${widget.token.user?.id}',
+        teacherId: '${widget.token.teacherId}',
         notes: '',
       );
 

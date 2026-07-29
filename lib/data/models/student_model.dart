@@ -653,6 +653,217 @@ class ParentSummary {
       );
 }
 
+// ─── Parent Activities (from /parent/activities) ─────────────────────────────
+class ActivityChildEligibility {
+  final int studentId;
+  final String studentName;
+  final String? responseStatus; // registered | declined | null (no response yet)
+  final bool canRespond;
+
+  const ActivityChildEligibility({
+    required this.studentId,
+    required this.studentName,
+    this.responseStatus,
+    required this.canRespond,
+  });
+
+  factory ActivityChildEligibility.fromJson(Map<String, dynamic> json) {
+    final student = json['student'] as Map<String, dynamic>? ?? json;
+    return ActivityChildEligibility(
+      studentId: (student['id'] as num).toInt(),
+      studentName: student['full_name'] as String? ?? '',
+      responseStatus: json['response_status'] as String?,
+      canRespond: json['can_respond'] as bool? ?? true,
+    );
+  }
+}
+
+class ParentActivity {
+  final int id;
+  final String title;
+  final String? description;
+  final DateTime? activityDate;
+  final double feeAmount;
+  final bool isActive;
+  final String? groupName;
+  final List<ActivityChildEligibility> children;
+
+  const ParentActivity({
+    required this.id,
+    required this.title,
+    this.description,
+    this.activityDate,
+    required this.feeAmount,
+    required this.isActive,
+    this.groupName,
+    required this.children,
+  });
+
+  factory ParentActivity.fromJson(Map<String, dynamic> json) {
+    final group = json['group'] as Map<String, dynamic>?;
+    final childrenJson = json['children'] as List<dynamic>? ?? [];
+    return ParentActivity(
+      id: json['id'] as int,
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String?,
+      activityDate: json['activity_date'] != null
+          ? DateTime.tryParse(json['activity_date'] as String)
+          : null,
+      feeAmount: (json['fee_amount'] as num?)?.toDouble() ?? 0,
+      isActive: json['is_active'] as bool? ?? true,
+      groupName: group?['name'] as String?,
+      children: childrenJson
+          .map((c) => ActivityChildEligibility.fromJson(c as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+}
+
+// ─── Parent Invoice detail (from /parent/invoices, /parent/invoices/{id}) ────
+class InvoiceListItem {
+  final int id;
+  final String invoiceNo;
+  final String status;
+  final String issueDate;
+  final String? dueDate;
+  final double total;
+  final double paidTotal;
+  final double balance;
+
+  const InvoiceListItem({
+    required this.id,
+    required this.invoiceNo,
+    required this.status,
+    required this.issueDate,
+    this.dueDate,
+    required this.total,
+    required this.paidTotal,
+    required this.balance,
+  });
+
+  factory InvoiceListItem.fromJson(Map<String, dynamic> json) => InvoiceListItem(
+        id: json['id'] as int,
+        invoiceNo: json['invoice_no'] as String? ?? '',
+        status: json['status'] as String? ?? '',
+        issueDate: json['issue_date'] as String? ?? '',
+        dueDate: json['due_date'] as String?,
+        total: (json['total'] as num?)?.toDouble() ?? 0,
+        paidTotal: (json['paid_total'] as num?)?.toDouble() ?? 0,
+        balance: (json['balance'] as num?)?.toDouble() ?? 0,
+      );
+
+  bool get isPaid => status == 'paid' || balance <= 0;
+  bool get isOverdue =>
+      !isPaid && dueDate != null && DateTime.tryParse(dueDate!)?.isBefore(DateTime.now()) == true;
+}
+
+class InvoiceLineItem {
+  final int id;
+  final String description;
+  final double quantity;
+  final double unitPrice;
+  final double lineTotal;
+
+  const InvoiceLineItem({
+    required this.id,
+    required this.description,
+    required this.quantity,
+    required this.unitPrice,
+    required this.lineTotal,
+  });
+
+  factory InvoiceLineItem.fromJson(Map<String, dynamic> json) => InvoiceLineItem(
+        id: json['id'] as int,
+        description: json['description'] as String? ?? '',
+        quantity: (json['quantity'] as num?)?.toDouble() ?? 1,
+        unitPrice: (json['unit_price'] as num?)?.toDouble() ?? 0,
+        lineTotal: (json['line_total'] as num?)?.toDouble() ?? 0,
+      );
+}
+
+class InvoicePaymentEntry {
+  final int id;
+  final double amount;
+  final String paidAt;
+  final String? referenceNo;
+  final String? methodName;
+  final bool isVoided;
+
+  const InvoicePaymentEntry({
+    required this.id,
+    required this.amount,
+    required this.paidAt,
+    this.referenceNo,
+    this.methodName,
+    required this.isVoided,
+  });
+
+  factory InvoicePaymentEntry.fromJson(Map<String, dynamic> json) {
+    final method = json['method'] as Map<String, dynamic>?;
+    return InvoicePaymentEntry(
+      id: json['id'] as int,
+      amount: (json['amount'] as num?)?.toDouble() ?? 0,
+      paidAt: json['paid_at'] as String? ?? '',
+      referenceNo: json['reference_no'] as String?,
+      methodName: method?['name'] as String?,
+      isVoided: json['voided_at'] != null,
+    );
+  }
+}
+
+class InvoiceDetail {
+  final int id;
+  final String invoiceNo;
+  final String status;
+  final String issueDate;
+  final String? dueDate;
+  final double subtotal;
+  final double discount;
+  final double total;
+  final double paidTotal;
+  final double balance;
+  final List<InvoiceLineItem> items;
+  final List<InvoicePaymentEntry> payments;
+
+  const InvoiceDetail({
+    required this.id,
+    required this.invoiceNo,
+    required this.status,
+    required this.issueDate,
+    this.dueDate,
+    required this.subtotal,
+    required this.discount,
+    required this.total,
+    required this.paidTotal,
+    required this.balance,
+    required this.items,
+    required this.payments,
+  });
+
+  factory InvoiceDetail.fromJson(Map<String, dynamic> json) {
+    final itemsJson = json['items'] as List<dynamic>? ?? [];
+    final paymentsJson = json['payments'] as List<dynamic>? ?? [];
+    return InvoiceDetail(
+      id: json['id'] as int,
+      invoiceNo: json['invoice_no'] as String? ?? '',
+      status: json['status'] as String? ?? '',
+      issueDate: json['issue_date'] as String? ?? '',
+      dueDate: json['due_date'] as String?,
+      subtotal: (json['subtotal'] as num?)?.toDouble() ?? 0,
+      discount: (json['discount'] as num?)?.toDouble() ?? 0,
+      total: (json['total'] as num?)?.toDouble() ?? 0,
+      paidTotal: (json['paid_total'] as num?)?.toDouble() ?? 0,
+      balance: (json['balance'] as num?)?.toDouble() ?? 0,
+      items: itemsJson.map((e) => InvoiceLineItem.fromJson(e as Map<String, dynamic>)).toList(),
+      payments: paymentsJson
+          .map((e) => InvoicePaymentEntry.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+  }
+
+  bool get isPaid => status == 'paid' || balance <= 0;
+}
+
 // ─── Student Parent Info (from /students/{id} supervisor endpoint) ───────────
 class StudentParentInfo {
   final String fatherName;

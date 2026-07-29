@@ -6,6 +6,8 @@ import '../../../core/navigation/app_tab.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../shared/widgets/rating_badge.dart';
+import '../../activities/screens/activities_screen.dart';
+import '../../invoices/screens/parent_invoices_screen.dart';
 import '../home_widget_registry.dart';
 
 part 'widgets/home_hero_card.dart';

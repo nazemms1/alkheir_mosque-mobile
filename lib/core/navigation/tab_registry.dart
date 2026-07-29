@@ -199,7 +199,8 @@ final List<AppTab> supervisorTabs = [
     builder: (ctx) => RecitationTab(
       token: ctx.token,
       canRecordMemorization:
-          ctx.token.hasPermission(Permissions.assessmentsView),
+          ctx.token.hasPermission(Permissions.memorizationRecord) &&
+              ctx.token.teacherId != null,
     ),
   ),
   AppTab(

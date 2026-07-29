@@ -57,6 +57,34 @@ class _QuickStatsRow extends StatelessWidget {
             ),
           ],
         ),
+        const SizedBox(height: 12),
+        Row(
+          children: [
+            Expanded(
+              child: _ActionCard(
+                icon: Icons.event_rounded,
+                label: 'الأنشطة',
+                sublabel: 'تسجيل وأنشطة',
+                color: AppColors.primaryMid,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ActivitiesScreen()),
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: _ActionCard(
+                icon: Icons.receipt_long_rounded,
+                label: 'الفواتير',
+                sublabel: 'المستحقات والدفعات',
+                color: AppColors.warning,
+                onTap: () => Navigator.of(context).push(
+                  MaterialPageRoute(builder: (_) => const ParentInvoicesScreen()),
+                ),
+              ),
+            ),
+          ],
+        ),
       ],
     );
   }

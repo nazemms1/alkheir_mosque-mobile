@@ -11,7 +11,7 @@ import '../../../data/services/admin_service.dart';
 // مباشرة أو ضمن رابط/JSON بسيط.
 // ─────────────────────────────────────────────────────────────────────────────
 class QrScanResult {
-  final String raw;          // المحتوى الخام من الـ QR
+  final String raw; // المحتوى الخام من الـ QR
   final String? studentName;
   final String? studentId;
   const QrScanResult({required this.raw, this.studentName, this.studentId});
@@ -22,7 +22,8 @@ class QrScanResult {
       if (uri != null && uri.queryParameters.isNotEmpty) {
         return QrScanResult(
           raw: raw,
-          studentId: uri.queryParameters['student_id'] ?? uri.queryParameters['id'],
+          studentId:
+              uri.queryParameters['student_id'] ?? uri.queryParameters['id'],
           studentName: uri.queryParameters['name'],
         );
       }
@@ -32,24 +33,46 @@ class QrScanResult {
   }
 }
 
-/// نوع حالة الحضور المختارة قبل بدء المسح
-enum ScanAttendanceKind { present, late }
+/// نوع حالة الحضور المختارة قبل بدء المسح — تطابق حالات الحضور المتاحة
+/// للمسح السريع في الـ backend (AttendanceConfig)، باستثناء "اعتذار" التي
+/// لا تُسجَّل عبر المسح.
+enum ScanAttendanceKind { present, absent, late, earlyLeave }
 
 extension on ScanAttendanceKind {
-  String get statusId => this == ScanAttendanceKind.present
-      ? AttendanceConfig.presentStatusId
-      : AttendanceConfig.lateStatusId;
-  String get label => this == ScanAttendanceKind.present ? 'حضور' : 'تأخر';
-  IconData get icon => this == ScanAttendanceKind.present
-      ? Icons.check_circle_rounded
-      : Icons.schedule_rounded;
+  String get statusId => switch (this) {
+        ScanAttendanceKind.present => AttendanceConfig.presentStatusId,
+        ScanAttendanceKind.absent => AttendanceConfig.absentStatusId,
+        ScanAttendanceKind.late => AttendanceConfig.lateStatusId,
+        ScanAttendanceKind.earlyLeave => AttendanceConfig.earlyLeaveStatusId,
+      };
+
+  String get label => switch (this) {
+        ScanAttendanceKind.present => 'حضور',
+        ScanAttendanceKind.absent => 'غياب',
+        ScanAttendanceKind.late => 'تأخر',
+        ScanAttendanceKind.earlyLeave => 'مغادرة مبكرة',
+      };
+
+  IconData get icon => switch (this) {
+        ScanAttendanceKind.present => Icons.check_circle_rounded,
+        ScanAttendanceKind.absent => Icons.cancel_rounded,
+        ScanAttendanceKind.late => Icons.schedule_rounded,
+        ScanAttendanceKind.earlyLeave => Icons.directions_walk_rounded,
+      };
+
+  Color get color => switch (this) {
+        ScanAttendanceKind.present => AppColors.success,
+        ScanAttendanceKind.absent => AppColors.error,
+        ScanAttendanceKind.late => AppColors.gold,
+        ScanAttendanceKind.earlyLeave => AppColors.primaryLight,
+      };
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
 // شاشة مسح QR الرئيسية
 // ─────────────────────────────────────────────────────────────────────────────
 class QrScannerScreen extends StatefulWidget {
-  final int? groupId;      // اختياري — إذا عُرف مسبقاً يُستخدم كحلقة التسجيل
+  final int? groupId; // اختياري — إذا عُرف مسبقاً يُستخدم كحلقة التسجيل
   final String? groupName;
   const QrScannerScreen({super.key, this.groupId, this.groupName});
 
@@ -65,9 +88,9 @@ class _QrScannerScreenState extends State<QrScannerScreen>
   );
   final _service = AdminService();
 
-  bool _torchOn   = false;
-  bool _paused    = false;
-  bool _sending   = false;
+  bool _torchOn = false;
+  bool _paused = false;
+  bool _sending = false;
   ScanAttendanceKind? _kind; // null = لم يُختر النوع بعد
 
   // سجل الحضور المُسجَّل في هذه الجلسة
@@ -99,47 +122,44 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     if (_sending || _paused || _kind == null) return;
 
     final raw = barcode.rawValue!;
+    debugPrint('QR raw scanned: $raw');
     HapticFeedback.mediumImpact();
-    _scanner.stop();
-    setState(() { _sending = true; _paused = true; });
+    // الكاميرا تبقى تعمل بلا توقف — نمنع الاكتشافات المكرّرة بواسطة _sending فقط،
+    // فيكون المسح التالي جاهزاً فور انتهاء الطلب دون أي تأخير إضافي.
+    setState(() => _sending = true);
 
     final result = QrScanResult.fromRaw(raw);
+    debugPrint(
+      'QR parsed -> studentId: ${result.studentId}, studentName: ${result.studentName}',
+    );
     await _submitAttendance(result);
   }
 
   Future<void> _submitAttendance(QrScanResult result) async {
     final displayName = result.studentName ?? result.studentId ?? result.raw;
     try {
-      final studentId = int.tryParse(result.studentId ?? '');
-      if (studentId == null) {
+      final scanValue = result.studentId?.trim();
+      if (scanValue == null || scanValue.isEmpty) {
         throw Exception('رمز QR غير صالح');
       }
 
-      final enrollments = await _service.fetchEnrollments(
-        studentId: studentId,
-        status: 'active',
-        perPage: 5,
-      );
-      if (enrollments.items.isEmpty) {
-        throw Exception('لا يوجد تسجيل نشط لهذا الطالب');
-      }
-      final enrollment = enrollments.items.first;
-      final groupId = widget.groupId ?? enrollment.groupId;
-
       final now = DateTime.now();
-      final attendanceDate =
-          '${now.year.toString().padLeft(4, '0')}-${now.month.toString().padLeft(2, '0')}-${now.day.toString().padLeft(2, '0')}';
 
-      await _service.recordGroupAttendance(
-        groupId: groupId,
-        enrollmentId: enrollment.id,
+      debugPrint(
+        'Quick-scanning attendance -> scanValue: $scanValue, '
+        'statusId: ${_kind!.statusId}',
+      );
+
+      final scanResult = await _service.quickScanStudentAttendance(
+        scanValue: scanValue,
         attendanceStatusId: _kind!.statusId,
-        attendanceDate: attendanceDate,
       );
 
       if (!mounted) return;
       final record = _AttendanceRecord(
-        studentName: enrollment.studentName.isNotEmpty ? enrollment.studentName : displayName,
+        studentName: scanResult.studentName.isNotEmpty
+            ? scanResult.studentName
+            : displayName,
         time: now,
         status: _RecordStatus.success,
       );
@@ -148,8 +168,8 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         _sending = false;
       });
       _showFeedback(success: true, name: record.studentName);
-
     } catch (e) {
+      debugPrint('QR attendance submission failed: $e');
       if (!mounted) return;
       final record = _AttendanceRecord(
         studentName: displayName,
@@ -161,11 +181,13 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         _sessionRecords.insert(0, record);
         _sending = false;
       });
-      _showFeedback(success: false, name: record.studentName, error: e.toString());
+      _showFeedback(
+          success: false, name: record.studentName, error: e.toString());
     }
   }
 
-  void _showFeedback({required bool success, required String name, String? error}) {
+  void _showFeedback(
+      {required bool success, required String name, String? error}) {
     ScaffoldMessenger.of(context).clearSnackBars();
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -213,13 +235,6 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         ),
       ),
     );
-    // استئناف المسح بعد 2 ثانية
-    Future.delayed(const Duration(seconds: 2), () {
-      if (mounted && _paused) {
-        _scanner.start();
-        setState(() => _paused = false);
-      }
-    });
   }
 
   void _selectKind(ScanAttendanceKind kind) {
@@ -244,13 +259,14 @@ class _QrScannerScreenState extends State<QrScannerScreen>
       body: Stack(
         children: [
           // ── Camera view ────────────────────────────────────────────────
-          if (!_paused || _sending)
-            MobileScanner(
-              controller: _scanner,
-              onDetect: _onDetect,
-            ),
-          if (_paused && !_sending)
-            Container(color: Colors.black87),
+          // يبقى الـ MobileScanner دائماً في الشجرة — التحكم بالإيقاف/الاستئناف
+          // يتم فقط عبر controller.start()/stop() لتفادي تعارض "already running"
+          // الناتج عن قيام الـ widget نفسه ببدء التحكم عند إعادة تركيبه.
+          MobileScanner(
+            controller: _scanner,
+            onDetect: _onDetect,
+          ),
+          if (_paused && !_sending) Container(color: Colors.black87),
 
           // ── Overlay (viewfinder + controls) ────────────────────────────
           _ScanOverlay(
@@ -305,7 +321,8 @@ class _AttendanceKindPicker extends StatelessWidget {
                 const Spacer(),
                 if (groupName != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                     decoration: BoxDecoration(
                       color: Colors.black54,
                       borderRadius: BorderRadius.circular(20),
@@ -313,7 +330,11 @@ class _AttendanceKindPicker extends StatelessWidget {
                     ),
                     child: Text(
                       groupName!,
-                      style: const TextStyle(color: Colors.white, fontSize: 13, fontFamily: 'Cairo', fontWeight: FontWeight.w700),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontFamily: 'Cairo',
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                 const Spacer(),
@@ -321,22 +342,22 @@ class _AttendanceKindPicker extends StatelessWidget {
               ],
             ),
             const Spacer(),
-            Icon(Icons.qr_code_scanner_rounded, size: 64, color: Colors.white.withOpacity(0.5)),
-            const SizedBox(height: 20),
+            Icon(Icons.qr_code_scanner_rounded,
+                size: 56, color: Colors.white.withOpacity(0.5)),
+            const SizedBox(height: 16),
             const Text(
               'اختر نوع الحضور قبل بدء المسح',
-              style: TextStyle(color: Colors.white, fontSize: 16, fontFamily: 'Cairo', fontWeight: FontWeight.w700),
+              style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w700),
             ),
-            const SizedBox(height: 32),
-            _KindButton(
-              kind: ScanAttendanceKind.present,
-              onTap: () => onSelected(ScanAttendanceKind.present),
-            ),
-            const SizedBox(height: 14),
-            _KindButton(
-              kind: ScanAttendanceKind.late,
-              onTap: () => onSelected(ScanAttendanceKind.late),
-            ),
+            const SizedBox(height: 24),
+            for (final kind in ScanAttendanceKind.values) ...[
+              _KindButton(kind: kind, onTap: () => onSelected(kind)),
+              const SizedBox(height: 12),
+            ],
             const Spacer(flex: 2),
           ],
         ),
@@ -352,25 +373,29 @@ class _KindButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold;
+    final color = kind.color;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 18),
+        padding: const EdgeInsets.symmetric(vertical: 14),
         decoration: BoxDecoration(
           color: color.withOpacity(0.12),
-          borderRadius: BorderRadius.circular(18),
+          borderRadius: BorderRadius.circular(16),
           border: Border.all(color: color.withOpacity(0.5), width: 1.5),
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(kind.icon, color: color, size: 24),
+            Icon(kind.icon, color: color, size: 22),
             const SizedBox(width: 10),
             Text(
               kind.label,
-              style: TextStyle(color: color, fontSize: 16, fontFamily: 'Cairo', fontWeight: FontWeight.w800),
+              style: TextStyle(
+                  color: color,
+                  fontSize: 15,
+                  fontFamily: 'Cairo',
+                  fontWeight: FontWeight.w800),
             ),
           ],
         ),
@@ -401,6 +426,19 @@ class _ScanOverlay extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          child: ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: IntrinsicHeight(child: _buildContent(context)),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildContent(BuildContext context) {
     return Column(
       children: [
         // ── Top bar ──────────────────────────────────────────────────────
@@ -413,7 +451,8 @@ class _ScanOverlay extends StatelessWidget {
                 const Spacer(),
                 if (groupName != null)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
                     decoration: BoxDecoration(
                       color: Colors.black54,
                       borderRadius: BorderRadius.circular(20),
@@ -431,7 +470,9 @@ class _ScanOverlay extends StatelessWidget {
                   ),
                 const Spacer(),
                 _CircleBtn(
-                  icon: torchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
+                  icon: torchOn
+                      ? Icons.flash_on_rounded
+                      : Icons.flash_off_rounded,
                   onTap: onToggleTorch,
                   active: torchOn,
                 ),
@@ -447,28 +488,27 @@ class _ScanOverlay extends StatelessWidget {
             margin: const EdgeInsets.only(top: 4),
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
-              color: (kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold).withOpacity(0.18),
+              color: kind.color.withOpacity(0.18),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(
-                color: (kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold).withOpacity(0.5),
-              ),
+              border: Border.all(color: kind.color.withOpacity(0.5)),
             ),
             child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                Icon(kind.icon, size: 16, color: kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold),
+                Icon(kind.icon, size: 16, color: kind.color),
                 const SizedBox(width: 6),
                 Text(
                   'تسجيل: ${kind.label}',
                   style: TextStyle(
-                    color: kind == ScanAttendanceKind.present ? AppColors.success : AppColors.gold,
+                    color: kind.color,
                     fontSize: 12.5,
                     fontFamily: 'Cairo',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
                 const SizedBox(width: 6),
-                Icon(Icons.edit_rounded, size: 13, color: Colors.white.withOpacity(0.6)),
+                Icon(Icons.edit_rounded,
+                    size: 13, color: Colors.white.withOpacity(0.6)),
               ],
             ),
           ),
@@ -580,7 +620,10 @@ class _ViewfinderState extends State<_Viewfinder>
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size.width * 0.68;
+    final screenSize = MediaQuery.of(context).size;
+    final size = (screenSize.width * 0.68)
+        .clamp(0.0, screenSize.height * 0.4)
+        .toDouble();
     final color = widget.sending
         ? AppColors.gold
         : widget.paused
@@ -645,17 +688,29 @@ class _ViewfinderState extends State<_Viewfinder>
     const r = 20.0;
     return [
       // Top-right
-      Positioned(top: 0, right: 0,
-        child: _Corner(len: len, w: w, r: r, color: color, top: true, right: true)),
+      Positioned(
+          top: 0,
+          right: 0,
+          child: _Corner(
+              len: len, w: w, r: r, color: color, top: true, right: true)),
       // Top-left
-      Positioned(top: 0, left: 0,
-        child: _Corner(len: len, w: w, r: r, color: color, top: true, right: false)),
+      Positioned(
+          top: 0,
+          left: 0,
+          child: _Corner(
+              len: len, w: w, r: r, color: color, top: true, right: false)),
       // Bottom-right
-      Positioned(bottom: 0, right: 0,
-        child: _Corner(len: len, w: w, r: r, color: color, top: false, right: true)),
+      Positioned(
+          bottom: 0,
+          right: 0,
+          child: _Corner(
+              len: len, w: w, r: r, color: color, top: false, right: true)),
       // Bottom-left
-      Positioned(bottom: 0, left: 0,
-        child: _Corner(len: len, w: w, r: r, color: color, top: false, right: false)),
+      Positioned(
+          bottom: 0,
+          left: 0,
+          child: _Corner(
+              len: len, w: w, r: r, color: color, top: false, right: false)),
     ];
   }
 }
@@ -664,15 +719,22 @@ class _Corner extends StatelessWidget {
   final double len, w, r;
   final Color color;
   final bool top, right;
-  const _Corner({required this.len, required this.w, required this.r,
-    required this.color, required this.top, required this.right});
+  const _Corner(
+      {required this.len,
+      required this.w,
+      required this.r,
+      required this.color,
+      required this.top,
+      required this.right});
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: len,
       height: len,
-      child: CustomPaint(painter: _CornerPainter(color: color, w: w, r: r, top: top, right: right)),
+      child: CustomPaint(
+          painter:
+              _CornerPainter(color: color, w: w, r: r, top: top, right: right)),
     );
   }
 }
@@ -681,7 +743,12 @@ class _CornerPainter extends CustomPainter {
   final Color color;
   final double w, r;
   final bool top, right;
-  const _CornerPainter({required this.color, required this.w, required this.r, required this.top, required this.right});
+  const _CornerPainter(
+      {required this.color,
+      required this.w,
+      required this.r,
+      required this.top,
+      required this.right});
 
   @override
   void paint(Canvas canvas, Size size) {
@@ -727,68 +794,113 @@ class _AttendanceRecord {
   });
 }
 
-class _SessionPanel extends StatelessWidget {
+class _SessionPanel extends StatefulWidget {
   final List<_AttendanceRecord> records;
   const _SessionPanel({required this.records});
 
   @override
+  State<_SessionPanel> createState() => _SessionPanelState();
+}
+
+class _SessionPanelState extends State<_SessionPanel> {
+  bool _collapsed = false;
+
+  void _toggle() => setState(() => _collapsed = !_collapsed);
+
+  void _onVerticalDrag(DragUpdateDetails details) {
+    // سحب لأسفل = طيّ، سحب لأعلى = فرد
+    if (details.delta.dy > 4 && !_collapsed) {
+      setState(() => _collapsed = true);
+    } else if (details.delta.dy < -4 && _collapsed) {
+      setState(() => _collapsed = false);
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Container(
-      constraints: const BoxConstraints(maxHeight: 180),
+    return AnimatedContainer(
+      duration: const Duration(milliseconds: 220),
+      curve: Curves.easeOutCubic,
+      constraints: BoxConstraints(maxHeight: _collapsed ? 48 : 180),
       decoration: BoxDecoration(
         color: Colors.black87,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(24)),
         border: const Border(top: BorderSide(color: Colors.white12)),
       ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
-            child: Row(
-              children: [
-                const Icon(Icons.history_rounded, color: Colors.white60, size: 16),
-                const SizedBox(width: 6),
-                const Text(
-                  'سجل الجلسة',
-                  style: TextStyle(
-                    color: Colors.white60,
-                    fontSize: 12,
-                    fontFamily: 'Cairo',
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-                const Spacer(),
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight.withOpacity(0.2),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Text(
-                    '${records.length}',
-                    style: const TextStyle(
-                      color: AppColors.primaryLight,
+      child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: _toggle,
+        onVerticalDragUpdate: _onVerticalDrag,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Container(
+              margin: const EdgeInsets.only(top: 8),
+              width: 36,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.white24,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
+              child: Row(
+                children: [
+                  const Icon(Icons.history_rounded,
+                      color: Colors.white60, size: 16),
+                  const SizedBox(width: 6),
+                  const Text(
+                    'سجل الجلسة',
+                    style: TextStyle(
+                      color: Colors.white60,
                       fontSize: 12,
                       fontFamily: 'Cairo',
-                      fontWeight: FontWeight.w800,
+                      fontWeight: FontWeight.w600,
                     ),
                   ),
+                  const Spacer(),
+                  Container(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryLight.withOpacity(0.2),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: Text(
+                      '${widget.records.length}',
+                      style: const TextStyle(
+                        color: AppColors.primaryLight,
+                        fontSize: 12,
+                        fontFamily: 'Cairo',
+                        fontWeight: FontWeight.w800,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 6),
+                  Icon(
+                    _collapsed
+                        ? Icons.keyboard_arrow_up_rounded
+                        : Icons.keyboard_arrow_down_rounded,
+                    color: Colors.white38,
+                    size: 18,
+                  ),
+                ],
+              ),
+            ),
+            if (!_collapsed)
+              Flexible(
+                child: ListView.builder(
+                  padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
+                  itemCount: widget.records.length,
+                  itemBuilder: (_, i) => _RecordTile(record: widget.records[i])
+                      .animate()
+                      .fadeIn(duration: 250.ms)
+                      .slideY(begin: -0.1, end: 0, duration: 250.ms),
                 ),
-              ],
-            ),
-          ),
-          Flexible(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(12, 0, 12, 16),
-              itemCount: records.length,
-              itemBuilder: (_, i) => _RecordTile(record: records[i])
-                  .animate()
-                  .fadeIn(duration: 250.ms)
-                  .slideY(begin: -0.1, end: 0, duration: 250.ms),
-            ),
-          ),
-        ],
+              ),
+          ],
+        ),
       ),
     );
   }
@@ -854,7 +966,8 @@ class _CircleBtn extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
   final bool active;
-  const _CircleBtn({required this.icon, required this.onTap, this.active = false});
+  const _CircleBtn(
+      {required this.icon, required this.onTap, this.active = false});
 
   @override
   Widget build(BuildContext context) {

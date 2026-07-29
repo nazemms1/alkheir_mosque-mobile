@@ -37,8 +37,11 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
   bool get _canViewAssessments =>
       widget.token.hasPermission(Permissions.assessmentsView);
 
+  // تسجيل الحفظ يتطلب teacher_id فعلي من جدول teachers — الـ API يرجعه الآن
+  // ضمن user.teacher_id، فنعتمد عليه مباشرة بدل تخمين الحساب من الدور.
   bool get _canRecordMemorization =>
-      widget.token.hasPermission(Permissions.memorizationRecord);
+      widget.token.hasPermission(Permissions.memorizationRecord) &&
+      widget.token.teacherId != null;
 
   @override
   void initState() {
@@ -91,7 +94,7 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
                     totalMemorizedPages: _totalMemorizedPages,
                     canViewAssessments: _canViewAssessments,
                     canRecordMemorization: _canRecordMemorization,
-                    teacherId: widget.token.user?.id,
+                    teacherId: widget.token.teacherId,
                     service: _service,
                     onRecorded: _load,
                   ),
@@ -609,8 +612,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
     final bg = Theme.of(context).scaffoldBackgroundColor;
     final bottomInset = MediaQuery.of(context).viewInsets.bottom;
 
-    return AnimatedPadding(
-      duration: const Duration(milliseconds: 150),
+    return Padding(
       padding: EdgeInsets.only(bottom: bottomInset),
       child: DraggableScrollableSheet(
         initialChildSize: 0.72,

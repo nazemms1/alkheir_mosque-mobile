@@ -104,6 +104,8 @@ class AdminStudentItem {
   final String status;
   final String? birthDate;
   final int enrollmentsCount;
+  final int? enrollmentId;
+  final String? attendanceStatusId;
 
   const AdminStudentItem({
     required this.id,
@@ -116,6 +118,8 @@ class AdminStudentItem {
     required this.status,
     this.birthDate,
     required this.enrollmentsCount,
+    this.enrollmentId,
+    this.attendanceStatusId,
   });
 
   factory AdminStudentItem.fromJson(Map<String, dynamic> json) {
@@ -132,6 +136,8 @@ class AdminStudentItem {
       status: json['status'] as String? ?? 'active',
       birthDate: json['birth_date'] as String?,
       enrollmentsCount: json['enrollments_count'] as int? ?? 0,
+      enrollmentId: json['enrollment_id'] as int?,
+      attendanceStatusId: json['attendance_status_id']?.toString(),
     );
   }
 
@@ -441,6 +447,39 @@ class AdminActivityItem {
       collectedRevenue: (json['collected_revenue'] as num? ?? 0).toDouble(),
       expenseTotal: (json['expense_total'] as num? ?? 0).toDouble(),
       isActive: json['is_active'] as bool? ?? false,
+    );
+  }
+}
+
+// ─── Scan attendance result (الحضور السريع) ───────────────────────────────────
+class ScanAttendanceResult {
+  final String attendanceStatusId;
+  final String attendanceStatusName;
+  final int enrollmentId;
+  final int studentId;
+  final String studentName;
+  final int? groupId;
+  final String? groupName;
+
+  const ScanAttendanceResult({
+    required this.attendanceStatusId,
+    required this.attendanceStatusName,
+    required this.enrollmentId,
+    required this.studentId,
+    required this.studentName,
+    this.groupId,
+    this.groupName,
+  });
+
+  factory ScanAttendanceResult.fromJson(Map<String, dynamic> json) {
+    return ScanAttendanceResult(
+      attendanceStatusId: '${json['attendance_status_id']}',
+      attendanceStatusName: json['attendance_status_name'] as String? ?? '',
+      enrollmentId: json['enrollment_id'] as int,
+      studentId: json['student_id'] as int,
+      studentName: json['student_name'] as String? ?? '',
+      groupId: json['group_id'] as int?,
+      groupName: json['group_name'] as String?,
     );
   }
 }

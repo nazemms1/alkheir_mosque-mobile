@@ -18,8 +18,7 @@ class AdminService {
       _api.get('assessments', query: {'per_page': '1'}),
     ]);
 
-    int total(dynamic r) =>
-        (r as Map<String, dynamic>?)?['total'] as int? ?? 0;
+    int total(dynamic r) => (r as Map<String, dynamic>?)?['total'] as int? ?? 0;
 
     return AdminStats(
       totalStudents: total(results[0]),
@@ -38,14 +37,14 @@ class AdminService {
     final results = await Future.wait([
       _api.get('students', query: {'per_page': '1'}).catchError((_) => null),
       _api.get('groups', query: {'per_page': '1'}).catchError((_) => null),
-      _api.get('groups', query: {'per_page': '1', 'is_active': '1'}).catchError((_) => null),
+      _api.get('groups',
+          query: {'per_page': '1', 'is_active': '1'}).catchError((_) => null),
       _api.get('enrollments', query: {'per_page': '1'}).catchError((_) => null),
       _api.get('activities', query: {'per_page': '1'}).catchError((_) => null),
       _api.get('assessments', query: {'per_page': '1'}).catchError((_) => null),
     ]);
 
-    int total(dynamic r) =>
-        (r as Map<String, dynamic>?)?['total'] as int? ?? 0;
+    int total(dynamic r) => (r as Map<String, dynamic>?)?['total'] as int? ?? 0;
 
     return AdminStats(
       totalStudents: total(results[0]),
@@ -83,7 +82,8 @@ class AdminService {
   /// (الممرَّر كـ [item]) مع تسجيلات الحلقة.
   Future<AdminGroupDetail> fetchGroupDetail(AdminGroupItem item) async {
     final json = await _api.get('enrollments',
-        query: {'group_id': '${item.id}', 'per_page': '100'}) as Map<String, dynamic>;
+            query: {'group_id': '${item.id}', 'per_page': '100'})
+        as Map<String, dynamic>;
     final enrollments = (json['data'] as List<dynamic>)
         .map((e) => AdminEnrollmentItem.fromJson(e as Map<String, dynamic>))
         .toList();
@@ -193,6 +193,32 @@ class AdminService {
     );
   }
 
+  /// إيجاد طالب بمعرّفه ضمن حلقة معيّنة — يُستخدم لمعرفة enrollment_id
+  /// الجاهز من قائمة الطلاب عند مسح QR بدل إنشاء تسجيل جديد.
+  Future<AdminStudentItem?> findStudentById(
+    int studentId, {
+    required int groupId,
+  }) async {
+    final result = await fetchStudents(groupId: groupId, perPage: 100);
+    for (final s in result.items) {
+      if (s.id == studentId) return s;
+    }
+    return null;
+  }
+
+  /// إيجاد طالب برقمه التعريفي (student_number) ضمن حلقة معيّنة — يُستخدم
+  /// عند مسح QR لأن رمز QR الخاص بالطالب يحمل student_number وليس id الداخلي.
+  Future<AdminStudentItem?> findStudentByNumber(
+    String studentNumber, {
+    required int groupId,
+  }) async {
+    final result = await fetchStudents(groupId: groupId, perPage: 100);
+    for (final s in result.items) {
+      if (s.studentNumber == studentNumber) return s;
+    }
+    return null;
+  }
+
   // ─── Enrollments per group ────────────────────────────────────────────────
   Future<({List<AdminEnrollmentItem> items, int total, int lastPage})>
       fetchEnrollments({
@@ -222,18 +248,18 @@ class AdminService {
   // ─── Student detail — parent/children/{id} + attendance + points + parent info
   /// يعمل فقط لحساب "ولي أمر" مرتبط بملف تعريف والد نشط (parent profile).
   /// لا يعمل لحسابات الطاقم (مشرف/معلم) — استخدم [fetchStudentProgress] بدلاً منه.
-  Future<({
-    ChildDetail child,
-    List<AttendanceEntry> attendance,
-    List<PointEntry> points,
-    StudentParentInfo? parentInfo,
-  })> fetchStudentDetail(int studentId) async {
+  Future<
+      ({
+        ChildDetail child,
+        List<AttendanceEntry> attendance,
+        List<PointEntry> points,
+        StudentParentInfo? parentInfo,
+      })> fetchStudentDetail(int studentId) async {
     final results = await Future.wait([
       _api.get('parent/children/$studentId'),
       _api.get('parent/children/$studentId/attendance',
           query: {'per_page': '50'}),
-      _api.get('parent/children/$studentId/points',
-          query: {'per_page': '50'}),
+      _api.get('parent/children/$studentId/points', query: {'per_page': '50'}),
       _api.get('students/$studentId').catchError((_) => null),
     ]);
 
@@ -261,7 +287,12 @@ class AdminService {
       } catch (_) {}
     }
 
-    return (child: child, attendance: attendance, points: points, parentInfo: parentInfo);
+    return (
+      child: child,
+      attendance: attendance,
+      points: points,
+      parentInfo: parentInfo
+    );
   }
 
   // ─── Student progress — لأعضاء الطاقم (مشرف/معلم) دون ملف والد ───────────────
@@ -269,11 +300,12 @@ class AdminService {
   /// وتقييمات حلقاته النشطة، مع محاولة جلب بيانات الوالد (StudentParentInfo)
   /// عبر students/{id}. لا يوجد سجل جلسات تفصيلي (محفوظات/حضور) متاح
   /// لهذا الدور عبر API الموبايل الحالي.
-  Future<({
-    List<AdminEnrollmentItem> enrollments,
-    List<AdminAssessmentItem> assessments,
-    StudentParentInfo? parentInfo,
-  })> fetchStudentProgress(int studentId) async {
+  Future<
+      ({
+        List<AdminEnrollmentItem> enrollments,
+        List<AdminAssessmentItem> assessments,
+        StudentParentInfo? parentInfo,
+      })> fetchStudentProgress(int studentId) async {
     final results = await Future.wait([
       _api.get('enrollments', query: {
         'student_id': '$studentId',
@@ -306,7 +338,8 @@ class AdminService {
     ));
 
     final assessments = assessmentLists
-        .expand((json) => (json as Map<String, dynamic>)['data'] as List<dynamic>)
+        .expand(
+            (json) => (json as Map<String, dynamic>)['data'] as List<dynamic>)
         .map((e) => AdminAssessmentItem.fromJson(e as Map<String, dynamic>))
         .toList();
 
@@ -336,12 +369,10 @@ class AdminService {
       'recorded_on': recordedOn,
       'teacher_id': teacherId,
       'notes': notes,
-    });
+    }); 
   }
 
-  // ─── Attendance ───────────────────────────────────────────────────────────
-  /// تسجيل حضور طالب واحد في حلقته عبر مسح QR — سجل واحد لكل استدعاء.
-  /// attendance_date بصيغة YYYY-MM-DD.
+ 
   Future<void> recordGroupAttendance({
     required int groupId,
     required int enrollmentId,
@@ -360,6 +391,52 @@ class AdminService {
         }
       ],
     });
+  }
+
+  /// إنشاء/جلب يوم حضور الطلاب لحلقة معيّنة بتاريخ محدد — يُستخدم للحصول على
+  /// studentAttendanceDay المطلوب في مسار [scanStudentAttendance].
+  Future<int> openStudentAttendanceDay({
+    required int groupId,
+    required String attendanceDate,
+  }) async {
+    final json = await _api.post('student-attendance/days', body: {
+      'group_id': groupId,
+      'attendance_date': attendanceDate,
+    }) as Map<String, dynamic>;
+    return json['id'] as int;
+  }
+
+  /// تسجيل حضور طالب عبر مسح الباركود مباشرة (الحضور السريع) — يرسل قيمة
+  /// المسح وحالة الحضور، والباكاند يتولى إيجاد الطالب/التسجيل بنفسه.
+  Future<ScanAttendanceResult> scanStudentAttendance({
+    required int studentAttendanceDayId,
+    required String scanValue,
+    required String attendanceStatusId,
+  }) async {
+    final json = await _api.post(
+      'student-attendance/days/$studentAttendanceDayId/scan',
+      body: {
+        'scan_value': scanValue,
+        'attendance_status_id': int.parse(attendanceStatusId),
+      },
+    ) as Map<String, dynamic>;
+    return ScanAttendanceResult.fromJson(json);
+  }
+
+  /// الحضور السريع بدون اختيار حلقة مسبقاً — يرسل فقط قيمة المسح وحالة
+  /// الحضور، والباكاند يحدّد الطالب/حلقته/يوم الحضور تلقائياً.
+  Future<ScanAttendanceResult> quickScanStudentAttendance({
+    required String scanValue,
+    required String attendanceStatusId,
+  }) async {
+    final json = await _api.post(
+      'student-attendance/quick-scan',
+      body: {
+        'scan_value': scanValue,
+        'attendance_status_id': int.parse(attendanceStatusId),
+      },
+    ) as Map<String, dynamic>;
+    return ScanAttendanceResult.fromJson(json);
   }
 
   // ─── Assessments ──────────────────────────────────────────────────────────

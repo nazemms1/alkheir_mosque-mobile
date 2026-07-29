@@ -7,12 +7,16 @@ class AuthUser {
   final List<String> roles;
   final List<String> permissions;
 
+  /// معرّف المعلم المرتبط بهذا الحساب (من جدول teachers) — null لغير المعلمين.
+  final int? teacherId;
+
   const AuthUser({
     required this.id,
     required this.name,
     required this.username,
     required this.roles,
     required this.permissions,
+    this.teacherId,
   });
 
   factory AuthUser.fromJson(Map<String, dynamic> json) {
@@ -22,6 +26,7 @@ class AuthUser {
       username: json['username'] as String? ?? '',
       roles: List<String>.from(json['roles'] as List? ?? []),
       permissions: List<String>.from(json['permissions'] as List? ?? []),
+      teacherId: json['teacher_id'] as int?,
     );
   }
 }
@@ -97,4 +102,7 @@ class AuthToken {
 
   bool hasPermission(String permission) =>
       user?.permissions.contains(permission) ?? false;
+
+  /// معرّف المعلم الفعلي (من جدول teachers) — null إن لم يكن الحساب معلماً.
+  int? get teacherId => user?.teacherId;
 }
