@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/student_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class NotificationsScreen extends StatefulWidget {
   final int? studentId;
@@ -25,7 +26,8 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _ctrl.forward();
     _loadNotes();
@@ -34,7 +36,9 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   Future<void> _loadNotes() async {
     final studentId = widget.studentId;
     if (studentId == null) {
-      setState(() { _loading = false; });
+      setState(() {
+        _loading = false;
+      });
       return;
     }
     try {
@@ -60,20 +64,20 @@ class _NotificationsScreenState extends State<NotificationsScreen>
     super.dispose();
   }
 
-  static const _sourceIcons = {
+  static final _sourceIcons = {
     NoteAuthor.teacher: Icons.school_rounded,
-    NoteAuthor.admin:   Icons.admin_panel_settings_rounded,
-    NoteAuthor.parent:  Icons.person_rounded,
+    NoteAuthor.admin: Icons.admin_panel_settings_rounded,
+    NoteAuthor.parent: Icons.person_rounded,
   };
-  static const _sourceColors = {
+  static final _sourceColors = {
     NoteAuthor.teacher: AppColors.info,
-    NoteAuthor.admin:   AppColors.gold,
-    NoteAuthor.parent:  AppColors.primaryLight,
+    NoteAuthor.admin: AppColors.gold,
+    NoteAuthor.parent: AppColors.primaryLight,
   };
-  static const _sourceLabels = {
-    NoteAuthor.teacher: 'معلم',
-    NoteAuthor.admin:   'إدارة',
-    NoteAuthor.parent:  'ولي أمر',
+  static final _sourceLabels = {
+    NoteAuthor.teacher: tr('معلم'),
+    NoteAuthor.admin: tr('إدارة'),
+    NoteAuthor.parent: tr('ولي أمر'),
   };
 
   @override
@@ -97,17 +101,24 @@ class _NotificationsScreenState extends State<NotificationsScreen>
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+            const Icon(Icons.error_outline_rounded,
+                size: 48, color: AppColors.error),
             const SizedBox(height: 12),
-            Text(_error!, textAlign: TextAlign.center,
-                style: const TextStyle(fontFamily: 'Cairo', color: AppColors.textSecondary)),
+            Text(_error!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                    fontFamily: 'Dubai', color: AppColors.textSecondary)),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
-                setState(() { _loading = true; _error = null; });
+                setState(() {
+                  _loading = true;
+                  _error = null;
+                });
                 _loadNotes();
               },
-              child: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'Cairo')),
+              child: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai')),
             ),
           ],
         ),
@@ -119,7 +130,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
       physics: const BouncingScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
-          child: _GroupHeader(title: 'الملاحظات', count: _notes.length)
+          child: _GroupHeader(title: tr('الملاحظات'), count: _notes.length)
               .animate()
               .fadeIn(delay: 100.ms, duration: 350.ms)
               .slideX(begin: 0.04, end: 0, delay: 100.ms),
@@ -131,9 +142,11 @@ class _NotificationsScreenState extends State<NotificationsScreen>
               (_, i) => _NoteCard(
                 n: _notes[i],
                 icon: _sourceIcons[_notes[i].author] ?? Icons.info_rounded,
-                color: _sourceColors[_notes[i].author] ?? AppColors.textSecondary,
-                label: _sourceLabels[_notes[i].author] ?? 'عام',
-              ).animate()
+                color:
+                    _sourceColors[_notes[i].author] ?? AppColors.textSecondary,
+                label: _sourceLabels[_notes[i].author] ?? tr('عام'),
+              )
+                  .animate()
                   .fadeIn(delay: (150 + i * 55).ms, duration: 350.ms)
                   .slideX(begin: 0.04, end: 0, delay: (150 + i * 55).ms),
               childCount: _notes.length,
@@ -151,7 +164,8 @@ class _NotificationsScreenState extends State<NotificationsScreen>
         decoration: const BoxDecoration(
           gradient: AppColors.gradientPrimary,
           boxShadow: [
-            BoxShadow(color: Color(0x30000000), blurRadius: 12, offset: Offset(0, 3)),
+            BoxShadow(
+                color: Color(0x30000000), blurRadius: 12, offset: Offset(0, 3)),
           ],
         ),
         child: SafeArea(
@@ -174,32 +188,34 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
+                Expanded(
                   child: Text(
-                    'الإشعارات',
+                    tr('الإشعارات'),
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.w700,
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                     ),
                   ),
                 ),
                 if (!_loading && _notes.isNotEmpty)
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
                     decoration: BoxDecoration(
                       color: AppColors.gold.withOpacity(0.25),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: AppColors.gold.withOpacity(0.5)),
+                      border:
+                          Border.all(color: AppColors.gold.withOpacity(0.5)),
                     ),
                     child: Text(
-                      '${_notes.length} ملاحظة',
+                      trf('{0} ملاحظة', [_notes.length]),
                       style: const TextStyle(
                         color: AppColors.goldLight,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ),
@@ -252,7 +268,7 @@ class _GroupHeader extends StatelessWidget {
                 color: AppColors.primaryLight,
                 fontSize: 12,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
               ),
             ),
           ),
@@ -277,10 +293,10 @@ class _NoteCard extends StatelessWidget {
 
   String _timeAgo(DateTime dt) {
     final diff = DateTime.now().difference(dt);
-    if (diff.inMinutes < 60) return 'منذ ${diff.inMinutes} دقيقة';
-    if (diff.inHours < 24)   return 'منذ ${diff.inHours} ساعة';
-    if (diff.inDays == 1)    return 'أمس';
-    return 'منذ ${diff.inDays} أيام';
+    if (diff.inMinutes < 60) return trf('منذ {0} دقيقة', [diff.inMinutes]);
+    if (diff.inHours < 24) return trf('منذ {0} ساعة', [diff.inHours]);
+    if (diff.inDays == 1) return tr('أمس');
+    return trf('منذ {0} أيام', [diff.inDays]);
   }
 
   @override
@@ -307,7 +323,8 @@ class _NoteCard extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               color: color,
-              borderRadius: const BorderRadius.horizontal(right: Radius.circular(18)),
+              borderRadius:
+                  const BorderRadius.horizontal(right: Radius.circular(18)),
             ),
           ),
           const SizedBox(width: 12),
@@ -336,7 +353,10 @@ class _NoteCard extends StatelessWidget {
                       Expanded(
                         child: Text(
                           n.authorName,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(
                                 fontWeight: FontWeight.w800,
                                 color: Theme.of(context).colorScheme.onSurface,
                               ),
@@ -344,7 +364,8 @@ class _NoteCard extends StatelessWidget {
                       ),
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 3),
                         decoration: BoxDecoration(
                           color: color.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(10),
@@ -355,7 +376,7 @@ class _NoteCard extends StatelessWidget {
                             color: color,
                             fontSize: 10,
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                           ),
                         ),
                       ),
@@ -365,7 +386,10 @@ class _NoteCard extends StatelessWidget {
                   Text(
                     n.content,
                     style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.75),
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.75),
                           height: 1.4,
                         ),
                     maxLines: 3,
@@ -374,13 +398,20 @@ class _NoteCard extends StatelessWidget {
                   const SizedBox(height: 6),
                   Row(
                     children: [
-                      Icon(Icons.schedule_rounded, size: 11,
-                          color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                      Icon(Icons.schedule_rounded,
+                          size: 11,
+                          color: Theme.of(context)
+                              .colorScheme
+                              .onSurface
+                              .withOpacity(0.4)),
                       const SizedBox(width: 3),
                       Text(
                         _timeAgo(n.dateTime),
                         style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4),
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.4),
                               fontSize: 11,
                             ),
                       ),
@@ -416,7 +447,10 @@ class _EmptyNotifications extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: RadialGradient(
-                    colors: [AppColors.primaryLight.withOpacity(0.15), Colors.transparent],
+                    colors: [
+                      AppColors.primaryLight.withOpacity(0.15),
+                      Colors.transparent
+                    ],
                   ),
                 ),
               ),
@@ -426,7 +460,8 @@ class _EmptyNotifications extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: AppColors.primaryLight.withOpacity(0.1),
                   shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.primaryLight.withOpacity(0.2)),
+                  border: Border.all(
+                      color: AppColors.primaryLight.withOpacity(0.2)),
                 ),
                 child: const Icon(
                   Icons.notifications_off_outlined,
@@ -438,12 +473,12 @@ class _EmptyNotifications extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           Text(
-            'لا توجد ملاحظات',
+            tr('لا توجد ملاحظات'),
             style: Theme.of(context).textTheme.headlineMedium,
           ),
           const SizedBox(height: 8),
           Text(
-            'ستظهر هنا أي ملاحظات من المعلم أو الإدارة',
+            tr('ستظهر هنا أي ملاحظات من المعلم أو الإدارة'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                   color: AppColors.textSecondary,
                 ),

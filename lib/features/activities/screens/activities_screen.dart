@@ -5,6 +5,7 @@ import '../../../core/widgets/app_toast.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/api_service.dart';
 import '../../../data/services/student_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class ActivitiesScreen extends StatefulWidget {
   const ActivitiesScreen({super.key});
@@ -55,15 +56,15 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
       AppToast.success(
           context,
           response == 'registered'
-              ? 'تم تسجيل ${child.studentName}'
-              : 'تم الاعتذار عن ${child.studentName}');
+              ? trf('تم تسجيل {0}', [child.studentName])
+              : trf('تم الاعتذار عن {0}', [child.studentName]));
       _load();
     } on ApiException catch (e) {
       if (!mounted) return;
       AppToast.error(context, e.message);
     } catch (_) {
       if (!mounted) return;
-      AppToast.error(context, 'حدث خطأ، حاول مرة أخرى');
+      AppToast.error(context, tr('حدث خطأ، حاول مرة أخرى'));
     }
   }
 
@@ -88,20 +89,20 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
             const SizedBox(height: 12),
             Text(_error!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(fontFamily: 'Cairo')),
+                style: const TextStyle(fontFamily: 'Dubai')),
             const SizedBox(height: 16),
             ElevatedButton(
                 onPressed: _load,
-                child: const Text('إعادة المحاولة',
-                    style: TextStyle(fontFamily: 'Cairo'))),
+                child: Text(tr('إعادة المحاولة'),
+                    style: TextStyle(fontFamily: 'Dubai'))),
           ],
         ),
       );
     }
     if (_activities.isEmpty) {
-      return const Center(
-        child: Text('لا توجد أنشطة متاحة حالياً',
-            style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)),
+      return Center(
+        child: Text(tr('لا توجد أنشطة متاحة حالياً'),
+            style: TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)),
       );
     }
     return RefreshIndicator(
@@ -153,13 +154,13 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
-                  child: Text('الأنشطة',
+                Expanded(
+                  child: Text(tr('الأنشطة'),
                       style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Cairo')),
+                          fontFamily: 'Dubai')),
                 ),
               ],
             ),
@@ -213,7 +214,7 @@ class _ActivityCard extends StatelessWidget {
                   children: [
                     Text(activity.title,
                         style: TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSurface),
@@ -222,7 +223,7 @@ class _ActivityCard extends StatelessWidget {
                     if (activity.groupName != null)
                       Text(activity.groupName!,
                           style: const TextStyle(
-                              fontFamily: 'Cairo',
+                              fontFamily: 'Dubai',
                               fontSize: 11,
                               color: AppColors.textMuted)),
                   ],
@@ -240,7 +241,7 @@ class _ActivityCard extends StatelessWidget {
                           color: AppColors.gold,
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Cairo')),
+                          fontFamily: 'Dubai')),
                 ),
             ],
           ),
@@ -249,7 +250,7 @@ class _ActivityCard extends StatelessWidget {
             const SizedBox(height: 10),
             Text(activity.description!,
                 style: const TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 12,
                     color: AppColors.textSecondary),
                 maxLines: 3,
@@ -297,22 +298,22 @@ class _ChildResponseRow extends StatelessWidget {
           Expanded(
             child: Text(child.studentName,
                 style: const TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 12,
                     fontWeight: FontWeight.w600)),
           ),
           if (registered)
-            const _StatusChip(label: 'مسجَّل', color: AppColors.success)
+            _StatusChip(label: tr('مسجَّل'), color: AppColors.success)
           else if (declined)
-            const _StatusChip(label: 'معتذر', color: AppColors.textMuted)
+            _StatusChip(label: tr('معتذر'), color: AppColors.textMuted)
           else if (child.canRespond && activityActive) ...[
             _RespondButton(
-                label: 'تسجيل',
+                label: tr('تسجيل'),
                 color: AppColors.success,
                 onTap: () => onRespond('registered')),
             const SizedBox(width: 8),
           ] else
-            const _StatusChip(label: 'غير متاح', color: AppColors.textMuted),
+            _StatusChip(label: tr('غير متاح'), color: AppColors.textMuted),
         ],
       ),
     );
@@ -336,7 +337,7 @@ class _StatusChip extends StatelessWidget {
               color: color,
               fontSize: 11,
               fontWeight: FontWeight.w700,
-              fontFamily: 'Cairo')),
+              fontFamily: 'Dubai')),
     );
   }
 }
@@ -361,7 +362,7 @@ class _RespondButton extends StatelessWidget {
                 color: Colors.white,
                 fontSize: 11,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Cairo')),
+                fontFamily: 'Dubai')),
       ),
     );
   }

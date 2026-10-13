@@ -16,7 +16,8 @@ final apiServiceProvider = Provider<ApiService>((ref) => ApiService());
 
 final adminServiceProvider = Provider<AdminService>((ref) => AdminService());
 
-final studentServiceProvider = Provider<StudentService>((ref) => StudentService());
+final studentServiceProvider =
+    Provider<StudentService>((ref) => StudentService());
 
-final reportsServiceProvider =
-    Provider<ReportsService>((ref) => ReportsService(ref.read(apiServiceProvider)));
+final reportsServiceProvider = Provider<ReportsService>(
+    (ref) => ReportsService(ref.read(apiServiceProvider)));

@@ -369,10 +369,9 @@ class AdminService {
       'recorded_on': recordedOn,
       'teacher_id': teacherId,
       'notes': notes,
-    }); 
+    });
   }
 
- 
   Future<void> recordGroupAttendance({
     required int groupId,
     required int enrollmentId,

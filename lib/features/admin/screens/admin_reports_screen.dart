@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import '../../../core/session/service_providers.dart';
 import '../../../core/theme/app_theme.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 /// شاشة تقارير الإدارة — تعتمد endpoints بصلاحية `reports.view`:
 ///   - نظرة عامة (reports/overview) مع فلترة بالفترة الزمنية.
@@ -120,7 +121,7 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
             child: _FilterChipButton(
               icon: Icons.calendar_today_rounded,
               label: _dateFrom == null
-                  ? 'من تاريخ'
+                  ? tr('من تاريخ')
                   : _displayDate.format(_dateFrom!),
               active: _dateFrom != null,
               onTap: () => _pickDate(
@@ -136,7 +137,9 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
           Expanded(
             child: _FilterChipButton(
               icon: Icons.event_rounded,
-              label: _dateTo == null ? 'إلى تاريخ' : _displayDate.format(_dateTo!),
+              label: _dateTo == null
+                  ? tr('إلى تاريخ')
+                  : _displayDate.format(_dateTo!),
               active: _dateTo != null,
               onTap: () => _pickDate(
                 initial: _dateTo,
@@ -151,7 +154,7 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
             const SizedBox(width: 8),
             _FilterChipButton(
               icon: Icons.filter_alt_off_rounded,
-              label: 'مسح',
+              label: tr('مسح'),
               active: false,
               onTap: () {
                 setState(() {
@@ -192,7 +195,7 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
             icon: _includeEmpty
                 ? Icons.visibility_rounded
                 : Icons.visibility_off_rounded,
-            label: 'بدون نشاط',
+            label: tr('بدون نشاط'),
             active: _includeEmpty,
             onTap: () {
               setState(() => _includeEmpty = !_includeEmpty);
@@ -218,13 +221,13 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 24),
               child: Text(_error!,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontFamily: 'Cairo')),
+                  style: const TextStyle(fontFamily: 'Dubai')),
             ),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: _load,
-              child: const Text('إعادة المحاولة',
-                  style: TextStyle(fontFamily: 'Cairo')),
+              child: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai')),
             ),
           ],
         ),
@@ -232,14 +235,15 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
     }
     final data = _data ?? const {};
     if (data.isEmpty) {
-      return const Center(
+      return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Icon(Icons.bar_chart_rounded, size: 56, color: AppColors.textMuted),
             SizedBox(height: 12),
-            Text('لا توجد بيانات لهذه الفترة',
-                style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)),
+            Text(tr('لا توجد بيانات لهذه الفترة'),
+                style:
+                    TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)),
           ],
         ),
       );
@@ -270,14 +274,16 @@ class _ViewSwitcher extends StatelessWidget {
       ),
       child: Row(
         children: [
-          _segment(context, 0, Icons.dashboard_customize_rounded, 'نظرة عامة'),
-          _segment(context, 1, Icons.co_present_rounded, 'ملخص المعلمين'),
+          _segment(
+              context, 0, Icons.dashboard_customize_rounded, tr('نظرة عامة')),
+          _segment(context, 1, Icons.co_present_rounded, tr('ملخص المعلمين')),
         ],
       ),
     );
   }
 
-  Widget _segment(BuildContext context, int index, IconData icon, String label) {
+  Widget _segment(
+      BuildContext context, int index, IconData icon, String label) {
     final selected = current == index;
     return Expanded(
       child: GestureDetector(
@@ -306,7 +312,7 @@ class _ViewSwitcher extends StatelessWidget {
               Text(
                 label,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 12.5,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   color: selected ? Colors.white : AppColors.textMuted,
@@ -362,7 +368,7 @@ class _FilterChipButton extends StatelessWidget {
                 label,
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11.5,
                   fontWeight: FontWeight.w600,
                   color: color,
@@ -426,9 +432,8 @@ class _ReportDataView extends StatelessWidget {
     ];
 
     return ListView(
-      physics: const AlwaysScrollableScrollPhysics(
-          parent: BouncingScrollPhysics()),
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+      physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+      padding: EdgeInsets.fromLTRB(16, 12, 16, 120),
       children: children,
     );
   }
@@ -436,60 +441,60 @@ class _ReportDataView extends StatelessWidget {
 
 /// ترجمة أسماء الحقول الشائعة القادمة من الـ API إلى تسميات عربية.
 String _label(String key) {
-  const labels = <String, String>{
-    'students': 'الطلاب',
-    'students_count': 'عدد الطلاب',
-    'total_students': 'إجمالي الطلاب',
-    'active_students': 'الطلاب النشطون',
-    'teachers': 'المعلمون',
-    'teachers_count': 'عدد المعلمين',
-    'groups': 'الحلقات',
-    'groups_count': 'عدد الحلقات',
-    'active_groups': 'الحلقات النشطة',
-    'attendance': 'الحضور',
-    'attendance_rate': 'نسبة الحضور',
-    'present': 'حاضر',
-    'absent': 'غائب',
-    'late': 'متأخر',
-    'excused': 'بعذر',
-    'memorization': 'الحفظ',
-    'memorized_pages': 'الصفحات المحفوظة',
-    'pages': 'الصفحات',
-    'points': 'النقاط',
-    'total_points': 'إجمالي النقاط',
-    'enrollments': 'التسجيلات',
-    'invoices': 'الفواتير',
-    'payments': 'الدفعات',
-    'paid': 'مدفوع',
-    'unpaid': 'غير مدفوع',
-    'amount': 'المبلغ',
-    'total': 'الإجمالي',
-    'count': 'العدد',
-    'rate': 'النسبة',
-    'date': 'التاريخ',
-    'name': 'الاسم',
-    'teacher': 'المعلم',
-    'teacher_name': 'اسم المعلم',
-    'group': 'الحلقة',
-    'group_name': 'اسم الحلقة',
-    'sessions': 'الجلسات',
-    'recitations': 'التسميع',
-    'tests': 'الاختبارات',
-    'quran_tests': 'اختبارات القرآن',
-    'notes': 'الملاحظات',
-    'activities': 'الأنشطة',
-    'items': 'العناصر',
-    'summary': 'الملخص',
-    'overview': 'نظرة عامة',
-    'assessments': 'التقييمات',
-    'average': 'المتوسط',
-    'status': 'الحالة',
+  final labels = <String, String>{
+    'students': tr('الطلاب'),
+    'students_count': tr('عدد الطلاب'),
+    'total_students': tr('إجمالي الطلاب'),
+    'active_students': tr('الطلاب النشطون'),
+    'teachers': tr('المعلمون'),
+    'teachers_count': tr('عدد المعلمين'),
+    'groups': tr('الحلقات'),
+    'groups_count': tr('عدد الحلقات'),
+    'active_groups': tr('الحلقات النشطة'),
+    'attendance': tr('الحضور'),
+    'attendance_rate': tr('نسبة الحضور'),
+    'present': tr('حاضر'),
+    'absent': tr('غائب'),
+    'late': tr('متأخر'),
+    'excused': tr('بعذر'),
+    'memorization': tr('الحفظ'),
+    'memorized_pages': tr('الصفحات المحفوظة'),
+    'pages': tr('الصفحات'),
+    'points': tr('النقاط'),
+    'total_points': tr('إجمالي النقاط'),
+    'enrollments': tr('التسجيلات'),
+    'invoices': tr('الفواتير'),
+    'payments': tr('الدفعات'),
+    'paid': tr('مدفوع'),
+    'unpaid': tr('غير مدفوع'),
+    'amount': tr('المبلغ'),
+    'total': tr('الإجمالي'),
+    'count': tr('العدد'),
+    'rate': tr('النسبة'),
+    'date': tr('التاريخ'),
+    'name': tr('الاسم'),
+    'teacher': tr('المعلم'),
+    'teacher_name': tr('اسم المعلم'),
+    'group': tr('الحلقة'),
+    'group_name': tr('اسم الحلقة'),
+    'sessions': tr('الجلسات'),
+    'recitations': tr('التسميع'),
+    'tests': tr('الاختبارات'),
+    'quran_tests': tr('اختبارات القرآن'),
+    'notes': tr('الملاحظات'),
+    'activities': tr('الأنشطة'),
+    'items': tr('العناصر'),
+    'summary': tr('الملخص'),
+    'overview': tr('نظرة عامة'),
+    'assessments': tr('التقييمات'),
+    'average': tr('المتوسط'),
+    'status': tr('الحالة'),
   };
   return labels[key] ?? key.replaceAll('_', ' ');
 }
 
 String _formatValue(Object value) {
-  if (value is bool) return value ? 'نعم' : 'لا';
+  if (value is bool) return value ? tr('نعم') : tr('لا');
   if (value is num) {
     if (value is double && value != value.roundToDouble()) {
       return value.toStringAsFixed(1);
@@ -553,14 +558,14 @@ class _StatTile extends StatelessWidget {
         children: [
           Text(value,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 20,
                   fontWeight: FontWeight.w800,
                   color: color)),
           const SizedBox(height: 2),
           Text(label,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11,
                   color: Theme.of(context)
                       .colorScheme
@@ -621,7 +626,7 @@ class _SectionCard extends StatelessWidget {
               const SizedBox(width: 10),
               Text(title,
                   style: TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface)),
@@ -637,7 +642,7 @@ class _SectionCard extends StatelessWidget {
                   Expanded(
                     child: Text(row.key,
                         style: TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 12,
                             color: Theme.of(context)
                                 .colorScheme
@@ -646,7 +651,7 @@ class _SectionCard extends StatelessWidget {
                   ),
                   Text(_formatValue(row.value),
                       style: const TextStyle(
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryLight)),
@@ -671,12 +676,11 @@ class _ListHeader extends StatelessWidget {
       padding: const EdgeInsets.only(top: 20, bottom: 8),
       child: Row(
         children: [
-          const Icon(Icons.list_alt_rounded,
-              size: 18, color: AppColors.gold),
+          const Icon(Icons.list_alt_rounded, size: 18, color: AppColors.gold),
           const SizedBox(width: 8),
           Text(title,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 14,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context).colorScheme.onSurface)),
@@ -689,7 +693,7 @@ class _ListHeader extends StatelessWidget {
             ),
             child: Text('$count',
                 style: const TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
                     color: AppColors.gold)),
@@ -758,7 +762,7 @@ class _ItemCard extends StatelessWidget {
                   Expanded(
                     child: Text(title!,
                         style: TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 13.5,
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSurface)),
@@ -776,7 +780,7 @@ class _ItemCard extends StatelessWidget {
                   children: [
                     Text('${row.key}: ',
                         style: TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 11,
                             color: Theme.of(context)
                                 .colorScheme
@@ -784,7 +788,7 @@ class _ItemCard extends StatelessWidget {
                                 .withOpacity(0.55))),
                     Text(_formatValue(row.value),
                         style: const TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 11.5,
                             fontWeight: FontWeight.w700,
                             color: AppColors.primaryLight)),

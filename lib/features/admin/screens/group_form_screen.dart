@@ -1,12 +1,16 @@
 import 'package:flutter/material.dart';
-import '../../../core/theme/app_theme.dart';
-import '../../../data/models/admin_dashboard_model.dart';
-import '../../../data/services/admin_service.dart';
-import '../../../data/services/api_service.dart';
 
-/// نموذج إنشاء/تعديل حلقة.
-/// ملاحظة: الـ API لا يوفّر مسارات لجلب قوائم المقررات/المعلمين/السنوات
-/// الدراسية/الصفوف، لذا تُدخَل معرّفاتها (IDs) يدويًا كأرقام.
+import '../../../core/i18n/app_language.dart';
+import '../../../data/models/admin_dashboard_model.dart';
+import '../../../data/models/management_model.dart';
+import '../../../data/services/management_service.dart';
+import '../../../data/services/operations_service.dart';
+import '../../management/widgets/module_form_fields.dart';
+import '../../management/widgets/module_widgets.dart';
+import '../../management/widgets/pickers.dart';
+
+/// نموذج إنشاء حلقة أو تعديلها. الكورس والسنة والمعلم والصف تُختار من قوائم
+/// بحث بدل إدخال المعرّفات يدوياً. عند التعديل تُحمَّل بيانات الحلقة كاملة.
 class GroupFormScreen extends StatefulWidget {
   final AdminGroupDetail? group;
 
@@ -17,220 +21,271 @@ class GroupFormScreen extends StatefulWidget {
 }
 
 class _GroupFormScreenState extends State<GroupFormScreen> {
-  final _service = AdminService();
   final _formKey = GlobalKey<FormState>();
+  final _operations = OperationsService();
+  final _name = TextEditingController();
+  final _capacity = TextEditingController();
+  final _monthlyFee = TextEditingController();
+  final _startsOn = TextEditingController();
+  final _endsOn = TextEditingController();
 
-  late final _nameCtrl = TextEditingController(text: widget.group?.name ?? '');
-  final _academicYearIdCtrl = TextEditingController();
-  final _courseIdCtrl = TextEditingController();
-  final _teacherIdCtrl = TextEditingController();
-  final _assistantTeacherIdCtrl = TextEditingController();
-  final _gradeLevelIdCtrl = TextEditingController();
-  final _capacityCtrl = TextEditingController();
-  final _monthlyFeeCtrl = TextEditingController();
-  late final _startsOnCtrl = TextEditingController(text: widget.group?.startsOn ?? '');
-  late final _endsOnCtrl = TextEditingController(text: widget.group?.endsOn ?? '');
-
-  late bool _isActive = widget.group?.isActive ?? true;
+  PickerItem? _academicYear;
+  PickerItem? _course;
+  PickerItem? _teacher;
+  PickerItem? _assistant;
+  PickerItem? _gradeLevel;
+  bool _isActive = true;
+  bool _loading = true;
   bool _saving = false;
   String? _error;
 
-  bool get _isEdit => widget.group != null;
+  int? get _groupId => widget.group?.id;
+  bool get _isEdit => _groupId != null;
+
+  @override
+  void initState() {
+    super.initState();
+    _load();
+  }
 
   @override
   void dispose() {
-    _nameCtrl.dispose();
-    _academicYearIdCtrl.dispose();
-    _courseIdCtrl.dispose();
-    _teacherIdCtrl.dispose();
-    _assistantTeacherIdCtrl.dispose();
-    _gradeLevelIdCtrl.dispose();
-    _capacityCtrl.dispose();
-    _monthlyFeeCtrl.dispose();
-    _startsOnCtrl.dispose();
-    _endsOnCtrl.dispose();
+    for (final c in [_name, _capacity, _monthlyFee, _startsOn, _endsOn]) {
+      c.dispose();
+    }
     super.dispose();
   }
 
-  Future<void> _save() async {
-    if (!_formKey.currentState!.validate()) return;
-    setState(() { _saving = true; _error = null; });
+  Future<void> _load() async {
+    final id = _groupId;
+    if (id == null) {
+      setState(() => _loading = false);
+      return;
+    }
     try {
-      final assistantTeacherId = _assistantTeacherIdCtrl.text.trim().isEmpty
-          ? null
-          : int.parse(_assistantTeacherIdCtrl.text.trim());
-      if (_isEdit) {
-        await _service.updateGroup(
-          widget.group!.id,
-          name: _nameCtrl.text.trim(),
-          academicYearId: int.parse(_academicYearIdCtrl.text.trim()),
-          courseId: int.parse(_courseIdCtrl.text.trim()),
-          teacherId: int.parse(_teacherIdCtrl.text.trim()),
-          assistantTeacherId: assistantTeacherId,
-          gradeLevelId: int.parse(_gradeLevelIdCtrl.text.trim()),
-          capacity: int.parse(_capacityCtrl.text.trim()),
-          monthlyFee: int.parse(_monthlyFeeCtrl.text.trim()),
-          startsOn: _startsOnCtrl.text.trim(),
-          endsOn: _endsOnCtrl.text.trim(),
-          isActive: _isActive,
-        );
-      } else {
-        await _service.createGroup(
-          name: _nameCtrl.text.trim(),
-          academicYearId: int.parse(_academicYearIdCtrl.text.trim()),
-          courseId: int.parse(_courseIdCtrl.text.trim()),
-          teacherId: int.parse(_teacherIdCtrl.text.trim()),
-          assistantTeacherId: assistantTeacherId,
-          gradeLevelId: int.parse(_gradeLevelIdCtrl.text.trim()),
-          capacity: int.parse(_capacityCtrl.text.trim()),
-          monthlyFee: int.parse(_monthlyFeeCtrl.text.trim()),
-          startsOn: _startsOnCtrl.text.trim(),
-          endsOn: _endsOnCtrl.text.trim(),
-          isActive: _isActive,
-        );
+      final g = await _operations.group(id);
+      if (!mounted) return;
+      _name.text = g.name;
+      _capacity.text = '${g.capacity}';
+      _monthlyFee.text = g.monthlyFee == 0 ? '' : '${g.monthlyFee}';
+      _startsOn.text = g.startsOn ?? '';
+      _endsOn.text = g.endsOn ?? '';
+      _isActive = g.isActive;
+      _academicYear = _pick(g.academicYearId, widget.group?.academicYear);
+      _course = _pick(g.courseId, widget.group?.course);
+      _teacher = _pick(g.teacherId, widget.group?.teacher);
+      _assistant = _pick(g.assistantTeacherId, widget.group?.assistantTeacher);
+      // الحلقة لا ترسل اسم الصف، لذا نبحث عنه في الكتالوج.
+      if (g.gradeLevelId != null) {
+        final grades = await referencePickerItems('grade-levels');
+        for (final item in grades) {
+          if (item.id == g.gradeLevelId) _gradeLevel = item;
+        }
       }
       if (!mounted) return;
-      Navigator.pop(context, true);
-    } on ApiException catch (e) {
-      setState(() { _error = e.message; _saving = false; });
-    } catch (e) {
-      setState(() { _error = e.toString(); _saving = false; });
+      setState(() => _loading = false);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _loading = false);
+      showModuleSnack(context, errorText(error), error: true);
     }
   }
 
-  Future<void> _pickDate(TextEditingController ctrl) async {
-    final picked = await showDatePicker(
-      context: context,
-      initialDate: DateTime.now(),
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2100),
+  /// يبني اختياراً من المعرّف مع الاسم المتاح من القائمة (أو فارغاً).
+  PickerItem? _pick(int? id, String? label) =>
+      id == null ? null : PickerItem(id: id, label: label ?? '#$id');
+
+  Future<List<PickerItem>> _loadYears(String search) => referencePickerItems(
+        'academic-years',
+        search: search,
+        includeInactive: _isEdit,
+      );
+
+  Future<List<PickerItem>> _loadCourses(String search) async {
+    final page = await ManagementService().courses(search: search, perPage: 50);
+    return [
+      for (final c in page.items)
+        PickerItem(id: c.id, label: c.name, subtitle: c.academicYear),
+    ];
+  }
+
+  Future<List<PickerItem>> _loadTeachers(String search) async {
+    final page = await ManagementService().teachers(
+      search: search,
+      status: 'active',
+      perPage: 50,
     );
-    if (picked != null) {
-      ctrl.text =
-          '${picked.year}-${picked.month.toString().padLeft(2, '0')}-${picked.day.toString().padLeft(2, '0')}';
+    return [
+      for (final TeacherItem t in page.items)
+        PickerItem(id: t.id, label: t.fullName, subtitle: t.phone),
+    ];
+  }
+
+  Future<void> _save() async {
+    final valid = _formKey.currentState!.validate();
+    setState(() {
+      _error = _academicYear == null
+          ? tr('اختر السنة الدراسية')
+          : _course == null
+              ? tr('اختر الكورس')
+              : _teacher == null
+                  ? tr('اختر المعلم')
+                  : null;
+    });
+    final capacity = int.tryParse(_capacity.text.trim());
+    if (capacity == null || capacity < 0) {
+      showModuleSnack(
+        context,
+        tr('أدخل سعة صحيحة أكبر من أو تساوي صفر'),
+        error: true,
+      );
+      return;
+    }
+    if (!valid || _error != null) return;
+    setState(() => _saving = true);
+    try {
+      await _operations.saveGroup(_groupId, {
+        'name': _name.text.trim(),
+        'academic_year_id': _academicYear!.id,
+        'course_id': _course!.id,
+        'teacher_id': _teacher!.id,
+        'assistant_teacher_id': _assistant?.id,
+        'grade_level_id': _gradeLevel?.id,
+        'capacity': capacity,
+        'monthly_fee': _monthlyFee.text.trim().isEmpty
+            ? null
+            : double.parse(_monthlyFee.text.trim()),
+        'starts_on': nullIfBlank(_startsOn.text),
+        'ends_on': nullIfBlank(_endsOn.text),
+        'is_active': _isActive,
+      });
+      if (!mounted) return;
+      Navigator.pop(context, true);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      showModuleSnack(context, errorText(error), error: true);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(_isEdit ? 'تعديل الحلقة' : 'إضافة حلقة',
-            style: const TextStyle(fontFamily: 'Cairo')),
-      ),
-      body: Form(
-        key: _formKey,
-        child: ListView(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-          children: [
-            if (_error != null) ...[
-              Container(
-                padding: const EdgeInsets.all(12),
-                margin: const EdgeInsets.only(bottom: 12),
-                decoration: BoxDecoration(
-                  color: AppColors.error.withOpacity(0.08),
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.error.withOpacity(0.3)),
+    return ModuleScaffold(
+      title: _isEdit ? tr('تعديل الحلقة') : tr('إضافة حلقة'),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : ModuleFormPage(
+              formKey: _formKey,
+              children: [
+                moduleTextField(
+                  controller: _name,
+                  label: tr('اسم الحلقة'),
+                  required: true,
                 ),
-                child: Text(_error!,
-                    style: const TextStyle(fontFamily: 'Cairo', color: AppColors.error, fontSize: 13)),
-              ),
-            ],
-            _field(_nameCtrl, 'اسم الحلقة', required: true),
-            _field(_academicYearIdCtrl, 'رقم السنة الدراسية (academic_year_id)',
-                required: true, keyboardType: TextInputType.number),
-            _field(_courseIdCtrl, 'رقم المقرر (course_id)',
-                required: true, keyboardType: TextInputType.number),
-            _field(_teacherIdCtrl, 'رقم المعلم (teacher_id)',
-                required: true, keyboardType: TextInputType.number),
-            _field(_assistantTeacherIdCtrl, 'رقم المساعد (اختياري)',
-                keyboardType: TextInputType.number),
-            _field(_gradeLevelIdCtrl, 'رقم الصف (grade_level_id)',
-                required: true, keyboardType: TextInputType.number),
-            _field(_capacityCtrl, 'السعة القصوى', required: true, keyboardType: TextInputType.number),
-            _field(_monthlyFeeCtrl, 'الرسوم الشهرية', required: true, keyboardType: TextInputType.number),
-            _dateField(_startsOnCtrl, 'تاريخ البدء'),
-            _dateField(_endsOnCtrl, 'تاريخ الانتهاء'),
-            const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              value: _isActive,
-              onChanged: (v) => setState(() => _isActive = v),
-              activeColor: AppColors.primaryLight,
-              title: const Text('حلقة نشطة',
-                  style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w700)),
-            ),
-            const SizedBox(height: 20),
-            SizedBox(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: _saving ? null : _save,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.primaryLight,
-                  foregroundColor: Colors.white,
-                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                PickerField(
+                  label: tr('السنة الدراسية'),
+                  value: _academicYear?.label,
+                  error: _error,
+                  onTap: () async {
+                    final picked = await showItemPicker(
+                      context,
+                      title: tr('اختر السنة الدراسية'),
+                      load: _loadYears,
+                    );
+                    if (picked != null) setState(() => _academicYear = picked);
+                  },
                 ),
-                child: _saving
-                    ? const SizedBox(
-                        width: 22, height: 22,
-                        child: CircularProgressIndicator(color: Colors.white, strokeWidth: 2.5),
-                      )
-                    : Text(_isEdit ? 'حفظ التعديلات' : 'إنشاء الحلقة',
-                        style: const TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w700)),
-              ),
+                PickerField(
+                  label: tr('الكورس'),
+                  value: _course?.label,
+                  onTap: () async {
+                    final picked = await showItemPicker(
+                      context,
+                      title: tr('اختر الكورس'),
+                      load: _loadCourses,
+                    );
+                    if (picked != null) setState(() => _course = picked);
+                  },
+                ),
+                PickerField(
+                  label: tr('المعلم'),
+                  value: _teacher?.label,
+                  onTap: () async {
+                    final picked = await showItemPicker(
+                      context,
+                      title: tr('اختر المعلم'),
+                      load: _loadTeachers,
+                    );
+                    if (picked != null) setState(() => _teacher = picked);
+                  },
+                ),
+                PickerField(
+                  label: tr('المعلم المساعد'),
+                  value: _assistant?.label,
+                  onTap: () async {
+                    final picked = await showItemPicker(
+                      context,
+                      title: tr('اختر المعلم المساعد'),
+                      allowClear: true,
+                      load: _loadTeachers,
+                    );
+                    if (picked == null) return;
+                    setState(() => _assistant =
+                        picked.id == PickerItem.clear.id ? null : picked);
+                  },
+                ),
+                PickerField(
+                  label: tr('الصف الدراسي'),
+                  value: _gradeLevel?.label,
+                  onTap: () async {
+                    final picked = await showItemPicker(
+                      context,
+                      title: tr('اختر الصف'),
+                      allowClear: true,
+                      load: (s) =>
+                          referencePickerItems('grade-levels', search: s),
+                    );
+                    if (picked == null) return;
+                    setState(() => _gradeLevel =
+                        picked.id == PickerItem.clear.id ? null : picked);
+                  },
+                ),
+                moduleTextField(
+                  controller: _capacity,
+                  label: tr('السعة القصوى'),
+                  keyboard: TextInputType.number,
+                  required: true,
+                  helper: tr('عدد صحيح أكبر من أو يساوي صفر'),
+                ),
+                moduleTextField(
+                  controller: _monthlyFee,
+                  label: tr('الرسوم الشهرية'),
+                  keyboard:
+                      const TextInputType.numberWithOptions(decimal: true),
+                ),
+                moduleDateField(
+                  context: context,
+                  controller: _startsOn,
+                  label: tr('تاريخ البدء'),
+                ),
+                moduleDateField(
+                  context: context,
+                  controller: _endsOn,
+                  label: tr('تاريخ الانتهاء'),
+                ),
+                moduleSwitch(
+                  label: tr('حلقة نشطة'),
+                  value: _isActive,
+                  onChanged: (v) => setState(() => _isActive = v),
+                ),
+                const SizedBox(height: 8),
+                ModuleSaveButton(
+                  saving: _saving,
+                  onPressed: _save,
+                  label: _isEdit ? tr('حفظ التعديلات') : tr('إنشاء الحلقة'),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _field(
-    TextEditingController ctrl,
-    String label, {
-    bool required = false,
-    TextInputType? keyboardType,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: TextFormField(
-        controller: ctrl,
-        keyboardType: keyboardType,
-        style: const TextStyle(fontFamily: 'Cairo'),
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(fontFamily: 'Cairo'),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        validator: (v) {
-          if (required && (v == null || v.trim().isEmpty)) return 'هذا الحقل مطلوب';
-          if (keyboardType == TextInputType.number &&
-              v != null && v.trim().isNotEmpty &&
-              int.tryParse(v.trim()) == null) {
-            return 'يجب أن يكون رقمًا';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
-  Widget _dateField(TextEditingController ctrl, String label) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: 14),
-      child: TextFormField(
-        controller: ctrl,
-        readOnly: true,
-        onTap: () => _pickDate(ctrl),
-        style: const TextStyle(fontFamily: 'Cairo'),
-        decoration: InputDecoration(
-          labelText: label,
-          labelStyle: const TextStyle(fontFamily: 'Cairo'),
-          suffixIcon: const Icon(Icons.calendar_today_rounded, size: 18),
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        ),
-        validator: (v) => (v == null || v.trim().isEmpty) ? 'هذا الحقل مطلوب' : null,
-      ),
     );
   }
 }

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class StudentCardScreen extends StatefulWidget {
   final StudentDashboardData data;
@@ -21,12 +22,15 @@ class _StudentCardScreenState extends State<StudentCardScreen>
   @override
   void initState() {
     super.initState();
-    _bgCtrl = AnimationController(vsync: this, duration: const Duration(seconds: 6))
-      ..repeat(reverse: true);
-    _cardCtrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 700));
+    _bgCtrl =
+        AnimationController(vsync: this, duration: const Duration(seconds: 6))
+          ..repeat(reverse: true);
+    _cardCtrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 700));
     _cardFade = CurvedAnimation(parent: _cardCtrl, curve: Curves.easeOut);
     _cardSlide = Tween<Offset>(begin: const Offset(0, 0.1), end: Offset.zero)
-        .animate(CurvedAnimation(parent: _cardCtrl, curve: Curves.easeOutCubic));
+        .animate(
+            CurvedAnimation(parent: _cardCtrl, curve: Curves.easeOutCubic));
     Future.delayed(const Duration(milliseconds: 150), () {
       if (mounted) _cardCtrl.forward();
     });
@@ -101,7 +105,11 @@ class _AnimatedBg extends StatelessWidget {
             Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [AppColors.bgDeep, Color(0xFF061A0A), AppColors.bgDeep],
+                  colors: [
+                    AppColors.bgDeep,
+                    Color(0xFF061A0A),
+                    AppColors.bgDeep
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -110,12 +118,16 @@ class _AnimatedBg extends StatelessWidget {
             Positioned(
               top: -60 + t * 30,
               right: -80,
-              child: _Orb(size: 280, color: AppColors.primaryLight, opacity: 0.12 + t * 0.06),
+              child: _Orb(
+                  size: 280,
+                  color: AppColors.primaryLight,
+                  opacity: 0.12 + t * 0.06),
             ),
             Positioned(
               bottom: 100 - t * 20,
               left: -60,
-              child: _Orb(size: 220, color: AppColors.gold, opacity: 0.08 + t * 0.04),
+              child: _Orb(
+                  size: 220, color: AppColors.gold, opacity: 0.08 + t * 0.04),
             ),
           ],
         );
@@ -136,7 +148,8 @@ class _Orb extends StatelessWidget {
       height: size,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        gradient: RadialGradient(colors: [color.withOpacity(opacity), Colors.transparent]),
+        gradient: RadialGradient(
+            colors: [color.withOpacity(opacity), Colors.transparent]),
       ),
     );
   }
@@ -163,18 +176,19 @@ class _TopBar extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 border: Border.all(color: Colors.white.withOpacity(0.2)),
               ),
-              child: const Icon(Icons.close_rounded, color: Colors.white, size: 20),
+              child: const Icon(Icons.close_rounded,
+                  color: Colors.white, size: 20),
             ),
           ),
-          const Expanded(
+          Expanded(
             child: Text(
-              'بطاقة الطالب',
+              tr('بطاقة الطالب'),
               textAlign: TextAlign.center,
               style: TextStyle(
                 color: Colors.white,
                 fontSize: 17,
                 fontWeight: FontWeight.w700,
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
               ),
             ),
           ),
@@ -182,8 +196,9 @@ class _TopBar extends StatelessWidget {
             onTap: () {
               HapticFeedback.lightImpact();
               ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('يمكنك تصوير الشاشة لحفظ البطاقة كـ Pass', style: TextStyle(fontFamily: 'Cairo')),
+                SnackBar(
+                  content: Text(tr('يمكنك تصوير الشاشة لحفظ البطاقة كـ Pass'),
+                      style: TextStyle(fontFamily: 'Dubai')),
                   backgroundColor: AppColors.primary,
                   duration: Duration(seconds: 2),
                 ),
@@ -195,9 +210,13 @@ class _TopBar extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: AppColors.gradientGold,
                 borderRadius: BorderRadius.circular(12),
-                boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.4), blurRadius: 10)],
+                boxShadow: [
+                  BoxShadow(
+                      color: AppColors.gold.withOpacity(0.4), blurRadius: 10)
+                ],
               ),
-              child: const Icon(Icons.download_rounded, color: Colors.white, size: 20),
+              child: const Icon(Icons.download_rounded,
+                  color: Colors.white, size: 20),
             ),
           ),
         ],
@@ -224,7 +243,10 @@ class _IDCard extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
-          BoxShadow(color: AppColors.primary.withOpacity(0.5), blurRadius: 30, offset: const Offset(0, 10)),
+          BoxShadow(
+              color: AppColors.primary.withOpacity(0.5),
+              blurRadius: 30,
+              offset: const Offset(0, 10)),
         ],
       ),
       child: Stack(
@@ -262,22 +284,31 @@ class _IDCard extends StatelessWidget {
                 // Header
                 Row(
                   children: [
-                    const Icon(Icons.mosque_rounded, color: Colors.white, size: 18),
+                    const Icon(Icons.mosque_rounded,
+                        color: Colors.white, size: 18),
                     const SizedBox(width: 6),
-                    const Text(
-                      'مسجد الخير',
-                      style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                    Text(
+                      tr('مسجد الخير'),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Dubai'),
                     ),
                     const Spacer(),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 8, vertical: 3),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(20),
                       ),
-                      child: const Text(
-                        'بطاقة الطالب',
-                        style: TextStyle(color: Colors.white, fontSize: 10, fontFamily: 'Cairo'),
+                      child: Text(
+                        tr('بطاقة الطالب'),
+                        style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 10,
+                            fontFamily: 'Dubai'),
                       ),
                     ),
                   ],
@@ -292,12 +323,20 @@ class _IDCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         gradient: AppColors.gradientGold,
                         shape: BoxShape.circle,
-                        boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.5), blurRadius: 16)],
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.gold.withOpacity(0.5),
+                              blurRadius: 16)
+                        ],
                       ),
                       child: Center(
                         child: Text(
                           student.avatarInitials,
-                          style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.w900, fontFamily: 'Cairo'),
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 22,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Dubai'),
                         ),
                       ),
                     ),
@@ -308,24 +347,37 @@ class _IDCard extends StatelessWidget {
                         children: [
                           Text(
                             student.name,
-                            style: const TextStyle(color: Colors.white, fontSize: 17, fontWeight: FontWeight.w800, fontFamily: 'Cairo'),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 17,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Dubai'),
                           ),
                           const SizedBox(height: 4),
                           Text(
                             student.id,
-                            style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12, fontFamily: 'Cairo'),
+                            style: TextStyle(
+                                color: Colors.white.withOpacity(0.6),
+                                fontSize: 12,
+                                fontFamily: 'Dubai'),
                           ),
                           const SizedBox(height: 6),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 8, vertical: 3),
                             decoration: BoxDecoration(
                               color: AppColors.gold.withOpacity(0.25),
                               borderRadius: BorderRadius.circular(8),
-                              border: Border.all(color: AppColors.gold.withOpacity(0.4)),
+                              border: Border.all(
+                                  color: AppColors.gold.withOpacity(0.4)),
                             ),
                             child: Text(
                               student.groupName,
-                              style: const TextStyle(color: AppColors.goldLight, fontSize: 11, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                              style: const TextStyle(
+                                  color: AppColors.goldLight,
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.w700,
+                                  fontFamily: 'Dubai'),
                             ),
                           ),
                         ],
@@ -340,17 +392,22 @@ class _IDCard extends StatelessWidget {
                 // Info row
                 Row(
                   children: [
-                    _CardInfoItem(label: 'المعلم', value: student.teacherName),
-                    _CardInfoItem(label: 'العام الدراسي', value: student.academicYear),
+                    _CardInfoItem(
+                        label: tr('المعلم'), value: student.teacherName),
+                    _CardInfoItem(
+                        label: tr('العام الدراسي'),
+                        value: student.academicYear),
                   ],
                 ),
                 const SizedBox(height: 10),
                 Row(
                   children: [
-                    _CardInfoItem(label: 'الدورة', value: student.courseName),
                     _CardInfoItem(
-                      label: 'نسبة الحضور',
-                      value: '${(data.attendanceRate * 100).toStringAsFixed(0)}%',
+                        label: tr('الدورة'), value: student.courseName),
+                    _CardInfoItem(
+                      label: tr('نسبة الحضور'),
+                      value:
+                          '${(data.attendanceRate * 100).toStringAsFixed(0)}%',
                     ),
                   ],
                 ),
@@ -373,8 +430,17 @@ class _CardInfoItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(label, style: TextStyle(color: Colors.white.withOpacity(0.5), fontSize: 10, fontFamily: 'Cairo')),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w700, fontFamily: 'Cairo')),
+          Text(label,
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.5),
+                  fontSize: 10,
+                  fontFamily: 'Dubai')),
+          Text(value,
+              style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Dubai')),
         ],
       ),
     );
@@ -388,18 +454,46 @@ class _StatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final present = data.attendanceRecords.where((r) => r.status == AttendanceStatus.present).length;
+    final present = data.attendanceRecords
+        .where((r) => r.status == AttendanceStatus.present)
+        .length;
     final memorized = data.memorizationProgress.totalPagesMemorized;
-    final completedJuz = data.memorizationProgress.sections.where((s) => s.isCompleted).length;
+    final completedJuz =
+        data.memorizationProgress.sections.where((s) => s.isCompleted).length;
     final passedSabr = data.sabrRecords.where((s) => s.isPassed).length;
 
     final items = [
-      (Icons.check_circle_rounded, '${(data.attendanceRate * 100).toStringAsFixed(0)}%', 'نسبة الحضور', AppColors.success),
-      (Icons.calendar_today_rounded, '$present', 'أيام حضور', AppColors.primaryLight),
-      (Icons.menu_book_rounded, '$memorized', 'صفحة محفوظة', AppColors.gold),
-      (Icons.library_books_rounded, '$completedJuz', 'جزء مكتمل', AppColors.info),
-      (Icons.star_rounded, '${data.totalPoints}', 'نقطة', AppColors.gold),
-      (Icons.quiz_rounded, '$passedSabr', 'سبر ناجح', AppColors.primaryGlow),
+      (
+        Icons.check_circle_rounded,
+        '${(data.attendanceRate * 100).toStringAsFixed(0)}%',
+        tr('نسبة الحضور'),
+        AppColors.success
+      ),
+      (
+        Icons.calendar_today_rounded,
+        '$present',
+        tr('أيام حضور'),
+        AppColors.primaryLight
+      ),
+      (
+        Icons.menu_book_rounded,
+        '$memorized',
+        tr('صفحة محفوظة'),
+        AppColors.gold
+      ),
+      (
+        Icons.library_books_rounded,
+        '$completedJuz',
+        tr('جزء مكتمل'),
+        AppColors.info
+      ),
+      (Icons.star_rounded, '${data.totalPoints}', tr('نقطة'), AppColors.gold),
+      (
+        Icons.quiz_rounded,
+        '$passedSabr',
+        tr('سبر ناجح'),
+        AppColors.primaryGlow
+      ),
     ];
 
     return GridView.count(
@@ -409,12 +503,14 @@ class _StatsGrid extends StatelessWidget {
       crossAxisSpacing: 10,
       mainAxisSpacing: 10,
       childAspectRatio: 1.1,
-      children: items.map((item) => _StatTile(
-        icon: item.$1,
-        value: item.$2,
-        label: item.$3,
-        color: item.$4,
-      )).toList(),
+      children: items
+          .map((item) => _StatTile(
+                icon: item.$1,
+                value: item.$2,
+                label: item.$3,
+                color: item.$4,
+              ))
+          .toList(),
     );
   }
 }
@@ -423,7 +519,11 @@ class _StatTile extends StatelessWidget {
   final IconData icon;
   final String value, label;
   final Color color;
-  const _StatTile({required this.icon, required this.value, required this.label, required this.color});
+  const _StatTile(
+      {required this.icon,
+      required this.value,
+      required this.label,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -438,8 +538,18 @@ class _StatTile extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 6),
-          Text(value, style: TextStyle(color: color, fontSize: 18, fontWeight: FontWeight.w900, fontFamily: 'Cairo')),
-          Text(label, style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 10, fontFamily: 'Cairo'), textAlign: TextAlign.center),
+          Text(value,
+              style: TextStyle(
+                  color: color,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai')),
+          Text(label,
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.55),
+                  fontSize: 10,
+                  fontFamily: 'Dubai'),
+              textAlign: TextAlign.center),
         ],
       ),
     );
@@ -467,16 +577,25 @@ class _ProgressSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.trending_up_rounded, color: AppColors.goldLight, size: 18),
+              const Icon(Icons.trending_up_rounded,
+                  color: AppColors.goldLight, size: 18),
               const SizedBox(width: 8),
-              const Text(
-                'تقدم الحفظ',
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+              Text(
+                tr('تقدم الحفظ'),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Dubai'),
               ),
               const Spacer(),
               Text(
                 '${(pct * 100).toStringAsFixed(1)}%',
-                style: const TextStyle(color: AppColors.goldLight, fontSize: 14, fontWeight: FontWeight.w800, fontFamily: 'Cairo'),
+                style: const TextStyle(
+                    color: AppColors.goldLight,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Dubai'),
               ),
             ],
           ),
@@ -492,8 +611,12 @@ class _ProgressSection extends StatelessWidget {
           ),
           const SizedBox(height: 8),
           Text(
-            '${p.totalPagesMemorized} من ${p.totalQuranPages} صفحة • يحفظ حالياً: ${p.currentSurah}',
-            style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 11, fontFamily: 'Cairo'),
+            trf('{0} من {1} صفحة • يحفظ حالياً: {2}',
+                [p.totalPagesMemorized, p.totalQuranPages, p.currentSurah]),
+            style: TextStyle(
+                color: Colors.white.withOpacity(0.55),
+                fontSize: 11,
+                fontFamily: 'Dubai'),
           ),
         ],
       ),
@@ -520,13 +643,17 @@ class _RecentSabr extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Row(
+          Row(
             children: [
               Icon(Icons.quiz_rounded, color: AppColors.goldLight, size: 18),
               SizedBox(width: 8),
               Text(
-                'آخر نتائج السبر',
-                style: TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                tr('آخر نتائج السبر'),
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Dubai'),
               ),
             ],
           ),
@@ -538,35 +665,48 @@ class _RecentSabr extends StatelessWidget {
                     ? AppColors.primaryLight
                     : AppColors.gold;
             final typeLabel = r.type == SabrType.trial
-                ? 'تجريبي'
+                ? tr('تجريبي')
                 : r.type == SabrType.final_
-                    ? 'نهائي'
-                    : 'أوقاف';
+                    ? tr('نهائي')
+                    : tr('أوقاف');
             return Padding(
               padding: const EdgeInsets.only(bottom: 8),
               child: Row(
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 7, vertical: 3),
                     decoration: BoxDecoration(
                       color: color.withOpacity(0.15),
                       borderRadius: BorderRadius.circular(8),
                       border: Border.all(color: color.withOpacity(0.3)),
                     ),
-                    child: Text(typeLabel, style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700, fontFamily: 'Cairo')),
+                    child: Text(typeLabel,
+                        style: TextStyle(
+                            color: color,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Dubai')),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
                     child: Text(
                       r.title,
-                      style: TextStyle(color: Colors.white.withOpacity(0.8), fontSize: 12, fontFamily: 'Cairo'),
+                      style: TextStyle(
+                          color: Colors.white.withOpacity(0.8),
+                          fontSize: 12,
+                          fontFamily: 'Dubai'),
                       overflow: TextOverflow.ellipsis,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Text(
                     '${r.score.toStringAsFixed(0)}%',
-                    style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w800, fontFamily: 'Cairo'),
+                    style: TextStyle(
+                        color: color,
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        fontFamily: 'Dubai'),
                   ),
                 ],
               ),
@@ -589,14 +729,19 @@ class _SavePassHint extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.3)),
       ),
-      child: const Row(
+      child: Row(
         children: [
-          Icon(Icons.info_outline_rounded, color: AppColors.goldLight, size: 20),
+          Icon(Icons.info_outline_rounded,
+              color: AppColors.goldLight, size: 20),
           SizedBox(width: 10),
           Expanded(
             child: Text(
-              'يمكنك تصوير الشاشة لحفظ بطاقتك كـ Pass لاستخدامها في الحلقة.',
-              style: TextStyle(color: AppColors.goldLight, fontSize: 12, fontFamily: 'Cairo', height: 1.4),
+              tr('يمكنك تصوير الشاشة لحفظ بطاقتك كـ Pass لاستخدامها في الحلقة.'),
+              style: TextStyle(
+                  color: AppColors.goldLight,
+                  fontSize: 12,
+                  fontFamily: 'Dubai',
+                  height: 1.4),
             ),
           ),
         ],

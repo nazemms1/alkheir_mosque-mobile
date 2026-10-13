@@ -5,6 +5,7 @@ import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/models/auth_token.dart';
 import '../../../data/services/admin_service.dart';
 import '../../home/home_widget_registry.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 /// بيانات لوحة الإداري بعد جلبها — تُمرَّر لويدجتس [adminHomeWidgets].
 class AdminHomeData {
@@ -54,11 +55,11 @@ final List<HomeWidgetDef<AdminHomeData>> adminHomeWidgets = [
   HomeWidgetDef(
     id: 'admin-groups',
     slivers: (context, d) => [
-      const SliverPadding(
+      SliverPadding(
         padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
         sliver: SliverToBoxAdapter(
             child: _SectionHeader(
-                title: 'الحلقات النشطة',
+                title: tr('الحلقات النشطة'),
                 icon: Icons.groups_rounded,
                 color: AppColors.primaryLight)),
       ),
@@ -80,11 +81,11 @@ final List<HomeWidgetDef<AdminHomeData>> adminHomeWidgets = [
   HomeWidgetDef(
     id: 'admin-recent-students',
     slivers: (context, d) => [
-      const SliverPadding(
+      SliverPadding(
         padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
         sliver: SliverToBoxAdapter(
             child: _SectionHeader(
-                title: 'آخر الطلاب المسجّلين',
+                title: tr('آخر الطلاب المسجّلين'),
                 icon: Icons.school_rounded,
                 color: AppColors.gold)),
       ),
@@ -129,19 +130,25 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final d = await _service.fetchDashboard();
       if (!mounted) return;
       setState(() {
-        _stats    = d.stats;
-        _groups   = d.groups;
+        _stats = d.stats;
+        _groups = d.groups;
         _students = d.students;
-        _loading  = false;
+        _loading = false;
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _error = e.toString(); _loading = false; });
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
     }
   }
 
@@ -153,18 +160,24 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+            const Icon(Icons.error_outline_rounded,
+                size: 48, color: AppColors.error),
             const SizedBox(height: 12),
-            Text(_error!, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Cairo')),
+            Text(_error!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontFamily: 'Dubai')),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: _load, child: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'Cairo'))),
+            ElevatedButton(
+                onPressed: _load,
+                child: Text(tr('إعادة المحاولة'),
+                    style: TextStyle(fontFamily: 'Dubai'))),
           ],
         ),
       );
     }
 
     final data = AdminHomeData(
-      userName: widget.token.user?.name ?? 'المدير',
+      userName: widget.token.user?.name ?? tr('المدير'),
       stats: _stats!,
       groups: _groups,
       students: _students,
@@ -205,7 +218,10 @@ class _WelcomeBanner extends StatelessWidget {
         ),
         borderRadius: BorderRadius.circular(28),
         boxShadow: [
-          BoxShadow(color: AppColors.primary.withOpacity(0.4), blurRadius: 28, offset: const Offset(0, 10)),
+          BoxShadow(
+              color: AppColors.primary.withOpacity(0.4),
+              blurRadius: 28,
+              offset: const Offset(0, 10)),
         ],
       ),
       child: Column(
@@ -219,9 +235,15 @@ class _WelcomeBanner extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: AppColors.gradientGold,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.4), blurRadius: 14, spreadRadius: 1)],
+                  boxShadow: [
+                    BoxShadow(
+                        color: AppColors.gold.withOpacity(0.4),
+                        blurRadius: 14,
+                        spreadRadius: 1)
+                  ],
                 ),
-                child: const Icon(Icons.admin_panel_settings_rounded, color: Colors.white, size: 28),
+                child: const Icon(Icons.admin_panel_settings_rounded,
+                    color: Colors.white, size: 28),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -229,18 +251,28 @@ class _WelcomeBanner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'مرحباً، $userName',
-                      style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800, fontFamily: 'Cairo'),
+                      trf('مرحباً، {0}', [userName]),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Dubai'),
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10, vertical: 3),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.15),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: Colors.white.withOpacity(0.25)),
+                        border:
+                            Border.all(color: Colors.white.withOpacity(0.25)),
                       ),
-                      child: const Text('لوحة التحكم الإدارية', style: TextStyle(color: Colors.white, fontSize: 11, fontFamily: 'Cairo')),
+                      child: Text(tr('لوحة التحكم الإدارية'),
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 11,
+                              fontFamily: 'Dubai')),
                     ),
                   ],
                 ),
@@ -250,11 +282,20 @@ class _WelcomeBanner extends StatelessWidget {
           const SizedBox(height: 18),
           Row(
             children: [
-              _HeroPill(label: 'طالب', value: '${stats.totalStudents}', icon: Icons.people_rounded),
+              _HeroPill(
+                  label: tr('طالب'),
+                  value: '${stats.totalStudents}',
+                  icon: Icons.people_rounded),
               const SizedBox(width: 8),
-              _HeroPill(label: 'حلقة نشطة', value: '${stats.activeGroups}', icon: Icons.groups_rounded),
+              _HeroPill(
+                  label: tr('حلقة نشطة'),
+                  value: '${stats.activeGroups}',
+                  icon: Icons.groups_rounded),
               const SizedBox(width: 8),
-              _HeroPill(label: 'تسجيل', value: '${stats.totalEnrollments}', icon: Icons.how_to_reg_rounded),
+              _HeroPill(
+                  label: tr('تسجيل'),
+                  value: '${stats.totalEnrollments}',
+                  icon: Icons.how_to_reg_rounded),
             ],
           ),
         ],
@@ -266,7 +307,8 @@ class _WelcomeBanner extends StatelessWidget {
 class _HeroPill extends StatelessWidget {
   final String label, value;
   final IconData icon;
-  const _HeroPill({required this.label, required this.value, required this.icon});
+  const _HeroPill(
+      {required this.label, required this.value, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -282,8 +324,17 @@ class _HeroPill extends StatelessWidget {
           children: [
             Icon(icon, color: AppColors.goldLight, size: 18),
             const SizedBox(height: 4),
-            Text(value, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w800, fontFamily: 'Cairo')),
-            Text(label, style: TextStyle(color: Colors.white.withOpacity(0.65), fontSize: 10, fontFamily: 'Cairo')),
+            Text(value,
+                style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Dubai')),
+            Text(label,
+                style: TextStyle(
+                    color: Colors.white.withOpacity(0.65),
+                    fontSize: 10,
+                    fontFamily: 'Dubai')),
           ],
         ),
       ),
@@ -299,12 +350,18 @@ class _StatsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      _SI(Icons.people_rounded,        'إجمالي الطلاب',    '${stats.totalStudents}',    AppColors.info),
-      _SI(Icons.groups_rounded,        'حلقات نشطة',       '${stats.activeGroups}',     AppColors.success),
-      _SI(Icons.how_to_reg_rounded,    'التسجيلات',        '${stats.totalEnrollments}', AppColors.primaryLight),
-      _SI(Icons.receipt_long_rounded,  'الفواتير',         '${stats.totalInvoices}',    AppColors.warning),
-      _SI(Icons.assignment_rounded,    'التقييمات',        '${stats.totalAssessments}', AppColors.gold),
-      _SI(Icons.event_rounded,         'الأنشطة',          '${stats.totalActivities}',  AppColors.error),
+      _SI(Icons.people_rounded, tr('إجمالي الطلاب'), '${stats.totalStudents}',
+          AppColors.info),
+      _SI(Icons.groups_rounded, tr('حلقات نشطة'), '${stats.activeGroups}',
+          AppColors.success),
+      _SI(Icons.how_to_reg_rounded, tr('التسجيلات'),
+          '${stats.totalEnrollments}', AppColors.primaryLight),
+      _SI(Icons.receipt_long_rounded, tr('الفواتير'), '${stats.totalInvoices}',
+          AppColors.warning),
+      _SI(Icons.assignment_rounded, tr('التقييمات'),
+          '${stats.totalAssessments}', AppColors.gold),
+      _SI(Icons.event_rounded, tr('الأنشطة'), '${stats.totalActivities}',
+          AppColors.error),
     ];
     return GridView.builder(
       shrinkWrap: true,
@@ -340,7 +397,12 @@ class _StatCard extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: item.color.withOpacity(0.18), width: 1.5),
-        boxShadow: [BoxShadow(color: item.color.withOpacity(0.1), blurRadius: 16, offset: const Offset(0, 5))],
+        boxShadow: [
+          BoxShadow(
+              color: item.color.withOpacity(0.1),
+              blurRadius: 16,
+              offset: const Offset(0, 5))
+        ],
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
@@ -350,7 +412,10 @@ class _StatCard extends StatelessWidget {
             height: 40,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                colors: [item.color.withOpacity(0.18), item.color.withOpacity(0.08)],
+                colors: [
+                  item.color.withOpacity(0.18),
+                  item.color.withOpacity(0.08)
+                ],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
@@ -359,12 +424,22 @@ class _StatCard extends StatelessWidget {
             child: Icon(item.icon, color: item.color, size: 22),
           ),
           const SizedBox(height: 8),
-          Text(item.value, style: TextStyle(color: item.color, fontSize: 18, fontWeight: FontWeight.w800, fontFamily: 'Cairo')),
+          Text(item.value,
+              style: TextStyle(
+                  color: item.color,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Dubai')),
           const SizedBox(height: 2),
           Text(
             item.label,
             textAlign: TextAlign.center,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSurface.withOpacity(0.55), fontSize: 10, fontFamily: 'Cairo', height: 1.3),
+            style: TextStyle(
+                color:
+                    Theme.of(context).colorScheme.onSurface.withOpacity(0.55),
+                fontSize: 10,
+                fontFamily: 'Dubai',
+                height: 1.3),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
           ),
@@ -379,7 +454,8 @@ class _SectionHeader extends StatelessWidget {
   final String title;
   final IconData icon;
   final Color color;
-  const _SectionHeader({required this.title, required this.icon, required this.color});
+  const _SectionHeader(
+      {required this.title, required this.icon, required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -388,13 +464,19 @@ class _SectionHeader extends StatelessWidget {
         Container(
           width: 34,
           height: 34,
-          decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(10)),
+          decoration: BoxDecoration(
+              color: color.withOpacity(0.12),
+              borderRadius: BorderRadius.circular(10)),
           child: Icon(icon, color: color, size: 18),
         ),
         const SizedBox(width: 10),
         Text(
           title,
-          style: TextStyle(fontFamily: 'Cairo', fontSize: 15, fontWeight: FontWeight.w800, color: Theme.of(context).colorScheme.onSurface),
+          style: TextStyle(
+              fontFamily: 'Dubai',
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: Theme.of(context).colorScheme.onSurface),
         ),
       ],
     );
@@ -415,30 +497,58 @@ class _MiniGroupTile extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.primaryLight.withOpacity(0.15)),
-        boxShadow: [BoxShadow(color: AppColors.primary.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 3))],
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.primary.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3))
+        ],
       ),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(gradient: AppColors.gradientPrimary, borderRadius: BorderRadius.circular(12)),
-            child: const Icon(Icons.groups_rounded, color: Colors.white, size: 22),
+            decoration: BoxDecoration(
+                gradient: AppColors.gradientPrimary,
+                borderRadius: BorderRadius.circular(12)),
+            child:
+                const Icon(Icons.groups_rounded, color: Colors.white, size: 22),
           ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(group.name, style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onSurface), maxLines: 1, overflow: TextOverflow.ellipsis),
-                Text(group.teacher.isEmpty ? group.course : group.teacher, style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(group.name,
+                    style: TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).colorScheme.onSurface),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                Text(group.teacher.isEmpty ? group.course : group.teacher,
+                    style: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 11,
+                        color: AppColors.textMuted),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: AppColors.primaryLight.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-            child: Text('${group.enrollmentsCount} طالب', style: const TextStyle(fontFamily: 'Cairo', fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.primaryLight)),
+            decoration: BoxDecoration(
+                color: AppColors.primaryLight.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20)),
+            child: Text(trf('{0} طالب', [group.enrollmentsCount]),
+                style: const TextStyle(
+                    fontFamily: 'Dubai',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.primaryLight)),
           ),
         ],
       ),
@@ -460,16 +570,28 @@ class _MiniStudentTile extends StatelessWidget {
         color: Theme.of(context).colorScheme.surface,
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: AppColors.gold.withOpacity(0.15)),
-        boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.05), blurRadius: 10, offset: const Offset(0, 3))],
+        boxShadow: [
+          BoxShadow(
+              color: AppColors.gold.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 3))
+        ],
       ),
       child: Row(
         children: [
           Container(
             width: 44,
             height: 44,
-            decoration: BoxDecoration(gradient: AppColors.gradientGold, borderRadius: BorderRadius.circular(12)),
+            decoration: BoxDecoration(
+                gradient: AppColors.gradientGold,
+                borderRadius: BorderRadius.circular(12)),
             child: Center(
-              child: Text(student.initials, style: const TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w800, fontFamily: 'Cairo')),
+              child: Text(student.initials,
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Dubai')),
             ),
           ),
           const SizedBox(width: 12),
@@ -477,15 +599,35 @@ class _MiniStudentTile extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(student.fullName, style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onSurface), maxLines: 1, overflow: TextOverflow.ellipsis),
-                Text('${student.gradeLevel} · ${student.studentNumber}', style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted), maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(student.fullName,
+                    style: TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w700,
+                        color: Theme.of(context).colorScheme.onSurface),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
+                Text('${student.gradeLevel} · ${student.studentNumber}',
+                    style: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 11,
+                        color: AppColors.textMuted),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            decoration: BoxDecoration(color: AppColors.gold.withOpacity(0.1), borderRadius: BorderRadius.circular(20)),
-            child: Text('ج ${student.currentJuz}', style: const TextStyle(fontFamily: 'Cairo', fontSize: 10, fontWeight: FontWeight.w700, color: AppColors.gold)),
+            decoration: BoxDecoration(
+                color: AppColors.gold.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(20)),
+            child: Text(trf('ج {0}', [student.currentJuz]),
+                style: const TextStyle(
+                    fontFamily: 'Dubai',
+                    fontSize: 10,
+                    fontWeight: FontWeight.w700,
+                    color: AppColors.gold)),
           ),
         ],
       ),

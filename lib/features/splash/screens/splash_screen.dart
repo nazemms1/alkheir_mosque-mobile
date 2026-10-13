@@ -2,11 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:google_fonts/google_fonts.dart';
 import '../../../core/session/auth_session.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../home/screens/main_shell.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class SplashScreen extends ConsumerStatefulWidget {
   const SplashScreen({super.key});
@@ -54,11 +54,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   Future<void> _navigateToLogin() async {
     if (!mounted) return;
     // استرجاع الجلسة المحفوظة إلى المزوّد المركزي قبل الدخول للتطبيق
-    final token = await ref.read(authSessionProvider.notifier).restore();
+    final restored = await ref.read(authSessionProvider.notifier).restore();
+    // تحديث الصلاحيات من الخادم قبل فتح التطبيق؛ عند تعذّر الاتصال تبقى الجلسة المحفوظة.
+    final token = restored == null
+        ? null
+        : await ref.read(authSessionProvider.notifier).refreshFromServer();
     if (!mounted) return;
-    final Widget destination = token != null
-        ? MainShell(token: token)
-        : const LoginScreen();
+    final Widget destination =
+        token != null ? MainShell(token: token) : const LoginScreen();
     Navigator.of(context).pushReplacement(
       PageRouteBuilder(
         pageBuilder: (_, animation, __) => destination,
@@ -102,7 +105,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             ),
           ),
 
-           Center(
+          Center(
             child: AnimatedBuilder(
               animation: _rotationController,
               builder: (context, child) {
@@ -121,7 +124,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
             ),
           ),
 
-           Center(
+          Center(
             child: AnimatedBuilder(
               animation: _pulseController,
               builder: (context, _) {
@@ -192,17 +195,14 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
 
                 // اسم التطبيق
                 Text(
-                  'مسجد الخير',
-                  style: GoogleFonts.cairo(
+                  tr('مسجد الخير'),
+                  style: appTextStyle(
                     fontSize: 32,
                     fontWeight: FontWeight.w900,
                     color: Colors.white,
                     letterSpacing: 1.2,
                   ),
-                )
-                    .animate()
-                    .fadeIn(delay: 500.ms, duration: 700.ms)
-                    .slideY(
+                ).animate().fadeIn(delay: 500.ms, duration: 700.ms).slideY(
                       begin: 0.3,
                       end: 0,
                       delay: 500.ms,
@@ -218,18 +218,15 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                     colors: [Color(0xFFD4A843), Color(0xFFFFD97D)],
                   ).createShader(bounds),
                   child: Text(
-                    'البوابة التعليمية',
-                    style: GoogleFonts.cairo(
+                    tr('البوابة التعليمية'),
+                    style: appTextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                       letterSpacing: 0.8,
                     ),
                   ),
-                )
-                    .animate()
-                    .fadeIn(delay: 750.ms, duration: 700.ms)
-                    .slideY(
+                ).animate().fadeIn(delay: 750.ms, duration: 700.ms).slideY(
                       begin: 0.3,
                       end: 0,
                       delay: 750.ms,
@@ -269,15 +266,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 ),
                 const SizedBox(height: 16),
                 Text(
-                  'جارٍ التحميل...',
-                  style: GoogleFonts.cairo(
+                  tr('جارٍ التحميل...'),
+                  style: appTextStyle(
                     fontSize: 12,
                     color: AppColors.textOnDarkMute,
                     fontWeight: FontWeight.w400,
                   ),
-                )
-                    .animate()
-                    .fadeIn(delay: 400.ms, duration: 500.ms),
+                ).animate().fadeIn(delay: 400.ms, duration: 500.ms),
               ],
             ),
           ),

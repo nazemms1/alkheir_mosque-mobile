@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/services/admin_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class AdminStudentsScreen extends StatefulWidget {
   /// عند التمرير، تُقيَّد القائمة بطلاب هذه الحلقة فقط.
@@ -64,21 +65,31 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final r = await _service.fetchStudents(
-          page: 1, perPage: 20, search: _search, groupId: widget.groupId, status: 'active');
+          page: 1,
+          perPage: 20,
+          search: _search,
+          groupId: widget.groupId,
+          status: 'active');
       if (!mounted) return;
       setState(() {
-        _items    = r.items;
-        _total    = r.total;
+        _items = r.items;
+        _total = r.total;
         _lastPage = r.lastPage;
-        _page     = 1;
-        _loading  = false;
+        _page = 1;
+        _loading = false;
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _error = e.toString(); _loading = false; });
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
     }
   }
 
@@ -128,19 +139,27 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                 ),
                 child: TextField(
                   controller: _searchCtrl,
-                  style: const TextStyle(fontFamily: 'Cairo', fontSize: 14),
+                  style: const TextStyle(fontFamily: 'Dubai', fontSize: 14),
                   decoration: InputDecoration(
-                    hintText: 'بحث باسم الطالب أو الرقم...',
-                    hintStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13, color: AppColors.textMuted),
-                    prefixIcon: const Icon(Icons.search_rounded, color: AppColors.textMuted, size: 20),
+                    hintText: tr('بحث باسم الطالب أو الرقم...'),
+                    hintStyle: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 13,
+                        color: AppColors.textMuted),
+                    prefixIcon: const Icon(Icons.search_rounded,
+                        color: AppColors.textMuted, size: 20),
                     suffixIcon: _search.isNotEmpty
                         ? IconButton(
-                            icon: const Icon(Icons.close_rounded, size: 18, color: AppColors.textMuted),
-                            onPressed: () { _searchCtrl.clear(); },
+                            icon: const Icon(Icons.close_rounded,
+                                size: 18, color: AppColors.textMuted),
+                            onPressed: () {
+                              _searchCtrl.clear();
+                            },
                           )
                         : null,
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 14),
                   ),
                 ),
               ),
@@ -150,24 +169,27 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                 Row(
                   children: [
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 5),
                       decoration: BoxDecoration(
                         color: AppColors.primaryLight.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(20),
-                        border: Border.all(color: AppColors.primaryLight.withOpacity(0.25)),
+                        border: Border.all(
+                            color: AppColors.primaryLight.withOpacity(0.25)),
                       ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          const Icon(Icons.people_rounded, color: AppColors.primaryLight, size: 14),
+                          const Icon(Icons.people_rounded,
+                              color: AppColors.primaryLight, size: 14),
                           const SizedBox(width: 5),
                           Text(
-                            '$_total طالب',
+                            trf('{0} طالب', [_total]),
                             style: const TextStyle(
                               color: AppColors.primaryLight,
                               fontSize: 12,
                               fontWeight: FontWeight.w700,
-                              fontFamily: 'Cairo',
+                              fontFamily: 'Dubai',
                             ),
                           ),
                         ],
@@ -176,30 +198,34 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                     if (widget.groupId != null) ...[
                       const SizedBox(width: 8),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 12, vertical: 5),
                         decoration: BoxDecoration(
                           color: AppColors.gold.withOpacity(0.12),
                           borderRadius: BorderRadius.circular(20),
-                          border: Border.all(color: AppColors.gold.withOpacity(0.3)),
+                          border: Border.all(
+                              color: AppColors.gold.withOpacity(0.3)),
                         ),
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            const Icon(Icons.groups_rounded, color: AppColors.gold, size: 14),
+                            const Icon(Icons.groups_rounded,
+                                color: AppColors.gold, size: 14),
                             const SizedBox(width: 5),
                             Text(
-                              widget.groupName ?? 'حلقة محددة',
+                              widget.groupName ?? tr('حلقة محددة'),
                               style: const TextStyle(
                                 color: AppColors.gold,
                                 fontSize: 12,
                                 fontWeight: FontWeight.w700,
-                                fontFamily: 'Cairo',
+                                fontFamily: 'Dubai',
                               ),
                             ),
                             const SizedBox(width: 4),
                             GestureDetector(
                               onTap: () => Navigator.pop(context),
-                              child: const Icon(Icons.close_rounded, size: 14, color: AppColors.gold),
+                              child: const Icon(Icons.close_rounded,
+                                  size: 14, color: AppColors.gold),
                             ),
                           ],
                         ),
@@ -217,7 +243,11 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
               : _error != null
                   ? _ErrorRetry(message: _error!, onRetry: _load)
                   : _items.isEmpty
-                      ? const Center(child: Text('لا يوجد طلاب', style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)))
+                      ? Center(
+                          child: Text(tr('لا يوجد طلاب'),
+                              style: TextStyle(
+                                  fontFamily: 'Dubai',
+                                  color: AppColors.textMuted)))
                       : RefreshIndicator(
                           onRefresh: _load,
                           color: AppColors.primaryLight,
@@ -229,13 +259,15 @@ class _AdminStudentsScreenState extends State<AdminStudentsScreen> {
                               if (i == _items.length) {
                                 return const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Center(child: CircularProgressIndicator()),
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
                                 );
                               }
                               return _StudentCard(student: _items[i])
                                   .animate()
                                   .fadeIn(delay: (i * 30).ms, duration: 300.ms)
-                                  .slideX(begin: 0.04, end: 0, delay: (i * 30).ms);
+                                  .slideX(
+                                      begin: 0.04, end: 0, delay: (i * 30).ms);
                             },
                           ),
                         ),
@@ -278,7 +310,10 @@ class _StudentCard extends StatelessWidget {
               gradient: AppColors.gradientGold,
               borderRadius: BorderRadius.circular(14),
               boxShadow: [
-                BoxShadow(color: AppColors.gold.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 3)),
+                BoxShadow(
+                    color: AppColors.gold.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3)),
               ],
             ),
             child: Center(
@@ -288,7 +323,7 @@ class _StudentCard extends StatelessWidget {
                   color: Colors.white,
                   fontSize: 14,
                   fontWeight: FontWeight.w800,
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                 ),
               ),
             ),
@@ -305,7 +340,7 @@ class _StudentCard extends StatelessWidget {
                       child: Text(
                         student.fullName,
                         style: TextStyle(
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface,
@@ -315,15 +350,16 @@ class _StudentCard extends StatelessWidget {
                       ),
                     ),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
                         color: statusColor.withOpacity(0.12),
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: Text(
-                        student.isActive ? 'نشط' : 'غير نشط',
+                        student.isActive ? tr('نشط') : tr('غير نشط'),
                         style: TextStyle(
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                           fontSize: 9,
                           fontWeight: FontWeight.w700,
                           color: statusColor,
@@ -335,17 +371,29 @@ class _StudentCard extends StatelessWidget {
                 const SizedBox(height: 3),
                 Text(
                   student.studentNumber,
-                  style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted),
+                  style: const TextStyle(
+                      fontFamily: 'Dubai',
+                      fontSize: 11,
+                      color: AppColors.textMuted),
                 ),
                 const SizedBox(height: 5),
                 Wrap(
                   spacing: 6,
                   runSpacing: 4,
                   children: [
-                    _Tag(icon: Icons.school_outlined, text: student.gradeLevel, color: AppColors.info),
-                    _Tag(icon: Icons.menu_book_outlined, text: 'ج ${student.currentJuz}', color: AppColors.primaryLight),
+                    _Tag(
+                        icon: Icons.school_outlined,
+                        text: student.gradeLevel,
+                        color: AppColors.info),
+                    _Tag(
+                        icon: Icons.menu_book_outlined,
+                        text: trf('ج {0}', [student.currentJuz]),
+                        color: AppColors.primaryLight),
                     if (student.parent.isNotEmpty)
-                      _Tag(icon: Icons.person_outline_rounded, text: student.parent, color: AppColors.gold),
+                      _Tag(
+                          icon: Icons.person_outline_rounded,
+                          text: student.parent,
+                          color: AppColors.gold),
                   ],
                 ),
               ],
@@ -379,7 +427,11 @@ class _Tag extends StatelessWidget {
           const SizedBox(width: 3),
           Text(
             text,
-            style: TextStyle(fontFamily: 'Cairo', fontSize: 10, color: color, fontWeight: FontWeight.w600),
+            style: TextStyle(
+                fontFamily: 'Dubai',
+                fontSize: 10,
+                color: color,
+                fontWeight: FontWeight.w600),
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
           ),
@@ -400,11 +452,17 @@ class _ErrorRetry extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+          const Icon(Icons.error_outline_rounded,
+              size: 48, color: AppColors.error),
           const SizedBox(height: 12),
-          Text(message, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Cairo')),
+          Text(message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: 'Dubai')),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'Cairo'))),
+          ElevatedButton(
+              onPressed: onRetry,
+              child: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai'))),
         ],
       ),
     );

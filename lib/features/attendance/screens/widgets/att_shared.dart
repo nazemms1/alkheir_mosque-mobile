@@ -9,7 +9,8 @@ class _Orb extends StatelessWidget {
   Widget build(BuildContext context) => Container(
         width: size,
         height: size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color.withOpacity(opacity)),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, color: color.withOpacity(opacity)),
       );
 }
 
@@ -28,7 +29,10 @@ class _EmptyState extends StatelessWidget {
           height: 80,
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [AppColors.primaryLight.withOpacity(0.15), AppColors.primaryLight.withOpacity(0.05)],
+              colors: [
+                AppColors.primaryLight.withOpacity(0.15),
+                AppColors.primaryLight.withOpacity(0.05)
+              ],
             ),
             shape: BoxShape.circle,
           ),
@@ -36,7 +40,10 @@ class _EmptyState extends StatelessWidget {
         ),
         const SizedBox(height: 16),
         Text(text,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(color: AppColors.textSecondary)),
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(color: AppColors.textSecondary)),
       ],
     );
   }

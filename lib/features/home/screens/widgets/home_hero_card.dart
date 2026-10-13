@@ -94,27 +94,28 @@ class _HeroContent extends StatelessWidget {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            children: const [
+            children: [
               Icon(Icons.waving_hand_rounded, color: AppColors.gold, size: 12),
               SizedBox(width: 5),
-              Text('أهلاً بك',
+              Text(tr('أهلاً بك'),
                   style: TextStyle(
                     color: AppColors.goldLight,
                     fontSize: 11,
                     fontWeight: FontWeight.w700,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                   )),
             ],
           ),
         ),
         const SizedBox(height: 5),
         Text(
-          'ولي أمر\n${child.student.name.split(' ').take(2).join(' ')}',
+          trf('ولي أمر\n{0}',
+              [child.student.name.split(' ').take(2).join(' ')]),
           style: const TextStyle(
             color: Colors.white,
             fontSize: 22,
             fontWeight: FontWeight.w800,
-            fontFamily: 'Cairo',
+            fontFamily: 'Dubai',
             height: 1.2,
           ),
           maxLines: 2,
@@ -127,7 +128,8 @@ class _HeroContent extends StatelessWidget {
                 icon: Icons.groups_rounded, label: child.student.groupName),
             const SizedBox(width: 8),
             _HeroBadge(
-                icon: Icons.calendar_today_rounded, label: 'السنة ٢٠٢٥-٢٠٢٦'),
+                icon: Icons.calendar_today_rounded,
+                label: tr('السنة ٢٠٢٥-٢٠٢٦')),
           ],
         ),
       ],
@@ -161,7 +163,7 @@ class _HeroAvatar extends StatelessWidget {
             color: Colors.white,
             fontSize: 20,
             fontWeight: FontWeight.w800,
-            fontFamily: 'Cairo',
+            fontFamily: 'Dubai',
           ),
         ),
       ),
@@ -192,7 +194,7 @@ class _HeroBadge extends StatelessWidget {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 10,
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontWeight: FontWeight.w600,
               ),
               maxLines: 1,
@@ -234,26 +236,26 @@ class _FloatingStatsRow extends StatelessWidget {
         children: [
           _MiniStat(
               value: '${child.totalPoints}',
-              label: 'النقاط',
+              label: tr('النقاط'),
               icon: Icons.star_rounded,
               color: AppColors.gold),
           _Vdivider(),
           _MiniStat(
               value: pct,
-              label: 'الحضور',
+              label: tr('الحضور'),
               icon: Icons.check_circle_rounded,
               color: AppColors.success),
           _Vdivider(),
           _MiniStat(
             value: '${child.memorizationProgress.totalPagesMemorized}',
-            label: 'صفحة محفوظة',
+            label: tr('صفحة محفوظة'),
             icon: Icons.menu_book_rounded,
             color: AppColors.primaryLight,
           ),
           _Vdivider(),
           _MiniStat(
               value: '${child.absenceCount}',
-              label: 'غيابات',
+              label: tr('غيابات'),
               icon: Icons.event_busy_rounded,
               color: AppColors.error),
         ],
@@ -290,12 +292,13 @@ class _MiniStat extends StatelessWidget {
                   color: color,
                   fontSize: 15,
                   fontWeight: FontWeight.w800,
-                  fontFamily: 'Cairo')),
+                  fontFamily: 'Dubai')),
           Text(label,
               style: TextStyle(
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                  color:
+                      Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
                   fontSize: 10,
-                  fontFamily: 'Cairo')),
+                  fontFamily: 'Dubai')),
         ],
       ),
     );
@@ -304,6 +307,7 @@ class _MiniStat extends StatelessWidget {
 
 class _Vdivider extends StatelessWidget {
   @override
-  Widget build(BuildContext context) =>
-      Builder(builder: (context) => Container(width: 1, height: 44, color: Theme.of(context).dividerColor));
+  Widget build(BuildContext context) => Builder(
+      builder: (context) => Container(
+          width: 1, height: 44, color: Theme.of(context).dividerColor));
 }

@@ -31,7 +31,10 @@ class _EvalCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(18),
         border: Border.all(color: Theme.of(context).dividerColor),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.07), blurRadius: 14, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: color.withOpacity(0.07),
+              blurRadius: 14,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -63,7 +66,8 @@ class _EvalHeader extends StatelessWidget {
       child: Row(
         children: [
           Container(
-            width: 40, height: 40,
+            width: 40,
+            height: 40,
             decoration: BoxDecoration(
               color: color.withOpacity(0.12),
               borderRadius: BorderRadius.circular(12),
@@ -73,7 +77,10 @@ class _EvalHeader extends StatelessWidget {
           const SizedBox(width: 12),
           Expanded(
             child: Text(eval.subject,
-                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700)),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium
+                    ?.copyWith(fontWeight: FontWeight.w700)),
           ),
           RatingBadge(rating: eval.rating),
         ],
@@ -94,25 +101,31 @@ class _EvalComment extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            width: 32, height: 32,
+            width: 32,
+            height: 32,
             decoration: BoxDecoration(
               gradient: AppColors.gradientPrimary,
               borderRadius: BorderRadius.circular(10),
             ),
-            child: const Icon(Icons.person_rounded, color: Colors.white, size: 16),
+            child:
+                const Icon(Icons.person_rounded, color: Colors.white, size: 16),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('ملاحظة المعلم',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: AppColors.textMuted, fontSize: 11)),
+                Text(tr('ملاحظة المعلم'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodySmall
+                        ?.copyWith(color: AppColors.textMuted, fontSize: 11)),
                 const SizedBox(height: 3),
                 Text(eval.teacherComment,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColors.textPrimary, height: 1.5)),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(color: AppColors.textPrimary, height: 1.5)),
               ],
             ),
           ),
@@ -136,11 +149,14 @@ class _EvalFooter extends StatelessWidget {
       ),
       child: Row(
         children: [
-          Icon(Icons.calendar_today_rounded, size: 12, color: AppColors.textMuted),
+          Icon(Icons.calendar_today_rounded,
+              size: 12, color: AppColors.textMuted),
           const SizedBox(width: 5),
           Text(dateStr,
-              style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                    color: AppColors.textMuted, fontSize: 11)),
+              style: Theme.of(context)
+                  .textTheme
+                  .bodySmall
+                  ?.copyWith(color: AppColors.textMuted, fontSize: 11)),
         ],
       ),
     );

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/services/admin_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class AdminAssessmentsScreen extends StatefulWidget {
   const AdminAssessmentsScreen({super.key});
@@ -47,20 +48,26 @@ class _AdminAssessmentsScreenState extends State<AdminAssessmentsScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final r = await _service.fetchAssessments(page: 1, perPage: 20);
       if (!mounted) return;
       setState(() {
-        _items    = r.items;
-        _total    = r.total;
+        _items = r.items;
+        _total = r.total;
         _lastPage = r.lastPage;
-        _page     = 1;
-        _loading  = false;
+        _page = 1;
+        _loading = false;
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _error = e.toString(); _loading = false; });
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
     }
   }
 
@@ -90,22 +97,24 @@ class _AdminAssessmentsScreenState extends State<AdminAssessmentsScreen> {
           child: Row(
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
                 decoration: BoxDecoration(
                   gradient: AppColors.gradientPrimary,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: Row(
                   children: [
-                    const Icon(Icons.assignment_rounded, color: Colors.white, size: 18),
+                    const Icon(Icons.assignment_rounded,
+                        color: Colors.white, size: 18),
                     const SizedBox(width: 6),
                     Text(
-                      '$_total تقييم',
+                      trf('{0} تقييم', [_total]),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ],
@@ -121,7 +130,11 @@ class _AdminAssessmentsScreenState extends State<AdminAssessmentsScreen> {
               : _error != null
                   ? _ErrorRetry(message: _error!, onRetry: _load)
                   : _items.isEmpty
-                      ? const Center(child: Text('لا توجد تقييمات', style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)))
+                      ? Center(
+                          child: Text(tr('لا توجد تقييمات'),
+                              style: TextStyle(
+                                  fontFamily: 'Dubai',
+                                  color: AppColors.textMuted)))
                       : RefreshIndicator(
                           onRefresh: _load,
                           color: AppColors.primaryLight,
@@ -133,13 +146,15 @@ class _AdminAssessmentsScreenState extends State<AdminAssessmentsScreen> {
                               if (i == _items.length) {
                                 return const Padding(
                                   padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Center(child: CircularProgressIndicator()),
+                                  child: Center(
+                                      child: CircularProgressIndicator()),
                                 );
                               }
                               return _AssessmentCard(assessment: _items[i])
                                   .animate()
                                   .fadeIn(delay: (i * 40).ms, duration: 350.ms)
-                                  .slideY(begin: 0.05, end: 0, delay: (i * 40).ms);
+                                  .slideY(
+                                      begin: 0.05, end: 0, delay: (i * 40).ms);
                             },
                           ),
                         ),
@@ -155,7 +170,8 @@ class _AssessmentCard extends StatelessWidget {
 
   Color get _typeColor {
     final t = assessment.type.toLowerCase();
-    if (t.contains('عبادات') || t.contains('برنامج')) return AppColors.primaryLight;
+    if (t.contains('عبادات') || t.contains('برنامج'))
+      return AppColors.primaryLight;
     if (t.contains('قرآن')) return AppColors.gold;
     return AppColors.info;
   }
@@ -189,8 +205,10 @@ class _AssessmentCard extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             decoration: BoxDecoration(
               color: color.withOpacity(0.08),
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(18)),
-              border: Border(bottom: BorderSide(color: color.withOpacity(0.15))),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(18)),
+              border:
+                  Border(bottom: BorderSide(color: color.withOpacity(0.15))),
             ),
             child: Row(
               children: [
@@ -210,7 +228,7 @@ class _AssessmentCard extends StatelessWidget {
                       Text(
                         assessment.title,
                         style: TextStyle(
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface,
@@ -221,13 +239,18 @@ class _AssessmentCard extends StatelessWidget {
                       const SizedBox(height: 2),
                       Text(
                         assessment.type,
-                        style: TextStyle(color: color, fontSize: 11, fontFamily: 'Cairo', fontWeight: FontWeight.w600),
+                        style: TextStyle(
+                            color: color,
+                            fontSize: 11,
+                            fontFamily: 'Dubai',
+                            fontWeight: FontWeight.w600),
                       ),
                     ],
                   ),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                   decoration: BoxDecoration(
                     color: assessment.isActive
                         ? AppColors.success.withOpacity(0.12)
@@ -235,12 +258,14 @@ class _AssessmentCard extends StatelessWidget {
                     borderRadius: BorderRadius.circular(20),
                   ),
                   child: Text(
-                    assessment.isActive ? 'نشط' : 'منتهي',
+                    assessment.isActive ? tr('نشط') : tr('منتهي'),
                     style: TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      color: assessment.isActive ? AppColors.success : AppColors.textMuted,
+                      color: assessment.isActive
+                          ? AppColors.success
+                          : AppColors.textMuted,
                     ),
                   ),
                 ),
@@ -256,7 +281,7 @@ class _AssessmentCard extends StatelessWidget {
                   children: [
                     Expanded(
                       child: _StatBox(
-                        label: 'الدرجة الكلية',
+                        label: tr('الدرجة الكلية'),
                         value: '${assessment.totalMark.toInt()}',
                         color: color,
                         icon: Icons.grade_rounded,
@@ -265,7 +290,7 @@ class _AssessmentCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: _StatBox(
-                        label: 'درجة النجاح',
+                        label: tr('درجة النجاح'),
                         value: '${assessment.passMark.toInt()} ($passPercent%)',
                         color: AppColors.success,
                         icon: Icons.check_circle_outline_rounded,
@@ -274,7 +299,7 @@ class _AssessmentCard extends StatelessWidget {
                     const SizedBox(width: 8),
                     Expanded(
                       child: _StatBox(
-                        label: 'النتائج',
+                        label: tr('النتائج'),
                         value: '${assessment.resultsCount}',
                         color: AppColors.gold,
                         icon: Icons.people_rounded,
@@ -285,30 +310,43 @@ class _AssessmentCard extends StatelessWidget {
                 const SizedBox(height: 10),
                 // Group + date
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                   decoration: BoxDecoration(
-                    color: Theme.of(context).colorScheme.surfaceContainerHighest
+                    color: Theme.of(context)
+                        .colorScheme
+                        .surfaceContainerHighest
                         .withOpacity(0.5),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.groups_rounded, size: 14, color: AppColors.textMuted),
+                      const Icon(Icons.groups_rounded,
+                          size: 14, color: AppColors.textMuted),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
-                          assessment.groupName.isEmpty ? '—' : '${assessment.groupName} · ${assessment.courseName}',
-                          style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted),
+                          assessment.groupName.isEmpty
+                              ? '—'
+                              : '${assessment.groupName} · ${assessment.courseName}',
+                          style: const TextStyle(
+                              fontFamily: 'Dubai',
+                              fontSize: 11,
+                              color: AppColors.textMuted),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                         ),
                       ),
                       if (assessment.scheduledAt != null) ...[
-                        const Icon(Icons.calendar_today_rounded, size: 12, color: AppColors.textMuted),
+                        const Icon(Icons.calendar_today_rounded,
+                            size: 12, color: AppColors.textMuted),
                         const SizedBox(width: 4),
                         Text(
                           assessment.formattedDate,
-                          style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted),
+                          style: const TextStyle(
+                              fontFamily: 'Dubai',
+                              fontSize: 11,
+                              color: AppColors.textMuted),
                         ),
                       ],
                     ],
@@ -327,7 +365,11 @@ class _StatBox extends StatelessWidget {
   final String label, value;
   final Color color;
   final IconData icon;
-  const _StatBox({required this.label, required this.value, required this.color, required this.icon});
+  const _StatBox(
+      {required this.label,
+      required this.value,
+      required this.color,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -342,8 +384,17 @@ class _StatBox extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 16),
           const SizedBox(height: 4),
-          Text(value, style: TextStyle(color: color, fontSize: 12, fontWeight: FontWeight.w800, fontFamily: 'Cairo'), textAlign: TextAlign.center),
-          Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 9, fontFamily: 'Cairo'), textAlign: TextAlign.center),
+          Text(value,
+              style: TextStyle(
+                  color: color,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Dubai'),
+              textAlign: TextAlign.center),
+          Text(label,
+              style: const TextStyle(
+                  color: AppColors.textMuted, fontSize: 9, fontFamily: 'Dubai'),
+              textAlign: TextAlign.center),
         ],
       ),
     );
@@ -361,11 +412,17 @@ class _ErrorRetry extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+          const Icon(Icons.error_outline_rounded,
+              size: 48, color: AppColors.error),
           const SizedBox(height: 12),
-          Text(message, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Cairo')),
+          Text(message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: 'Dubai')),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'Cairo'))),
+          ElevatedButton(
+              onPressed: onRetry,
+              child: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai'))),
         ],
       ),
     );

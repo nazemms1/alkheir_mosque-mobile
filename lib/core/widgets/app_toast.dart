@@ -6,10 +6,12 @@ class AppToast {
   AppToast._();
 
   static void success(BuildContext context, String message) =>
-      _show(context, message, color: AppColors.success, icon: Icons.check_circle_rounded);
+      _show(context, message,
+          color: AppColors.success, icon: Icons.check_circle_rounded);
 
   static void error(BuildContext context, String message) =>
-      _show(context, message, color: AppColors.error, icon: Icons.error_rounded);
+      _show(context, message,
+          color: AppColors.error, icon: Icons.error_rounded);
 
   static void _show(
     BuildContext context,
@@ -47,7 +49,8 @@ class _ToastWidget extends StatefulWidget {
   State<_ToastWidget> createState() => _ToastWidgetState();
 }
 
-class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderStateMixin {
+class _ToastWidgetState extends State<_ToastWidget>
+    with SingleTickerProviderStateMixin {
   late final AnimationController _ctrl;
   late final Animation<double> _fade;
   late final Animation<Offset> _slide;
@@ -55,7 +58,8 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 250));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 250));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _slide = Tween<Offset>(begin: const Offset(0, -0.3), end: Offset.zero)
         .animate(CurvedAnimation(parent: _ctrl, curve: Curves.easeOutCubic));
@@ -91,7 +95,10 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                 color: widget.color,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
-                  BoxShadow(color: widget.color.withOpacity(0.35), blurRadius: 20, offset: const Offset(0, 8)),
+                  BoxShadow(
+                      color: widget.color.withOpacity(0.35),
+                      blurRadius: 20,
+                      offset: const Offset(0, 8)),
                 ],
               ),
               child: Row(
@@ -101,7 +108,11 @@ class _ToastWidgetState extends State<_ToastWidget> with SingleTickerProviderSta
                   Expanded(
                     child: Text(
                       widget.message,
-                      style: const TextStyle(color: Colors.white, fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700),
+                      style: const TextStyle(
+                          color: Colors.white,
+                          fontFamily: 'Dubai',
+                          fontSize: 13,
+                          fontWeight: FontWeight.w700),
                     ),
                   ),
                 ],

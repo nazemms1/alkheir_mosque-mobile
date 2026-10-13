@@ -1,90 +1,112 @@
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
+/// اسم خط الهوية (Dubai) — مرفق داخل التطبيق في assets/fonts ويُفعَّل من pubspec.
+const kAppFontFamily = 'Dubai';
+
+/// نمط نص بخط الهوية. استخدمه بدل أي خط آخر.
+TextStyle appTextStyle({
+  double? fontSize,
+  FontWeight? fontWeight,
+  Color? color,
+  double? letterSpacing,
+  double? height,
+}) {
+  return TextStyle(
+    fontFamily: kAppFontFamily,
+    fontSize: fontSize,
+    fontWeight: fontWeight,
+    color: color,
+    letterSpacing: letterSpacing,
+    height: height,
+  );
+}
+
+/// ألوان مسجد الخير — مأخوذة من توكنات الموقع (resources/css/app.css) وهوية الشعار.
 abstract final class AppColors {
-  // Primary greens — deep, rich mosque palette
-  static const primary        = Color(0xFF0D5016);
-  static const primaryMid     = Color(0xFF1A7A26);
-  static const primaryLight   = Color(0xFF2EA043);
-  static const primaryGlow    = Color(0xFF3DD68C);
+  // الأخضر الأساسي للهوية (شعار الجامع)
+  static const primary = Color(0xFF006B2D);
+  static const primaryMid = Color(0xFF0B8F43);
+  static const primaryLight = Color(0xFF0B8F43);
+  static const primaryGlow = Color(0xFF4CC97E);
 
-  // Accent & gold
-  static const gold           = Color(0xFFD4A843);
-  static const goldLight      = Color(0xFFFFD97D);
-  static const goldGlow       = Color(0xFFFFEDB0);
+  // الذهبي المساعد
+  static const gold = Color(0xFFA9823F);
+  static const goldLight = Color(0xFFC2A05F);
+  static const goldGlow = Color(0xFFE9D9B0);
 
-  // Background layers
-  static const bgDeep         = Color(0xFF060E08);
-  static const bgDark         = Color(0xFF0A1A0D);
-  static const bgCard         = Color(0xFF111F14);
-  static const bgCardLight    = Color(0xFF162A1A);
-  static const bgSurface      = Color(0xFFF4F8F4);
-  static const bgWhiteCard    = Color(0xFFFFFFFF);
+  // طبقات الخلفية — الداكن من الموقع (#04160B / #072714 / #0A3119)
+  static const bgDeep = Color(0xFF04160B);
+  static const bgDark = Color(0xFF051C0E);
+  static const bgCard = Color(0xFF072714);
+  static const bgCardLight = Color(0xFF0A3119);
+  // الفاتح من الموقع (#E8EBDF خلفية، #FBFAF4 لوحات)
+  static const bgSurface = Color(0xFFE8EBDF);
+  static const bgWhiteCard = Color(0xFFFBFAF4);
 
-  // Glass / overlay
-  static const glassWhite     = Color(0x1AFFFFFF);
-  static const glassBorder    = Color(0x33FFFFFF);
-  static const glassGreen     = Color(0x1A2EA043);
+  // زجاج / طبقات شفافة
+  static const glassWhite = Color(0x1AFFFFFF);
+  static const glassBorder = Color(0x33FFFFFF);
+  static const glassGreen = Color(0x1A0B8F43);
 
-  // Text
-  static const textOnDark     = Color(0xFFFFFFFF);
-  static const textOnDarkSub  = Color(0xB3FFFFFF);
-  static const textOnDarkMute = Color(0x66FFFFFF);
-  static const textPrimary    = Color(0xFF0D1F10);
-  static const textSecondary  = Color(0xFF5A7060);
-  static const textMuted      = Color(0xFF9DB5A0);
+  // النصوص
+  static const textOnDark = Color(0xFFF3FFF6);
+  static const textOnDarkSub = Color(0xFFACCDB5);
+  static const textOnDarkMute = Color(0x80ACCDB5);
+  static const textPrimary = Color(0xFF112B1C);
+  static const textSecondary = Color(0xFF48614F);
+  static const textMuted = Color(0xFF7F9A87);
 
-  // Semantic
-  static const success        = Color(0xFF22C55E);
-  static const successBg      = Color(0x1A22C55E);
-  static const warning        = Color(0xFFF59E0B);
-  static const warningBg      = Color(0x1AF59E0B);
-  static const error          = Color(0xFFEF4444);
-  static const errorBg        = Color(0x1AEF4444);
-  static const info           = Color(0xFF3B82F6);
-  static const infoBg         = Color(0x1A3B82F6);
+  // الحالات
+  static const success = Color(0xFF22C55E);
+  static const successBg = Color(0x1A22C55E);
+  static const warning = Color(0xFFF59E0B);
+  static const warningBg = Color(0x1AF59E0B);
+  static const error = Color(0xFFEF4444);
+  static const errorBg = Color(0x1AEF4444);
+  static const info = Color(0xFF3B82F6);
+  static const infoBg = Color(0x1A3B82F6);
 
-  // Attendance
-  static const attPresent              = Color(0xFF22C55E);
-  static const attAbsent               = Color(0xFFEF4444);
-  static const attLate                 = Color(0xFFF59E0B);
-  static const attExcused              = Color(0xFF3B82F6);
-  static const attExcusedEarlyDep     = Color(0xFF8B5CF6); // violet
-  static const attExcusedAbsence      = Color(0xFF06B6D4); // cyan
+  // الحضور
+  static const attPresent = Color(0xFF22C55E);
+  static const attAbsent = Color(0xFFEF4444);
+  static const attLate = Color(0xFFF59E0B);
+  static const attExcused = Color(0xFF3B82F6);
+  static const attExcusedEarlyDep = Color(0xFF8B5CF6); // بنفسجي
+  static const attExcusedAbsence = Color(0xFF06B6D4); // سماوي
 
-  // Gradients
+  // التدرجات
   static const gradientPrimary = LinearGradient(
-    colors: [Color(0xFF0D5016), Color(0xFF1A7A26), Color(0xFF2EA043)],
+    colors: [Color(0xFF006B2D), Color(0xFF0B8F43)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const gradientHero = LinearGradient(
-    colors: [Color(0xFF060E08), Color(0xFF0D5016), Color(0xFF1A3D1E)],
+    colors: [Color(0xFF04160B), Color(0xFF006B2D), Color(0xFF0A3119)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const gradientGold = LinearGradient(
-    colors: [Color(0xFFD4A843), Color(0xFFFFD97D)],
+    colors: [Color(0xFFA9823F), Color(0xFFC2A05F)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const gradientCard = LinearGradient(
-    colors: [Color(0xFF111F14), Color(0xFF1A2E1D)],
+    colors: [Color(0xFF072714), Color(0xFF0A3119)],
     begin: Alignment.topLeft,
     end: Alignment.bottomRight,
   );
 
   static const gradientSurface = LinearGradient(
-    colors: [Color(0xFFF4F8F4), Color(0xFFEAF2EC)],
+    colors: [Color(0xFFE8EBDF), Color(0xFFE8EEE2)],
     begin: Alignment.topCenter,
     end: Alignment.bottomCenter,
   );
 
   static const gradientEmerald = LinearGradient(
-    colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
+    colors: [Color(0xFF04160B), Color(0xFF006B2D), Color(0xFF0B8F43)],
     begin: Alignment.topRight,
     end: Alignment.bottomLeft,
   );
@@ -101,16 +123,16 @@ abstract final class AppColors {
     end: Alignment.bottomRight,
   );
 
-  // Standard shadows
+  // الظلال
   static List<BoxShadow> get cardShadow => [
         BoxShadow(
-          color: const Color(0xFF0D5016).withOpacity(0.08),
+          color: primary.withValues(alpha: 0.08),
           blurRadius: 24,
           spreadRadius: -2,
           offset: const Offset(0, 8),
         ),
         BoxShadow(
-          color: Colors.black.withOpacity(0.04),
+          color: Colors.black.withValues(alpha: 0.04),
           blurRadius: 8,
           offset: const Offset(0, 2),
         ),
@@ -118,13 +140,13 @@ abstract final class AppColors {
 
   static List<BoxShadow> get heroShadow => [
         BoxShadow(
-          color: const Color(0xFF0D5016).withOpacity(0.4),
+          color: primary.withValues(alpha: 0.4),
           blurRadius: 32,
           spreadRadius: -4,
           offset: const Offset(0, 12),
         ),
         BoxShadow(
-          color: Colors.black.withOpacity(0.2),
+          color: Colors.black.withValues(alpha: 0.2),
           blurRadius: 10,
           offset: const Offset(0, 4),
         ),
@@ -132,7 +154,7 @@ abstract final class AppColors {
 
   static List<BoxShadow> coloredShadow(Color color, {double opacity = 0.3}) => [
         BoxShadow(
-          color: color.withOpacity(opacity),
+          color: color.withValues(alpha: opacity),
           blurRadius: 20,
           spreadRadius: -2,
           offset: const Offset(0, 8),
@@ -141,13 +163,18 @@ abstract final class AppColors {
 }
 
 abstract final class AppTheme {
+  static const _lightBorder = Color(0xFFD5DECF);
+  static const _darkBorder = Color(0xFF193222);
+  static const _darkCard = Color(0xFF072714);
+
   static ThemeData get light {
     final base = ThemeData(
       useMaterial3: true,
       colorScheme: ColorScheme.fromSeed(
         seedColor: AppColors.primary,
         primary: AppColors.primary,
-        surface: AppColors.bgSurface,
+        secondary: AppColors.gold,
+        surface: AppColors.bgWhiteCard,
       ),
       scaffoldBackgroundColor: AppColors.bgSurface,
     );
@@ -159,25 +186,17 @@ abstract final class AppTheme {
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: GoogleFonts.cairo(
+        titleTextStyle: appTextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w700,
           color: Colors.white,
         ),
       ),
-      textTheme: GoogleFonts.cairoTextTheme(base.textTheme).copyWith(
-        displayLarge:  GoogleFonts.cairo(fontSize: 34, fontWeight: FontWeight.w900, color: AppColors.textPrimary, letterSpacing: -0.5),
-        displayMedium: GoogleFonts.cairo(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.textPrimary),
-        headlineLarge: GoogleFonts.cairo(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-        headlineMedium:GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
-        headlineSmall: GoogleFonts.cairo(fontSize: 17, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-        titleLarge:    GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-        titleMedium:   GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textPrimary),
-        titleSmall:    GoogleFonts.cairo(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textSecondary),
-        bodyLarge:     GoogleFonts.cairo(fontSize: 15, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        bodyMedium:    GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textPrimary),
-        bodySmall:     GoogleFonts.cairo(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.textSecondary),
-        labelLarge:    GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+      textTheme: _textTheme(
+        base.textTheme,
+        primary: AppColors.textPrimary,
+        muted: AppColors.textSecondary,
+        labelOn: Colors.white,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -185,72 +204,62 @@ abstract final class AppTheme {
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          textStyle: GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.w700),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: appTextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: Colors.white,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFDDE8DF)),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: Color(0xFFDDE8DF)),
-        ),
+        fillColor: AppColors.bgWhiteCard,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        border: _outline(_lightBorder),
+        enabledBorder: _outline(_lightBorder),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.primaryLight, width: 2),
+          borderSide: const BorderSide(color: AppColors.primaryMid, width: 2),
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.error),
-        ),
-        labelStyle: GoogleFonts.cairo(color: AppColors.textSecondary, fontSize: 14),
-        hintStyle: GoogleFonts.cairo(color: AppColors.textMuted, fontSize: 14),
+        errorBorder: _outline(AppColors.error),
+        labelStyle: appTextStyle(color: AppColors.textSecondary, fontSize: 14),
+        hintStyle: appTextStyle(color: AppColors.textMuted, fontSize: 14),
         prefixIconColor: AppColors.textSecondary,
       ),
-      cardTheme: CardTheme(
+      cardTheme: CardThemeData(
         color: AppColors.bgWhiteCard,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: Color(0xFFE2EDE4), width: 1),
+          side: const BorderSide(color: _lightBorder, width: 1),
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.glassGreen,
-        labelStyle: GoogleFonts.cairo(fontSize: 12, color: AppColors.primary),
+        labelStyle: appTextStyle(fontSize: 12, color: AppColors.primary),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         side: BorderSide.none,
       ),
       dividerTheme: const DividerThemeData(
-        color: Color(0xFFE2EDE4),
+        color: _lightBorder,
         thickness: 1,
         space: 1,
       ),
-      tabBarTheme: TabBarTheme(
+      tabBarTheme: TabBarThemeData(
         labelColor: AppColors.primary,
         unselectedLabelColor: AppColors.textMuted,
         indicatorColor: AppColors.primary,
         indicatorSize: TabBarIndicatorSize.label,
-        labelStyle: GoogleFonts.cairo(fontWeight: FontWeight.w700, fontSize: 14),
-        unselectedLabelStyle: GoogleFonts.cairo(fontWeight: FontWeight.w400, fontSize: 14),
-        dividerColor: const Color(0xFFE2EDE4),
+        labelStyle: appTextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        unselectedLabelStyle:
+            appTextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+        dividerColor: _lightBorder,
       ),
     );
   }
 
   static ThemeData get dark {
-    const darkSurface   = Color(0xFF0A1A0D);
-    const darkCard   = Color(0xFF111F14);
-    const darkBorder = Color(0xFF1E3320);
-
     final base = ThemeData(
       useMaterial3: true,
       brightness: Brightness.dark,
@@ -258,107 +267,136 @@ abstract final class AppTheme {
         seedColor: AppColors.primary,
         brightness: Brightness.dark,
         primary: AppColors.primaryGlow,
-        surface: darkSurface,
+        secondary: AppColors.goldLight,
+        surface: _darkCard,
       ),
-      scaffoldBackgroundColor: darkSurface,
+      scaffoldBackgroundColor: AppColors.bgDeep,
     );
 
     return base.copyWith(
       appBarTheme: AppBarTheme(
-        backgroundColor: AppColors.bgDeep,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.bgDark,
+        foregroundColor: AppColors.textOnDark,
         elevation: 0,
         scrolledUnderElevation: 0,
         centerTitle: true,
-        titleTextStyle: GoogleFonts.cairo(
+        titleTextStyle: appTextStyle(
           fontSize: 18,
           fontWeight: FontWeight.w700,
-          color: Colors.white,
+          color: AppColors.textOnDark,
         ),
       ),
-      textTheme: GoogleFonts.cairoTextTheme(base.textTheme).copyWith(
-        displayLarge:  GoogleFonts.cairo(fontSize: 34, fontWeight: FontWeight.w900, color: AppColors.textOnDark, letterSpacing: -0.5),
-        displayMedium: GoogleFonts.cairo(fontSize: 28, fontWeight: FontWeight.w800, color: AppColors.textOnDark),
-        headlineLarge: GoogleFonts.cairo(fontSize: 24, fontWeight: FontWeight.w700, color: AppColors.textOnDark),
-        headlineMedium:GoogleFonts.cairo(fontSize: 20, fontWeight: FontWeight.w700, color: AppColors.textOnDark),
-        headlineSmall: GoogleFonts.cairo(fontSize: 17, fontWeight: FontWeight.w600, color: AppColors.textOnDark),
-        titleLarge:    GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textOnDark),
-        titleMedium:   GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w500, color: AppColors.textOnDark),
-        titleSmall:    GoogleFonts.cairo(fontSize: 13, fontWeight: FontWeight.w500, color: AppColors.textOnDarkSub),
-        bodyLarge:     GoogleFonts.cairo(fontSize: 15, fontWeight: FontWeight.w400, color: AppColors.textOnDark),
-        bodyMedium:    GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w400, color: AppColors.textOnDark),
-        bodySmall:     GoogleFonts.cairo(fontSize: 12, fontWeight: FontWeight.w400, color: AppColors.textOnDarkSub),
-        labelLarge:    GoogleFonts.cairo(fontSize: 14, fontWeight: FontWeight.w700, color: Colors.white),
+      textTheme: _textTheme(
+        base.textTheme,
+        primary: AppColors.textOnDark,
+        muted: AppColors.textOnDarkSub,
+        labelOn: AppColors.textOnDark,
       ),
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
-          backgroundColor: AppColors.primaryLight,
+          backgroundColor: AppColors.primaryMid,
           foregroundColor: Colors.white,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 16),
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          textStyle: GoogleFonts.cairo(fontSize: 16, fontWeight: FontWeight.w700),
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+          textStyle: appTextStyle(fontSize: 16, fontWeight: FontWeight.w700),
         ),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
-        fillColor: darkCard,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: darkBorder),
-        ),
-        enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: darkBorder),
-        ),
+        fillColor: _darkCard,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+        border: _outline(_darkBorder),
+        enabledBorder: _outline(_darkBorder),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: AppColors.primaryGlow, width: 2),
         ),
-        errorBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(16),
-          borderSide: const BorderSide(color: AppColors.error),
-        ),
-        labelStyle: GoogleFonts.cairo(color: AppColors.textOnDarkSub, fontSize: 14),
-        hintStyle: GoogleFonts.cairo(color: AppColors.textOnDarkMute, fontSize: 14),
+        errorBorder: _outline(AppColors.error),
+        labelStyle: appTextStyle(color: AppColors.textOnDarkSub, fontSize: 14),
+        hintStyle: appTextStyle(color: AppColors.textOnDarkMute, fontSize: 14),
         prefixIconColor: AppColors.textOnDarkSub,
       ),
-      cardTheme: CardTheme(
-        color: darkCard,
+      cardTheme: CardThemeData(
+        color: _darkCard,
         elevation: 0,
         margin: EdgeInsets.zero,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(20),
-          side: const BorderSide(color: darkBorder, width: 1),
+          side: const BorderSide(color: _darkBorder, width: 1),
         ),
       ),
       chipTheme: ChipThemeData(
         backgroundColor: AppColors.glassGreen,
-        labelStyle: GoogleFonts.cairo(fontSize: 12, color: AppColors.primaryGlow),
+        labelStyle: appTextStyle(fontSize: 12, color: AppColors.primaryGlow),
         padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
         side: BorderSide.none,
       ),
       dividerTheme: const DividerThemeData(
-        color: darkBorder,
+        color: _darkBorder,
         thickness: 1,
         space: 1,
       ),
-      tabBarTheme: TabBarTheme(
+      tabBarTheme: TabBarThemeData(
         labelColor: AppColors.primaryGlow,
         unselectedLabelColor: AppColors.textOnDarkMute,
         indicatorColor: AppColors.primaryGlow,
         indicatorSize: TabBarIndicatorSize.label,
-        labelStyle: GoogleFonts.cairo(fontWeight: FontWeight.w700, fontSize: 14),
-        unselectedLabelStyle: GoogleFonts.cairo(fontWeight: FontWeight.w400, fontSize: 14),
-        dividerColor: darkBorder,
+        labelStyle: appTextStyle(fontWeight: FontWeight.w700, fontSize: 14),
+        unselectedLabelStyle:
+            appTextStyle(fontWeight: FontWeight.w400, fontSize: 14),
+        dividerColor: _darkBorder,
       ),
     );
   }
+
+  static OutlineInputBorder _outline(Color color) => OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: color),
+      );
+
+  static TextTheme _textTheme(
+    TextTheme base, {
+    required Color primary,
+    required Color muted,
+    required Color labelOn,
+  }) {
+    return base.apply(fontFamily: kAppFontFamily).copyWith(
+          displayLarge: appTextStyle(
+              fontSize: 34,
+              fontWeight: FontWeight.w700,
+              color: primary,
+              letterSpacing: -0.5),
+          displayMedium: appTextStyle(
+              fontSize: 28, fontWeight: FontWeight.w700, color: primary),
+          headlineLarge: appTextStyle(
+              fontSize: 24, fontWeight: FontWeight.w700, color: primary),
+          headlineMedium: appTextStyle(
+              fontSize: 20, fontWeight: FontWeight.w700, color: primary),
+          headlineSmall: appTextStyle(
+              fontSize: 17, fontWeight: FontWeight.w700, color: primary),
+          titleLarge: appTextStyle(
+              fontSize: 16, fontWeight: FontWeight.w700, color: primary),
+          titleMedium: appTextStyle(
+              fontSize: 14, fontWeight: FontWeight.w500, color: primary),
+          titleSmall: appTextStyle(
+              fontSize: 13, fontWeight: FontWeight.w500, color: muted),
+          bodyLarge: appTextStyle(
+              fontSize: 15, fontWeight: FontWeight.w400, color: primary),
+          bodyMedium: appTextStyle(
+              fontSize: 14, fontWeight: FontWeight.w400, color: primary),
+          bodySmall: appTextStyle(
+              fontSize: 12, fontWeight: FontWeight.w400, color: muted),
+          labelLarge: appTextStyle(
+              fontSize: 14, fontWeight: FontWeight.w700, color: labelOn),
+        );
+  }
 }
 
-// ─── Reusable premium widgets ─────────────────────────────────────────────────
+// ─── ويدجتات مشتركة ───────────────────────────────────────────────────────────
 
 class GlassCard extends StatelessWidget {
   final Widget child;
@@ -408,21 +446,26 @@ class PremiumCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return GestureDetector(
       onTap: onTap,
       child: Container(
         padding: padding ?? const EdgeInsets.all(20),
         decoration: BoxDecoration(
-          color: AppColors.bgWhiteCard,
+          color: isDark ? AppColors.bgCard : AppColors.bgWhiteCard,
           borderRadius: borderRadius ?? BorderRadius.circular(20),
-          border: Border.all(color: const Color(0xFFE2EDE4)),
-          boxShadow: shadows ?? [
-            BoxShadow(
-              color: AppColors.primary.withOpacity(0.06),
-              blurRadius: 20,
-              offset: const Offset(0, 6),
-            ),
-          ],
+          border: Border.all(
+              color: isDark ? AppTheme._darkBorder : AppTheme._lightBorder),
+          boxShadow: isDark
+              ? const []
+              : (shadows ??
+                  [
+                    BoxShadow(
+                      color: AppColors.primary.withValues(alpha: 0.06),
+                      blurRadius: 20,
+                      offset: const Offset(0, 6),
+                    ),
+                  ]),
         ),
         child: child,
       ),

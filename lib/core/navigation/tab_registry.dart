@@ -9,11 +9,14 @@ import '../../features/admin/screens/admin_students_screen.dart';
 import '../../features/attendance/screens/attendance_screen.dart';
 import '../../features/child_profile/screens/child_profile_screen.dart';
 import '../../features/home/screens/home_screen.dart';
+import '../../features/management/screens/management_hub_tab.dart';
 import '../../features/memorization/screens/memorization_screen.dart';
 import '../../features/points/screens/points_screen.dart';
 import '../../features/supervisor/screens/supervisor_shell.dart';
+import '../rbac/module_access.dart';
 import '../rbac/permissions.dart';
 import 'app_tab.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
 /// سجل التبويبات المركزي — المكان الوحيد الذي تُعرَّف فيه صفحات التطبيق
@@ -32,26 +35,26 @@ final List<AppTab> parentTabs = [
     id: 'parent-home',
     icon: Icons.home_outlined,
     activeIcon: Icons.home_rounded,
-    label: 'الرئيسية',
-    subtitle: 'مرحباً بك في مسجد الخير',
+    label: tr('الرئيسية'),
+    subtitle: tr('مرحباً بك في مسجد الخير'),
     builder: (ctx) => HomeScreen(ctx: ctx),
   ),
   AppTab(
     id: 'parent-student',
     icon: Icons.person_outline_rounded,
     activeIcon: Icons.person_rounded,
-    label: 'الطالب',
-    title: 'بيانات الطالب',
-    subtitle: 'ملفات أبنائك',
+    label: tr('الطالب'),
+    title: tr('بيانات الطالب'),
+    subtitle: tr('ملفات أبنائك'),
     builder: (ctx) => ChildProfileScreen(student: ctx.activeChild.student),
   ),
   AppTab(
     id: 'parent-attendance',
     icon: Icons.calendar_month_outlined,
     activeIcon: Icons.calendar_month_rounded,
-    label: 'الحضور',
-    title: 'سجل الحضور',
-    subtitle: 'سجلات الحضور',
+    label: tr('الحضور'),
+    title: tr('سجل الحضور'),
+    subtitle: tr('سجلات الحضور'),
     builder: (ctx) => AttendanceScreen(
       records: ctx.activeChild.attendanceRecords,
       studentId: int.tryParse(ctx.activeChild.student.id),
@@ -61,9 +64,9 @@ final List<AppTab> parentTabs = [
     id: 'parent-memorization',
     icon: Icons.menu_book_outlined,
     activeIcon: Icons.menu_book_rounded,
-    label: 'الحفظ',
-    title: 'المحفوظات',
-    subtitle: 'سجلات الحفظ',
+    label: tr('الحفظ'),
+    title: tr('المحفوظات'),
+    subtitle: tr('سجلات الحفظ'),
     builder: (ctx) => MemorizationScreen(
       progress: ctx.activeChild.memorizationProgress,
       studentId: int.tryParse(ctx.activeChild.student.id),
@@ -73,9 +76,9 @@ final List<AppTab> parentTabs = [
     id: 'parent-points',
     icon: Icons.star_outline_rounded,
     activeIcon: Icons.star_rounded,
-    label: 'النقاط',
-    title: 'النقاط والتقييمات',
-    subtitle: 'النقاط والتقييمات',
+    label: tr('النقاط'),
+    title: tr('النقاط والتقييمات'),
+    subtitle: tr('النقاط والتقييمات'),
     builder: (ctx) => PointsScreen(
       pointRecords: ctx.activeChild.pointRecords,
       evaluations: ctx.activeChild.evaluations,
@@ -91,16 +94,16 @@ final List<AppTab> adminTabs = [
     id: 'admin-home',
     icon: Icons.dashboard_outlined,
     activeIcon: Icons.dashboard_rounded,
-    label: 'الرئيسية',
-    subtitle: 'لوحة التحكم',
+    label: tr('الرئيسية'),
+    subtitle: tr('لوحة التحكم'),
     builder: (ctx) => AdminHomeTab(token: ctx.token),
   ),
   AppTab(
     id: 'admin-groups',
     icon: Icons.groups_outlined,
     activeIcon: Icons.groups_rounded,
-    label: 'الحلقات',
-    subtitle: 'إدارة الحلقات',
+    label: tr('الحلقات'),
+    subtitle: tr('إدارة الحلقات'),
     anyOfPermissions: const [Permissions.groupsView],
     builder: (ctx) => AdminGroupsScreen(token: ctx.token),
   ),
@@ -108,8 +111,8 @@ final List<AppTab> adminTabs = [
     id: 'admin-students',
     icon: Icons.people_outline_rounded,
     activeIcon: Icons.people_rounded,
-    label: 'الطلاب',
-    subtitle: 'قائمة الطلاب',
+    label: tr('الطلاب'),
+    subtitle: tr('قائمة الطلاب'),
     anyOfPermissions: const [Permissions.studentsView],
     builder: (_) => const AdminStudentsScreen(),
   ),
@@ -117,8 +120,8 @@ final List<AppTab> adminTabs = [
     id: 'admin-assessments',
     icon: Icons.assignment_outlined,
     activeIcon: Icons.assignment_rounded,
-    label: 'التقييمات',
-    subtitle: 'التقييمات والاختبارات',
+    label: tr('التقييمات'),
+    subtitle: tr('التقييمات والاختبارات'),
     anyOfPermissions: const [Permissions.assessmentsView],
     builder: (_) => const AdminAssessmentsScreen(),
   ),
@@ -126,8 +129,8 @@ final List<AppTab> adminTabs = [
     id: 'admin-reports',
     icon: Icons.bar_chart_outlined,
     activeIcon: Icons.bar_chart_rounded,
-    label: 'التقارير',
-    subtitle: 'نظرة عامة وملخص المعلمين',
+    label: tr('التقارير'),
+    subtitle: tr('نظرة عامة وملخص المعلمين'),
     anyOfPermissions: const [Permissions.reportsView],
     builder: (_) => const AdminReportsScreen(),
   ),
@@ -135,12 +138,25 @@ final List<AppTab> adminTabs = [
     id: 'admin-finance',
     icon: Icons.account_balance_wallet_outlined,
     activeIcon: Icons.account_balance_wallet_rounded,
-    label: 'المالية',
-    subtitle: 'الفواتير والأنشطة',
+    label: tr('المالية'),
+    subtitle: tr('الفواتير والأنشطة'),
     anyOfPermissions: const [Permissions.invoicesView],
     builder: (_) => const AdminFinanceScreen(),
   ),
+  managementTab,
 ];
+
+/// تبويب "الإدارة" المشترك: يظهر لكل حساب يملك صلاحية وحدة إدارية واحدة على الأقل.
+/// الوحدات نفسها تُرشَّح داخل التبويب بالصلاحيات (لا بأسماء الأدوار).
+final AppTab managementTab = AppTab(
+  id: 'management',
+  icon: Icons.apps_outlined,
+  activeIcon: Icons.apps_rounded,
+  label: tr('الإدارة'),
+  subtitle: tr('الوحدات الإدارية حسب صلاحياتك'),
+  visibleWhen: ModuleAccess.hasAnyModule,
+  builder: (ctx) => ManagementHubTab(token: ctx.token),
+);
 
 // ─── شروط مركّبة مشتركة بين تبويبات الأدوار الإشرافية ────────────────────────
 
@@ -170,24 +186,24 @@ final List<AppTab> supervisorTabs = [
     id: 'sup-home',
     icon: Icons.dashboard_outlined,
     activeIcon: Icons.dashboard_rounded,
-    label: 'الرئيسية',
-    subtitle: 'لوحة التحكم',
+    label: tr('الرئيسية'),
+    subtitle: tr('لوحة التحكم'),
     builder: (ctx) => SupervisorHomeTab(token: ctx.token),
   ),
   AppTab(
     id: 'sup-progress',
     icon: Icons.trending_up_outlined,
     activeIcon: Icons.trending_up_rounded,
-    label: 'التقدم',
-    subtitle: 'تقدّم الطلاب',
+    label: tr('التقدم'),
+    subtitle: tr('تقدّم الطلاب'),
     builder: (ctx) => StudentsProgressTab(token: ctx.token),
   ),
   AppTab(
     id: 'sup-recitation',
     icon: Icons.record_voice_over_outlined,
     activeIcon: Icons.record_voice_over_rounded,
-    label: 'التسميع',
-    subtitle: 'الحفظ واختبارات القرآن',
+    label: tr('التسميع'),
+    subtitle: tr('الحفظ واختبارات القرآن'),
     visibleWhen: (t) =>
         (t.isSupervisor ||
             t.isAssistantSupervisor ||
@@ -207,8 +223,8 @@ final List<AppTab> supervisorTabs = [
     id: 'sup-attendance',
     icon: Icons.event_available_outlined,
     activeIcon: Icons.event_available_rounded,
-    label: 'الحضور',
-    subtitle: 'سجل حضور الطلاب',
+    label: tr('الحضور'),
+    subtitle: tr('سجل حضور الطلاب'),
     anyOfPermissions: const [Permissions.attendanceStudentTake],
     visibleWhen: (t) => t.isSupervisor || t.isAssistantSupervisor || t.isAdmin,
     builder: (_) => const SupervisorAttendanceTab(),
@@ -217,8 +233,8 @@ final List<AppTab> supervisorTabs = [
     id: 'sup-trial-exam',
     icon: Icons.science_outlined,
     activeIcon: Icons.science_rounded,
-    label: 'تجريبي',
-    subtitle: 'نتائج السبر التجريبي',
+    label: tr('تجريبي'),
+    subtitle: tr('نتائج السبر التجريبي'),
     visibleWhen: (t) =>
         (t.isTrialExamSupervisor || t.isFinalExamSupervisor || t.isAdmin) &&
         _canViewExams(t),
@@ -228,17 +244,18 @@ final List<AppTab> supervisorTabs = [
     id: 'sup-final-exam',
     icon: Icons.verified_outlined,
     activeIcon: Icons.verified_rounded,
-    label: 'نهائي',
-    subtitle: 'نتائج السير النهائي',
-    visibleWhen: (t) => (t.isFinalExamSupervisor || t.isAdmin) && _canViewExams(t),
+    label: tr('نهائي'),
+    subtitle: tr('نتائج السير النهائي'),
+    visibleWhen: (t) =>
+        (t.isFinalExamSupervisor || t.isAdmin) && _canViewExams(t),
     builder: (ctx) => FinalExamTab(canRecord: _canRecordExams(ctx.token)),
   ),
   AppTab(
     id: 'sup-reports',
     icon: Icons.bar_chart_outlined,
     activeIcon: Icons.bar_chart_rounded,
-    label: 'التقارير',
-    subtitle: 'تقارير الحلقة',
+    label: tr('التقارير'),
+    subtitle: tr('تقارير الحلقة'),
     anyOfPermissions: const [Permissions.reportsView],
     visibleWhen: (t) => t.isSupervisor || t.isAdmin,
     builder: (_) => const ReportsTab(),
@@ -247,8 +264,8 @@ final List<AppTab> supervisorTabs = [
     id: 'sup-points',
     icon: Icons.star_outline_rounded,
     activeIcon: Icons.star_rounded,
-    label: 'النقاط',
-    subtitle: 'نقاط الطلاب',
+    label: tr('النقاط'),
+    subtitle: tr('نقاط الطلاب'),
     anyOfPermissions: const [Permissions.pointsView],
     builder: (_) => const SupervisorPointsTab(),
   ),
@@ -256,14 +273,15 @@ final List<AppTab> supervisorTabs = [
     id: 'sup-assessments',
     icon: Icons.assignment_outlined,
     activeIcon: Icons.assignment_rounded,
-    label: 'التقييمات',
-    subtitle: 'التقييمات والاختبارات',
+    label: tr('التقييمات'),
+    subtitle: tr('التقييمات والاختبارات'),
     anyOfPermissions: const [
       Permissions.assessmentsView,
       Permissions.assessmentResultsView,
     ],
     builder: (_) => const SupervisorAssessmentsTab(),
   ),
+  managementTab,
 ];
 
 /// يعيد تبويبات الحساب الحالي: تُختار عائلة التبويبات حسب الدور
@@ -276,6 +294,9 @@ List<AppTab> tabsFor(AuthToken token) {
     family = adminTabs;
   } else if (token.isAnyStaff) {
     family = supervisorTabs;
+  } else if (ModuleAccess.hasAnyModule(token)) {
+    // حساب بلا دور إشرافي لكنه يملك صلاحيات وحدات (مثلاً صلاحيات مخصّصة).
+    family = [managementTab];
   } else {
     return const [];
   }

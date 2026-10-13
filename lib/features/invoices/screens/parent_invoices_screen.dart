@@ -4,6 +4,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/student_service.dart';
 import 'invoice_detail_screen.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class ParentInvoicesScreen extends StatefulWidget {
   const ParentInvoicesScreen({super.key});
@@ -25,14 +26,23 @@ class _ParentInvoicesScreenState extends State<ParentInvoicesScreen> {
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final invoices = await _service.fetchInvoices();
       if (!mounted) return;
-      setState(() { _invoices = invoices; _loading = false; });
+      setState(() {
+        _invoices = invoices;
+        _loading = false;
+      });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _error = e.toString(); _loading = false; });
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
     }
   }
 
@@ -52,17 +62,26 @@ class _ParentInvoicesScreenState extends State<ParentInvoicesScreen> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+            const Icon(Icons.error_outline_rounded,
+                size: 48, color: AppColors.error),
             const SizedBox(height: 12),
-            Text(_error!, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Cairo')),
+            Text(_error!,
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontFamily: 'Dubai')),
             const SizedBox(height: 16),
-            ElevatedButton(onPressed: _load, child: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'Cairo'))),
+            ElevatedButton(
+                onPressed: _load,
+                child: Text(tr('إعادة المحاولة'),
+                    style: TextStyle(fontFamily: 'Dubai'))),
           ],
         ),
       );
     }
     if (_invoices.isEmpty) {
-      return const Center(child: Text('لا توجد فواتير', style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)));
+      return Center(
+          child: Text(tr('لا توجد فواتير'),
+              style:
+                  TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)));
     }
     return RefreshIndicator(
       onRefresh: _load,
@@ -84,7 +103,10 @@ class _ParentInvoicesScreenState extends State<ParentInvoicesScreen> {
       child: Container(
         decoration: const BoxDecoration(
           gradient: AppColors.gradientPrimary,
-          boxShadow: [BoxShadow(color: Color(0x30000000), blurRadius: 12, offset: Offset(0, 3))],
+          boxShadow: [
+            BoxShadow(
+                color: Color(0x30000000), blurRadius: 12, offset: Offset(0, 3))
+          ],
         ),
         child: SafeArea(
           child: Padding(
@@ -101,12 +123,18 @@ class _ParentInvoicesScreenState extends State<ParentInvoicesScreen> {
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: AppColors.glassBorder),
                     ),
-                    child: const Icon(Icons.arrow_forward_ios_rounded, color: Colors.white, size: 18),
+                    child: const Icon(Icons.arrow_forward_ios_rounded,
+                        color: Colors.white, size: 18),
                   ),
                 ),
                 const SizedBox(width: 12),
-                const Expanded(
-                  child: Text('الفواتير', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.w700, fontFamily: 'Cairo')),
+                Expanded(
+                  child: Text(tr('الفواتير'),
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Dubai')),
                 ),
               ],
             ),
@@ -128,19 +156,22 @@ class _InvoiceTile extends StatelessWidget {
   }
 
   String get _statusLabel {
-    if (invoice.isPaid) return 'مدفوعة';
-    if (invoice.isOverdue) return 'متأخرة';
-    return 'صادرة';
+    if (invoice.isPaid) return tr('مدفوعة');
+    if (invoice.isOverdue) return tr('متأخرة');
+    return tr('صادرة');
   }
 
   @override
   Widget build(BuildContext context) {
     final color = _statusColor;
-    final paidPercent = invoice.total > 0 ? (invoice.paidTotal / invoice.total * 100).clamp(0, 100).round() : 0;
+    final paidPercent = invoice.total > 0
+        ? (invoice.paidTotal / invoice.total * 100).clamp(0, 100).round()
+        : 0;
 
     return GestureDetector(
       onTap: () => Navigator.of(context).push(
-        MaterialPageRoute(builder: (_) => InvoiceDetailScreen(invoiceId: invoice.id)),
+        MaterialPageRoute(
+            builder: (_) => InvoiceDetailScreen(invoiceId: invoice.id)),
       ),
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
@@ -149,7 +180,12 @@ class _InvoiceTile extends StatelessWidget {
           color: Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: color.withOpacity(0.2), width: 1.5),
-          boxShadow: [BoxShadow(color: color.withOpacity(0.08), blurRadius: 16, offset: const Offset(0, 5))],
+          boxShadow: [
+            BoxShadow(
+                color: color.withOpacity(0.08),
+                blurRadius: 16,
+                offset: const Offset(0, 5))
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -158,21 +194,41 @@ class _InvoiceTile extends StatelessWidget {
               children: [
                 Container(
                   padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(color: color.withOpacity(0.1), borderRadius: BorderRadius.circular(12)),
-                  child: Icon(Icons.receipt_long_rounded, color: color, size: 20),
+                  decoration: BoxDecoration(
+                      color: color.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12)),
+                  child:
+                      Icon(Icons.receipt_long_rounded, color: color, size: 20),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Text(invoice.invoiceNo,
-                      style: TextStyle(fontFamily: 'Cairo', fontSize: 14, fontWeight: FontWeight.w700, color: Theme.of(context).colorScheme.onSurface)),
+                      style: TextStyle(
+                          fontFamily: 'Dubai',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
+                          color: Theme.of(context).colorScheme.onSurface)),
                 ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  decoration: BoxDecoration(color: color.withOpacity(0.12), borderRadius: BorderRadius.circular(20)),
-                  child: Text(_statusLabel, style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700, fontFamily: 'Cairo')),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                  decoration: BoxDecoration(
+                      color: color.withOpacity(0.12),
+                      borderRadius: BorderRadius.circular(20)),
+                  child: Text(_statusLabel,
+                      style: TextStyle(
+                          color: color,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Dubai')),
                 ),
                 const SizedBox(width: 4),
-                Icon(Icons.chevron_left_rounded, color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4), size: 20),
+                Icon(Icons.chevron_left_rounded,
+                    color: Theme.of(context)
+                        .colorScheme
+                        .onSurface
+                        .withOpacity(0.4),
+                    size: 20),
               ],
             ),
             const SizedBox(height: 14),
@@ -189,11 +245,23 @@ class _InvoiceTile extends StatelessWidget {
             Row(
               children: [
                 Text('${invoice.total.toInt()}',
-                    style: const TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w800, color: AppColors.info)),
+                    style: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: AppColors.info)),
                 const SizedBox(width: 6),
-                const Text('الإجمالي', style: TextStyle(fontFamily: 'Cairo', fontSize: 9, color: AppColors.textMuted)),
+                Text(tr('الإجمالي'),
+                    style: TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 9,
+                        color: AppColors.textMuted)),
                 const Spacer(),
-                Text(invoice.issueDate, style: const TextStyle(fontFamily: 'Cairo', fontSize: 10, color: AppColors.textMuted)),
+                Text(invoice.issueDate,
+                    style: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 10,
+                        color: AppColors.textMuted)),
               ],
             ),
           ],

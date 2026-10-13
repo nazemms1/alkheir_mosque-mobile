@@ -7,8 +7,10 @@ class _PointsHero extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final bonus  = records.where((r) => r.isBonus).fold<int>(0, (s, r) => s + r.points);
-    final earned = records.where((r) => !r.isBonus).fold<int>(0, (s, r) => s + r.points);
+    final bonus =
+        records.where((r) => r.isBonus).fold<int>(0, (s, r) => s + r.points);
+    final earned =
+        records.where((r) => !r.isBonus).fold<int>(0, (s, r) => s + r.points);
 
     return Container(
       decoration: const BoxDecoration(
@@ -25,11 +27,23 @@ class _PointsHero extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              _MiniStatCard(icon: Icons.menu_book_rounded,     label: 'نقاط الحفظ',    value: '$earned', color: AppColors.primaryGlow),
+              _MiniStatCard(
+                  icon: Icons.menu_book_rounded,
+                  label: tr('نقاط الحفظ'),
+                  value: '$earned',
+                  color: AppColors.primaryGlow),
               const SizedBox(width: 10),
-              _MiniStatCard(icon: Icons.card_giftcard_rounded, label: 'نقاط المكافآت', value: '$bonus',  color: AppColors.gold),
+              _MiniStatCard(
+                  icon: Icons.card_giftcard_rounded,
+                  label: tr('نقاط المكافآت'),
+                  value: '$bonus',
+                  color: AppColors.gold),
               const SizedBox(width: 10),
-              _MiniStatCard(icon: Icons.receipt_long_rounded,  label: 'عدد الإدخالات', value: '${records.length}', color: AppColors.info),
+              _MiniStatCard(
+                  icon: Icons.receipt_long_rounded,
+                  label: tr('عدد الإدخالات'),
+                  value: '${records.length}',
+                  color: AppColors.info),
             ],
           ),
         ],
@@ -51,7 +65,8 @@ class _ScoreRow extends StatelessWidget {
           alignment: Alignment.center,
           children: [
             Container(
-              width: 80, height: 80,
+              width: 80,
+              height: 80,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: RadialGradient(
@@ -60,15 +75,20 @@ class _ScoreRow extends StatelessWidget {
               ),
             ),
             Container(
-              width: 60, height: 60,
+              width: 60,
+              height: 60,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 gradient: AppColors.gradientGold,
                 boxShadow: [
-                  BoxShadow(color: AppColors.gold.withOpacity(0.5), blurRadius: 20, spreadRadius: 2),
+                  BoxShadow(
+                      color: AppColors.gold.withOpacity(0.5),
+                      blurRadius: 20,
+                      spreadRadius: 2),
                 ],
               ),
-              child: const Icon(Icons.star_rounded, color: Colors.white, size: 32),
+              child:
+                  const Icon(Icons.star_rounded, color: Colors.white, size: 32),
             ),
           ],
         ),
@@ -81,14 +101,20 @@ class _ScoreRow extends StatelessWidget {
               child: Text(
                 '$total',
                 style: const TextStyle(
-                  color: Colors.white, fontSize: 52,
-                  fontWeight: FontWeight.w900, fontFamily: 'Cairo', height: 1,
+                  color: Colors.white,
+                  fontSize: 52,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai',
+                  height: 1,
                 ),
               ),
             ),
             Text(
-              'إجمالي النقاط',
-              style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 14, fontFamily: 'Cairo'),
+              tr('إجمالي النقاط'),
+              style: TextStyle(
+                  color: Colors.white.withOpacity(0.6),
+                  fontSize: 14,
+                  fontFamily: 'Dubai'),
             ),
           ],
         ),
@@ -101,7 +127,11 @@ class _MiniStatCard extends StatelessWidget {
   final IconData icon;
   final String label, value;
   final Color color;
-  const _MiniStatCard({required this.icon, required this.label, required this.value, required this.color});
+  const _MiniStatCard(
+      {required this.icon,
+      required this.label,
+      required this.value,
+      required this.color});
 
   @override
   Widget build(BuildContext context) {
@@ -118,9 +148,16 @@ class _MiniStatCard extends StatelessWidget {
             Icon(icon, color: color, size: 20),
             const SizedBox(height: 5),
             Text(value,
-                style: TextStyle(color: color, fontSize: 18, fontWeight: FontWeight.w900, fontFamily: 'Cairo')),
+                style: TextStyle(
+                    color: color,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Dubai')),
             Text(label,
-                style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 10, fontFamily: 'Cairo'),
+                style: TextStyle(
+                    color: Colors.white.withOpacity(0.6),
+                    fontSize: 10,
+                    fontFamily: 'Dubai'),
                 textAlign: TextAlign.center),
           ],
         ),

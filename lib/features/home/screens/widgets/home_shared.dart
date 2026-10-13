@@ -3,13 +3,15 @@ part of '../home_screen.dart';
 class _DecorCircle extends StatelessWidget {
   final double size, opacity;
   final Color color;
-  const _DecorCircle({required this.size, required this.color, required this.opacity});
+  const _DecorCircle(
+      {required this.size, required this.color, required this.opacity});
 
   @override
   Widget build(BuildContext context) => Container(
         width: size,
         height: size,
-        decoration: BoxDecoration(shape: BoxShape.circle, color: color.withOpacity(opacity)),
+        decoration: BoxDecoration(
+            shape: BoxShape.circle, color: color.withOpacity(opacity)),
       );
 }
 
@@ -29,7 +31,10 @@ class _SectionLabel extends StatelessWidget {
             gradient: AppColors.gradientPrimary,
             borderRadius: BorderRadius.circular(3),
             boxShadow: [
-              BoxShadow(color: AppColors.primary.withOpacity(0.4), blurRadius: 6, offset: const Offset(0, 2)),
+              BoxShadow(
+                  color: AppColors.primary.withOpacity(0.4),
+                  blurRadius: 6,
+                  offset: const Offset(0, 2)),
             ],
           ),
         ),
@@ -44,14 +49,15 @@ class _SectionLabel extends StatelessWidget {
               decoration: BoxDecoration(
                 color: AppColors.glassGreen,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: AppColors.primaryLight.withOpacity(0.2)),
+                border:
+                    Border.all(color: AppColors.primaryLight.withOpacity(0.2)),
               ),
-              child: Text('عرض الكل',
+              child: Text(tr('عرض الكل'),
                   style: TextStyle(
                     color: AppColors.primaryGlow,
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                   )),
             ),
           ),

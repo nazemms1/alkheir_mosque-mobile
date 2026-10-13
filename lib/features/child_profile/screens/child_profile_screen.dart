@@ -3,11 +3,13 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/student_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class ChildProfileScreen extends StatefulWidget {
   final StudentModel student;
   final bool shrinkWrap;
-  const ChildProfileScreen({super.key, required this.student, this.shrinkWrap = false});
+  const ChildProfileScreen(
+      {super.key, required this.student, this.shrinkWrap = false});
 
   @override
   State<ChildProfileScreen> createState() => _ChildProfileScreenState();
@@ -28,18 +30,27 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
   void didUpdateWidget(ChildProfileScreen old) {
     super.didUpdateWidget(old);
     if (old.student.id != widget.student.id) {
-      setState(() { _loading = true; _detail = null; });
+      setState(() {
+        _loading = true;
+        _detail = null;
+      });
       _fetchDetail();
     }
   }
 
   Future<void> _fetchDetail() async {
     final idInt = int.tryParse(widget.student.id);
-    if (idInt == null) { setState(() => _loading = false); return; }
+    if (idInt == null) {
+      setState(() => _loading = false);
+      return;
+    }
     try {
       final detail = await _service.fetchChildDetail(idInt);
       if (!mounted) return;
-      setState(() { _detail = detail; _loading = false; });
+      setState(() {
+        _detail = detail;
+        _loading = false;
+      });
     } catch (_) {
       if (!mounted) return;
       setState(() => _loading = false);
@@ -49,26 +60,33 @@ class _ChildProfileScreenState extends State<ChildProfileScreen> {
   @override
   Widget build(BuildContext context) {
     // بناء StudentModel من ChildDetail إذا كانت متاحة
-    final student = _detail != null ? _buildStudentFromDetail(_detail!) : widget.student;
-    return _ChildProfileView(student: student, detail: _detail, loading: _loading, shrinkWrap: widget.shrinkWrap);
+    final student =
+        _detail != null ? _buildStudentFromDetail(_detail!) : widget.student;
+    return _ChildProfileView(
+        student: student,
+        detail: _detail,
+        loading: _loading,
+        shrinkWrap: widget.shrinkWrap);
   }
 
   StudentModel _buildStudentFromDetail(ChildDetail d) => StudentModel(
-    id: d.studentNumber,
-    name: d.fullName,
-    avatarInitials: d.avatarInitials,
-    groupName: d.groupName,
-    courseName: d.courseName,
-    teacherName: d.teacherName,
-    academicYear: d.gradeLevelName ?? '',
-    enrollmentYear: d.joinedAt != null
-        ? int.tryParse(d.joinedAt!.split('-').first) ?? DateTime.now().year
-        : DateTime.now().year,
-    phone: d.activeEnrollments.isNotEmpty
-        ? d.activeEnrollments.first.group.teacherPhone
-        : '',
-    enrollmentId: d.activeEnrollments.isNotEmpty ? d.activeEnrollments.first.id : null,
-  );
+        id: d.studentNumber,
+        name: d.fullName,
+        avatarInitials: d.avatarInitials,
+        groupName: d.groupName,
+        courseName: d.courseName,
+        teacherName: d.teacherName,
+        academicYear: d.gradeLevelName ?? '',
+        enrollmentYear: d.joinedAt != null
+            ? int.tryParse(d.joinedAt!.split('-').first) ?? DateTime.now().year
+            : DateTime.now().year,
+        phone: d.activeEnrollments.isNotEmpty
+            ? d.activeEnrollments.first.group.teacherPhone
+            : '',
+        enrollmentId: d.activeEnrollments.isNotEmpty
+            ? d.activeEnrollments.first.id
+            : null,
+      );
 }
 
 class _ChildProfileView extends StatelessWidget {
@@ -88,32 +106,41 @@ class _ChildProfileView extends StatelessWidget {
   Widget build(BuildContext context) {
     return CustomScrollView(
       shrinkWrap: shrinkWrap,
-      physics: shrinkWrap ? const NeverScrollableScrollPhysics() : const BouncingScrollPhysics(),
+      physics: shrinkWrap
+          ? const NeverScrollableScrollPhysics()
+          : const BouncingScrollPhysics(),
       slivers: [
         SliverToBoxAdapter(
           child: _ProfileHero(student: student)
               .animate()
               .fadeIn(duration: 500.ms)
-              .slideY(begin: -0.03, end: 0, duration: 500.ms, curve: Curves.easeOut),
+              .slideY(
+                  begin: -0.03,
+                  end: 0,
+                  duration: 500.ms,
+                  curve: Curves.easeOut),
         ),
         SliverPadding(
           padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
           sliver: SliverToBoxAdapter(
             child: _InfoCard(
-              title: 'بيانات التسجيل',
+              title: tr('بيانات التسجيل'),
               icon: Icons.badge_rounded,
               gradient: AppColors.gradientEmerald,
               items: [
-                _Item('رقم الطالب', student.id),
-                _Item('الاسم الكامل', student.name),
+                _Item(tr('رقم الطالب'), student.id),
+                _Item(tr('الاسم الكامل'), student.name),
                 if (detail != null) ...[
-                  _Item('تاريخ الميلاد', detail!.birthDate ?? '-'),
-                  _Item('المدرسة', detail!.schoolName ?? '-'),
-                  _Item('المستوى الدراسي', detail!.gradeLevelName ?? '-'),
+                  _Item(tr('تاريخ الميلاد'), detail!.birthDate ?? '-'),
+                  _Item(tr('المدرسة'), detail!.schoolName ?? '-'),
+                  _Item(tr('المستوى الدراسي'), detail!.gradeLevelName ?? '-'),
                 ],
-                _Item('سنة الالتحاق', '${student.enrollmentYear}م'),
+                _Item(
+                    tr('سنة الالتحاق'), trf('{0}م', [student.enrollmentYear])),
               ],
-            ).animate().fadeIn(delay: 120.ms, duration: 450.ms)
+            )
+                .animate()
+                .fadeIn(delay: 120.ms, duration: 450.ms)
                 .slideY(begin: 0.05, end: 0, delay: 120.ms, duration: 450.ms),
           ),
         ),
@@ -121,19 +148,23 @@ class _ChildProfileView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
           sliver: SliverToBoxAdapter(
             child: _InfoCard(
-              title: 'بيانات الحلقة',
+              title: tr('بيانات الحلقة'),
               icon: Icons.groups_rounded,
               gradient: AppColors.gradientSapphire,
               items: [
-                _Item('المجموعة', student.groupName),
-                _Item('الدورة', student.courseName),
-                _Item('المعلم', student.teacherName),
+                _Item(tr('المجموعة'), student.groupName),
+                _Item(tr('الدورة'), student.courseName),
+                _Item(tr('المعلم'), student.teacherName),
                 if (detail != null && detail!.quranCurrentJuz != null)
-                  _Item('الجزء الحالي', 'الجزء ${detail!.quranCurrentJuz}'),
+                  _Item(tr('الجزء الحالي'),
+                      trf('الجزء {0}', [detail!.quranCurrentJuz])),
                 if (detail != null)
-                  _Item('الصفحات المحفوظة', '${detail!.memorizedPages} صفحة'),
+                  _Item(tr('الصفحات المحفوظة'),
+                      trf('{0} صفحة', [detail!.memorizedPages])),
               ],
-            ).animate().fadeIn(delay: 220.ms, duration: 450.ms)
+            )
+                .animate()
+                .fadeIn(delay: 220.ms, duration: 450.ms)
                 .slideY(begin: 0.05, end: 0, delay: 220.ms, duration: 450.ms),
           ),
         ),
@@ -156,13 +187,15 @@ class _ChildProfileView extends StatelessWidget {
           padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
           sliver: SliverToBoxAdapter(
             child: _InfoCard(
-              title: 'بيانات التواصل',
+              title: tr('بيانات التواصل'),
               icon: Icons.contact_phone_rounded,
               gradient: AppColors.gradientTeal,
               items: [
-                _Item('رقم جوال المعلم', student.phone, isLtr: true),
+                _Item(tr('رقم جوال المعلم'), student.phone, isLtr: true),
               ],
-            ).animate().fadeIn(delay: 320.ms, duration: 450.ms)
+            )
+                .animate()
+                .fadeIn(delay: 320.ms, duration: 450.ms)
                 .slideY(begin: 0.05, end: 0, delay: 320.ms, duration: 450.ms),
           ),
         ),
@@ -190,7 +223,12 @@ class _ProfileHero extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF060E08), Color(0xFF0A2C10), Color(0xFF0D5016), Color(0xFF1A7A26)],
+          colors: [
+            Color(0xFF060E08),
+            Color(0xFF0A2C10),
+            Color(0xFF0D5016),
+            Color(0xFF1A7A26)
+          ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -211,7 +249,7 @@ class _ProfileHero extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     height: 1.3,
                   ),
                   maxLines: 2,
@@ -220,23 +258,26 @@ class _ProfileHero extends StatelessWidget {
                 const SizedBox(height: 6),
                 Row(
                   children: [
-                    Icon(Icons.tag_rounded, color: Colors.white.withOpacity(0.5), size: 12),
+                    Icon(Icons.tag_rounded,
+                        color: Colors.white.withOpacity(0.5), size: 12),
                     const SizedBox(width: 3),
                     Text(
                       student.id,
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.6),
-                        fontSize: 12, fontFamily: 'Cairo',
+                        fontSize: 12,
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ],
                 ),
                 const SizedBox(height: 12),
-                _InfoRow(icon: Icons.groups_rounded,  label: student.groupName),
+                _InfoRow(icon: Icons.groups_rounded, label: student.groupName),
                 const SizedBox(height: 5),
-                _InfoRow(icon: Icons.person_rounded,  label: student.teacherName),
+                _InfoRow(
+                    icon: Icons.person_rounded, label: student.teacherName),
                 const SizedBox(height: 5),
-                _InfoRow(icon: Icons.school_rounded,  label: student.courseName),
+                _InfoRow(icon: Icons.school_rounded, label: student.courseName),
               ],
             ),
           ),
@@ -274,8 +315,10 @@ class _ProfileAvatar extends StatelessWidget {
             child: Text(
               student.avatarInitials,
               style: const TextStyle(
-                color: Colors.white, fontSize: 26,
-                fontWeight: FontWeight.w800, fontFamily: 'Cairo',
+                color: Colors.white,
+                fontSize: 26,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Dubai',
               ),
             ),
           ),
@@ -290,7 +333,8 @@ class _ProfileAvatar extends StatelessWidget {
               shape: BoxShape.circle,
               border: Border.all(color: const Color(0xFF060E08), width: 2),
             ),
-            child: const Icon(Icons.verified_rounded, color: Colors.white, size: 13),
+            child: const Icon(Icons.verified_rounded,
+                color: Colors.white, size: 13),
           ),
         ),
       ],
@@ -315,7 +359,7 @@ class _InfoRow extends StatelessWidget {
             style: TextStyle(
               color: Colors.white.withOpacity(0.85),
               fontSize: 12,
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontWeight: FontWeight.w600,
             ),
             maxLines: 1,
@@ -370,9 +414,13 @@ class _InfoCard extends StatelessWidget {
             padding: const EdgeInsets.fromLTRB(18, 15, 18, 15),
             decoration: BoxDecoration(
               gradient: gradient,
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(22)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(22)),
               boxShadow: [
-                BoxShadow(color: Colors.black.withOpacity(0.15), blurRadius: 8, offset: const Offset(0, 3)),
+                BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 8,
+                    offset: const Offset(0, 3)),
               ],
             ),
             child: Row(
@@ -389,8 +437,10 @@ class _InfoCard extends StatelessWidget {
                 const SizedBox(width: 10),
                 Text(title,
                     style: const TextStyle(
-                      color: Colors.white, fontSize: 15,
-                      fontWeight: FontWeight.w700, fontFamily: 'Cairo',
+                      color: Colors.white,
+                      fontSize: 15,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Dubai',
                     )),
               ],
             ),
@@ -400,24 +450,37 @@ class _InfoCard extends StatelessWidget {
             return Column(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 18, vertical: 15),
                   child: Row(
                     children: [
                       Expanded(
                         flex: 2,
                         child: Text(e.value.label,
-                            style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.55))),
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall
+                                ?.copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurface
+                                        .withOpacity(0.55))),
                       ),
                       Expanded(
                         flex: 3,
                         child: Text(
                           e.value.value,
-                          textAlign: e.value.isLtr ? TextAlign.left : TextAlign.end,
-                          textDirection: e.value.isLtr ? TextDirection.ltr : null,
-                          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                              fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onSurface),
+                          textAlign:
+                              e.value.isLtr ? TextAlign.left : TextAlign.end,
+                          textDirection:
+                              e.value.isLtr ? TextDirection.ltr : null,
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  fontWeight: FontWeight.w700,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface),
                         ),
                       ),
                     ],
@@ -471,24 +534,29 @@ class _ContactCard extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: const Color(0xFF25D366).withOpacity(0.18),
                   borderRadius: BorderRadius.circular(14),
-                  border: Border.all(color: const Color(0xFF25D366).withOpacity(0.35)),
+                  border: Border.all(
+                      color: const Color(0xFF25D366).withOpacity(0.35)),
                 ),
-                child: const Icon(Icons.chat_rounded, color: Color(0xFF25D366), size: 24),
+                child: const Icon(Icons.chat_rounded,
+                    color: Color(0xFF25D366), size: 24),
               ),
               const SizedBox(width: 14),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('التواصل مع الإدارة',
+                    Text(tr('التواصل مع الإدارة'),
                         style: TextStyle(
-                          color: Colors.white, fontSize: 16,
-                          fontWeight: FontWeight.w700, fontFamily: 'Cairo',
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                          fontFamily: 'Dubai',
                         )),
-                    Text('عبر واتساب للاستفسار عن الطالب',
+                    Text(tr('عبر واتساب للاستفسار عن الطالب'),
                         style: TextStyle(
                           color: Colors.white.withOpacity(0.65),
-                          fontSize: 12, fontFamily: 'Cairo',
+                          fontSize: 12,
+                          fontFamily: 'Dubai',
                         )),
                   ],
                 ),
@@ -505,18 +573,23 @@ class _ContactCard extends StatelessWidget {
                 color: Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(16),
                 boxShadow: [
-                  BoxShadow(color: Colors.black.withOpacity(0.1), blurRadius: 10, offset: const Offset(0, 3)),
+                  BoxShadow(
+                      color: Colors.black.withOpacity(0.1),
+                      blurRadius: 10,
+                      offset: const Offset(0, 3)),
                 ],
               ),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: const [
+                children: [
                   Icon(Icons.chat_rounded, color: Color(0xFF25D366), size: 18),
                   SizedBox(width: 8),
-                  Text('تواصل عبر واتساب',
+                  Text(tr('تواصل عبر واتساب'),
                       style: TextStyle(
-                        color: Color(0xFF25D366), fontSize: 15,
-                        fontWeight: FontWeight.w700, fontFamily: 'Cairo',
+                        color: Color(0xFF25D366),
+                        fontSize: 15,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Dubai',
                       )),
                 ],
               ),

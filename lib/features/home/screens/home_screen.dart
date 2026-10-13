@@ -9,6 +9,7 @@ import '../../../shared/widgets/rating_badge.dart';
 import '../../activities/screens/activities_screen.dart';
 import '../../invoices/screens/parent_invoices_screen.dart';
 import '../home_widget_registry.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 part 'widgets/home_hero_card.dart';
 part 'widgets/home_quick_stats.dart';
@@ -58,7 +59,8 @@ final List<HomeWidgetDef<TabContext>> parentHomeWidgets = [
         padding: EdgeInsets.fromLTRB(
             16, ctx.parentData!.children.length > 1 ? 16 : 0, 16, 0),
         sliver: SliverToBoxAdapter(
-          child: _QuickStatsRow(child: ctx.activeChild, onTabChange: ctx.onTabChange)
+          child: _QuickStatsRow(
+                  child: ctx.activeChild, onTabChange: ctx.onTabChange)
               .animate()
               .fadeIn(delay: 120.ms, duration: 450.ms)
               .slideY(begin: 0.06, end: 0, delay: 120.ms, duration: 450.ms),
@@ -89,7 +91,7 @@ final List<HomeWidgetDef<TabContext>> parentHomeWidgets = [
       SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
         sliver: SliverToBoxAdapter(
-          child: _SectionLabel(title: 'آخر الإشعارات', onMore: () {})
+          child: _SectionLabel(title: tr('آخر الإشعارات'), onMore: () {})
               .animate()
               .fadeIn(delay: 320.ms, duration: 400.ms),
         ),
@@ -116,7 +118,7 @@ final List<HomeWidgetDef<TabContext>> parentHomeWidgets = [
         padding: const EdgeInsets.fromLTRB(16, 28, 16, 0),
         sliver: SliverToBoxAdapter(
           child: _SectionLabel(
-                  title: 'آخر التقييمات', onMore: () => ctx.onTabChange(4))
+                  title: tr('آخر التقييمات'), onMore: () => ctx.onTabChange(4))
               .animate()
               .fadeIn(delay: 550.ms, duration: 400.ms),
         ),
@@ -189,7 +191,8 @@ class _ChildSelectorStrip extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
               decoration: BoxDecoration(
                 gradient: isSelected ? AppColors.gradientPrimary : null,
-                color: isSelected ? null : Theme.of(context).colorScheme.surface,
+                color:
+                    isSelected ? null : Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
                 border: Border.all(
                   color: isSelected
@@ -198,8 +201,18 @@ class _ChildSelectorStrip extends StatelessWidget {
                   width: 1.5,
                 ),
                 boxShadow: isSelected
-                    ? [BoxShadow(color: AppColors.primary.withOpacity(0.35), blurRadius: 12, offset: const Offset(0, 4))]
-                    : [BoxShadow(color: Colors.black.withOpacity(0.05), blurRadius: 8, offset: const Offset(0, 2))],
+                    ? [
+                        BoxShadow(
+                            color: AppColors.primary.withOpacity(0.35),
+                            blurRadius: 12,
+                            offset: const Offset(0, 4))
+                      ]
+                    : [
+                        BoxShadow(
+                            color: Colors.black.withOpacity(0.05),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2))
+                      ],
               ),
               child: Row(
                 mainAxisSize: MainAxisSize.min,
@@ -211,7 +224,8 @@ class _ChildSelectorStrip extends StatelessWidget {
                       shape: BoxShape.circle,
                       gradient: isSelected
                           ? AppColors.gradientGold
-                          : const LinearGradient(colors: [Color(0xFF9E9E9E), Color(0xFF757575)]),
+                          : const LinearGradient(
+                              colors: [Color(0xFF9E9E9E), Color(0xFF757575)]),
                     ),
                     child: Center(
                       child: Text(
@@ -220,7 +234,7 @@ class _ChildSelectorStrip extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 11,
                           fontWeight: FontWeight.w800,
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                         ),
                       ),
                     ),
@@ -233,18 +247,25 @@ class _ChildSelectorStrip extends StatelessWidget {
                       Text(
                         name,
                         style: TextStyle(
-                          color: isSelected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                          color: isSelected
+                              ? Colors.white
+                              : Theme.of(context).colorScheme.onSurface,
                           fontSize: 13,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                         ),
                       ),
                       Text(
                         child.student.groupName,
                         style: TextStyle(
-                          color: isSelected ? Colors.white.withOpacity(0.75) : Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+                          color: isSelected
+                              ? Colors.white.withOpacity(0.75)
+                              : Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.5),
                           fontSize: 10,
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                         ),
                       ),
                     ],

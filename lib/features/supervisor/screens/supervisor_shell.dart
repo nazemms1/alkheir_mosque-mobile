@@ -8,6 +8,7 @@ import '../../../data/services/admin_service.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../home/home_widget_registry.dart';
 import 'supervisor_student_detail.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 /// بيانات لوحة الدور الإشرافي بعد جلبها — تُمرَّر لويدجتس [supervisorHomeWidgets].
 class SupervisorHomeData {
@@ -64,11 +65,11 @@ final List<HomeWidgetDef<SupervisorHomeData>> supervisorHomeWidgets = [
     id: 'sup-groups',
     visibleWhen: (_, d) => d.groups.isNotEmpty,
     slivers: (context, d) => [
-      const SliverPadding(
+      SliverPadding(
         padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
         sliver: SliverToBoxAdapter(
           child: _SectionHeader(
-              title: 'الحلقات',
+              title: tr('الحلقات'),
               icon: Icons.groups_rounded,
               color: AppColors.primaryLight),
         ),
@@ -92,11 +93,11 @@ final List<HomeWidgetDef<SupervisorHomeData>> supervisorHomeWidgets = [
     id: 'sup-recent-students',
     slivers: (context, d) => d.students.isNotEmpty
         ? [
-            const SliverPadding(
+            SliverPadding(
               padding: EdgeInsets.fromLTRB(16, 28, 16, 0),
               sliver: SliverToBoxAdapter(
                 child: _SectionHeader(
-                    title: 'آخر الطلاب',
+                    title: tr('آخر الطلاب'),
                     icon: Icons.school_rounded,
                     color: AppColors.gold),
               ),
@@ -187,7 +188,7 @@ class _SupervisorHomeTabState extends State<SupervisorHomeTab> {
     }
 
     final data = SupervisorHomeData(
-      userName: widget.token.user?.name ?? 'المشرف',
+      userName: widget.token.user?.name ?? tr('المشرف'),
       roleLabel: widget.token.displayRole,
       stats: _stats!,
       groups: _groups,
@@ -264,12 +265,12 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'مرحباً، $userName',
+                      trf('مرحباً، {0}', [userName]),
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 16,
                           fontWeight: FontWeight.w800,
-                          fontFamily: 'Cairo'),
+                          fontFamily: 'Dubai'),
                     ),
                     Container(
                       margin: const EdgeInsets.only(top: 4),
@@ -285,7 +286,7 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
                           style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
-                              fontFamily: 'Cairo')),
+                              fontFamily: 'Dubai')),
                     ),
                   ],
                 ),
@@ -296,17 +297,17 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
           Row(
             children: [
               _HeroPill(
-                  label: 'طالب',
+                  label: tr('طالب'),
                   value: '${stats.totalStudents}',
                   icon: Icons.people_rounded),
               const SizedBox(width: 8),
               _HeroPill(
-                  label: 'حلقة نشطة',
+                  label: tr('حلقة نشطة'),
                   value: '${stats.activeGroups}',
                   icon: Icons.groups_rounded),
               const SizedBox(width: 8),
               _HeroPill(
-                  label: 'تسجيل',
+                  label: tr('تسجيل'),
                   value: '${stats.totalEnrollments}',
                   icon: Icons.how_to_reg_rounded),
             ],
@@ -342,12 +343,12 @@ class _HeroPill extends StatelessWidget {
                     color: Colors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
             Text(label,
                 style: TextStyle(
                     color: Colors.white.withOpacity(0.65),
                     fontSize: 10,
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
           ],
         ),
       ),
@@ -363,15 +364,15 @@ class _SupervisorStatsGrid extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = [
-      _SI(Icons.people_rounded, 'إجمالي الطلاب', '${stats.totalStudents}',
+      _SI(Icons.people_rounded, tr('إجمالي الطلاب'), '${stats.totalStudents}',
           AppColors.info),
-      _SI(Icons.groups_rounded, 'حلقات نشطة', '${stats.activeGroups}',
+      _SI(Icons.groups_rounded, tr('حلقات نشطة'), '${stats.activeGroups}',
           AppColors.success),
-      _SI(Icons.how_to_reg_rounded, 'التسجيلات', '${stats.totalEnrollments}',
-          AppColors.primaryLight),
-      _SI(Icons.assignment_rounded, 'التقييمات', '${stats.totalAssessments}',
-          AppColors.gold),
-      _SI(Icons.event_rounded, 'الأنشطة', '${stats.totalActivities}',
+      _SI(Icons.how_to_reg_rounded, tr('التسجيلات'),
+          '${stats.totalEnrollments}', AppColors.primaryLight),
+      _SI(Icons.assignment_rounded, tr('التقييمات'),
+          '${stats.totalAssessments}', AppColors.gold),
+      _SI(Icons.event_rounded, tr('الأنشطة'), '${stats.totalActivities}',
           AppColors.error),
     ];
     return GridView.builder(
@@ -440,7 +441,7 @@ class _StatCard extends StatelessWidget {
                   color: item.color,
                   fontSize: 18,
                   fontWeight: FontWeight.w800,
-                  fontFamily: 'Cairo')),
+                  fontFamily: 'Dubai')),
           const SizedBox(height: 2),
           Text(
             item.label,
@@ -449,7 +450,7 @@ class _StatCard extends StatelessWidget {
                 color:
                     Theme.of(context).colorScheme.onSurface.withOpacity(0.55),
                 fontSize: 10,
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 height: 1.3),
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
@@ -484,7 +485,7 @@ class _SectionHeader extends StatelessWidget {
         Text(
           title,
           style: TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 15,
               fontWeight: FontWeight.w800,
               color: Theme.of(context).colorScheme.onSurface),
@@ -533,7 +534,7 @@ class _MiniGroupTile extends StatelessWidget {
               children: [
                 Text(group.name,
                     style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface),
@@ -541,7 +542,7 @@ class _MiniGroupTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis),
                 Text(group.teacher.isEmpty ? group.course : group.teacher,
                     style: const TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 11,
                         color: AppColors.textMuted),
                     maxLines: 1,
@@ -554,9 +555,9 @@ class _MiniGroupTile extends StatelessWidget {
             decoration: BoxDecoration(
                 color: AppColors.primaryLight.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20)),
-            child: Text('${group.enrollmentsCount} طالب',
+            child: Text(trf('{0} طالب', [group.enrollmentsCount]),
                 style: const TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primaryLight)),
@@ -602,7 +603,7 @@ class _MiniStudentTile extends StatelessWidget {
                       color: Colors.white,
                       fontSize: 13,
                       fontWeight: FontWeight.w800,
-                      fontFamily: 'Cairo')),
+                      fontFamily: 'Dubai')),
             ),
           ),
           const SizedBox(width: 12),
@@ -612,7 +613,7 @@ class _MiniStudentTile extends StatelessWidget {
               children: [
                 Text(student.fullName,
                     style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface),
@@ -620,7 +621,7 @@ class _MiniStudentTile extends StatelessWidget {
                     overflow: TextOverflow.ellipsis),
                 Text('${student.gradeLevel} · ${student.studentNumber}',
                     style: const TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 11,
                         color: AppColors.textMuted),
                     maxLines: 1,
@@ -633,9 +634,9 @@ class _MiniStudentTile extends StatelessWidget {
             decoration: BoxDecoration(
                 color: AppColors.gold.withOpacity(0.1),
                 borderRadius: BorderRadius.circular(20)),
-            child: Text('ج ${student.currentJuz}',
+            child: Text(trf('ج {0}', [student.currentJuz]),
                 style: const TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
                     color: AppColors.gold)),
@@ -676,7 +677,8 @@ class StudentsProgressTabState extends State<StudentsProgressTab> {
     });
     try {
       final results = await Future.wait([
-        _service.fetchStudents(perPage: 50, groupId: _selectedGroupId, status: 'active'),
+        _service.fetchStudents(
+            perPage: 50, groupId: _selectedGroupId, status: 'active'),
         _service.fetchGroups(perPage: 100),
       ]);
       if (!mounted) return;
@@ -727,9 +729,9 @@ class StudentsProgressTabState extends State<StudentsProgressTab> {
           ),
         Expanded(
           child: _students.isEmpty
-              ? const _EmptyState(
+              ? _EmptyState(
                   icon: Icons.people_outline_rounded,
-                  message: 'لا يوجد طلاب في الحلقة',
+                  message: tr('لا يوجد طلاب في الحلقة'),
                 )
               : RefreshIndicator(
                   onRefresh: _load,
@@ -796,7 +798,7 @@ class _GroupFilterBar extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
         children: [
           _GroupChip(
-            label: 'الكل',
+            label: tr('الكل'),
             isSelected: selectedGroupId == null,
             onTap: () => onSelected(null),
           ),
@@ -841,7 +843,7 @@ class _GroupChip extends StatelessWidget {
         child: Text(
           label,
           style: TextStyle(
-            fontFamily: 'Cairo',
+            fontFamily: 'Dubai',
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             color: isSelected ? Colors.white : AppColors.textSecondary,
@@ -890,12 +892,12 @@ class _StudentProgressCard extends StatelessWidget {
                 child: Text(
                   student.fullName.isNotEmpty
                       ? student.fullName.trim()[0]
-                      : '؟',
+                      : tr('؟'),
                   style: const TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                     fontWeight: FontWeight.w800,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                   ),
                 ),
               ),
@@ -908,7 +910,7 @@ class _StudentProgressCard extends StatelessWidget {
                   Text(
                     student.fullName,
                     style: TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface,
@@ -924,7 +926,7 @@ class _StudentProgressCard extends StatelessWidget {
                         Text(
                           student.gradeLevel,
                           style: const TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 11,
                             color: AppColors.textMuted,
                           ),
@@ -940,9 +942,9 @@ class _StudentProgressCard extends StatelessWidget {
                             size: 12, color: AppColors.textMuted),
                         const SizedBox(width: 4),
                         Text(
-                          'ولي الأمر: ${student.parent}',
+                          trf('ولي الأمر: {0}', [student.parent]),
                           style: const TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 11,
                             color: AppColors.textMuted,
                           ),
@@ -960,9 +962,9 @@ class _StudentProgressCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                student.isActive ? 'نشط' : 'غير نشط',
+                student.isActive ? tr('نشط') : tr('غير نشط'),
                 style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 10,
                   fontWeight: FontWeight.w700,
                   color: statusColor,
@@ -1007,13 +1009,14 @@ class RecitationTabState extends State<RecitationTab> {
 
   Future<List<AdminStudentItem>> _searchStudents(String query) async {
     if (query.trim().isEmpty) return const [];
-    final result = await _service.fetchStudents(search: query.trim(), perPage: 20, status: 'active');
+    final result = await _service.fetchStudents(
+        search: query.trim(), perPage: 20, status: 'active');
     return result.items;
   }
 
   Future<void> _submit() async {
     if (_selectedStudent == null) {
-      AppToast.error(context, 'الرجاء اختيار الطالب أولاً');
+      AppToast.error(context, tr('الرجاء اختيار الطالب أولاً'));
       return;
     }
     if (!_formKey.currentState!.validate()) return;
@@ -1027,7 +1030,7 @@ class RecitationTabState extends State<RecitationTab> {
       );
       if (enrollments.items.isEmpty) {
         if (!mounted) return;
-        AppToast.error(context, 'لا يوجد تسجيل نشط لهذا الطالب');
+        AppToast.error(context, tr('لا يوجد تسجيل نشط لهذا الطالب'));
         setState(() => _submitting = false);
         return;
       }
@@ -1046,7 +1049,7 @@ class RecitationTabState extends State<RecitationTab> {
       );
 
       if (!mounted) return;
-      AppToast.success(context, 'تم تسجيل الحفظ بنجاح');
+      AppToast.success(context, tr('تم تسجيل الحفظ بنجاح'));
       setState(() {
         _selectedStudent = null;
         _fromPageCtrl.clear();
@@ -1065,10 +1068,10 @@ class RecitationTabState extends State<RecitationTab> {
   @override
   Widget build(BuildContext context) {
     if (!widget.canRecordMemorization) {
-      return const _ComingSoonTab(
+      return _ComingSoonTab(
         icon: Icons.record_voice_over_rounded,
-        title: 'التسميع',
-        subtitle: 'عرض سجلات التسميع (بدون صلاحية تسجيل)',
+        title: tr('التسميع'),
+        subtitle: tr('عرض سجلات التسميع (بدون صلاحية تسجيل)'),
       );
     }
 
@@ -1082,9 +1085,15 @@ class RecitationTabState extends State<RecitationTab> {
       child: ListView(
         padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
         children: [
-          Text('الطالب',
-              style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+          Text(tr('الطالب'),
+              style: TextStyle(
+                  fontFamily: 'Dubai',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.7))),
           const SizedBox(height: 10),
           _StudentSelectField(
             selected: _selectedStudent,
@@ -1094,15 +1103,21 @@ class RecitationTabState extends State<RecitationTab> {
             onCleared: () => setState(() => _selectedStudent = null),
           ),
           const SizedBox(height: 20),
-          Text('نوع التسجيل',
-              style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+          Text(tr('نوع التسجيل'),
+              style: TextStyle(
+                  fontFamily: 'Dubai',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.7))),
           const SizedBox(height: 10),
           Row(
             children: [
               Expanded(
                 child: _EntryTypeChip(
-                  label: 'حفظ جديد',
+                  label: tr('حفظ جديد'),
                   icon: Icons.auto_stories_rounded,
                   selected: _entryType == 'new',
                   onTap: () => setState(() => _entryType = 'new'),
@@ -1111,7 +1126,7 @@ class RecitationTabState extends State<RecitationTab> {
               const SizedBox(width: 10),
               Expanded(
                 child: _EntryTypeChip(
-                  label: 'مراجعة',
+                  label: tr('مراجعة'),
                   icon: Icons.replay_rounded,
                   selected: _entryType == 'review',
                   onTap: () => setState(() => _entryType = 'review'),
@@ -1120,9 +1135,15 @@ class RecitationTabState extends State<RecitationTab> {
             ],
           ),
           const SizedBox(height: 20),
-          Text('نطاق الصفحات',
-              style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+          Text(tr('نطاق الصفحات'),
+              style: TextStyle(
+                  fontFamily: 'Dubai',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.7))),
           const SizedBox(height: 10),
           Row(
             children: [
@@ -1130,17 +1151,24 @@ class RecitationTabState extends State<RecitationTab> {
                 child: TextFormField(
                   controller: _fromPageCtrl,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(fontFamily: 'Cairo', fontSize: 15),
+                  style: const TextStyle(fontFamily: 'Dubai', fontSize: 15),
                   decoration: InputDecoration(
-                    labelText: 'من صفحة',
-                    labelStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13),
-                    prefixIcon: const Icon(Icons.first_page_rounded, size: 20, color: AppColors.primaryLight),
+                    labelText: tr('من صفحة'),
+                    labelStyle:
+                        const TextStyle(fontFamily: 'Dubai', fontSize: 13),
+                    prefixIcon: const Icon(Icons.first_page_rounded,
+                        size: 20, color: AppColors.primaryLight),
                     filled: true,
                     fillColor: fillColor,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none),
                   ),
-                  validator: (v) => (v == null || int.tryParse(v) == null) ? 'مطلوب' : null,
+                  validator: (v) => (v == null || int.tryParse(v) == null)
+                      ? tr('مطلوب')
+                      : null,
                 ),
               ),
               const SizedBox(width: 12),
@@ -1148,21 +1176,26 @@ class RecitationTabState extends State<RecitationTab> {
                 child: TextFormField(
                   controller: _toPageCtrl,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(fontFamily: 'Cairo', fontSize: 15),
+                  style: const TextStyle(fontFamily: 'Dubai', fontSize: 15),
                   decoration: InputDecoration(
-                    labelText: 'إلى صفحة',
-                    labelStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13),
-                    prefixIcon: const Icon(Icons.last_page_rounded, size: 20, color: AppColors.primaryLight),
+                    labelText: tr('إلى صفحة'),
+                    labelStyle:
+                        const TextStyle(fontFamily: 'Dubai', fontSize: 13),
+                    prefixIcon: const Icon(Icons.last_page_rounded,
+                        size: 20, color: AppColors.primaryLight),
                     filled: true,
                     fillColor: fillColor,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+                    contentPadding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 16),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none),
                   ),
                   validator: (v) {
                     final to = int.tryParse(v ?? '');
                     final from = int.tryParse(_fromPageCtrl.text);
-                    if (to == null) return 'مطلوب';
-                    if (from != null && to < from) return 'غير صحيح';
+                    if (to == null) return tr('مطلوب');
+                    if (from != null && to < from) return tr('غير صحيح');
                     return null;
                   },
                 ),
@@ -1170,28 +1203,42 @@ class RecitationTabState extends State<RecitationTab> {
             ],
           ),
           const SizedBox(height: 20),
-          Text('التاريخ',
-              style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                  color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+          Text(tr('التاريخ'),
+              style: TextStyle(
+                  fontFamily: 'Dubai',
+                  fontSize: 13,
+                  fontWeight: FontWeight.w700,
+                  color: Theme.of(context)
+                      .colorScheme
+                      .onSurface
+                      .withOpacity(0.7))),
           const SizedBox(height: 10),
           Container(
             width: double.infinity,
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
-            decoration: BoxDecoration(color: fillColor, borderRadius: BorderRadius.circular(16)),
+            decoration: BoxDecoration(
+                color: fillColor, borderRadius: BorderRadius.circular(16)),
             child: Row(
               children: [
-                const Icon(Icons.today_rounded, size: 20, color: AppColors.primaryLight),
+                const Icon(Icons.today_rounded,
+                    size: 20, color: AppColors.primaryLight),
                 const SizedBox(width: 12),
-                Text(dateStr, style: const TextStyle(fontFamily: 'Cairo', fontSize: 15)),
+                Text(dateStr,
+                    style: const TextStyle(fontFamily: 'Dubai', fontSize: 15)),
                 const Spacer(),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
                   decoration: BoxDecoration(
                     color: AppColors.primaryLight.withOpacity(0.12),
                     borderRadius: BorderRadius.circular(20),
                   ),
-                  child: const Text('اليوم',
-                      style: TextStyle(fontFamily: 'Cairo', fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primaryLight)),
+                  child: Text(tr('اليوم'),
+                      style: TextStyle(
+                          fontFamily: 'Dubai',
+                          fontSize: 11,
+                          fontWeight: FontWeight.w700,
+                          color: AppColors.primaryLight)),
                 ),
               ],
             ),
@@ -1205,17 +1252,26 @@ class RecitationTabState extends State<RecitationTab> {
                 backgroundColor: AppColors.primaryLight,
                 foregroundColor: Colors.white,
                 padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(14)),
                 elevation: 0,
               ),
               child: _submitting
-                  ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2.2, color: Colors.white))
-                  : const Row(
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          strokeWidth: 2.2, color: Colors.white))
+                  : Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(Icons.send_rounded, size: 18),
                         SizedBox(width: 8),
-                        Text('إرسال', style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w800, fontSize: 15)),
+                        Text(tr('إرسال'),
+                            style: TextStyle(
+                                fontFamily: 'Dubai',
+                                fontWeight: FontWeight.w800,
+                                fontSize: 15)),
                       ],
                     ),
             ),
@@ -1257,11 +1313,19 @@ class _StudentSelectField extends StatelessWidget {
             Container(
               width: 38,
               height: 38,
-              decoration: BoxDecoration(gradient: AppColors.gradientPrimary, borderRadius: BorderRadius.circular(11)),
+              decoration: BoxDecoration(
+                  gradient: AppColors.gradientPrimary,
+                  borderRadius: BorderRadius.circular(11)),
               child: Center(
                 child: Text(
-                  selected!.fullName.isNotEmpty ? selected!.fullName.trim()[0] : '؟',
-                  style: const TextStyle(color: Colors.white, fontSize: 14, fontWeight: FontWeight.w800, fontFamily: 'Cairo'),
+                  selected!.fullName.isNotEmpty
+                      ? selected!.fullName.trim()[0]
+                      : tr('؟'),
+                  style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Dubai'),
                 ),
               ),
             ),
@@ -1271,10 +1335,17 @@ class _StudentSelectField extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(selected!.fullName,
-                      style: TextStyle(fontFamily: 'Cairo', fontSize: 14, fontWeight: FontWeight.w700,
+                      style: TextStyle(
+                          fontFamily: 'Dubai',
+                          fontSize: 14,
+                          fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface)),
                   if (selected!.gradeLevel.isNotEmpty)
-                    Text(selected!.gradeLevel, style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted)),
+                    Text(selected!.gradeLevel,
+                        style: const TextStyle(
+                            fontFamily: 'Dubai',
+                            fontSize: 11,
+                            color: AppColors.textMuted)),
                 ],
               ),
             ),
@@ -1296,16 +1367,18 @@ class _StudentSelectField extends StatelessWidget {
         return TextField(
           controller: controller,
           focusNode: focusNode,
-          style: const TextStyle(fontFamily: 'Cairo', fontSize: 14),
+          style: const TextStyle(fontFamily: 'Dubai', fontSize: 14),
           decoration: InputDecoration(
-            hintText: 'اكتب اسم الطالب للبحث...',
-            hintStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13),
+            hintText: tr('اكتب اسم الطالب للبحث...'),
+            hintStyle: const TextStyle(fontFamily: 'Dubai', fontSize: 13),
             prefixIcon: const Icon(Icons.search_rounded),
             suffixIcon: const Icon(Icons.arrow_drop_down_rounded),
             filled: true,
             fillColor: fillColor,
             contentPadding: const EdgeInsets.symmetric(vertical: 14),
-            border: OutlineInputBorder(borderRadius: BorderRadius.circular(16), borderSide: BorderSide.none),
+            border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(16),
+                borderSide: BorderSide.none),
           ),
         );
       },
@@ -1328,15 +1401,32 @@ class _StudentSelectField extends StatelessWidget {
                     leading: Container(
                       width: 34,
                       height: 34,
-                      decoration: BoxDecoration(gradient: AppColors.gradientPrimary, borderRadius: BorderRadius.circular(10)),
+                      decoration: BoxDecoration(
+                          gradient: AppColors.gradientPrimary,
+                          borderRadius: BorderRadius.circular(10)),
                       child: Center(
-                        child: Text(s.fullName.isNotEmpty ? s.fullName.trim()[0] : '؟',
-                            style: const TextStyle(color: Colors.white, fontSize: 12, fontWeight: FontWeight.w800, fontFamily: 'Cairo')),
+                        child: Text(
+                            s.fullName.isNotEmpty
+                                ? s.fullName.trim()[0]
+                                : tr('؟'),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Dubai')),
                       ),
                     ),
-                    title: Text(s.fullName, style: const TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w600)),
+                    title: Text(s.fullName,
+                        style: const TextStyle(
+                            fontFamily: 'Dubai',
+                            fontSize: 13,
+                            fontWeight: FontWeight.w600)),
                     subtitle: s.gradeLevel.isNotEmpty
-                        ? Text(s.gradeLevel, style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted))
+                        ? Text(s.gradeLevel,
+                            style: const TextStyle(
+                                fontFamily: 'Dubai',
+                                fontSize: 11,
+                                color: AppColors.textMuted))
                         : null,
                     onTap: () => onSelect(s),
                   );
@@ -1355,7 +1445,11 @@ class _EntryTypeChip extends StatelessWidget {
   final IconData icon;
   final bool selected;
   final VoidCallback onTap;
-  const _EntryTypeChip({required this.label, required this.icon, required this.selected, required this.onTap});
+  const _EntryTypeChip(
+      {required this.label,
+      required this.icon,
+      required this.selected,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -1370,23 +1464,32 @@ class _EntryTypeChip extends StatelessWidget {
           color: selected ? null : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected ? Colors.transparent : Theme.of(context).dividerColor,
+            color:
+                selected ? Colors.transparent : Theme.of(context).dividerColor,
             width: 1.4,
           ),
           boxShadow: selected
-              ? [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))]
+              ? [
+                  BoxShadow(
+                      color: AppColors.primary.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4))
+                ]
               : null,
         ),
         child: Column(
           children: [
-            Icon(icon, size: 22, color: selected ? Colors.white : AppColors.textMuted),
+            Icon(icon,
+                size: 22, color: selected ? Colors.white : AppColors.textMuted),
             const SizedBox(height: 6),
             Text(label,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: selected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                  color: selected
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.onSurface,
                 )),
           ],
         ),
@@ -1401,10 +1504,10 @@ class NotesTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _ComingSoonTab(
+    return _ComingSoonTab(
       icon: Icons.note_alt_rounded,
-      title: 'الملاحظات',
-      subtitle: 'ملاحظات الطلاب والحلقة',
+      title: tr('الملاحظات'),
+      subtitle: tr('ملاحظات الطلاب والحلقة'),
     );
   }
 }
@@ -1415,10 +1518,10 @@ class SupervisorAttendanceTab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const _ComingSoonTab(
+    return _ComingSoonTab(
       icon: Icons.event_available_rounded,
-      title: 'حضور الحلقة',
-      subtitle: 'سجل حضور الطلاب',
+      title: tr('حضور الحلقة'),
+      subtitle: tr('سجل حضور الطلاب'),
     );
   }
 }
@@ -1432,10 +1535,10 @@ class TrialExamTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ComingSoonTab(
       icon: Icons.science_rounded,
-      title: 'السبر التجريبي',
+      title: tr('السبر التجريبي'),
       subtitle: canRecord
-          ? 'نتائج واختبارات السبر التجريبي'
-          : 'عرض نتائج السبر التجريبي (بدون صلاحية تسجيل)',
+          ? tr('نتائج واختبارات السبر التجريبي')
+          : tr('عرض نتائج السبر التجريبي (بدون صلاحية تسجيل)'),
     );
   }
 }
@@ -1449,10 +1552,10 @@ class FinalExamTab extends StatelessWidget {
   Widget build(BuildContext context) {
     return _ComingSoonTab(
       icon: Icons.verified_rounded,
-      title: 'السير النهائي',
+      title: tr('السير النهائي'),
       subtitle: canRecord
-          ? 'نتائج السير النهائي'
-          : 'عرض نتائج السير النهائي (بدون صلاحية تسجيل)',
+          ? tr('نتائج السير النهائي')
+          : tr('عرض نتائج السير النهائي (بدون صلاحية تسجيل)'),
     );
   }
 }
@@ -1505,9 +1608,9 @@ class SupervisorPointsTabState extends State<SupervisorPointsTab> {
       return _PermissionAwareError(message: _error!, onRetry: _load);
     }
     if (_enrollments.isEmpty) {
-      return const _EmptyState(
+      return _EmptyState(
         icon: Icons.star_outline_rounded,
-        message: 'لا يوجد طلاب مسجّلون',
+        message: tr('لا يوجد طلاب مسجّلون'),
       );
     }
     return RefreshIndicator(
@@ -1554,7 +1657,7 @@ class _PointsCard extends StatelessWidget {
                 Text(
                   enrollment.studentName,
                   style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -1564,7 +1667,7 @@ class _PointsCard extends StatelessWidget {
                 Text(
                   enrollment.groupName,
                   style: const TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 11,
                     color: AppColors.textMuted,
                   ),
@@ -1574,13 +1677,13 @@ class _PointsCard extends StatelessWidget {
           ),
           _InfoChip(
             icon: Icons.star_rounded,
-            label: '${enrollment.finalPoints} نقطة',
+            label: trf('{0} نقطة', [enrollment.finalPoints]),
             color: AppColors.gold,
           ),
           const SizedBox(width: 8),
           _InfoChip(
             icon: Icons.menu_book_rounded,
-            label: '${enrollment.memorizedPages} صفحة',
+            label: trf('{0} صفحة', [enrollment.memorizedPages]),
             color: AppColors.primaryLight,
           ),
         ],
@@ -1637,9 +1740,9 @@ class ActivitiesTabState extends State<ActivitiesTab> {
       return _PermissionAwareError(message: _error!, onRetry: _load);
     }
     if (_activities.isEmpty) {
-      return const _EmptyState(
+      return _EmptyState(
         icon: Icons.event_note_rounded,
-        message: 'لا توجد أنشطة حالياً',
+        message: tr('لا توجد أنشطة حالياً'),
       );
     }
     return RefreshIndicator(
@@ -1684,7 +1787,7 @@ class _ActivityCard extends StatelessWidget {
           Text(
             activity.title,
             style: TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 14,
               fontWeight: FontWeight.w700,
               color: Theme.of(context).colorScheme.onSurface,
@@ -1695,7 +1798,7 @@ class _ActivityCard extends StatelessWidget {
             Text(
               activity.groupName!,
               style: const TextStyle(
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontSize: 11,
                 color: AppColors.textMuted,
               ),
@@ -1720,7 +1823,8 @@ class SupervisorAssessmentsTab extends StatefulWidget {
   const SupervisorAssessmentsTab({super.key});
 
   @override
-  State<SupervisorAssessmentsTab> createState() => SupervisorAssessmentsTabState();
+  State<SupervisorAssessmentsTab> createState() =>
+      SupervisorAssessmentsTabState();
 }
 
 class SupervisorAssessmentsTabState extends State<SupervisorAssessmentsTab> {
@@ -1763,9 +1867,9 @@ class SupervisorAssessmentsTabState extends State<SupervisorAssessmentsTab> {
       return _PermissionAwareError(message: _error!, onRetry: _load);
     }
     if (_assessments.isEmpty) {
-      return const _EmptyState(
+      return _EmptyState(
         icon: Icons.assignment_outlined,
-        message: 'لا توجد تقييمات حالياً',
+        message: tr('لا توجد تقييمات حالياً'),
       );
     }
     return RefreshIndicator(
@@ -1813,7 +1917,7 @@ class _AssessmentCard extends StatelessWidget {
                 child: Text(
                   assessment.title,
                   style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -1828,12 +1932,12 @@ class _AssessmentCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  assessment.isActive ? 'نشط' : 'غير نشط',
+                  assessment.isActive ? tr('نشط') : tr('غير نشط'),
                   style: TextStyle(
                       color: color,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      fontFamily: 'Cairo'),
+                      fontFamily: 'Dubai'),
                 ),
               ),
             ],
@@ -1842,7 +1946,7 @@ class _AssessmentCard extends StatelessWidget {
           Text(
             assessment.groupName,
             style: const TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 11,
               color: AppColors.textMuted,
             ),
@@ -1859,7 +1963,7 @@ class _AssessmentCard extends StatelessWidget {
               const SizedBox(width: 8),
               _InfoChip(
                 icon: Icons.fact_check_rounded,
-                label: '${assessment.resultsCount} نتيجة',
+                label: trf('{0} نتيجة', [assessment.resultsCount]),
                 color: AppColors.primaryLight,
               ),
             ],
@@ -1918,9 +2022,9 @@ class ReportsTabState extends State<ReportsTab> {
       return _PermissionAwareError(message: _error!, onRetry: _load);
     }
     if (_groups.isEmpty) {
-      return const _EmptyState(
+      return _EmptyState(
         icon: Icons.bar_chart_rounded,
-        message: 'لا توجد حلقات مرتبطة',
+        message: tr('لا توجد حلقات مرتبطة'),
       );
     }
     return RefreshIndicator(
@@ -1977,7 +2081,7 @@ class _GroupReportCard extends StatelessWidget {
                 child: Text(
                   group.name,
                   style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
@@ -1992,12 +2096,12 @@ class _GroupReportCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  group.isActive ? 'نشطة' : 'غير نشطة',
+                  group.isActive ? tr('نشطة') : tr('غير نشطة'),
                   style: TextStyle(
                       color: color,
                       fontSize: 10,
                       fontWeight: FontWeight.w700,
-                      fontFamily: 'Cairo'),
+                      fontFamily: 'Dubai'),
                 ),
               ),
             ],
@@ -2007,7 +2111,7 @@ class _GroupReportCard extends StatelessWidget {
             children: [
               _InfoChip(
                 icon: Icons.people_rounded,
-                label: '${group.enrollmentsCount} طالب',
+                label: trf('{0} طالب', [group.enrollmentsCount]),
                 color: AppColors.info,
               ),
               const SizedBox(width: 8),
@@ -2047,7 +2151,7 @@ class _InfoChip extends StatelessWidget {
           const SizedBox(width: 4),
           Text(label,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11,
                   color: color,
                   fontWeight: FontWeight.w600)),
@@ -2083,7 +2187,7 @@ class _ComingSoonTab extends StatelessWidget {
           Text(
             title,
             style: const TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppColors.textPrimary,
@@ -2093,7 +2197,7 @@ class _ComingSoonTab extends StatelessWidget {
           Text(
             subtitle,
             style: const TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 13,
               color: AppColors.textMuted,
             ),
@@ -2106,16 +2210,16 @@ class _ComingSoonTab extends StatelessWidget {
               borderRadius: BorderRadius.circular(20),
               border: Border.all(color: AppColors.gold.withOpacity(0.3)),
             ),
-            child: const Row(
+            child: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
                 Icon(Icons.construction_rounded,
                     size: 14, color: AppColors.gold),
                 SizedBox(width: 6),
                 Text(
-                  'قيد الإنشاء',
+                  tr('قيد الإنشاء'),
                   style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 12,
                     color: AppColors.gold,
                     fontWeight: FontWeight.w600,
@@ -2148,7 +2252,7 @@ class _PermissionAwareError extends StatelessWidget {
     final color = _isForbidden ? AppColors.warning : AppColors.error;
     final icon =
         _isForbidden ? Icons.lock_outline_rounded : Icons.error_outline_rounded;
-    final title = _isForbidden ? 'ليس لديك صلاحية' : 'حدث خطأ';
+    final title = _isForbidden ? tr('ليس لديك صلاحية') : tr('حدث خطأ');
 
     return Center(
       child: Padding(
@@ -2168,7 +2272,7 @@ class _PermissionAwareError extends StatelessWidget {
             Text(
               title,
               style: TextStyle(
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontSize: 18,
                 fontWeight: FontWeight.w700,
                 color: color,
@@ -2179,7 +2283,7 @@ class _PermissionAwareError extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontSize: 13,
                 color: AppColors.textMuted,
               ),
@@ -2189,8 +2293,8 @@ class _PermissionAwareError extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onRetry,
                 icon: const Icon(Icons.refresh_rounded, size: 18),
-                label: const Text('إعادة المحاولة',
-                    style: TextStyle(fontFamily: 'Cairo')),
+                label: Text(tr('إعادة المحاولة'),
+                    style: TextStyle(fontFamily: 'Dubai')),
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.primaryLight,
                   foregroundColor: Colors.white,
@@ -2222,7 +2326,7 @@ class _EmptyState extends StatelessWidget {
           Text(
             message,
             style: const TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 14,
               color: AppColors.textMuted,
             ),

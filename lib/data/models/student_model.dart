@@ -1,3 +1,5 @@
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
+
 enum AttendanceStatus {
   present,
   absent,
@@ -47,21 +49,28 @@ class AttendanceEntry {
 
   AttendanceStatus get attendanceStatus {
     switch (statusCode) {
-      case 'present': return AttendanceStatus.present;
-      case 'absent': return AttendanceStatus.absent;
-      case 'late': return AttendanceStatus.late;
-      case 'excused': return AttendanceStatus.excused;
-      case 'excused_early_departure': return AttendanceStatus.excusedEarlyDeparture;
-      case 'excused_absence': return AttendanceStatus.excusedAbsence;
-      default: return AttendanceStatus.present;
+      case 'present':
+        return AttendanceStatus.present;
+      case 'absent':
+        return AttendanceStatus.absent;
+      case 'late':
+        return AttendanceStatus.late;
+      case 'excused':
+        return AttendanceStatus.excused;
+      case 'excused_early_departure':
+        return AttendanceStatus.excusedEarlyDeparture;
+      case 'excused_absence':
+        return AttendanceStatus.excusedAbsence;
+      default:
+        return AttendanceStatus.present;
     }
   }
 
   AttendanceRecord toAttendanceRecord() => AttendanceRecord(
-    date: date,
-    status: attendanceStatus,
-    note: notes,
-  );
+        date: date,
+        status: attendanceStatus,
+        note: notes,
+      );
 }
 
 // ─── API Memorization Entry (from /parent/children/{id}/memorization) ─────────
@@ -121,9 +130,9 @@ enum NoteAuthor { parent, teacher, admin }
 /// Status of a Juz' in the memorization workflow
 enum JuzStatus {
   notStarted,
-  inProgress,       // some pages recited, no trial yet
-  trialDone,        // trial assessment (5 pages) completed, final not yet
-  fullyAssessed,    // final assessment (8 questions × 12 marks) completed
+  inProgress, // some pages recited, no trial yet
+  trialDone, // trial assessment (5 pages) completed, final not yet
+  fullyAssessed, // final assessment (8 questions × 12 marks) completed
   fullyAssessedWaqf, // fully assessed + Waqf (pausing rules) mastered ⭐
 }
 
@@ -190,7 +199,7 @@ class JuzAssessment {
 
   /// Final: 8 questions × 12 marks = 96 total
   final int? finalQuestionsAnswered; // null = not done
-  final double? finalScore;          // out of 96
+  final double? finalScore; // out of 96
 
   /// Waqf (pausing rules) assessment passed
   final bool waqfPassed;
@@ -250,10 +259,10 @@ class FinalExam {
 }
 
 enum JuzState {
-  notStarted,   // grey
-  inProgress,   // gold — some sessions but no practice yet
-  practice,     // orange — practice stages started
-  done,         // green — final exam passed
+  notStarted, // grey
+  inProgress, // gold — some sessions but no practice yet
+  practice, // orange — practice stages started
+  done, // green — final exam passed
 }
 
 /// All data for one juz (all 30 are present in the list)
@@ -261,9 +270,9 @@ class JuzSection {
   final int juzNumber;
   final String juzName;
   final int firstPage; // first page of this juz in the Quran
-  final int lastPage;  // last page
-  final List<RecitationSession> sessions;       // recited ranges
-  final List<int> pendingPages;                 // pages not yet recited
+  final int lastPage; // last page
+  final List<RecitationSession> sessions; // recited ranges
+  final List<int> pendingPages; // pages not yet recited
   final List<PracticeExamStage> practiceStages;
   final FinalExam? finalExam;
 
@@ -319,7 +328,6 @@ class MemorizationProgress {
 
   double get percentage => totalPagesMemorized / totalQuranPages;
 }
-
 
 // ─── Sabr (Exam) ─────────────────────────────────────────────────────────────
 class SabrRecord {
@@ -421,7 +429,15 @@ class AppNotification {
   });
 }
 
-enum NotificationType { attendance, memorization, points, evaluation, general, sabr, notes }
+enum NotificationType {
+  attendance,
+  memorization,
+  points,
+  evaluation,
+  general,
+  sabr,
+  notes
+}
 
 // ─── Dashboard Data ───────────────────────────────────────────────────────────
 /// Per-child data bundle used by the parent dashboard.
@@ -446,14 +462,17 @@ class ChildData {
     required this.totalPoints,
   });
 
-  int get attendanceCount =>
-      attendanceRecords.where((r) => r.status == AttendanceStatus.present).length;
+  int get attendanceCount => attendanceRecords
+      .where((r) => r.status == AttendanceStatus.present)
+      .length;
 
-  int get absenceCount =>
-      attendanceRecords.where((r) => r.status == AttendanceStatus.absent).length;
+  int get absenceCount => attendanceRecords
+      .where((r) => r.status == AttendanceStatus.absent)
+      .length;
 
-  double get attendanceRate =>
-      attendanceRecords.isEmpty ? 0 : attendanceCount / attendanceRecords.length;
+  double get attendanceRate => attendanceRecords.isEmpty
+      ? 0
+      : attendanceCount / attendanceRecords.length;
 
   int get unreadNotes =>
       notes.where((n) => !n.isRead && n.author != NoteAuthor.parent).length;
@@ -473,7 +492,8 @@ class ParentDashboardData {
   ChildData get activeChild => children.first;
   StudentModel get student => activeChild.student;
   List<AttendanceRecord> get attendanceRecords => activeChild.attendanceRecords;
-  MemorizationProgress get memorizationProgress => activeChild.memorizationProgress;
+  MemorizationProgress get memorizationProgress =>
+      activeChild.memorizationProgress;
   List<PointRecord> get pointRecords => activeChild.pointRecords;
   List<EvaluationRecord> get evaluations => activeChild.evaluations;
   List<SabrRecord> get sabrRecords => activeChild.sabrRecords;
@@ -481,11 +501,11 @@ class ParentDashboardData {
   int get totalPoints => activeChild.totalPoints;
 
   int get attendanceCount => activeChild.attendanceCount;
-  int get absenceCount    => activeChild.absenceCount;
+  int get absenceCount => activeChild.absenceCount;
   double get attendanceRate => activeChild.attendanceRate;
 
   int get unreadNotifications => notifications.where((n) => !n.isRead).length;
-  int get unreadNotes         => activeChild.unreadNotes;
+  int get unreadNotes => activeChild.unreadNotes;
 }
 
 // ─── Parent Profile (from /parent/profile) ───────────────────────────────────
@@ -611,7 +631,9 @@ class ParentProfile {
   String get avatarInitials {
     final parts = fatherName.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) return '${parts.first[0]} ${parts.last[0]}';
-    return parts.isNotEmpty && parts.first.isNotEmpty ? parts.first[0] : '؟';
+    return parts.isNotEmpty && parts.first.isNotEmpty
+        ? parts.first[0]
+        : tr('؟');
   }
 }
 
@@ -657,7 +679,8 @@ class ParentSummary {
 class ActivityChildEligibility {
   final int studentId;
   final String studentName;
-  final String? responseStatus; // registered | declined | null (no response yet)
+  final String?
+      responseStatus; // registered | declined | null (no response yet)
   final bool canRespond;
 
   const ActivityChildEligibility({
@@ -713,7 +736,8 @@ class ParentActivity {
       isActive: json['is_active'] as bool? ?? true,
       groupName: group?['name'] as String?,
       children: childrenJson
-          .map((c) => ActivityChildEligibility.fromJson(c as Map<String, dynamic>))
+          .map((c) =>
+              ActivityChildEligibility.fromJson(c as Map<String, dynamic>))
           .toList(),
     );
   }
@@ -741,7 +765,8 @@ class InvoiceListItem {
     required this.balance,
   });
 
-  factory InvoiceListItem.fromJson(Map<String, dynamic> json) => InvoiceListItem(
+  factory InvoiceListItem.fromJson(Map<String, dynamic> json) =>
+      InvoiceListItem(
         id: json['id'] as int,
         invoiceNo: json['invoice_no'] as String? ?? '',
         status: json['status'] as String? ?? '',
@@ -754,7 +779,9 @@ class InvoiceListItem {
 
   bool get isPaid => status == 'paid' || balance <= 0;
   bool get isOverdue =>
-      !isPaid && dueDate != null && DateTime.tryParse(dueDate!)?.isBefore(DateTime.now()) == true;
+      !isPaid &&
+      dueDate != null &&
+      DateTime.tryParse(dueDate!)?.isBefore(DateTime.now()) == true;
 }
 
 class InvoiceLineItem {
@@ -772,7 +799,8 @@ class InvoiceLineItem {
     required this.lineTotal,
   });
 
-  factory InvoiceLineItem.fromJson(Map<String, dynamic> json) => InvoiceLineItem(
+  factory InvoiceLineItem.fromJson(Map<String, dynamic> json) =>
+      InvoiceLineItem(
         id: json['id'] as int,
         description: json['description'] as String? ?? '',
         quantity: (json['quantity'] as num?)?.toDouble() ?? 1,
@@ -854,7 +882,9 @@ class InvoiceDetail {
       total: (json['total'] as num?)?.toDouble() ?? 0,
       paidTotal: (json['paid_total'] as num?)?.toDouble() ?? 0,
       balance: (json['balance'] as num?)?.toDouble() ?? 0,
-      items: itemsJson.map((e) => InvoiceLineItem.fromJson(e as Map<String, dynamic>)).toList(),
+      items: itemsJson
+          .map((e) => InvoiceLineItem.fromJson(e as Map<String, dynamic>))
+          .toList(),
       payments: paymentsJson
           .map((e) => InvoicePaymentEntry.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -887,9 +917,15 @@ class StudentParentInfo {
   factory StudentParentInfo.fromJson(Map<String, dynamic> json) {
     final parent = json['parent'] as Map<String, dynamic>? ?? {};
     return StudentParentInfo(
-      fatherName: (parent['father_name'] as String? ?? json['parent_name'] as String? ?? '').trim(),
+      fatherName: (parent['father_name'] as String? ??
+              json['parent_name'] as String? ??
+              '')
+          .trim(),
       motherName: (parent['mother_name'] as String? ?? '').trim(),
-      fatherPhone: (parent['father_phone'] as String? ?? parent['phone'] as String? ?? '').trim(),
+      fatherPhone: (parent['father_phone'] as String? ??
+              parent['phone'] as String? ??
+              '')
+          .trim(),
       motherPhone: (parent['mother_phone'] as String? ?? '').trim(),
       homePhone: (parent['home_phone'] as String? ?? '').trim(),
       address: (parent['address'] as String? ?? '').trim(),
@@ -897,7 +933,8 @@ class StudentParentInfo {
     );
   }
 
-  bool get hasAnyData => fatherName.isNotEmpty || motherName.isNotEmpty || fatherPhone.isNotEmpty;
+  bool get hasAnyData =>
+      fatherName.isNotEmpty || motherName.isNotEmpty || fatherPhone.isNotEmpty;
 }
 
 // ─── Child Detail (from /parent/children and /parent/children/{id}) ──────────
@@ -956,8 +993,7 @@ class ActiveEnrollment {
         leftAt: json['left_at'] as String?,
         memorizedPages: (json['memorized_pages'] as num?)?.toInt() ?? 0,
         points: (json['points'] as num?)?.toInt() ?? 0,
-        group: EnrollmentGroup.fromJson(
-            json['group'] as Map<String, dynamic>),
+        group: EnrollmentGroup.fromJson(json['group'] as Map<String, dynamic>),
       );
 }
 
@@ -1024,17 +1060,21 @@ class ChildDetail {
   String get avatarInitials {
     final parts = fullName.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) return '${parts.first[0]} ${parts.last[0]}';
-    return parts.isNotEmpty && parts.first.isNotEmpty ? parts.first[0] : '؟';
+    return parts.isNotEmpty && parts.first.isNotEmpty
+        ? parts.first[0]
+        : tr('؟');
   }
 
   String get groupName =>
       activeEnrollments.isNotEmpty ? activeEnrollments.first.group.name : '';
 
-  String get courseName =>
-      activeEnrollments.isNotEmpty ? activeEnrollments.first.group.courseName : '';
+  String get courseName => activeEnrollments.isNotEmpty
+      ? activeEnrollments.first.group.courseName
+      : '';
 
-  String get teacherName =>
-      activeEnrollments.isNotEmpty ? activeEnrollments.first.group.teacherName : '';
+  String get teacherName => activeEnrollments.isNotEmpty
+      ? activeEnrollments.first.group.teacherName
+      : '';
 }
 
 // ─── API Quran Test Entry (from /parent/children/{id}/quran-tests) ───────────
@@ -1158,41 +1198,46 @@ class QuranTestEntry {
 
   /// الدرجة: أول محاولة ناجحة أو الأخيرة
   double? get score {
-    final allAttempts = isFinal ? attempts : parts.expand((p) => p.attempts).toList();
+    final allAttempts =
+        isFinal ? attempts : parts.expand((p) => p.attempts).toList();
     if (allAttempts.isEmpty) return null;
-    final passed = allAttempts.where((a) => a.status == 'passed' && a.score != null);
+    final passed =
+        allAttempts.where((a) => a.status == 'passed' && a.score != null);
     return passed.isNotEmpty ? passed.first.score : allAttempts.last.score;
   }
 
   /// عدد الأجزاء أو صفحات الجزء
   List<int> get pageNumbers {
     final pages = <int>[];
-    for (int p = juzFromPage; p <= juzToPage; p++) { pages.add(p); }
+    for (int p = juzFromPage; p <= juzToPage; p++) {
+      pages.add(p);
+    }
     return pages;
   }
 
   /// اسم الجزء للعرض
-  String get juzTitle => 'الجزء $juzNumber';
+  String get juzTitle => trf('الجزء {0}', [juzNumber]);
 
   /// تحويل إلى SabrRecord للواجهة القديمة
   SabrRecord toSabrRecord() => SabrRecord(
-    id: '$id',
-    date: date,
-    type: isFinal ? SabrType.final_ : SabrType.trial,
-    title: juzTitle,
-    surahFrom: 'ص $juzFromPage',
-    surahTo: 'ص $juzToPage',
-    pageNumbers: pageNumbers,
-    totalPages: juzToPage - juzFromPage + 1,
-    rating: _scoreToRating(score),
-    score: score ?? 0,
-    examinerName: teacherName,
-    notes: _buildNotes(),
-    isPassed: isPassed,
-  );
+        id: '$id',
+        date: date,
+        type: isFinal ? SabrType.final_ : SabrType.trial,
+        title: juzTitle,
+        surahFrom: trf('ص {0}', [juzFromPage]),
+        surahTo: trf('ص {0}', [juzToPage]),
+        pageNumbers: pageNumbers,
+        totalPages: juzToPage - juzFromPage + 1,
+        rating: _scoreToRating(score),
+        score: score ?? 0,
+        examinerName: teacherName,
+        notes: _buildNotes(),
+        isPassed: isPassed,
+      );
 
   String _buildNotes() {
-    final allAttempts = isFinal ? attempts : parts.expand((p) => p.attempts).toList();
+    final allAttempts =
+        isFinal ? attempts : parts.expand((p) => p.attempts).toList();
     final notes = allAttempts
         .where((a) => a.notes != null && a.notes!.trim().isNotEmpty)
         .map((a) => a.notes!)
@@ -1247,20 +1292,23 @@ class NoteEntry {
 
   NoteAuthor get noteAuthor {
     switch (source) {
-      case 'parent': return NoteAuthor.parent;
-      case 'admin': return NoteAuthor.admin;
-      default: return NoteAuthor.teacher;
+      case 'parent':
+        return NoteAuthor.parent;
+      case 'admin':
+        return NoteAuthor.admin;
+      default:
+        return NoteAuthor.teacher;
     }
   }
 
   NoteMessage toNoteMessage() => NoteMessage(
-    id: '$id',
-    dateTime: notedAt,
-    author: noteAuthor,
-    authorName: authorName,
-    content: body,
-    isRead: true,
-  );
+        id: '$id',
+        dateTime: notedAt,
+        author: noteAuthor,
+        authorName: authorName,
+        content: body,
+        isRead: true,
+      );
 }
 
 // ─── API Point Entry (from /parent/children/{id}/points) ─────────────────────
@@ -1316,12 +1364,11 @@ class PointEntry {
 
   /// تحويل إلى PointRecord المستخدم في الواجهة القديمة
   PointRecord toPointRecord() => PointRecord(
-    date: enteredAt,
-    points: points,
-    reason: notes ?? pointTypeName,
-    isBonus: isBonus,
-  );
-
+        date: enteredAt,
+        points: points,
+        reason: notes ?? pointTypeName,
+        isBonus: isBonus,
+      );
 }
 
 // ─── Student Dashboard Data (for student login) ───────────────────────────────
@@ -1344,8 +1391,9 @@ class StudentDashboardData {
 
   double get attendanceRate {
     if (attendanceRecords.isEmpty) return 0;
-    final present =
-        attendanceRecords.where((r) => r.status == AttendanceStatus.present).length;
+    final present = attendanceRecords
+        .where((r) => r.status == AttendanceStatus.present)
+        .length;
     return present / attendanceRecords.length;
   }
 }

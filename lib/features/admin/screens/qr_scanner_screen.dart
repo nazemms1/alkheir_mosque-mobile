@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import '../../../core/config/attendance_config.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/services/admin_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // نتيجة مسح QR — يُفترض أن يحتوي رمز QR الخاص بالطالب على معرّفه (student_id)
@@ -47,10 +48,10 @@ extension on ScanAttendanceKind {
       };
 
   String get label => switch (this) {
-        ScanAttendanceKind.present => 'حضور',
-        ScanAttendanceKind.absent => 'غياب',
-        ScanAttendanceKind.late => 'تأخر',
-        ScanAttendanceKind.earlyLeave => 'مغادرة مبكرة',
+        ScanAttendanceKind.present => tr('حضور'),
+        ScanAttendanceKind.absent => tr('غياب'),
+        ScanAttendanceKind.late => tr('تأخر'),
+        ScanAttendanceKind.earlyLeave => tr('مغادرة مبكرة'),
       };
 
   IconData get icon => switch (this) {
@@ -140,7 +141,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     try {
       final scanValue = result.studentId?.trim();
       if (scanValue == null || scanValue.isEmpty) {
-        throw Exception('رمز QR غير صالح');
+        throw Exception(tr('رمز QR غير صالح'));
       }
 
       final now = DateTime.now();
@@ -210,9 +211,9 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   Text(
-                    success ? 'تم تسجيل الحضور' : 'فشل التسجيل',
+                    success ? tr('تم تسجيل الحضور') : tr('فشل التسجيل'),
                     style: const TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontWeight: FontWeight.w700,
                       color: Colors.white,
                       fontSize: 13,
@@ -221,7 +222,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                   Text(
                     success ? name : (error ?? name),
                     style: const TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       color: Colors.white,
                       fontSize: 11,
                     ),
@@ -333,7 +334,7 @@ class _AttendanceKindPicker extends StatelessWidget {
                       style: const TextStyle(
                           color: Colors.white,
                           fontSize: 13,
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                           fontWeight: FontWeight.w700),
                     ),
                   ),
@@ -345,12 +346,12 @@ class _AttendanceKindPicker extends StatelessWidget {
             Icon(Icons.qr_code_scanner_rounded,
                 size: 56, color: Colors.white.withOpacity(0.5)),
             const SizedBox(height: 16),
-            const Text(
-              'اختر نوع الحضور قبل بدء المسح',
+            Text(
+              tr('اختر نوع الحضور قبل بدء المسح'),
               style: TextStyle(
                   color: Colors.white,
                   fontSize: 16,
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontWeight: FontWeight.w700),
             ),
             const SizedBox(height: 24),
@@ -394,7 +395,7 @@ class _KindButton extends StatelessWidget {
               style: TextStyle(
                   color: color,
                   fontSize: 15,
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontWeight: FontWeight.w800),
             ),
           ],
@@ -463,7 +464,7 @@ class _ScanOverlay extends StatelessWidget {
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 13,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontWeight: FontWeight.w700,
                       ),
                     ),
@@ -498,11 +499,11 @@ class _ScanOverlay extends StatelessWidget {
                 Icon(kind.icon, size: 16, color: kind.color),
                 const SizedBox(width: 6),
                 Text(
-                  'تسجيل: ${kind.label}',
+                  trf('تسجيل: {0}', [kind.label]),
                   style: TextStyle(
                     color: kind.color,
                     fontSize: 12.5,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontWeight: FontWeight.w700,
                   ),
                 ),
@@ -526,10 +527,10 @@ class _ScanOverlay extends StatelessWidget {
         // ── Hint text ────────────────────────────────────────────────────
         Text(
           sending
-              ? 'جارٍ تسجيل الحضور...'
+              ? tr('جارٍ تسجيل الحضور...')
               : paused
-                  ? 'المسح متوقف مؤقتاً'
-                  : 'وجّه الكاميرا نحو رمز QR الطالب',
+                  ? tr('المسح متوقف مؤقتاً')
+                  : tr('وجّه الكاميرا نحو رمز QR الطالب'),
           style: TextStyle(
             color: sending
                 ? AppColors.gold
@@ -537,7 +538,7 @@ class _ScanOverlay extends StatelessWidget {
                     ? Colors.white60
                     : Colors.white,
             fontSize: 14,
-            fontFamily: 'Cairo',
+            fontFamily: 'Dubai',
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -567,11 +568,11 @@ class _ScanOverlay extends StatelessWidget {
                   ),
                   const SizedBox(width: 8),
                   Text(
-                    paused ? 'استئناف المسح' : 'إيقاف مؤقت',
+                    paused ? tr('استئناف المسح') : tr('إيقاف مؤقت'),
                     style: const TextStyle(
                       color: Colors.white,
                       fontSize: 13,
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontWeight: FontWeight.w700,
                     ),
                   ),
@@ -850,19 +851,19 @@ class _SessionPanelState extends State<_SessionPanel> {
                   const Icon(Icons.history_rounded,
                       color: Colors.white60, size: 16),
                   const SizedBox(width: 6),
-                  const Text(
-                    'سجل الجلسة',
+                  Text(
+                    tr('سجل الجلسة'),
                     style: TextStyle(
                       color: Colors.white60,
                       fontSize: 12,
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                   const Spacer(),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 8, vertical: 2),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                     decoration: BoxDecoration(
                       color: AppColors.primaryLight.withOpacity(0.2),
                       borderRadius: BorderRadius.circular(10),
@@ -872,7 +873,7 @@ class _SessionPanelState extends State<_SessionPanel> {
                       style: const TextStyle(
                         color: AppColors.primaryLight,
                         fontSize: 12,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontWeight: FontWeight.w800,
                       ),
                     ),
@@ -938,7 +939,7 @@ class _RecordTile extends StatelessWidget {
               style: const TextStyle(
                 color: Colors.white,
                 fontSize: 12,
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontWeight: FontWeight.w600,
               ),
               maxLines: 1,
@@ -950,7 +951,7 @@ class _RecordTile extends StatelessWidget {
             style: const TextStyle(
               color: Colors.white54,
               fontSize: 11,
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
             ),
           ),
         ],

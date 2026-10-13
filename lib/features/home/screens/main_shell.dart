@@ -10,8 +10,10 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/models/auth_token.dart';
 import '../../../data/services/student_service.dart';
+import '../../account/screens/account_screen.dart';
 import '../../auth/screens/login_screen.dart';
 import '../../notifications/screens/notifications_screen.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
@@ -85,10 +87,10 @@ class _MainShellState extends ConsumerState<MainShell>
   }
 
   ChildData _emptyChild() => ChildData(
-        student: const StudentModel(
+        student: StudentModel(
           id: '-',
-          name: 'لا يوجد طلاب مسجّلون',
-          avatarInitials: '؟',
+          name: tr('لا يوجد طلاب مسجّلون'),
+          avatarInitials: tr('؟'),
           groupName: '',
           courseName: '',
           teacherName: '',
@@ -125,9 +127,10 @@ class _MainShellState extends ConsumerState<MainShell>
   }
 
   void _openNotifications() {
-    final studentId = (!widget.token.isAdmin && _data != null && _data!.children.isNotEmpty)
-        ? int.tryParse(_activeChild.student.id)
-        : null;
+    final studentId =
+        (!widget.token.isAdmin && _data != null && _data!.children.isNotEmpty)
+            ? int.tryParse(_activeChild.student.id)
+            : null;
     Navigator.of(context).push(
       PageRouteBuilder(
         pageBuilder: (_, a, __) => NotificationsScreen(studentId: studentId),
@@ -163,13 +166,14 @@ class _MainShellState extends ConsumerState<MainShell>
     final user = widget.token.user;
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final sheetBg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
-    final dividerColor = isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
+    final dividerColor =
+        isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => Container(
+      builder: (sheetCtx) => Container(
         decoration: BoxDecoration(
           color: sheetBg,
           borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
@@ -192,7 +196,11 @@ class _MainShellState extends ConsumerState<MainShell>
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
+                  colors: [
+                    Color(0xFF071A0A),
+                    Color(0xFF0D5016),
+                    Color(0xFF1A7A26)
+                  ],
                   begin: Alignment.topRight,
                   end: Alignment.bottomLeft,
                 ),
@@ -229,28 +237,30 @@ class _MainShellState extends ConsumerState<MainShell>
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          user?.name ?? 'المدير',
+                          user?.name ?? tr('المدير'),
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 15,
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                           ),
                         ),
                         const SizedBox(height: 4),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 3),
                           decoration: BoxDecoration(
                             color: Colors.white.withOpacity(0.15),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: Colors.white.withOpacity(0.25)),
+                            border: Border.all(
+                                color: Colors.white.withOpacity(0.25)),
                           ),
                           child: Text(
                             widget.token.displayRole,
                             style: const TextStyle(
                               color: Colors.white,
                               fontSize: 11,
-                              fontFamily: 'Cairo',
+                              fontFamily: 'Dubai',
                             ),
                           ),
                         ),
@@ -259,14 +269,15 @@ class _MainShellState extends ConsumerState<MainShell>
                           Row(
                             children: [
                               Icon(Icons.badge_rounded,
-                                  color: Colors.white.withOpacity(0.6), size: 13),
+                                  color: Colors.white.withOpacity(0.6),
+                                  size: 13),
                               const SizedBox(width: 4),
                               Text(
                                 user!.username,
                                 style: TextStyle(
                                   color: Colors.white.withOpacity(0.65),
                                   fontSize: 11,
-                                  fontFamily: 'Cairo',
+                                  fontFamily: 'Dubai',
                                 ),
                               ),
                             ],
@@ -279,7 +290,15 @@ class _MainShellState extends ConsumerState<MainShell>
               ),
             ),
             const SizedBox(height: 16),
+            _SheetMenuItem(
+              icon: Icons.person_rounded,
+              label: tr('حسابي'),
+              subtitle: tr('البيانات الشخصية وكلمة المرور والصورة'),
+              color: AppColors.info,
+              onTap: () => _openAccount(sheetCtx),
+            ),
             _ThemeToggleItem(isDark: isDark),
+            const _LanguageToggleItem(),
             const SizedBox(height: 8),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -308,18 +327,18 @@ class _MainShellState extends ConsumerState<MainShell>
                       ),
                     ],
                   ),
-                  child: const Row(
+                  child: Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Icon(Icons.logout_rounded, color: Colors.white, size: 20),
                       SizedBox(width: 10),
                       Text(
-                        'تسجيل الخروج',
+                        tr('تسجيل الخروج'),
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                         ),
                       ),
                     ],
@@ -339,20 +358,20 @@ class _MainShellState extends ConsumerState<MainShell>
       context: context,
       builder: (ctx) => AlertDialog(
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: const Text('تسجيل الخروج',
-            style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w700)),
-        content: const Text('هل تريد تسجيل الخروج من الحساب؟',
-            style: TextStyle(fontFamily: 'Cairo')),
+        title: Text(tr('تسجيل الخروج'),
+            style: TextStyle(fontFamily: 'Dubai', fontWeight: FontWeight.w700)),
+        content: Text(tr('هل تريد تسجيل الخروج من الحساب؟'),
+            style: TextStyle(fontFamily: 'Dubai')),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text('إلغاء',
+            child: Text(tr('إلغاء'),
                 style: TextStyle(
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface
                         .withOpacity(0.6),
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -369,8 +388,8 @@ class _MainShellState extends ConsumerState<MainShell>
               shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12)),
             ),
-            child: const Text('تسجيل الخروج',
-                style: TextStyle(fontFamily: 'Cairo')),
+            child:
+                Text(tr('تسجيل الخروج'), style: TextStyle(fontFamily: 'Dubai')),
           ),
         ],
       ),
@@ -388,7 +407,8 @@ class _MainShellState extends ConsumerState<MainShell>
   bool get _isParentOrStudent =>
       widget.token.isParent || widget.token.isStudent;
 
-  bool get _isStaff => widget.token.isAnyStaff;
+  /// كل حساب ليس ولي أمر/طالب يُعامل كحساب طاقم (ملف إداري بلا بيانات أبناء).
+  bool get _isStaff => !_isParentOrStudent;
 
   /// تبويبات الحساب الحالي — تأتي جاهزة ومرشَّحة بالأدوار والصلاحيات من
   /// السجل المركزي (core/navigation/tab_registry.dart). لإضافة صفحة جديدة
@@ -422,7 +442,7 @@ class _MainShellState extends ConsumerState<MainShell>
               const SizedBox(height: 12),
               Text(_error!,
                   textAlign: TextAlign.center,
-                  style: const TextStyle(fontFamily: 'Cairo')),
+                  style: const TextStyle(fontFamily: 'Dubai')),
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: () {
@@ -432,8 +452,8 @@ class _MainShellState extends ConsumerState<MainShell>
                   });
                   _loadData();
                 },
-                child: const Text('إعادة المحاولة',
-                    style: TextStyle(fontFamily: 'Cairo')),
+                child: Text(tr('إعادة المحاولة'),
+                    style: TextStyle(fontFamily: 'Dubai')),
               ),
             ],
           ),
@@ -561,13 +581,13 @@ class _MainShellState extends ConsumerState<MainShell>
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
-                                  'مسجد الخير',
+                                Text(
+                                  tr('مسجد الخير'),
                                   style: TextStyle(
                                     color: Colors.white,
                                     fontSize: 15,
                                     fontWeight: FontWeight.w800,
-                                    fontFamily: 'Cairo',
+                                    fontFamily: 'Dubai',
                                     letterSpacing: 0.3,
                                   ),
                                 ),
@@ -576,7 +596,7 @@ class _MainShellState extends ConsumerState<MainShell>
                                   style: TextStyle(
                                     color: Colors.white.withOpacity(0.6),
                                     fontSize: 10,
-                                    fontFamily: 'Cairo',
+                                    fontFamily: 'Dubai',
                                   ),
                                 ),
                               ],
@@ -603,7 +623,7 @@ class _MainShellState extends ConsumerState<MainShell>
                               color: Colors.white,
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
-                              fontFamily: 'Cairo',
+                              fontFamily: 'Dubai',
                             ),
                           ),
                         ),
@@ -624,6 +644,13 @@ class _MainShellState extends ConsumerState<MainShell>
       ),
     );
   }
+}
+
+/// يغلق نافذة الملف الشخصي ثم يفتح شاشة "حسابي".
+void _openAccount(BuildContext sheetContext) {
+  final navigator = Navigator.of(sheetContext);
+  navigator.pop();
+  navigator.push(MaterialPageRoute(builder: (_) => const AccountScreen()));
 }
 
 // ─── Glow Orb decoration ──────────────────────────────────────────────────────
@@ -754,12 +781,12 @@ class _UserProfileSheet extends StatelessWidget {
 
     // بيانات الوالد من الـ API أو fallback للبيانات القديمة
     final displayName = parentProfile != null
-        ? 'ولي أمر: ${parentProfile!.fatherName}'
-        : 'ولي أمر: ${student.name.split(' ').take(3).join(' ')}';
+        ? trf('ولي أمر: {0}', [parentProfile!.fatherName])
+        : trf('ولي أمر: {0}', [student.name.split(' ').take(3).join(' ')]);
     final displayInitials =
         parentProfile?.avatarInitials ?? student.avatarInitials;
     final displayGroup = parentProfile != null
-        ? 'رقم الوالد: ${parentProfile!.parentNumber}'
+        ? trf('رقم الوالد: {0}', [parentProfile!.parentNumber])
         : student.groupName;
     final displayId = parentProfile?.parentNumber ?? student.id;
     final totalPoints = parentSummary?.points ??
@@ -833,7 +860,7 @@ class _UserProfileSheet extends StatelessWidget {
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ),
@@ -849,7 +876,7 @@ class _UserProfileSheet extends StatelessWidget {
                           color: Colors.white,
                           fontSize: 15,
                           fontWeight: FontWeight.w700,
-                          fontFamily: 'Cairo',
+                          fontFamily: 'Dubai',
                         ),
                       ),
                       const SizedBox(height: 4),
@@ -867,7 +894,7 @@ class _UserProfileSheet extends StatelessWidget {
                           style: const TextStyle(
                             color: Colors.white,
                             fontSize: 11,
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                           ),
                         ),
                       ),
@@ -882,7 +909,7 @@ class _UserProfileSheet extends StatelessWidget {
                             style: TextStyle(
                               color: Colors.white.withOpacity(0.65),
                               fontSize: 11,
-                              fontFamily: 'Cairo',
+                              fontFamily: 'Dubai',
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -904,19 +931,19 @@ class _UserProfileSheet extends StatelessWidget {
             child: Row(
               children: [
                 _SheetStat(
-                    label: 'إجمالي النقاط',
+                    label: tr('إجمالي النقاط'),
                     value: '$totalPoints',
                     icon: Icons.star_rounded,
                     color: AppColors.gold),
                 const SizedBox(width: 10),
                 _SheetStat(
-                    label: 'عدد الأبناء',
+                    label: tr('عدد الأبناء'),
                     value: '$childrenCount',
                     icon: Icons.group_rounded,
                     color: AppColors.success),
                 const SizedBox(width: 10),
                 _SheetStat(
-                    label: 'إجمالي صفحات',
+                    label: tr('إجمالي صفحات'),
                     value: '$totalMemorized',
                     icon: Icons.menu_book_rounded,
                     color: AppColors.primaryLight),
@@ -927,28 +954,32 @@ class _UserProfileSheet extends StatelessWidget {
           // Menu items
           _SheetMenuItem(
             icon: Icons.person_rounded,
-            label: 'بيانات الحساب',
-            subtitle: 'معلومات ولي الأمر والطالب',
+            label: tr('بيانات الحساب'),
+            subtitle: tr('معلومات ولي الأمر والطالب'),
             color: AppColors.info,
-            onTap: () => Navigator.pop(context),
+            onTap: () => _openAccount(context),
           ).animate().fadeIn(delay: 150.ms).slideX(begin: 0.05, end: 0),
           _SheetMenuItem(
             icon: Icons.notifications_rounded,
-            label: 'إعدادات الإشعارات',
-            subtitle: 'تخصيص التنبيهات والإشعارات',
+            label: tr('إعدادات الإشعارات'),
+            subtitle: tr('تخصيص التنبيهات والإشعارات'),
             color: AppColors.warning,
             onTap: () => Navigator.pop(context),
           ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.05, end: 0),
           _SheetMenuItem(
             icon: Icons.help_rounded,
-            label: 'المساعدة والدعم',
-            subtitle: 'تواصل مع إدارة المسجد',
+            label: tr('المساعدة والدعم'),
+            subtitle: tr('تواصل مع إدارة المسجد'),
             color: AppColors.primaryLight,
             onTap: () => Navigator.pop(context),
           ).animate().fadeIn(delay: 250.ms).slideX(begin: 0.05, end: 0),
           _ThemeToggleItem(isDark: isDark)
               .animate()
               .fadeIn(delay: 300.ms)
+              .slideX(begin: 0.05, end: 0),
+          const _LanguageToggleItem()
+              .animate()
+              .fadeIn(delay: 330.ms)
               .slideX(begin: 0.05, end: 0),
           const SizedBox(height: 8),
           // Divider
@@ -980,18 +1011,18 @@ class _UserProfileSheet extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Row(
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Icon(Icons.logout_rounded, color: Colors.white, size: 20),
                     SizedBox(width: 10),
                     Text(
-                      'تسجيل الخروج',
+                      tr('تسجيل الخروج'),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ],
@@ -1034,7 +1065,7 @@ class _SheetStat extends StatelessWidget {
                     color: color,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
             Text(label,
                 style: TextStyle(
                     color: Theme.of(context)
@@ -1042,7 +1073,7 @@ class _SheetStat extends StatelessWidget {
                         .onSurface
                         .withOpacity(0.5),
                     fontSize: 10,
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
           ],
         ),
       ),
@@ -1102,13 +1133,13 @@ class _SheetMenuItem extends StatelessWidget {
                   children: [
                     Text(label,
                         style: TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSurface)),
                     Text(subtitle,
                         style: TextStyle(
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                             fontSize: 11,
                             color: Theme.of(context)
                                 .colorScheme
@@ -1130,6 +1161,61 @@ class _SheetMenuItem extends StatelessWidget {
 }
 
 // ─── Theme Toggle Item ────────────────────────────────────────────────────────
+// ─── Language Toggle Item ─────────────────────────────────────────────────────
+class _LanguageToggleItem extends ConsumerWidget {
+  const _LanguageToggleItem();
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final theme = Theme.of(context);
+    final isDark = theme.brightness == Brightness.dark;
+    final color = isDark ? AppColors.primaryGlow : AppColors.primaryMid;
+    final label = AppLanguage.isArabic
+        ? tr('التبديل إلى الإنجليزية')
+        : tr('التبديل إلى العربية');
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: () => ref.read(localeProvider.notifier).toggle(),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
+          decoration: BoxDecoration(
+            color: isDark ? AppColors.bgCard : AppColors.bgWhiteCard,
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: theme.dividerColor),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 42,
+                height: 42,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(Icons.translate_rounded, color: color, size: 22),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Text(
+                  label,
+                  style: appTextStyle(
+                    fontSize: 14,
+                    fontWeight: FontWeight.w700,
+                    color:
+                        isDark ? AppColors.textOnDark : AppColors.textPrimary,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class _ThemeToggleItem extends ConsumerWidget {
   final bool isDark;
   const _ThemeToggleItem({required this.isDark});
@@ -1179,9 +1265,9 @@ class _ThemeToggleItem extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isDark ? 'الوضع النهاري' : 'الوضع الليلي',
+                      isDark ? tr('الوضع النهاري') : tr('الوضع الليلي'),
                       style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: isDark
@@ -1191,10 +1277,10 @@ class _ThemeToggleItem extends ConsumerWidget {
                     ),
                     Text(
                       isDark
-                          ? 'التبديل إلى المظهر الفاتح'
-                          : 'التبديل إلى المظهر الداكن',
+                          ? tr('التبديل إلى المظهر الفاتح')
+                          : tr('التبديل إلى المظهر الداكن'),
                       style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 11,
                         color: isDark
                             ? AppColors.textOnDarkMute
@@ -1333,7 +1419,7 @@ class _NavItemState extends State<_NavItem>
                   color: Colors.white,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                 ),
               ),
             ],
@@ -1359,15 +1445,15 @@ class _RoleComingSoon extends StatelessWidget {
               size: 56, color: AppColors.primaryLight),
           const SizedBox(height: 16),
           Text(
-            'مرحباً — $role',
+            trf('مرحباً — {0}', [role]),
             style: const TextStyle(
-                fontFamily: 'Cairo', fontSize: 16, fontWeight: FontWeight.w700),
+                fontFamily: 'Dubai', fontSize: 16, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
-          const Text(
-            'شاشات هذا الدور قيد الإنشاء',
+          Text(
+            tr('شاشات هذا الدور قيد الإنشاء'),
             style: TextStyle(
-                fontFamily: 'Cairo', fontSize: 13, color: AppColors.textMuted),
+                fontFamily: 'Dubai', fontSize: 13, color: AppColors.textMuted),
           ),
         ],
       ),

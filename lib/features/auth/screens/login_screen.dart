@@ -2,8 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../home/screens/main_shell.dart';
+import '../../../core/config/server_config.dart';
+import '../../../core/i18n/app_language.dart';
 import '../../../core/session/auth_session.dart';
 import '../../../core/session/service_providers.dart';
+import '../../../core/session/theme_provider.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/services/auth_service.dart';
 
@@ -94,8 +97,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       if (!mounted) return;
       _showError(e.message);
     } catch (e) {
+      // خطأ غير متوقع: لا نعرض نص الاستثناء الخام للمستخدم.
+      debugPrint('login failed: $e');
       if (!mounted) return;
-      _showError('خطأ: $e');
+      _showError(tr('حدث خطأ، حاول مرة أخرى'));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -106,13 +111,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.error_outline_rounded, color: Colors.white, size: 20),
+            const Icon(Icons.error_outline_rounded,
+                color: Colors.white, size: 20),
             const SizedBox(width: 10),
             Expanded(
               child: Text(
                 message,
                 style: const TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -124,6 +130,64 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         margin: const EdgeInsets.all(16),
         duration: const Duration(seconds: 4),
+      ),
+    );
+  }
+
+  /// يفتح حواراً لتغيير عنوان الخادم (مثلاً عنوان جهاز الكمبيوتر على الشبكة).
+  Future<void> _editServerUrl() async {
+    final controller = TextEditingController(text: ServerConfig.baseUrl);
+    final prefs = ref.read(sharedPrefsProvider);
+    final value = await showDialog<String>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: Text(tr('عنوان الخادم')),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            TextField(
+              controller: controller,
+              keyboardType: TextInputType.url,
+              textDirection: TextDirection.ltr,
+              decoration:
+                  InputDecoration(hintText: ServerConfig.defaultBaseUrl),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              tr('مثال: http://10.0.2.2:8000'),
+              style: appTextStyle(fontSize: 12, color: AppColors.textMuted),
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, ServerConfig.defaultBaseUrl),
+            child: Text(tr('استعادة الافتراضي')),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: Text(tr('إلغاء')),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(ctx, controller.text),
+            child: Text(tr('حفظ')),
+          ),
+        ],
+      ),
+    );
+    // نؤجّل التخلص من المتحكم حتى ينتهي تحريك إغلاق الحوار.
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+    controller.dispose();
+    if (value == null || !mounted) return;
+
+    final saved = await ServerConfig.save(prefs, value);
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          saved ? tr('تم حفظ عنوان الخادم') : tr('عنوان الخادم غير صالح'),
+        ),
       ),
     );
   }
@@ -163,6 +227,40 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
                 ),
               ),
             ),
+          ),
+          SafeArea(
+            child: Align(
+              alignment: AlignmentDirectional.topEnd,
+              child: _TopActions(onServerTap: _editServerUrl),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+/// أزرار أعلى الشاشة: تغيير عنوان الخادم وتبديل اللغة.
+class _TopActions extends ConsumerWidget {
+  final VoidCallback onServerTap;
+  const _TopActions({required this.onServerTap});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          IconButton(
+            tooltip: tr('تغيير عنوان الخادم'),
+            icon: const Icon(Icons.dns_rounded, color: Colors.white70),
+            onPressed: onServerTap,
+          ),
+          IconButton(
+            tooltip: tr('تبديل اللغة'),
+            icon: const Icon(Icons.translate_rounded, color: Colors.white70),
+            onPressed: () => ref.read(localeProvider.notifier).toggle(),
           ),
         ],
       ),
@@ -289,7 +387,7 @@ class _HeroSection extends StatelessWidget {
               colors: [Colors.white, AppColors.primaryGlow],
             ).createShader(bounds),
             child: Text(
-              'مسجد الخير',
+              tr('مسجد الخير'),
               style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
@@ -306,7 +404,7 @@ class _HeroSection extends StatelessWidget {
               color: AppColors.glassWhite,
             ),
             child: Text(
-              'البوابة التعليمية',
+              tr('البوابة التعليمية'),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.textOnDarkSub,
                     letterSpacing: 0.5,
@@ -345,7 +443,7 @@ class _FormPanel extends StatelessWidget {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     return Container(
       decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0A1A0D) : AppColors.bgSurface,
+        color: isDark ? AppColors.bgDark : AppColors.bgWhiteCard,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(36)),
       ),
       child: SingleChildScrollView(
@@ -368,15 +466,16 @@ class _FormPanel extends StatelessWidget {
                 ),
               ),
               Text(
-                'تسجيل الدخول',
+                tr('تسجيل الدخول'),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      color: AppColors.textOnDark,
-                      fontWeight: FontWeight.w800,
+                      color:
+                          isDark ? AppColors.textOnDark : AppColors.textPrimary,
+                      fontWeight: FontWeight.w700,
                     ),
               ),
               const SizedBox(height: 4),
               Text(
-                'أدخل بياناتك لمتابعة تقدم طفلك في الحلقة',
+                tr('أدخل بياناتك لمتابعة تقدم طفلك في الحلقة'),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -386,8 +485,8 @@ class _FormPanel extends StatelessWidget {
               // Login field (email / username / phone)
               _PremiumField(
                 controller: loginCtrl,
-                label: 'البريد / اسم المستخدم / الهاتف',
-                hint: 'أدخل بريدك أو اسم المستخدم أو رقم الهاتف',
+                label: tr('البريد / اسم المستخدم / الهاتف'),
+                hint: tr('أدخل بريدك أو اسم المستخدم أو رقم الهاتف'),
                 icon: Icons.person_rounded,
                 isLtr: true,
                 validator: null,
@@ -397,7 +496,7 @@ class _FormPanel extends StatelessWidget {
               // Password field
               _PremiumField(
                 controller: passCtrl,
-                label: 'كلمة المرور',
+                label: tr('كلمة المرور'),
                 hint: '••••••••',
                 icon: Icons.lock_rounded,
                 obscure: obscure,
@@ -412,8 +511,9 @@ class _FormPanel extends StatelessWidget {
                   onPressed: onToggleObscure,
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return 'يرجى إدخال كلمة المرور';
-                  if (v.length < 4) return 'كلمة المرور قصيرة جداً';
+                  if (v == null || v.isEmpty)
+                    return tr('يرجى إدخال كلمة المرور');
+                  if (v.length < 4) return tr('كلمة المرور قصيرة جداً');
                   return null;
                 },
               ),
@@ -430,7 +530,7 @@ class _FormPanel extends StatelessWidget {
                   GestureDetector(
                     onTap: () => onRememberChanged(!remember),
                     child: Text(
-                      'تذكّرني',
+                      tr('تذكّرني'),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.textSecondary,
                             fontWeight: FontWeight.w600,
@@ -445,7 +545,7 @@ class _FormPanel extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                     ),
                     child: Text(
-                      'نسيت كلمة المرور؟',
+                      tr('نسيت كلمة المرور؟'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.primaryLight,
                             fontWeight: FontWeight.w600,
@@ -498,7 +598,7 @@ class _PremiumField extends StatelessWidget {
       textDirection: isLtr ? TextDirection.ltr : null,
       validator: validator,
       style: TextStyle(
-        fontFamily: 'Cairo',
+        fontFamily: 'Dubai',
         fontWeight: FontWeight.w600,
         fontSize: 15,
         color: Theme.of(context).colorScheme.onSurface,
@@ -588,7 +688,7 @@ class _GradientButton extends StatelessWidget {
                         color: Colors.white, size: 20),
                     const SizedBox(width: 10),
                     Text(
-                      'تسجيل الدخول',
+                      tr('تسجيل الدخول'),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             fontSize: 16,
                             letterSpacing: 0.5,
@@ -629,14 +729,14 @@ class _SupportHint extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'هل تحتاج مساعدة؟',
+                  tr('هل تحتاج مساعدة؟'),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w700,
                       ),
                 ),
                 Text(
-                  'تواصل مع إدارة المسجد عبر واتساب للحصول على بيانات الدخول',
+                  tr('تواصل مع إدارة المسجد عبر واتساب للحصول على بيانات الدخول'),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
                       ),

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class NotesScreen extends StatefulWidget {
   final List<NoteMessage> notes;
   final String studentName;
-  const NotesScreen({super.key, required this.notes, required this.studentName});
+  const NotesScreen(
+      {super.key, required this.notes, required this.studentName});
 
   @override
   State<NotesScreen> createState() => _NotesScreenState();
@@ -24,7 +26,8 @@ class _NotesScreenState extends State<NotesScreen>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 400));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 400));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _ctrl.forward();
     _messages = List.from(widget.notes);
@@ -50,7 +53,7 @@ class _NotesScreenState extends State<NotesScreen>
       id: 'NEW-${DateTime.now().millisecondsSinceEpoch}',
       dateTime: DateTime.now(),
       author: NoteAuthor.parent,
-      authorName: 'ولي الأمر',
+      authorName: tr('ولي الأمر'),
       content: text,
       isRead: true,
     );
@@ -71,7 +74,9 @@ class _NotesScreenState extends State<NotesScreen>
 
   @override
   Widget build(BuildContext context) {
-    final unread = _messages.where((m) => !m.isRead && m.author != NoteAuthor.parent).length;
+    final unread = _messages
+        .where((m) => !m.isRead && m.author != NoteAuthor.parent)
+        .length;
     return FadeTransition(
       opacity: _fade,
       child: Column(
@@ -79,10 +84,11 @@ class _NotesScreenState extends State<NotesScreen>
           _NotesHeader(studentName: widget.studentName, unread: unread),
           Expanded(
             child: _messages.isEmpty
-                ? const Center(
+                ? Center(
                     child: Text(
-                      'لا توجد رسائل بعد',
-                      style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted),
+                      tr('لا توجد رسائل بعد'),
+                      style: TextStyle(
+                          fontFamily: 'Dubai', color: AppColors.textMuted),
                     ),
                   )
                 : ListView.builder(
@@ -157,7 +163,8 @@ class _NotesHeader extends StatelessWidget {
                     end: Alignment.bottomRight,
                   ),
                   shape: BoxShape.circle,
-                  border: Border.all(color: Colors.white.withOpacity(0.2), width: 1.5),
+                  border: Border.all(
+                      color: Colors.white.withOpacity(0.2), width: 1.5),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.primaryLight.withOpacity(0.4),
@@ -165,7 +172,8 @@ class _NotesHeader extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Icon(Icons.groups_2_rounded, color: Colors.white, size: 24),
+                child: const Icon(Icons.groups_2_rounded,
+                    color: Colors.white, size: 24),
               ),
               Positioned(
                 bottom: 0,
@@ -176,9 +184,12 @@ class _NotesHeader extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: AppColors.success,
                     shape: BoxShape.circle,
-                    border: Border.all(color: const Color(0xFF060E08), width: 2),
+                    border:
+                        Border.all(color: const Color(0xFF060E08), width: 2),
                     boxShadow: [
-                      BoxShadow(color: AppColors.success.withOpacity(0.5), blurRadius: 6),
+                      BoxShadow(
+                          color: AppColors.success.withOpacity(0.5),
+                          blurRadius: 6),
                     ],
                   ),
                 ),
@@ -190,18 +201,21 @@ class _NotesHeader extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text(
-                  'المعلم والإدارة',
+                Text(
+                  tr('المعلم والإدارة'),
                   style: TextStyle(
-                    color: Colors.white, fontSize: 15,
-                    fontWeight: FontWeight.w700, fontFamily: 'Cairo',
+                    color: Colors.white,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    fontFamily: 'Dubai',
                   ),
                 ),
                 Text(
-                  'بخصوص: $studentName',
+                  trf('بخصوص: {0}', [studentName]),
                   style: TextStyle(
                     color: Colors.white.withOpacity(0.6),
-                    fontSize: 11, fontFamily: 'Cairo',
+                    fontSize: 11,
+                    fontFamily: 'Dubai',
                   ),
                 ),
               ],
@@ -214,14 +228,17 @@ class _NotesHeader extends StatelessWidget {
                 gradient: AppColors.gradientGold,
                 borderRadius: BorderRadius.circular(20),
                 boxShadow: [
-                  BoxShadow(color: AppColors.gold.withOpacity(0.4), blurRadius: 10),
+                  BoxShadow(
+                      color: AppColors.gold.withOpacity(0.4), blurRadius: 10),
                 ],
               ),
               child: Text(
-                '$unread جديد',
+                trf('{0} جديد', [unread]),
                 style: const TextStyle(
-                  color: Colors.white, fontSize: 11,
-                  fontWeight: FontWeight.w700, fontFamily: 'Cairo',
+                  color: Colors.white,
+                  fontSize: 11,
+                  fontWeight: FontWeight.w700,
+                  fontFamily: 'Dubai',
                 ),
               ),
             ),
@@ -251,7 +268,7 @@ class _DateDivider extends StatelessWidget {
               style: const TextStyle(
                 color: AppColors.textMuted,
                 fontSize: 11,
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
               ),
             ),
           ),
@@ -271,17 +288,23 @@ class _MessageBubble extends StatelessWidget {
 
   Color get _authorColor {
     switch (message.author) {
-      case NoteAuthor.parent: return AppColors.primaryLight;
-      case NoteAuthor.teacher: return AppColors.info;
-      case NoteAuthor.admin: return AppColors.gold;
+      case NoteAuthor.parent:
+        return AppColors.primaryLight;
+      case NoteAuthor.teacher:
+        return AppColors.info;
+      case NoteAuthor.admin:
+        return AppColors.gold;
     }
   }
 
   IconData get _authorIcon {
     switch (message.author) {
-      case NoteAuthor.parent: return Icons.person_rounded;
-      case NoteAuthor.teacher: return Icons.school_rounded;
-      case NoteAuthor.admin: return Icons.admin_panel_settings_rounded;
+      case NoteAuthor.parent:
+        return Icons.person_rounded;
+      case NoteAuthor.teacher:
+        return Icons.school_rounded;
+      case NoteAuthor.admin:
+        return Icons.admin_panel_settings_rounded;
     }
   }
 
@@ -292,7 +315,8 @@ class _MessageBubble extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
       child: Row(
-        mainAxisAlignment: _isParent ? MainAxisAlignment.start : MainAxisAlignment.end,
+        mainAxisAlignment:
+            _isParent ? MainAxisAlignment.start : MainAxisAlignment.end,
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!_isParent) ...[
@@ -310,7 +334,8 @@ class _MessageBubble extends StatelessWidget {
           ],
           Flexible(
             child: Column(
-              crossAxisAlignment: _isParent ? CrossAxisAlignment.start : CrossAxisAlignment.end,
+              crossAxisAlignment:
+                  _isParent ? CrossAxisAlignment.start : CrossAxisAlignment.end,
               children: [
                 if (!_isParent)
                   Padding(
@@ -321,12 +346,13 @@ class _MessageBubble extends StatelessWidget {
                         color: _authorColor,
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ),
                 Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
                   decoration: BoxDecoration(
                     gradient: _isParent
                         ? const LinearGradient(
@@ -335,7 +361,9 @@ class _MessageBubble extends StatelessWidget {
                             end: Alignment.bottomRight,
                           )
                         : null,
-                    color: _isParent ? null : Theme.of(context).colorScheme.surface,
+                    color: _isParent
+                        ? null
+                        : Theme.of(context).colorScheme.surface,
                     borderRadius: BorderRadius.only(
                       topLeft: const Radius.circular(18),
                       topRight: const Radius.circular(18),
@@ -350,7 +378,9 @@ class _MessageBubble extends StatelessWidget {
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: (_isParent ? AppColors.primaryLight : _authorColor).withOpacity(0.08),
+                        color:
+                            (_isParent ? AppColors.primaryLight : _authorColor)
+                                .withOpacity(0.08),
                         blurRadius: 12,
                         offset: const Offset(0, 3),
                       ),
@@ -359,9 +389,10 @@ class _MessageBubble extends StatelessWidget {
                   child: Text(
                     message.content,
                     style: TextStyle(
-                      color: _isParent ? AppColors.primary : AppColors.textPrimary,
+                      color:
+                          _isParent ? AppColors.primary : AppColors.textPrimary,
                       fontSize: 13,
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       height: 1.55,
                       fontWeight: _isParent ? FontWeight.w500 : FontWeight.w400,
                     ),
@@ -376,7 +407,7 @@ class _MessageBubble extends StatelessWidget {
                       style: const TextStyle(
                         color: AppColors.textMuted,
                         fontSize: 10,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                     if (!_isParent && !message.isRead) ...[
@@ -404,7 +435,8 @@ class _MessageBubble extends StatelessWidget {
                 gradient: AppColors.gradientPrimary,
                 shape: BoxShape.circle,
               ),
-              child: const Icon(Icons.person_rounded, size: 16, color: Colors.white),
+              child: const Icon(Icons.person_rounded,
+                  size: 16, color: Colors.white),
             ),
           ],
         ],
@@ -418,7 +450,8 @@ class _InputBar extends StatelessWidget {
   final TextEditingController controller;
   final bool sending;
   final VoidCallback onSend;
-  const _InputBar({required this.controller, required this.sending, required this.onSend});
+  const _InputBar(
+      {required this.controller, required this.sending, required this.onSend});
 
   @override
   Widget build(BuildContext context) {
@@ -439,24 +472,35 @@ class _InputBar extends StatelessWidget {
                 minLines: 1,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),
-                style: const TextStyle(fontFamily: 'Cairo', fontSize: 14, color: AppColors.textPrimary),
+                style: const TextStyle(
+                    fontFamily: 'Dubai',
+                    fontSize: 14,
+                    color: AppColors.textPrimary),
                 decoration: InputDecoration(
-                  hintText: 'اكتب رسالتك للمعلم أو الإدارة...',
-                  hintStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13, color: AppColors.textMuted),
+                  hintText: tr('اكتب رسالتك للمعلم أو الإدارة...'),
+                  hintStyle: const TextStyle(
+                      fontFamily: 'Dubai',
+                      fontSize: 13,
+                      color: AppColors.textMuted),
                   filled: true,
-                  fillColor: Theme.of(context).colorScheme.surfaceContainerHighest,
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  fillColor:
+                      Theme.of(context).colorScheme.surfaceContainerHighest,
+                  contentPadding:
+                      const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Theme.of(context).dividerColor),
+                    borderSide:
+                        BorderSide(color: Theme.of(context).dividerColor),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Theme.of(context).dividerColor),
+                    borderSide:
+                        BorderSide(color: Theme.of(context).dividerColor),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
-                    borderSide: const BorderSide(color: AppColors.primaryLight, width: 1.5),
+                    borderSide: const BorderSide(
+                        color: AppColors.primaryLight, width: 1.5),
                   ),
                 ),
               ),
@@ -474,11 +518,22 @@ class _InputBar extends StatelessWidget {
                   shape: BoxShape.circle,
                   boxShadow: sending
                       ? null
-                      : [BoxShadow(color: AppColors.primary.withOpacity(0.4), blurRadius: 12, offset: const Offset(0, 4))],
+                      : [
+                          BoxShadow(
+                              color: AppColors.primary.withOpacity(0.4),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4))
+                        ],
                 ),
                 child: sending
-                    ? const Center(child: SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: AppColors.primary)))
-                    : const Icon(Icons.send_rounded, color: Colors.white, size: 20),
+                    ? const Center(
+                        child: SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(
+                                strokeWidth: 2, color: AppColors.primary)))
+                    : const Icon(Icons.send_rounded,
+                        color: Colors.white, size: 20),
               ),
             ),
           ],

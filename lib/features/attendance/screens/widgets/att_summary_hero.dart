@@ -1,7 +1,13 @@
 part of '../attendance_screen.dart';
 
 class _SummaryHero extends StatelessWidget {
-  final int present, absent, late, excused, excusedEarlyDep, excusedAbsence, total;
+  final int present,
+      absent,
+      late,
+      excused,
+      excusedEarlyDep,
+      excusedAbsence,
+      total;
   final double rate;
   const _SummaryHero({
     required this.present,
@@ -20,16 +26,26 @@ class _SummaryHero extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF060E08), Color(0xFF0A2C10), Color(0xFF0D5016), Color(0xFF1A7A26)],
+          colors: [
+            Color(0xFF060E08),
+            Color(0xFF0A2C10),
+            Color(0xFF0D5016),
+            Color(0xFF1A7A26)
+          ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
       ),
       child: Stack(
         children: [
-          Positioned(top: -40, left: -40,
-              child: _Orb(size: 180, color: AppColors.primaryLight, opacity: 0.07)),
-          Positioned(bottom: -20, right: -30,
+          Positioned(
+              top: -40,
+              left: -40,
+              child: _Orb(
+                  size: 180, color: AppColors.primaryLight, opacity: 0.07)),
+          Positioned(
+              bottom: -20,
+              right: -30,
               child: _Orb(size: 160, color: AppColors.gold, opacity: 0.06)),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
@@ -37,7 +53,8 @@ class _SummaryHero extends StatelessWidget {
               children: [
                 Row(
                   children: [
-                    Expanded(child: _HeroStats(pct: pct, total: total, rate: rate)),
+                    Expanded(
+                        child: _HeroStats(pct: pct, total: total, rate: rate)),
                     _ArcProgress(rate: rate),
                   ],
                 ),
@@ -47,18 +64,42 @@ class _SummaryHero extends StatelessWidget {
                 // Row 1: حضور / غياب / تأخر
                 Row(
                   children: [
-                    _StatPill(label: 'حضور', value: present, color: AppColors.attPresent,  icon: Icons.check_circle_rounded),
-                    _StatPill(label: 'غياب', value: absent,  color: AppColors.attAbsent,   icon: Icons.cancel_rounded),
-                    _StatPill(label: 'تأخر', value: late,    color: AppColors.attLate,      icon: Icons.access_time_rounded),
+                    _StatPill(
+                        label: tr('حضور'),
+                        value: present,
+                        color: AppColors.attPresent,
+                        icon: Icons.check_circle_rounded),
+                    _StatPill(
+                        label: tr('غياب'),
+                        value: absent,
+                        color: AppColors.attAbsent,
+                        icon: Icons.cancel_rounded),
+                    _StatPill(
+                        label: tr('تأخر'),
+                        value: late,
+                        color: AppColors.attLate,
+                        icon: Icons.access_time_rounded),
                   ],
                 ),
                 const SizedBox(height: 8),
                 // Row 2: بعذر / انصراف مبكر / غياب بعذر
                 Row(
                   children: [
-                    _StatPill(label: 'بعذر',         value: excused,        color: AppColors.attExcused,         icon: Icons.info_rounded),
-                    _StatPill(label: 'انصراف مبكر',  value: excusedEarlyDep, color: AppColors.attExcusedEarlyDep, icon: Icons.directions_run_rounded),
-                    _StatPill(label: 'غياب بعذر',    value: excusedAbsence,  color: AppColors.attExcusedAbsence,  icon: Icons.event_busy_rounded),
+                    _StatPill(
+                        label: tr('بعذر'),
+                        value: excused,
+                        color: AppColors.attExcused,
+                        icon: Icons.info_rounded),
+                    _StatPill(
+                        label: tr('انصراف مبكر'),
+                        value: excusedEarlyDep,
+                        color: AppColors.attExcusedEarlyDep,
+                        icon: Icons.directions_run_rounded),
+                    _StatPill(
+                        label: tr('غياب بعذر'),
+                        value: excusedAbsence,
+                        color: AppColors.attExcusedAbsence,
+                        icon: Icons.event_busy_rounded),
                   ],
                 ),
               ],
@@ -74,7 +115,8 @@ class _HeroStats extends StatelessWidget {
   final String pct;
   final int total;
   final double rate;
-  const _HeroStats({required this.pct, required this.total, required this.rate});
+  const _HeroStats(
+      {required this.pct, required this.total, required this.rate});
 
   @override
   Widget build(BuildContext context) {
@@ -88,29 +130,40 @@ class _HeroStats extends StatelessWidget {
             borderRadius: BorderRadius.circular(20),
             border: Border.all(color: Colors.white.withOpacity(0.2)),
           ),
-          child: Text('سجل الحضور',
+          child: Text(tr('سجل الحضور'),
               style: TextStyle(
                 color: Colors.white.withOpacity(0.8),
-                fontSize: 11, fontFamily: 'Cairo', fontWeight: FontWeight.w600,
+                fontSize: 11,
+                fontFamily: 'Dubai',
+                fontWeight: FontWeight.w600,
               )),
         ),
         const SizedBox(height: 10),
-        Text('نسبة الحضور',
-            style: TextStyle(color: Colors.white.withOpacity(0.65), fontSize: 13, fontFamily: 'Cairo')),
+        Text(tr('نسبة الحضور'),
+            style: TextStyle(
+                color: Colors.white.withOpacity(0.65),
+                fontSize: 13,
+                fontFamily: 'Dubai')),
         const SizedBox(height: 4),
         ShaderMask(
           shaderCallback: (b) => AppColors.gradientGold.createShader(b),
           child: Text(
             '$pct%',
             style: const TextStyle(
-              color: Colors.white, fontSize: 52,
-              fontWeight: FontWeight.w900, fontFamily: 'Cairo', height: 1.0,
+              color: Colors.white,
+              fontSize: 52,
+              fontWeight: FontWeight.w900,
+              fontFamily: 'Dubai',
+              height: 1.0,
             ),
           ),
         ),
         const SizedBox(height: 4),
-        Text('من إجمالي $total يوم دراسي',
-            style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 12, fontFamily: 'Cairo')),
+        Text(trf('من إجمالي {0} يوم دراسي', [total]),
+            style: TextStyle(
+                color: Colors.white.withOpacity(0.6),
+                fontSize: 12,
+                fontFamily: 'Dubai')),
       ],
     );
   }
@@ -138,7 +191,10 @@ class _GlowBar extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: AppColors.gradientGold,
               borderRadius: BorderRadius.circular(4),
-              boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.7), blurRadius: 10)],
+              boxShadow: [
+                BoxShadow(
+                    color: AppColors.gold.withOpacity(0.7), blurRadius: 10)
+              ],
             ),
           ),
         ),
@@ -164,11 +220,16 @@ class _ArcProgress extends StatelessWidget {
             children: [
               Text('${(rate * 100).toStringAsFixed(0)}%',
                   style: const TextStyle(
-                    color: Colors.white, fontSize: 18,
-                    fontWeight: FontWeight.w800, fontFamily: 'Cairo',
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Dubai',
                   )),
-              Text('الحضور',
-                  style: TextStyle(color: Colors.white.withOpacity(0.6), fontSize: 10, fontFamily: 'Cairo')),
+              Text(tr('الحضور'),
+                  style: TextStyle(
+                      color: Colors.white.withOpacity(0.6),
+                      fontSize: 10,
+                      fontFamily: 'Dubai')),
             ],
           ),
         ),
@@ -189,13 +250,19 @@ class _ArcPainter extends CustomPainter {
     final sweepAngle = 2 * 3.14159 * rate;
     final rect = Rect.fromCircle(center: center, radius: radius);
 
-    canvas.drawCircle(center, radius,
+    canvas.drawCircle(
+        center,
+        radius,
         Paint()
           ..color = Colors.white.withOpacity(0.12)
           ..style = PaintingStyle.stroke
           ..strokeWidth = 8);
     if (rate > 0) {
-      canvas.drawArc(rect, startAngle, sweepAngle, false,
+      canvas.drawArc(
+          rect,
+          startAngle,
+          sweepAngle,
+          false,
           Paint()
             ..shader = const LinearGradient(
               colors: [AppColors.gold, AppColors.goldLight],
@@ -215,7 +282,11 @@ class _StatPill extends StatelessWidget {
   final int value;
   final Color color;
   final IconData icon;
-  const _StatPill({required this.label, required this.value, required this.color, required this.icon});
+  const _StatPill(
+      {required this.label,
+      required this.value,
+      required this.color,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -234,13 +305,16 @@ class _StatPill extends StatelessWidget {
             const SizedBox(height: 3),
             Text('$value',
                 style: TextStyle(
-                  color: color, fontSize: 18,
-                  fontWeight: FontWeight.w900, fontFamily: 'Cairo',
+                  color: color,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai',
                 )),
             Text(label,
                 style: TextStyle(
                   color: Colors.white.withOpacity(0.7),
-                  fontSize: 10, fontFamily: 'Cairo',
+                  fontSize: 10,
+                  fontFamily: 'Dubai',
                 ),
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis),

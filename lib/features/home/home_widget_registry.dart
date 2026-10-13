@@ -39,8 +39,8 @@ class HomeWidgetDef<D> {
   });
 
   bool isVisibleFor(AuthToken token, D data) {
-    final permissionsOk = anyOfPermissions.isEmpty ||
-        anyOfPermissions.any(token.hasPermission);
+    final permissionsOk =
+        anyOfPermissions.isEmpty || anyOfPermissions.any(token.hasPermission);
     final conditionOk = visibleWhen?.call(token, data) ?? true;
     return permissionsOk && conditionOk;
   }

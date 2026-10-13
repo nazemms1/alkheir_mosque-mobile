@@ -15,8 +15,8 @@ class _QuickStatsRow extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.calendar_month_rounded,
-                label: 'سجل الحضور',
-                sublabel: '${child.attendanceCount} يوم حضور',
+                label: tr('سجل الحضور'),
+                sublabel: trf('{0} يوم حضور', [child.attendanceCount]),
                 color: AppColors.success,
                 onTap: () => onTabChange(2),
               ),
@@ -25,7 +25,7 @@ class _QuickStatsRow extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.menu_book_rounded,
-                label: 'المحفوظات',
+                label: tr('المحفوظات'),
                 sublabel: child.memorizationProgress.currentSurah,
                 color: AppColors.primaryLight,
                 onTap: () => onTabChange(3),
@@ -39,8 +39,8 @@ class _QuickStatsRow extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.star_rounded,
-                label: 'النقاط',
-                sublabel: '${child.totalPoints} نقطة',
+                label: tr('النقاط'),
+                sublabel: trf('{0} نقطة', [child.totalPoints]),
                 color: AppColors.gold,
                 onTap: () => onTabChange(4),
               ),
@@ -49,7 +49,7 @@ class _QuickStatsRow extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.person_rounded,
-                label: 'بيانات الطالب',
+                label: tr('بيانات الطالب'),
                 sublabel: "",
                 color: AppColors.info,
                 onTap: () => onTabChange(1),
@@ -63,8 +63,8 @@ class _QuickStatsRow extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.event_rounded,
-                label: 'الأنشطة',
-                sublabel: 'تسجيل وأنشطة',
+                label: tr('الأنشطة'),
+                sublabel: tr('تسجيل وأنشطة'),
                 color: AppColors.primaryMid,
                 onTap: () => Navigator.of(context).push(
                   MaterialPageRoute(builder: (_) => const ActivitiesScreen()),
@@ -75,11 +75,12 @@ class _QuickStatsRow extends StatelessWidget {
             Expanded(
               child: _ActionCard(
                 icon: Icons.receipt_long_rounded,
-                label: 'الفواتير',
-                sublabel: 'المستحقات والدفعات',
+                label: tr('الفواتير'),
+                sublabel: tr('المستحقات والدفعات'),
                 color: AppColors.warning,
                 onTap: () => Navigator.of(context).push(
-                  MaterialPageRoute(builder: (_) => const ParentInvoicesScreen()),
+                  MaterialPageRoute(
+                      builder: (_) => const ParentInvoicesScreen()),
                 ),
               ),
             ),

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/admin_dashboard_model.dart';
 import '../../../data/services/admin_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class AdminFinanceScreen extends StatefulWidget {
   const AdminFinanceScreen({super.key});
@@ -35,7 +36,10 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
   }
 
   Future<void> _load() async {
-    setState(() { _loading = true; _error = null; });
+    setState(() {
+      _loading = true;
+      _error = null;
+    });
     try {
       final results = await Future.wait([
         _service.fetchInvoices(perPage: 50),
@@ -43,19 +47,28 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
       ]);
       if (!mounted) return;
       setState(() {
-        _invoices   = (results[0] as ({List<AdminInvoiceItem> items, int total, int lastPage})).items;
-        _activities = (results[1] as ({List<AdminActivityItem> items, int total})).items;
-        _loading    = false;
+        _invoices = (results[0] as ({
+          List<AdminInvoiceItem> items,
+          int total,
+          int lastPage
+        }))
+            .items;
+        _activities =
+            (results[1] as ({List<AdminActivityItem> items, int total})).items;
+        _loading = false;
       });
     } catch (e) {
       if (!mounted) return;
-      setState(() { _error = e.toString(); _loading = false; });
+      setState(() {
+        _error = e.toString();
+        _loading = false;
+      });
     }
   }
 
   // ── Summary from invoices ────────────────────────────────────────────────
-  double get _totalAmount  => _invoices.fold(0.0, (s, i) => s + i.total);
-  double get _totalPaid    => _invoices.fold(0.0, (s, i) => s + i.paidTotal);
+  double get _totalAmount => _invoices.fold(0.0, (s, i) => s + i.total);
+  double get _totalPaid => _invoices.fold(0.0, (s, i) => s + i.paidTotal);
   double get _totalBalance => _invoices.fold(0.0, (s, i) => s + i.balance);
 
   @override
@@ -72,17 +85,33 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
             children: [
               Row(
                 children: [
-                  _FinancePill(label: 'إجمالي الفواتير', value: _fmt(_totalAmount), color: AppColors.info, icon: Icons.receipt_long_rounded),
+                  _FinancePill(
+                      label: tr('إجمالي الفواتير'),
+                      value: _fmt(_totalAmount),
+                      color: AppColors.info,
+                      icon: Icons.receipt_long_rounded),
                   const SizedBox(width: 8),
-                  _FinancePill(label: 'المدفوع', value: _fmt(_totalPaid), color: AppColors.success, icon: Icons.check_circle_rounded),
+                  _FinancePill(
+                      label: tr('المدفوع'),
+                      value: _fmt(_totalPaid),
+                      color: AppColors.success,
+                      icon: Icons.check_circle_rounded),
                 ],
               ),
               const SizedBox(height: 8),
               Row(
                 children: [
-                  _FinancePill(label: 'المتبقي', value: _fmt(_totalBalance), color: AppColors.error, icon: Icons.pending_actions_rounded),
+                  _FinancePill(
+                      label: tr('المتبقي'),
+                      value: _fmt(_totalBalance),
+                      color: AppColors.error,
+                      icon: Icons.pending_actions_rounded),
                   const SizedBox(width: 8),
-                  _FinancePill(label: 'عدد الفواتير', value: '${_invoices.length}', color: AppColors.warning, icon: Icons.description_rounded),
+                  _FinancePill(
+                      label: tr('عدد الفواتير'),
+                      value: '${_invoices.length}',
+                      color: AppColors.warning,
+                      icon: Icons.description_rounded),
                 ],
               ),
             ],
@@ -105,13 +134,18 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
               ),
               indicatorSize: TabBarIndicatorSize.tab,
               labelColor: Colors.white,
-              unselectedLabelColor: Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
-              labelStyle: const TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w700, fontSize: 13),
-              unselectedLabelStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13),
+              unselectedLabelColor:
+                  Theme.of(context).colorScheme.onSurface.withOpacity(0.5),
+              labelStyle: const TextStyle(
+                  fontFamily: 'Dubai',
+                  fontWeight: FontWeight.w700,
+                  fontSize: 13),
+              unselectedLabelStyle:
+                  TextStyle(fontFamily: 'Dubai', fontSize: 13),
               dividerColor: Colors.transparent,
-              tabs: const [
-                Tab(text: 'الفواتير'),
-                Tab(text: 'الأنشطة'),
+              tabs: [
+                Tab(text: tr('الفواتير')),
+                Tab(text: tr('الأنشطة')),
               ],
             ),
           ),
@@ -130,8 +164,8 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
   }
 
   String _fmt(double v) {
-    if (v >= 1000000) return '${(v / 1000000).toStringAsFixed(1)}م';
-    if (v >= 1000) return '${(v / 1000).toStringAsFixed(1)}ك';
+    if (v >= 1000000) return trf('{0}م', [(v / 1000000).toStringAsFixed(1)]);
+    if (v >= 1000) return trf('{0}ك', [(v / 1000).toStringAsFixed(1)]);
     return v.toInt().toString();
   }
 }
@@ -141,7 +175,11 @@ class _FinancePill extends StatelessWidget {
   final String label, value;
   final Color color;
   final IconData icon;
-  const _FinancePill({required this.label, required this.value, required this.color, required this.icon});
+  const _FinancePill(
+      {required this.label,
+      required this.value,
+      required this.color,
+      required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -169,8 +207,17 @@ class _FinancePill extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(value, style: TextStyle(color: color, fontSize: 16, fontWeight: FontWeight.w800, fontFamily: 'Cairo')),
-                  Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 10, fontFamily: 'Cairo')),
+                  Text(value,
+                      style: TextStyle(
+                          color: color,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w800,
+                          fontFamily: 'Dubai')),
+                  Text(label,
+                      style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 10,
+                          fontFamily: 'Dubai')),
                 ],
               ),
             ),
@@ -190,7 +237,10 @@ class _InvoiceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (invoices.isEmpty) {
-      return const Center(child: Text('لا توجد فواتير', style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)));
+      return Center(
+          child: Text(tr('لا توجد فواتير'),
+              style:
+                  TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)));
     }
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -218,9 +268,9 @@ class _InvoiceCard extends StatelessWidget {
   }
 
   String get _statusLabel {
-    if (invoice.isPaid) return 'مدفوعة';
-    if (invoice.isOverdue) return 'متأخرة';
-    return 'صادرة';
+    if (invoice.isPaid) return tr('مدفوعة');
+    if (invoice.isOverdue) return tr('متأخرة');
+    return tr('صادرة');
   }
 
   @override
@@ -238,7 +288,10 @@ class _InvoiceCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withOpacity(0.2), width: 1.5),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.08), blurRadius: 16, offset: const Offset(0, 5)),
+          BoxShadow(
+              color: color.withOpacity(0.08),
+              blurRadius: 16,
+              offset: const Offset(0, 5)),
         ],
       ),
       child: Column(
@@ -262,15 +315,18 @@ class _InvoiceCard extends StatelessWidget {
                     Text(
                       invoice.invoiceNo,
                       style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                     Text(
-                      invoice.parentName ?? '— ولي أمر غير محدد',
-                      style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted),
+                      invoice.parentName ?? tr('— ولي أمر غير محدد'),
+                      style: const TextStyle(
+                          fontFamily: 'Dubai',
+                          fontSize: 11,
+                          color: AppColors.textMuted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -278,14 +334,19 @@ class _InvoiceCard extends StatelessWidget {
                 ),
               ),
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                 decoration: BoxDecoration(
                   color: color.withOpacity(0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
                   _statusLabel,
-                  style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                  style: TextStyle(
+                      color: color,
+                      fontSize: 11,
+                      fontWeight: FontWeight.w700,
+                      fontFamily: 'Dubai'),
                 ),
               ),
             ],
@@ -305,15 +366,27 @@ class _InvoiceCard extends StatelessWidget {
           // Amounts row
           Row(
             children: [
-              _AmountChip(label: 'الإجمالي', value: '${invoice.total.toInt()}', color: AppColors.info),
+              _AmountChip(
+                  label: tr('الإجمالي'),
+                  value: '${invoice.total.toInt()}',
+                  color: AppColors.info),
               const SizedBox(width: 6),
-              _AmountChip(label: 'المدفوع', value: '${invoice.paidTotal.toInt()}', color: AppColors.success),
+              _AmountChip(
+                  label: tr('المدفوع'),
+                  value: '${invoice.paidTotal.toInt()}',
+                  color: AppColors.success),
               const SizedBox(width: 6),
-              _AmountChip(label: 'المتبقي', value: '${invoice.balance.toInt()}', color: AppColors.error),
+              _AmountChip(
+                  label: tr('المتبقي'),
+                  value: '${invoice.balance.toInt()}',
+                  color: AppColors.error),
               const Spacer(),
               Text(
                 invoice.issueDate,
-                style: const TextStyle(fontFamily: 'Cairo', fontSize: 10, color: AppColors.textMuted),
+                style: const TextStyle(
+                    fontFamily: 'Dubai',
+                    fontSize: 10,
+                    color: AppColors.textMuted),
               ),
             ],
           ),
@@ -326,15 +399,23 @@ class _InvoiceCard extends StatelessWidget {
 class _AmountChip extends StatelessWidget {
   final String label, value;
   final Color color;
-  const _AmountChip({required this.label, required this.value, required this.color});
+  const _AmountChip(
+      {required this.label, required this.value, required this.color});
 
   @override
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(value, style: TextStyle(color: color, fontSize: 13, fontWeight: FontWeight.w800, fontFamily: 'Cairo')),
-        Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 9, fontFamily: 'Cairo')),
+        Text(value,
+            style: TextStyle(
+                color: color,
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                fontFamily: 'Dubai')),
+        Text(label,
+            style: const TextStyle(
+                color: AppColors.textMuted, fontSize: 9, fontFamily: 'Dubai')),
       ],
     );
   }
@@ -349,7 +430,10 @@ class _ActivityList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (activities.isEmpty) {
-      return const Center(child: Text('لا توجد أنشطة', style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)));
+      return Center(
+          child: Text(tr('لا توجد أنشطة'),
+              style:
+                  TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)));
     }
     return RefreshIndicator(
       onRefresh: onRefresh,
@@ -372,7 +456,8 @@ class _ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = activity.isActive ? AppColors.primaryLight : AppColors.textMuted;
+    final color =
+        activity.isActive ? AppColors.primaryLight : AppColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -381,7 +466,10 @@ class _ActivityCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(20),
         border: Border.all(color: color.withOpacity(0.2), width: 1.5),
         boxShadow: [
-          BoxShadow(color: color.withOpacity(0.07), blurRadius: 14, offset: const Offset(0, 4)),
+          BoxShadow(
+              color: color.withOpacity(0.07),
+              blurRadius: 14,
+              offset: const Offset(0, 4)),
         ],
       ),
       child: Column(
@@ -405,7 +493,7 @@ class _ActivityCard extends StatelessWidget {
                     Text(
                       activity.title,
                       style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface,
@@ -416,7 +504,10 @@ class _ActivityCard extends StatelessWidget {
                     if (activity.activityDate != null)
                       Text(
                         activity.activityDate!,
-                        style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted),
+                        style: const TextStyle(
+                            fontFamily: 'Dubai',
+                            fontSize: 11,
+                            color: AppColors.textMuted),
                       ),
                   ],
                 ),
@@ -424,16 +515,21 @@ class _ActivityCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: (activity.isActive ? AppColors.success : AppColors.textMuted).withOpacity(0.12),
+                  color: (activity.isActive
+                          ? AppColors.success
+                          : AppColors.textMuted)
+                      .withOpacity(0.12),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Text(
-                  activity.isActive ? 'نشط' : 'منتهي',
+                  activity.isActive ? tr('نشط') : tr('منتهي'),
                   style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 10,
                     fontWeight: FontWeight.w700,
-                    color: activity.isActive ? AppColors.success : AppColors.textMuted,
+                    color: activity.isActive
+                        ? AppColors.success
+                        : AppColors.textMuted,
                   ),
                 ),
               ),
@@ -443,9 +539,14 @@ class _ActivityCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                const Icon(Icons.groups_rounded, size: 13, color: AppColors.textMuted),
+                const Icon(Icons.groups_rounded,
+                    size: 13, color: AppColors.textMuted),
                 const SizedBox(width: 4),
-                Text(activity.groupName!, style: const TextStyle(fontFamily: 'Cairo', fontSize: 11, color: AppColors.textMuted)),
+                Text(activity.groupName!,
+                    style: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 11,
+                        color: AppColors.textMuted)),
               ],
             ),
           ],
@@ -453,11 +554,20 @@ class _ActivityCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                _AmountChip(label: 'الرسوم', value: '${activity.feeAmount.toInt()}', color: AppColors.info),
+                _AmountChip(
+                    label: tr('الرسوم'),
+                    value: '${activity.feeAmount.toInt()}',
+                    color: AppColors.info),
                 const SizedBox(width: 12),
-                _AmountChip(label: 'المتوقع', value: '${activity.expectedRevenue.toInt()}', color: AppColors.warning),
+                _AmountChip(
+                    label: tr('المتوقع'),
+                    value: '${activity.expectedRevenue.toInt()}',
+                    color: AppColors.warning),
                 const SizedBox(width: 12),
-                _AmountChip(label: 'المحصّل', value: '${activity.collectedRevenue.toInt()}', color: AppColors.success),
+                _AmountChip(
+                    label: tr('المحصّل'),
+                    value: '${activity.collectedRevenue.toInt()}',
+                    color: AppColors.success),
               ],
             ),
           ],
@@ -478,11 +588,17 @@ class _ErrorView extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+          const Icon(Icons.error_outline_rounded,
+              size: 48, color: AppColors.error),
           const SizedBox(height: 12),
-          Text(message, textAlign: TextAlign.center, style: const TextStyle(fontFamily: 'Cairo')),
+          Text(message,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontFamily: 'Dubai')),
           const SizedBox(height: 16),
-          ElevatedButton(onPressed: onRetry, child: const Text('إعادة المحاولة', style: TextStyle(fontFamily: 'Cairo'))),
+          ElevatedButton(
+              onPressed: onRetry,
+              child: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai'))),
         ],
       ),
     );

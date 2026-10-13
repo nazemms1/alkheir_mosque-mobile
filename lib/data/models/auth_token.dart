@@ -67,10 +67,10 @@ class AuthToken {
 
   bool hasRole(AppRole role) => appRoles.contains(role);
 
-  bool get isParent  => hasRole(AppRole.parent);
+  bool get isParent => hasRole(AppRole.parent);
   bool get isStudent => hasRole(AppRole.student);
   bool get isTeacher => hasRole(AppRole.teacher);
-  bool get isAdmin   => hasRole(AppRole.admin);
+  bool get isAdmin => hasRole(AppRole.admin);
   bool get isSupervisor => hasRole(AppRole.supervisor);
   bool get isAssistantSupervisor => hasRole(AppRole.assistantSupervisor);
   bool get isReciter => hasRole(AppRole.reciter);

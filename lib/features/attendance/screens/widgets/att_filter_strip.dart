@@ -8,11 +8,11 @@ class _FilterStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final filters = <(String, AttendanceStatus?, Color)>[
-      ('الكل', null, AppColors.primaryLight),
-      ('حضور', AttendanceStatus.present, AppColors.attPresent),
-      ('غياب', AttendanceStatus.absent, AppColors.attAbsent),
-      ('تأخر', AttendanceStatus.late, AppColors.attLate),
-      ('بعذر', AttendanceStatus.excused, AppColors.attExcused),
+      (tr('الكل'), null, AppColors.primaryLight),
+      (tr('حضور'), AttendanceStatus.present, AppColors.attPresent),
+      (tr('غياب'), AttendanceStatus.absent, AppColors.attAbsent),
+      (tr('تأخر'), AttendanceStatus.late, AppColors.attLate),
+      (tr('بعذر'), AttendanceStatus.excused, AppColors.attExcused),
     ];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -59,7 +59,7 @@ class _FilterStrip extends StatelessWidget {
                     color: isActive ? Colors.white : AppColors.textSecondary,
                     fontSize: 13,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                   ),
                 ),
               ),

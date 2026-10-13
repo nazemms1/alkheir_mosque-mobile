@@ -1,3 +1,5 @@
+import '../i18n/app_language.dart';
+
 /// أدوار التطبيق — المكان الوحيد الذي تُترجم فيه أسماء الأدوار القادمة من الـ API
 /// (بالعربية أو الإنجليزية) إلى قيم ثابتة يستخدمها بقية الكود.
 ///
@@ -17,9 +19,11 @@ enum AppRole {
   trialExamSupervisor('مشرف سبر تجريبي'),
   finalExamSupervisor('مشرف سير نهائي');
 
-  /// الاسم المعروض للمستخدم.
-  final String displayName;
-  const AppRole(this.displayName);
+  final String _arabicName;
+  const AppRole(this._arabicName);
+
+  /// الاسم المعروض للمستخدم (مترجم حسب اللغة الحالية).
+  String get displayName => tr(_arabicName);
 
   /// الأدوار الإشرافية (كل ما ليس ولي أمر / طالب).
   static const Set<AppRole> staffRoles = {

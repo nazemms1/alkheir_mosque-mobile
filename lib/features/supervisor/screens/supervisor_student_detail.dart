@@ -7,6 +7,7 @@ import '../../../data/models/auth_token.dart';
 import '../../../core/rbac/permissions.dart';
 import '../../../data/models/student_model.dart' show StudentParentInfo;
 import '../../../data/services/admin_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class SupervisorStudentDetail extends StatefulWidget {
   final int studentId;
@@ -147,12 +148,12 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
                     child: Text(
                       widget.studentName.isNotEmpty
                           ? widget.studentName[0]
-                          : '؟',
+                          : tr('؟'),
                       style: const TextStyle(
                         color: Colors.white,
                         fontSize: 26,
                         fontWeight: FontWeight.w800,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ),
@@ -170,7 +171,7 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
                       color: Colors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
-                      fontFamily: 'Cairo'),
+                      fontFamily: 'Dubai'),
                 ).animate().fadeIn(delay: 150.ms),
                 if (!_loading && _error == null) ...[
                   const SizedBox(height: 6),
@@ -178,12 +179,12 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       _Chip(
-                          label: '$_totalMemorizedPages صفحة',
+                          label: trf('{0} صفحة', [_totalMemorizedPages]),
                           color: AppColors.gold,
                           icon: Icons.menu_book_rounded),
                       const SizedBox(width: 8),
                       _Chip(
-                          label: '$_totalPoints نقطة',
+                          label: trf('{0} نقطة', [_totalPoints]),
                           color: AppColors.primaryLight,
                           icon: Icons.star_rounded),
                     ],
@@ -227,14 +228,15 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (enrollments.isEmpty) {
-      return const _Empty(
-          icon: Icons.school_outlined, message: 'لا توجد تسجيلات لهذا الطالب');
+      return _Empty(
+          icon: Icons.school_outlined,
+          message: tr('لا توجد تسجيلات لهذا الطالب'));
     }
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       children: [
         _Card(
-          title: 'ملخص الطالب',
+          title: tr('ملخص الطالب'),
           icon: Icons.insights_rounded,
           color: AppColors.gold,
           children: [
@@ -242,19 +244,19 @@ class _Body extends StatelessWidget {
               children: [
                 Expanded(
                     child: _SummaryStat(
-                        label: 'الحلقات',
+                        label: tr('الحلقات'),
                         value: '${enrollments.length}',
                         color: AppColors.primaryLight)),
                 const SizedBox(width: 10),
                 Expanded(
                     child: _SummaryStat(
-                        label: 'صفحات محفوظة',
+                        label: tr('صفحات محفوظة'),
                         value: '$totalMemorizedPages',
                         color: AppColors.gold)),
                 const SizedBox(width: 10),
                 Expanded(
                     child: _SummaryStat(
-                        label: 'النقاط',
+                        label: tr('النقاط'),
                         value: '$totalPoints',
                         color: AppColors.success)),
               ],
@@ -264,22 +266,25 @@ class _Body extends StatelessWidget {
         if (parentInfo != null && parentInfo!.hasAnyData) ...[
           const SizedBox(height: 12),
           _Card(
-            title: 'بيانات ولي الأمر',
+            title: tr('بيانات ولي الأمر'),
             icon: Icons.family_restroom_rounded,
             color: AppColors.info,
             children: [
               if (parentInfo!.fatherName.isNotEmpty)
-                _InfoRow(label: 'الأب', value: parentInfo!.fatherName),
+                _InfoRow(label: tr('الأب'), value: parentInfo!.fatherName),
               if (parentInfo!.fatherPhone.isNotEmpty)
-                _InfoRow(label: 'هاتف الأب', value: parentInfo!.fatherPhone),
+                _InfoRow(
+                    label: tr('هاتف الأب'), value: parentInfo!.fatherPhone),
               if (parentInfo!.motherName.isNotEmpty)
-                _InfoRow(label: 'الأم', value: parentInfo!.motherName),
+                _InfoRow(label: tr('الأم'), value: parentInfo!.motherName),
               if (parentInfo!.motherPhone.isNotEmpty)
-                _InfoRow(label: 'هاتف الأم', value: parentInfo!.motherPhone),
+                _InfoRow(
+                    label: tr('هاتف الأم'), value: parentInfo!.motherPhone),
               if (parentInfo!.homePhone.isNotEmpty)
-                _InfoRow(label: 'هاتف المنزل', value: parentInfo!.homePhone),
+                _InfoRow(
+                    label: tr('هاتف المنزل'), value: parentInfo!.homePhone),
               if (parentInfo!.address.isNotEmpty)
-                _InfoRow(label: 'العنوان', value: parentInfo!.address),
+                _InfoRow(label: tr('العنوان'), value: parentInfo!.address),
             ],
           )
               .animate()
@@ -288,11 +293,12 @@ class _Body extends StatelessWidget {
         ] else if (enrollments.first.parentName?.isNotEmpty == true) ...[
           const SizedBox(height: 12),
           _Card(
-            title: 'بيانات ولي الأمر',
+            title: tr('بيانات ولي الأمر'),
             icon: Icons.family_restroom_rounded,
             color: AppColors.info,
             children: [
-              _InfoRow(label: 'ولي الأمر', value: enrollments.first.parentName!)
+              _InfoRow(
+                  label: tr('ولي الأمر'), value: enrollments.first.parentName!)
             ],
           )
               .animate()
@@ -301,7 +307,7 @@ class _Body extends StatelessWidget {
         ],
         const SizedBox(height: 12),
         _Card(
-          title: 'الحلقات المسجّل بها',
+          title: tr('الحلقات المسجّل بها'),
           icon: Icons.groups_rounded,
           color: AppColors.primaryLight,
           children: enrollments
@@ -320,11 +326,11 @@ class _Body extends StatelessWidget {
         if (canViewAssessments) ...[
           const SizedBox(height: 12),
           _Card(
-            title: 'التقييمات (حلقات الطالب)',
+            title: tr('التقييمات (حلقات الطالب)'),
             icon: Icons.assignment_rounded,
             color: AppColors.info,
             children: assessments.isEmpty
-                ? [const _EmptyRow(message: 'لا توجد تقييمات')]
+                ? [_EmptyRow(message: tr('لا توجد تقييمات'))]
                 : assessments
                     .map((a) => _AssessmentRow(assessment: a))
                     .toList(),
@@ -354,14 +360,14 @@ class _SummaryStat extends StatelessWidget {
         child: Column(children: [
           Text(value,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 16,
                   fontWeight: FontWeight.w800,
                   color: color)),
           const SizedBox(height: 2),
           Text(label,
               style: const TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 10,
                   color: AppColors.textMuted)),
         ]),
@@ -383,14 +389,14 @@ class _InfoRow extends StatelessWidget {
               width: 80,
               child: Text(label,
                   style: const TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontSize: 12,
                       color: AppColors.textMuted)),
             ),
             Expanded(
               child: Text(value,
                   style: TextStyle(
-                      fontFamily: 'Cairo',
+                      fontFamily: 'Dubai',
                       fontSize: 12,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface)),
@@ -449,7 +455,7 @@ class _EnrollmentRow extends StatelessWidget {
               Expanded(
                 child: Text(enrollment.groupName,
                     style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 13,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface)),
@@ -459,9 +465,10 @@ class _EnrollmentRow extends StatelessWidget {
                 decoration: BoxDecoration(
                     color: statusColor.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(20)),
-                child: Text(enrollment.status == 'active' ? 'نشط' : 'غير نشط',
+                child: Text(
+                    enrollment.status == 'active' ? tr('نشط') : tr('غير نشط'),
                     style: TextStyle(
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
                         color: statusColor)),
@@ -471,7 +478,7 @@ class _EnrollmentRow extends StatelessWidget {
           const SizedBox(height: 4),
           Text(enrollment.courseName,
               style: const TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11,
                   color: AppColors.textMuted)),
           const SizedBox(height: 8),
@@ -479,20 +486,20 @@ class _EnrollmentRow extends StatelessWidget {
             children: [
               _MiniStat(
                   icon: Icons.menu_book_rounded,
-                  label: '${enrollment.memorizedPages} صفحة',
+                  label: trf('{0} صفحة', [enrollment.memorizedPages]),
                   color: AppColors.gold),
               const SizedBox(width: 8),
               _MiniStat(
                   icon: Icons.star_rounded,
-                  label: '${enrollment.finalPoints} نقطة',
+                  label: trf('{0} نقطة', [enrollment.finalPoints]),
                   color: AppColors.primaryLight),
               if (canRecordMemorization && enrollment.status == 'active') ...[
                 const Spacer(),
                 TextButton.icon(
                   onPressed: () => _openRecordDialog(context),
                   icon: const Icon(Icons.add_circle_outline_rounded, size: 16),
-                  label: const Text('تسجيل حفظ',
-                      style: TextStyle(fontFamily: 'Cairo', fontSize: 12)),
+                  label: Text(tr('تسجيل حفظ'),
+                      style: TextStyle(fontFamily: 'Dubai', fontSize: 12)),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primaryLight,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -546,7 +553,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
   Future<void> _submit() async {
     if (!_formKey.currentState!.validate()) return;
     if (widget.teacherId == null) {
-      setState(() => _error = 'تعذّر تحديد المعلم الحالي');
+      setState(() => _error = tr('تعذّر تحديد المعلم الحالي'));
       return;
     }
     setState(() {
@@ -580,7 +587,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
   InputDecoration _decoration({required String label, required IconData icon}) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(fontFamily: 'Cairo', fontSize: 13),
+      labelStyle: const TextStyle(fontFamily: 'Dubai', fontSize: 13),
       prefixIcon: Icon(icon, size: 20, color: AppColors.primaryLight),
       filled: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -623,7 +630,12 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
           decoration: BoxDecoration(
             color: bg,
             borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.18), blurRadius: 30, offset: const Offset(0, -4))],
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(0.18),
+                  blurRadius: 30,
+                  offset: const Offset(0, -4))
+            ],
           ),
           child: Form(
             key: _formKey,
@@ -633,24 +645,34 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                   margin: const EdgeInsets.only(top: 10, bottom: 4),
                   width: 40,
                   height: 4,
-                  decoration: BoxDecoration(color: Colors.grey.withOpacity(0.3), borderRadius: BorderRadius.circular(2)),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.withOpacity(0.3),
+                      borderRadius: BorderRadius.circular(2)),
                 ),
-                _SheetHeaderRow(studentName: widget.enrollment.studentName, groupName: widget.enrollment.groupName),
+                _SheetHeaderRow(
+                    studentName: widget.enrollment.studentName,
+                    groupName: widget.enrollment.groupName),
                 const Divider(height: 1),
                 Expanded(
                   child: ListView(
                     controller: scrollCtrl,
                     padding: const EdgeInsets.fromLTRB(20, 20, 20, 24),
                     children: [
-                      Text('نوع التسجيل',
-                          style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+                      Text(tr('نوع التسجيل'),
+                          style: TextStyle(
+                              fontFamily: 'Dubai',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7))),
                       const SizedBox(height: 10),
                       Row(
                         children: [
                           Expanded(
                             child: _EntryTypeChip(
-                              label: 'حفظ جديد',
+                              label: tr('حفظ جديد'),
                               icon: Icons.auto_stories_rounded,
                               selected: _entryType == 'new',
                               onTap: () => setState(() => _entryType = 'new'),
@@ -659,18 +681,25 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                           const SizedBox(width: 10),
                           Expanded(
                             child: _EntryTypeChip(
-                              label: 'مراجعة',
+                              label: tr('مراجعة'),
                               icon: Icons.replay_rounded,
                               selected: _entryType == 'review',
-                              onTap: () => setState(() => _entryType = 'review'),
+                              onTap: () =>
+                                  setState(() => _entryType = 'review'),
                             ),
                           ),
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Text('نطاق الصفحات',
-                          style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+                      Text(tr('نطاق الصفحات'),
+                          style: TextStyle(
+                              fontFamily: 'Dubai',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7))),
                       const SizedBox(height: 10),
                       Row(
                         children: [
@@ -678,9 +707,16 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                             child: TextFormField(
                               controller: _fromPageCtrl,
                               keyboardType: TextInputType.number,
-                              style: const TextStyle(fontFamily: 'Cairo', fontSize: 15),
-                              decoration: _decoration(label: 'من صفحة', icon: Icons.first_page_rounded).copyWith(fillColor: fillColor),
-                              validator: (v) => (v == null || int.tryParse(v) == null) ? 'مطلوب' : null,
+                              style: const TextStyle(
+                                  fontFamily: 'Dubai', fontSize: 15),
+                              decoration: _decoration(
+                                      label: tr('من صفحة'),
+                                      icon: Icons.first_page_rounded)
+                                  .copyWith(fillColor: fillColor),
+                              validator: (v) =>
+                                  (v == null || int.tryParse(v) == null)
+                                      ? tr('مطلوب')
+                                      : null,
                             ),
                           ),
                           const SizedBox(width: 12),
@@ -688,13 +724,18 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                             child: TextFormField(
                               controller: _toPageCtrl,
                               keyboardType: TextInputType.number,
-                              style: const TextStyle(fontFamily: 'Cairo', fontSize: 15),
-                              decoration: _decoration(label: 'إلى صفحة', icon: Icons.last_page_rounded).copyWith(fillColor: fillColor),
+                              style: const TextStyle(
+                                  fontFamily: 'Dubai', fontSize: 15),
+                              decoration: _decoration(
+                                      label: tr('إلى صفحة'),
+                                      icon: Icons.last_page_rounded)
+                                  .copyWith(fillColor: fillColor),
                               validator: (v) {
                                 final to = int.tryParse(v ?? '');
                                 final from = int.tryParse(_fromPageCtrl.text);
-                                if (to == null) return 'مطلوب';
-                                if (from != null && to < from) return 'غير صحيح';
+                                if (to == null) return tr('مطلوب');
+                                if (from != null && to < from)
+                                  return tr('غير صحيح');
                                 return null;
                               },
                             ),
@@ -702,63 +743,96 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                         ],
                       ),
                       const SizedBox(height: 20),
-                      Text('التاريخ',
-                          style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+                      Text(tr('التاريخ'),
+                          style: TextStyle(
+                              fontFamily: 'Dubai',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7))),
                       const SizedBox(height: 10),
                       Container(
                         width: double.infinity,
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 16),
                         decoration: BoxDecoration(
                           color: fillColor,
                           borderRadius: BorderRadius.circular(_fieldRadius),
                         ),
                         child: Row(
                           children: [
-                            const Icon(Icons.today_rounded, size: 20, color: AppColors.primaryLight),
+                            const Icon(Icons.today_rounded,
+                                size: 20, color: AppColors.primaryLight),
                             const SizedBox(width: 12),
-                            Text(dateStr, style: const TextStyle(fontFamily: 'Cairo', fontSize: 15)),
+                            Text(dateStr,
+                                style: const TextStyle(
+                                    fontFamily: 'Dubai', fontSize: 15)),
                             const Spacer(),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 8, vertical: 3),
                               decoration: BoxDecoration(
                                 color: AppColors.primaryLight.withOpacity(0.12),
                                 borderRadius: BorderRadius.circular(20),
                               ),
-                              child: const Text('اليوم',
-                                  style: TextStyle(fontFamily: 'Cairo', fontSize: 11, fontWeight: FontWeight.w700, color: AppColors.primaryLight)),
+                              child: Text(tr('اليوم'),
+                                  style: TextStyle(
+                                      fontFamily: 'Dubai',
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.w700,
+                                      color: AppColors.primaryLight)),
                             ),
                           ],
                         ),
                       ),
                       const SizedBox(height: 20),
-                      Text('ملاحظات',
-                          style: TextStyle(fontFamily: 'Cairo', fontSize: 13, fontWeight: FontWeight.w700,
-                              color: Theme.of(context).colorScheme.onSurface.withOpacity(0.7))),
+                      Text(tr('ملاحظات'),
+                          style: TextStyle(
+                              fontFamily: 'Dubai',
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: Theme.of(context)
+                                  .colorScheme
+                                  .onSurface
+                                  .withOpacity(0.7))),
                       const SizedBox(height: 10),
                       TextFormField(
                         controller: _notesCtrl,
                         maxLines: 3,
-                        style: const TextStyle(fontFamily: 'Cairo', fontSize: 14),
-                        decoration: _decoration(label: 'اكتب ملاحظة عن الجلسة', icon: Icons.edit_note_rounded).copyWith(fillColor: fillColor),
-                        validator: (v) => (v == null || v.trim().isEmpty) ? 'مطلوب' : null,
+                        style:
+                            const TextStyle(fontFamily: 'Dubai', fontSize: 14),
+                        decoration: _decoration(
+                                label: tr('اكتب ملاحظة عن الجلسة'),
+                                icon: Icons.edit_note_rounded)
+                            .copyWith(fillColor: fillColor),
+                        validator: (v) => (v == null || v.trim().isEmpty)
+                            ? tr('مطلوب')
+                            : null,
                       ),
                       if (_error != null) ...[
                         const SizedBox(height: 16),
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 14, vertical: 12),
                           decoration: BoxDecoration(
                             color: AppColors.error.withOpacity(0.08),
                             borderRadius: BorderRadius.circular(14),
-                            border: Border.all(color: AppColors.error.withOpacity(0.25)),
+                            border: Border.all(
+                                color: AppColors.error.withOpacity(0.25)),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.error_outline_rounded, size: 18, color: AppColors.error),
+                              const Icon(Icons.error_outline_rounded,
+                                  size: 18, color: AppColors.error),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(_error!,
-                                    style: const TextStyle(fontFamily: 'Cairo', fontSize: 12, color: AppColors.error)),
+                                    style: const TextStyle(
+                                        fontFamily: 'Dubai',
+                                        fontSize: 12,
+                                        color: AppColors.error)),
                               ),
                             ],
                           ),
@@ -768,21 +842,29 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                   ),
                 ),
                 Container(
-                  padding: EdgeInsets.fromLTRB(20, 12, 20, MediaQuery.of(context).padding.bottom + 16),
+                  padding: EdgeInsets.fromLTRB(
+                      20, 12, 20, MediaQuery.of(context).padding.bottom + 16),
                   decoration: BoxDecoration(
                     color: bg,
-                    border: Border(top: BorderSide(color: Theme.of(context).dividerColor)),
+                    border: Border(
+                        top: BorderSide(color: Theme.of(context).dividerColor)),
                   ),
                   child: Row(
                     children: [
                       Expanded(
                         child: OutlinedButton(
-                          onPressed: _saving ? null : () => Navigator.pop(context, false),
+                          onPressed: _saving
+                              ? null
+                              : () => Navigator.pop(context, false),
                           style: OutlinedButton.styleFrom(
                             padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14)),
                           ),
-                          child: const Text('إلغاء', style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w700)),
+                          child: Text(tr('إلغاء'),
+                              style: TextStyle(
+                                  fontFamily: 'Dubai',
+                                  fontWeight: FontWeight.w700)),
                         ),
                       ),
                       const SizedBox(width: 12),
@@ -794,19 +876,25 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                             backgroundColor: AppColors.primaryLight,
                             foregroundColor: Colors.white,
                             padding: const EdgeInsets.symmetric(vertical: 15),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14)),
                             elevation: 0,
                           ),
                           child: _saving
                               ? const SizedBox(
-                                  width: 20, height: 20,
-                                  child: CircularProgressIndicator(strokeWidth: 2.2, color: Colors.white))
-                              : const Row(
+                                  width: 20,
+                                  height: 20,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2.2, color: Colors.white))
+                              : Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     Icon(Icons.check_circle_rounded, size: 18),
                                     SizedBox(width: 8),
-                                    Text('حفظ التسجيل', style: TextStyle(fontFamily: 'Cairo', fontWeight: FontWeight.w800)),
+                                    Text(tr('حفظ التسجيل'),
+                                        style: TextStyle(
+                                            fontFamily: 'Dubai',
+                                            fontWeight: FontWeight.w800)),
                                   ],
                                 ),
                         ),
@@ -837,20 +925,30 @@ class _SheetHeaderRow extends StatelessWidget {
           Container(
             width: 48,
             height: 48,
-            decoration: BoxDecoration(gradient: AppColors.gradientPrimary, borderRadius: BorderRadius.circular(14)),
-            child: const Icon(Icons.record_voice_over_rounded, color: Colors.white, size: 24),
+            decoration: BoxDecoration(
+                gradient: AppColors.gradientPrimary,
+                borderRadius: BorderRadius.circular(14)),
+            child: const Icon(Icons.record_voice_over_rounded,
+                color: Colors.white, size: 24),
           ),
           const SizedBox(width: 14),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('تسجيل حفظ جديد',
-                    style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.w800)),
+                Text(tr('تسجيل حفظ جديد'),
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleLarge
+                        ?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 2),
                 Text('$studentName · $groupName',
-                    style: const TextStyle(fontFamily: 'Cairo', fontSize: 12, color: AppColors.textMuted),
-                    maxLines: 1, overflow: TextOverflow.ellipsis),
+                    style: const TextStyle(
+                        fontFamily: 'Dubai',
+                        fontSize: 12,
+                        color: AppColors.textMuted),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis),
               ],
             ),
           ),
@@ -865,7 +963,11 @@ class _EntryTypeChip extends StatelessWidget {
   final IconData icon;
   final bool selected;
   final VoidCallback onTap;
-  const _EntryTypeChip({required this.label, required this.icon, required this.selected, required this.onTap});
+  const _EntryTypeChip(
+      {required this.label,
+      required this.icon,
+      required this.selected,
+      required this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -880,23 +982,32 @@ class _EntryTypeChip extends StatelessWidget {
           color: selected ? null : Theme.of(context).colorScheme.surface,
           borderRadius: BorderRadius.circular(16),
           border: Border.all(
-            color: selected ? Colors.transparent : Theme.of(context).dividerColor,
+            color:
+                selected ? Colors.transparent : Theme.of(context).dividerColor,
             width: 1.4,
           ),
           boxShadow: selected
-              ? [BoxShadow(color: AppColors.primary.withOpacity(0.3), blurRadius: 12, offset: const Offset(0, 4))]
+              ? [
+                  BoxShadow(
+                      color: AppColors.primary.withOpacity(0.3),
+                      blurRadius: 12,
+                      offset: const Offset(0, 4))
+                ]
               : null,
         ),
         child: Column(
           children: [
-            Icon(icon, size: 22, color: selected ? Colors.white : AppColors.textMuted),
+            Icon(icon,
+                size: 22, color: selected ? Colors.white : AppColors.textMuted),
             const SizedBox(height: 6),
             Text(label,
                 style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 13,
                   fontWeight: FontWeight.w700,
-                  color: selected ? Colors.white : Theme.of(context).colorScheme.onSurface,
+                  color: selected
+                      ? Colors.white
+                      : Theme.of(context).colorScheme.onSurface,
                 )),
           ],
         ),
@@ -924,14 +1035,14 @@ class _AssessmentRow extends StatelessWidget {
           Expanded(
             child: Text(assessment.title,
                 style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 12,
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface)),
           ),
-          Text('${assessment.resultsCount} نتيجة',
+          Text(trf('{0} نتيجة', [assessment.resultsCount]),
               style: const TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11,
                   color: AppColors.textMuted)),
         ],
@@ -958,7 +1069,7 @@ class _MiniStat extends StatelessWidget {
           const SizedBox(width: 4),
           Text(label,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                   color: color)),
@@ -1007,7 +1118,7 @@ class _Card extends StatelessWidget {
             const SizedBox(width: 10),
             Text(title,
                 style: TextStyle(
-                    fontFamily: 'Cairo',
+                    fontFamily: 'Dubai',
                     fontSize: 14,
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.onSurface)),
@@ -1033,7 +1144,7 @@ class _EmptyRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(message,
             style: const TextStyle(
-                fontFamily: 'Cairo', fontSize: 12, color: AppColors.textMuted)),
+                fontFamily: 'Dubai', fontSize: 12, color: AppColors.textMuted)),
       );
 }
 
@@ -1056,7 +1167,7 @@ class _Chip extends StatelessWidget {
           ],
           Text(label,
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 11,
                   fontWeight: FontWeight.w700,
                   color: color)),
@@ -1076,7 +1187,7 @@ class _Empty extends StatelessWidget {
           const SizedBox(height: 12),
           Text(message,
               style: const TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 14,
                   color: AppColors.textMuted)),
         ]),
@@ -1107,9 +1218,9 @@ class _ErrorView extends StatelessWidget {
             child: Icon(icon, size: 48, color: color),
           ),
           const SizedBox(height: 16),
-          Text(_isForbidden ? 'ليس لديك صلاحية' : 'حدث خطأ',
+          Text(_isForbidden ? tr('ليس لديك صلاحية') : tr('حدث خطأ'),
               style: TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 18,
                   fontWeight: FontWeight.w700,
                   color: color)),
@@ -1117,7 +1228,7 @@ class _ErrorView extends StatelessWidget {
           Text(message,
               textAlign: TextAlign.center,
               style: const TextStyle(
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                   fontSize: 13,
                   color: AppColors.textMuted)),
           if (!_isForbidden) ...[
@@ -1125,8 +1236,8 @@ class _ErrorView extends StatelessWidget {
             ElevatedButton.icon(
               onPressed: onRetry,
               icon: const Icon(Icons.refresh_rounded, size: 18),
-              label: const Text('إعادة المحاولة',
-                  style: TextStyle(fontFamily: 'Cairo')),
+              label: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai')),
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.primaryLight,
                 foregroundColor: Colors.white,

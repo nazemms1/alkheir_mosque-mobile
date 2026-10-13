@@ -8,6 +8,7 @@ import '../../../data/services/admin_service.dart';
 import 'group_detail_screen.dart';
 import 'group_form_screen.dart';
 import 'qr_scanner_screen.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class AdminGroupsScreen extends StatefulWidget {
   final AuthToken token;
@@ -104,14 +105,14 @@ class _AdminGroupsScreenState extends State<AdminGroupsScreen> {
             child: Row(
               children: [
                 _SummaryPill(
-                  label: 'حلقات نشطة',
+                  label: tr('حلقات نشطة'),
                   value: '${_active.length}',
                   color: AppColors.success,
                   icon: Icons.check_circle_rounded,
                 ),
                 const SizedBox(width: 10),
                 _SummaryPill(
-                  label: 'إجمالي الطلاب',
+                  label: tr('إجمالي الطلاب'),
                   value: '${_active.fold(0, (s, g) => s + g.enrollmentsCount)}',
                   color: AppColors.primaryLight,
                   icon: Icons.people_rounded,
@@ -142,9 +143,9 @@ class _GroupList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (groups.isEmpty) {
-      return const Center(
-        child: Text('لا توجد حلقات',
-            style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)),
+      return Center(
+        child: Text(tr('لا توجد حلقات'),
+            style: TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)),
       );
     }
     return RefreshIndicator(
@@ -243,7 +244,7 @@ class _GroupCard extends StatelessWidget {
                             color: Colors.white,
                             fontSize: 14,
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -254,7 +255,7 @@ class _GroupCard extends StatelessWidget {
                           style: TextStyle(
                             color: Colors.white.withOpacity(0.75),
                             fontSize: 11,
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                           ),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
@@ -277,14 +278,14 @@ class _GroupCard extends StatelessWidget {
                       ),
                     ),
                     child: Text(
-                      group.isActive ? 'نشطة' : 'منتهية',
+                      group.isActive ? tr('نشطة') : tr('منتهية'),
                       style: TextStyle(
                         color: group.isActive
                             ? AppColors.success
                             : Colors.white.withOpacity(0.75),
                         fontSize: 10,
                         fontWeight: FontWeight.w700,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ),
@@ -298,16 +299,16 @@ class _GroupCard extends StatelessWidget {
                 children: [
                   _InfoRow(
                       icon: Icons.person_rounded,
-                      label: 'المعلم',
+                      label: tr('المعلم'),
                       value: group.teacher.isEmpty ? '—' : group.teacher),
                   if (group.assistantTeacher.isNotEmpty)
                     _InfoRow(
                         icon: Icons.person_outline_rounded,
-                        label: 'المساعد',
+                        label: tr('المساعد'),
                         value: group.assistantTeacher),
                   _InfoRow(
                       icon: Icons.school_rounded,
-                      label: 'السنة الدراسية',
+                      label: tr('السنة الدراسية'),
                       value: group.academicYear.isEmpty
                           ? '—'
                           : group.academicYear),
@@ -326,12 +327,12 @@ class _GroupCard extends StatelessWidget {
                         Icon(Icons.people_rounded, color: color, size: 18),
                         const SizedBox(width: 6),
                         Text(
-                          '${group.enrollmentsCount} طالب مسجّل',
+                          trf('{0} طالب مسجّل', [group.enrollmentsCount]),
                           style: TextStyle(
                             color: color,
                             fontSize: 13,
                             fontWeight: FontWeight.w700,
-                            fontFamily: 'Cairo',
+                            fontFamily: 'Dubai',
                           ),
                         ),
                       ],
@@ -364,7 +365,7 @@ class _InfoRow extends StatelessWidget {
           Text(
             '$label: ',
             style: const TextStyle(
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
               fontSize: 12,
               color: AppColors.textMuted,
             ),
@@ -373,7 +374,7 @@ class _InfoRow extends StatelessWidget {
             child: Text(
               value,
               style: TextStyle(
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.onSurface,
@@ -417,12 +418,12 @@ class _SummaryPill extends StatelessWidget {
                     color: color,
                     fontSize: 16,
                     fontWeight: FontWeight.w800,
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
             Text(label,
                 style: const TextStyle(
                     color: AppColors.textMuted,
                     fontSize: 10,
-                    fontFamily: 'Cairo')),
+                    fontFamily: 'Dubai')),
           ],
         ),
       ),
@@ -446,12 +447,12 @@ class _ErrorView extends StatelessWidget {
           const SizedBox(height: 12),
           Text(message,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Cairo')),
+              style: const TextStyle(fontFamily: 'Dubai')),
           const SizedBox(height: 16),
           ElevatedButton(
               onPressed: onRetry,
-              child: const Text('إعادة المحاولة',
-                  style: TextStyle(fontFamily: 'Cairo'))),
+              child: Text(tr('إعادة المحاولة'),
+                  style: TextStyle(fontFamily: 'Dubai'))),
         ],
       ),
     );

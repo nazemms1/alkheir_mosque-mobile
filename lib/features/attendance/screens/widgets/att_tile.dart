@@ -2,26 +2,26 @@ part of '../attendance_screen.dart';
 
 class _AttendanceTile extends StatelessWidget {
   final AttendanceRecord record;
-  const _AttendanceTile({required this.record});
+  _AttendanceTile({required this.record});
 
-  static const _cfg = {
+  static final _cfg = {
     AttendanceStatus.present: (
-      label: 'حضور',
+      label: tr('حضور'),
       color: AppColors.attPresent,
       icon: Icons.check_circle_rounded,
     ),
     AttendanceStatus.absent: (
-      label: 'غياب',
+      label: tr('غياب'),
       color: AppColors.attAbsent,
       icon: Icons.cancel_rounded,
     ),
     AttendanceStatus.late: (
-      label: 'تأخر',
+      label: tr('تأخر'),
       color: AppColors.attLate,
       icon: Icons.access_time_rounded,
     ),
     AttendanceStatus.excused: (
-      label: 'بعذر',
+      label: tr('بعذر'),
       color: AppColors.attExcused,
       icon: Icons.info_rounded,
     ),
@@ -121,7 +121,7 @@ class _AttendanceTile extends StatelessWidget {
                   color: cfg.color,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                 ),
               ),
             ),

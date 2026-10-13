@@ -1,5 +1,6 @@
 import '../models/student_model.dart';
 import 'api_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class StudentService {
   final ApiService _api = ApiService();
@@ -218,13 +219,18 @@ class StudentService {
 
   /// جلب تفاصيل فاتورة محددة (بنودها ودفعاتها)
   Future<InvoiceDetail> fetchInvoiceDetail(int invoiceId) async {
-    final json = await _api.get('parent/invoices/$invoiceId') as Map<String, dynamic>;
+    final json =
+        await _api.get('parent/invoices/$invoiceId') as Map<String, dynamic>;
     return InvoiceDetail.fromJson(json['data'] as Map<String, dynamic>);
   }
 
   /// جلب كل البيانات اللازمة للـ Dashboard دفعة واحدة
-  Future<({ParentProfile profile, ParentSummary summary, List<ChildDetail> children})>
-      fetchDashboard() async {
+  Future<
+      ({
+        ParentProfile profile,
+        ParentSummary summary,
+        List<ChildDetail> children
+      })> fetchDashboard() async {
     final results = await Future.wait([
       fetchParentProfile(),
       fetchParentSummary(),
@@ -242,10 +248,13 @@ class StudentService {
     final parts = child.fullName.trim().split(RegExp(r'\s+'));
     final initials = parts.length >= 2
         ? '${parts.first[0]} ${parts.last[0]}'
-        : (parts.isNotEmpty && parts.first.isNotEmpty ? parts.first[0] : '؟');
+        : (parts.isNotEmpty && parts.first.isNotEmpty
+            ? parts.first[0]
+            : tr('؟'));
 
-    final enrollment =
-        child.activeEnrollments.isNotEmpty ? child.activeEnrollments.first : null;
+    final enrollment = child.activeEnrollments.isNotEmpty
+        ? child.activeEnrollments.first
+        : null;
     final currentJuz = child.quranCurrentJuz ?? 1;
     final teacherName = enrollment?.group.teacherName ?? '';
 
@@ -268,7 +277,7 @@ class StudentService {
       memorizationProgress: MemorizationProgress(
         totalPagesMemorized: child.memorizedPages,
         totalQuranPages: 604,
-        currentSurah: 'الجزء $currentJuz',
+        currentSurah: trf('الجزء {0}', [currentJuz]),
         currentJuz: currentJuz,
         // الأجزاء تُبنى لاحقاً من fetchMemorization — هنا placeholder
         sections: _buildJuzSectionsFromSummary(
@@ -308,7 +317,7 @@ class StudentService {
     return MemorizationProgress(
       totalPagesMemorized: totalMemorizedPages,
       totalQuranPages: 604,
-      currentSurah: 'الجزء $currentJuz',
+      currentSurah: trf('الجزء {0}', [currentJuz]),
       currentJuz: currentJuz,
       sections: sections,
     );
@@ -338,12 +347,15 @@ class StudentService {
         }
       }
 
-      final sessions = juzEntries.map((e) => RecitationSession(
-            fromPage: e.fromPage,
-            toPage: e.toPage,
-            date: e.date,
-            teacherName: e.teacherName.isNotEmpty ? e.teacherName : teacherName,
-          )).toList();
+      final sessions = juzEntries
+          .map((e) => RecitationSession(
+                fromPage: e.fromPage,
+                toPage: e.toPage,
+                date: e.date,
+                teacherName:
+                    e.teacherName.isNotEmpty ? e.teacherName : teacherName,
+              ))
+          .toList();
 
       if (heardPages.length >= totalPages) {
         // جميع صفحات الجزء مسموعة — مكتمل
@@ -403,7 +415,8 @@ class StudentService {
     for (int i = 0; i < currentJuz - 1 && i < 30; i++) {
       pagesBeforeCurrent += _juzLastPage[i] - _juzFirstPage[i] + 1;
     }
-    final pagesInCurrentJuz = (totalMemorizedPages - pagesBeforeCurrent).clamp(0, 20);
+    final pagesInCurrentJuz =
+        (totalMemorizedPages - pagesBeforeCurrent).clamp(0, 20);
 
     final sections = <JuzSection>[];
     for (int i = 0; i < 30; i++) {
@@ -466,30 +479,105 @@ class StudentService {
     return sections;
   }
 
-  static const _juzNames = [
-    'الجزء الأول', 'الجزء الثاني', 'الجزء الثالث', 'الجزء الرابع',
-    'الجزء الخامس', 'الجزء السادس', 'الجزء السابع', 'الجزء الثامن',
-    'الجزء التاسع', 'الجزء العاشر', 'الجزء الحادي عشر', 'الجزء الثاني عشر',
-    'الجزء الثالث عشر', 'الجزء الرابع عشر', 'الجزء الخامس عشر',
-    'الجزء السادس عشر', 'الجزء السابع عشر', 'الجزء الثامن عشر',
-    'الجزء التاسع عشر', 'الجزء العشرون', 'الجزء الحادي والعشرون',
-    'الجزء الثاني والعشرون', 'الجزء الثالث والعشرون', 'الجزء الرابع والعشرون',
-    'الجزء الخامس والعشرون', 'الجزء السادس والعشرون', 'الجزء السابع والعشرون',
-    'الجزء الثامن والعشرون', 'الجزء التاسع والعشرون', 'الجزء الثلاثون',
+  static final _juzNames = [
+    tr('الجزء الأول'),
+    tr('الجزء الثاني'),
+    tr('الجزء الثالث'),
+    tr('الجزء الرابع'),
+    tr('الجزء الخامس'),
+    tr('الجزء السادس'),
+    tr('الجزء السابع'),
+    tr('الجزء الثامن'),
+    tr('الجزء التاسع'),
+    tr('الجزء العاشر'),
+    tr('الجزء الحادي عشر'),
+    tr('الجزء الثاني عشر'),
+    tr('الجزء الثالث عشر'),
+    tr('الجزء الرابع عشر'),
+    tr('الجزء الخامس عشر'),
+    tr('الجزء السادس عشر'),
+    tr('الجزء السابع عشر'),
+    tr('الجزء الثامن عشر'),
+    tr('الجزء التاسع عشر'),
+    tr('الجزء العشرون'),
+    tr('الجزء الحادي والعشرون'),
+    tr('الجزء الثاني والعشرون'),
+    tr('الجزء الثالث والعشرون'),
+    tr('الجزء الرابع والعشرون'),
+    tr('الجزء الخامس والعشرون'),
+    tr('الجزء السادس والعشرون'),
+    tr('الجزء السابع والعشرون'),
+    tr('الجزء الثامن والعشرون'),
+    tr('الجزء التاسع والعشرون'),
+    tr('الجزء الثلاثون'),
   ];
 
   // الصفحة الأولى لكل جزء (مصحف المدينة 604 صفحة)
   static const _juzFirstPage = [
-     1,  22,  42,  62,  82, 102, 122, 142, 162, 182,
-   202, 222, 242, 262, 282, 302, 322, 342, 362, 382,
-   402, 422, 442, 462, 482, 502, 522, 542, 562, 582,
+    1,
+    22,
+    42,
+    62,
+    82,
+    102,
+    122,
+    142,
+    162,
+    182,
+    202,
+    222,
+    242,
+    262,
+    282,
+    302,
+    322,
+    342,
+    362,
+    382,
+    402,
+    422,
+    442,
+    462,
+    482,
+    502,
+    522,
+    542,
+    562,
+    582,
   ];
 
   // الصفحة الأخيرة لكل جزء
   static const _juzLastPage = [
-    21,  41,  61,  81, 101, 121, 141, 161, 181, 201,
-   221, 241, 261, 281, 301, 321, 341, 361, 381, 401,
-   421, 441, 461, 481, 501, 521, 541, 561, 581, 604,
+    21,
+    41,
+    61,
+    81,
+    101,
+    121,
+    141,
+    161,
+    181,
+    201,
+    221,
+    241,
+    261,
+    281,
+    301,
+    321,
+    341,
+    361,
+    381,
+    401,
+    421,
+    441,
+    461,
+    481,
+    501,
+    521,
+    541,
+    561,
+    581,
+    604,
   ];
 
   /// يُحدّد رقم الجزء من رقم الصفحة

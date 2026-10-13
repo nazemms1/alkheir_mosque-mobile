@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/student_service.dart';
 import '../../../shared/widgets/rating_badge.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 part 'widgets/pts_hero.dart';
 part 'widgets/pts_points_list.dart';
@@ -56,7 +57,10 @@ class _PointsScreenState extends State<PointsScreen>
     try {
       final entries = await _service.fetchPoints(widget.studentId!);
       if (!mounted) return;
-      setState(() { _apiEntries = entries; _loadingApi = false; });
+      setState(() {
+        _apiEntries = entries;
+        _loadingApi = false;
+      });
     } catch (_) {
       if (!mounted) return;
       setState(() => _loadingApi = false);
@@ -88,8 +92,11 @@ class _PointsScreenState extends State<PointsScreen>
           SliverToBoxAdapter(
             child: _PointsHero(total: _total, records: _records),
           ),
-          const SliverToBoxAdapter(
-            child: _SectionHeader(label: 'سجل النقاط', icon: Icons.star_rounded, color: AppColors.gold),
+          SliverToBoxAdapter(
+            child: _SectionHeader(
+                label: tr('سجل النقاط'),
+                icon: Icons.star_rounded,
+                color: AppColors.gold),
           ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -98,12 +105,17 @@ class _PointsScreenState extends State<PointsScreen>
                 (_, i) => _apiEntries.isNotEmpty
                     ? _PointEntryTile(entry: _apiEntries[i])
                     : _PointTile(record: _records[i]),
-                childCount: _apiEntries.isNotEmpty ? _apiEntries.length : _records.length,
+                childCount: _apiEntries.isNotEmpty
+                    ? _apiEntries.length
+                    : _records.length,
               ),
             ),
           ),
-          const SliverToBoxAdapter(
-            child: _SectionHeader(label: 'التقييمات', icon: Icons.assessment_rounded, color: AppColors.primaryLight),
+          SliverToBoxAdapter(
+            child: _SectionHeader(
+                label: tr('التقييمات'),
+                icon: Icons.assessment_rounded,
+                color: AppColors.primaryLight),
           ),
           SliverPadding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -123,7 +135,8 @@ class _PointsScreenState extends State<PointsScreen>
         _PointsHero(total: _total, records: _records)
             .animate()
             .fadeIn(duration: 500.ms)
-            .slideY(begin: -0.03, end: 0, duration: 500.ms, curve: Curves.easeOut),
+            .slideY(
+                begin: -0.03, end: 0, duration: 500.ms, curve: Curves.easeOut),
         Builder(
           builder: (context) => Container(
             decoration: BoxDecoration(
@@ -132,16 +145,16 @@ class _PointsScreenState extends State<PointsScreen>
                 BoxShadow(
                     color: Colors.black.withOpacity(0.05),
                     blurRadius: 8,
-                    offset: const Offset(0, 3)),
+                    offset: Offset(0, 3)),
               ],
             ),
             child: TabBar(
               controller: _tab,
               indicatorWeight: 3,
               indicatorColor: AppColors.primary,
-              tabs: const [
-                Tab(text: 'سجل النقاط'),
-                Tab(text: 'التقييمات'),
+              tabs: [
+                Tab(text: tr('سجل النقاط')),
+                Tab(text: tr('التقييمات')),
               ],
             ),
           ).animate().fadeIn(delay: 200.ms, duration: 400.ms),
@@ -181,7 +194,7 @@ class _SectionHeader extends StatelessWidget {
           const SizedBox(width: 6),
           Text(label,
               style: TextStyle(
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontSize: 13,
                 fontWeight: FontWeight.w700,
                 color: Theme.of(context).colorScheme.onSurface,

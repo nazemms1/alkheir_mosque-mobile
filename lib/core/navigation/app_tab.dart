@@ -73,8 +73,8 @@ class AppTab {
 
   /// هل يظهر هذا التبويب لهذا الحساب؟
   bool isVisibleFor(AuthToken token) {
-    final permissionsOk = anyOfPermissions.isEmpty ||
-        anyOfPermissions.any(token.hasPermission);
+    final permissionsOk =
+        anyOfPermissions.isEmpty || anyOfPermissions.any(token.hasPermission);
     final conditionOk = visibleWhen?.call(token) ?? true;
     return permissionsOk && conditionOk;
   }

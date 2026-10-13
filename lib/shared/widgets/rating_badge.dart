@@ -1,35 +1,51 @@
 import 'package:flutter/material.dart';
 import '../../core/theme/app_theme.dart';
 import '../../data/models/student_model.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 extension EvaluationRatingX on EvaluationRating {
   String get label {
     switch (this) {
-      case EvaluationRating.excellent:  return 'ممتاز';
-      case EvaluationRating.veryGood:   return 'جيد جداً';
-      case EvaluationRating.good:       return 'جيد';
-      case EvaluationRating.acceptable: return 'مقبول';
-      case EvaluationRating.needsWork:  return 'يحتاج تحسين';
+      case EvaluationRating.excellent:
+        return tr('ممتاز');
+      case EvaluationRating.veryGood:
+        return tr('جيد جداً');
+      case EvaluationRating.good:
+        return tr('جيد');
+      case EvaluationRating.acceptable:
+        return tr('مقبول');
+      case EvaluationRating.needsWork:
+        return tr('يحتاج تحسين');
     }
   }
 
   Color get color {
     switch (this) {
-      case EvaluationRating.excellent:  return AppColors.success;
-      case EvaluationRating.veryGood:   return AppColors.info;
-      case EvaluationRating.good:       return AppColors.primaryLight;
-      case EvaluationRating.acceptable: return AppColors.warning;
-      case EvaluationRating.needsWork:  return AppColors.error;
+      case EvaluationRating.excellent:
+        return AppColors.success;
+      case EvaluationRating.veryGood:
+        return AppColors.info;
+      case EvaluationRating.good:
+        return AppColors.primaryLight;
+      case EvaluationRating.acceptable:
+        return AppColors.warning;
+      case EvaluationRating.needsWork:
+        return AppColors.error;
     }
   }
 
   IconData get icon {
     switch (this) {
-      case EvaluationRating.excellent:  return Icons.star_rounded;
-      case EvaluationRating.veryGood:   return Icons.thumb_up_rounded;
-      case EvaluationRating.good:       return Icons.check_circle_rounded;
-      case EvaluationRating.acceptable: return Icons.radio_button_checked_rounded;
-      case EvaluationRating.needsWork:  return Icons.trending_up_rounded;
+      case EvaluationRating.excellent:
+        return Icons.star_rounded;
+      case EvaluationRating.veryGood:
+        return Icons.thumb_up_rounded;
+      case EvaluationRating.good:
+        return Icons.check_circle_rounded;
+      case EvaluationRating.acceptable:
+        return Icons.radio_button_checked_rounded;
+      case EvaluationRating.needsWork:
+        return Icons.trending_up_rounded;
     }
   }
 }
@@ -49,8 +65,10 @@ class RatingBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = rating.color;
-    final bgColor = dark ? Colors.white.withOpacity(0.15) : color.withOpacity(0.12);
-    final borderColor = dark ? Colors.white.withOpacity(0.25) : color.withOpacity(0.3);
+    final bgColor =
+        dark ? Colors.white.withOpacity(0.15) : color.withOpacity(0.12);
+    final borderColor =
+        dark ? Colors.white.withOpacity(0.25) : color.withOpacity(0.3);
     final textColor = dark ? Colors.white : color;
 
     return Container(

@@ -4,6 +4,7 @@ import 'package:intl/intl.dart';
 import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/student_service.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 part 'widgets/att_summary_hero.dart';
 part 'widgets/att_filter_strip.dart';
@@ -37,7 +38,8 @@ class _AttendanceScreenState extends State<AttendanceScreen>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 600));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _ctrl.forward();
     _fetchAttendance();
@@ -68,8 +70,7 @@ class _AttendanceScreenState extends State<AttendanceScreen>
   List<AttendanceRecord> get _records =>
       _apiRecords.isNotEmpty ? _apiRecords : widget.records;
 
-  int _count(AttendanceStatus s) =>
-      _records.where((r) => r.status == s).length;
+  int _count(AttendanceStatus s) => _records.where((r) => r.status == s).length;
 
   List<AttendanceRecord> get _filtered => _filter == null
       ? _records
@@ -83,14 +84,14 @@ class _AttendanceScreenState extends State<AttendanceScreen>
 
   @override
   Widget build(BuildContext context) {
-    final present         = _count(AttendanceStatus.present);
-    final absent          = _count(AttendanceStatus.absent);
-    final late            = _count(AttendanceStatus.late);
-    final excused         = _count(AttendanceStatus.excused);
+    final present = _count(AttendanceStatus.present);
+    final absent = _count(AttendanceStatus.absent);
+    final late = _count(AttendanceStatus.late);
+    final excused = _count(AttendanceStatus.excused);
     final excusedEarlyDep = _count(AttendanceStatus.excusedEarlyDeparture);
-    final excusedAbsence  = _count(AttendanceStatus.excusedAbsence);
-    final total           = _records.length;
-    final rate            = total == 0 ? 0.0 : present / total;
+    final excusedAbsence = _count(AttendanceStatus.excusedAbsence);
+    final total = _records.length;
+    final rate = total == 0 ? 0.0 : present / total;
 
     return FadeTransition(
       opacity: _fade,
@@ -102,11 +103,14 @@ class _AttendanceScreenState extends State<AttendanceScreen>
         slivers: [
           SliverToBoxAdapter(
             child: _SummaryHero(
-              present: present, absent: absent, late: late,
+              present: present,
+              absent: absent,
+              late: late,
               excused: excused,
               excusedEarlyDep: excusedEarlyDep,
               excusedAbsence: excusedAbsence,
-              total: total, rate: rate,
+              total: total,
+              rate: rate,
             ),
           ),
           SliverPadding(
@@ -115,7 +119,10 @@ class _AttendanceScreenState extends State<AttendanceScreen>
               child: _FilterStrip(
                 selected: _filter,
                 onSelect: (s) => setState(() => _filter = s),
-              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.05, end: 0, delay: 200.ms),
+              )
+                  .animate()
+                  .fadeIn(delay: 200.ms)
+                  .slideY(begin: 0.05, end: 0, delay: 200.ms),
             ),
           ),
           if (_loadingApi)
@@ -123,11 +130,11 @@ class _AttendanceScreenState extends State<AttendanceScreen>
               child: Center(child: CircularProgressIndicator()),
             )
           else if (_filtered.isEmpty)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               child: Center(
                 child: _EmptyState(
                   icon: Icons.event_available_rounded,
-                  text: 'لا توجد سجلات لهذا الفلتر',
+                  text: tr('لا توجد سجلات لهذا الفلتر'),
                 ),
               ),
             )
@@ -139,7 +146,11 @@ class _AttendanceScreenState extends State<AttendanceScreen>
                   (_, i) => _AttendanceTile(record: _filtered[i])
                       .animate()
                       .fadeIn(delay: (250 + i * 40).ms, duration: 350.ms)
-                      .slideX(begin: 0.04, end: 0, delay: (250 + i * 40).ms, duration: 350.ms),
+                      .slideX(
+                          begin: 0.04,
+                          end: 0,
+                          delay: (250 + i * 40).ms,
+                          duration: 350.ms),
                   childCount: _filtered.length,
                 ),
               ),

@@ -5,6 +5,7 @@ import '../../../core/theme/app_theme.dart';
 import '../../../data/models/student_model.dart';
 import '../../../data/services/student_service.dart';
 import '../../../shared/widgets/rating_badge.dart';
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
 
 class SabrScreen extends StatefulWidget {
   final List<SabrRecord> records;
@@ -27,7 +28,8 @@ class _SabrScreenState extends State<SabrScreen>
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
+    _ctrl = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 500));
     _fade = CurvedAnimation(parent: _ctrl, curve: Curves.easeOut);
     _ctrl.forward();
     _fetchTests();
@@ -45,7 +47,10 @@ class _SabrScreenState extends State<SabrScreen>
     try {
       final entries = await _service.fetchQuranTests(widget.studentId!);
       if (!mounted) return;
-      setState(() { _apiEntries = entries; _loadingApi = false; });
+      setState(() {
+        _apiEntries = entries;
+        _loadingApi = false;
+      });
     } catch (_) {
       if (!mounted) return;
       setState(() => _loadingApi = false);
@@ -83,15 +88,24 @@ class _SabrScreenState extends State<SabrScreen>
         physics: const BouncingScrollPhysics(),
         slivers: [
           SliverToBoxAdapter(
-            child: _SabrHero(total: widget.records.length, passed: passed, avgScore: avgScore)
+            child: _SabrHero(
+                    total: widget.records.length,
+                    passed: passed,
+                    avgScore: avgScore)
                 .animate()
                 .fadeIn(duration: 500.ms)
-                .slideY(begin: -0.03, end: 0, duration: 500.ms, curve: Curves.easeOut),
+                .slideY(
+                    begin: -0.03,
+                    end: 0,
+                    duration: 500.ms,
+                    curve: Curves.easeOut),
           ),
           SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
             sliver: SliverToBoxAdapter(
-              child: _FilterStrip(current: _filter, onSelect: (t) => setState(() => _filter = t))
+              child: _FilterStrip(
+                      current: _filter,
+                      onSelect: (t) => setState(() => _filter = t))
                   .animate()
                   .fadeIn(delay: 150.ms, duration: 400.ms)
                   .slideY(begin: 0.05, end: 0, delay: 150.ms),
@@ -102,9 +116,11 @@ class _SabrScreenState extends State<SabrScreen>
               child: Center(child: CircularProgressIndicator()),
             )
           else if (records.isEmpty)
-            const SliverFillRemaining(
+            SliverFillRemaining(
               child: Center(
-                child: Text('لا توجد سجلات سبر', style: TextStyle(fontFamily: 'Cairo', color: AppColors.textMuted)),
+                child: Text(tr('لا توجد سجلات سبر'),
+                    style: TextStyle(
+                        fontFamily: 'Dubai', color: AppColors.textMuted)),
               ),
             )
           else
@@ -115,7 +131,11 @@ class _SabrScreenState extends State<SabrScreen>
                   (_, i) => _SabrCard(record: records[i])
                       .animate()
                       .fadeIn(delay: (200 + i * 60).ms, duration: 380.ms)
-                      .slideX(begin: 0.04, end: 0, delay: (200 + i * 60).ms, duration: 380.ms),
+                      .slideX(
+                          begin: 0.04,
+                          end: 0,
+                          delay: (200 + i * 60).ms,
+                          duration: 380.ms),
                   childCount: records.length,
                 ),
               ),
@@ -130,7 +150,8 @@ class _SabrScreenState extends State<SabrScreen>
 class _SabrHero extends StatelessWidget {
   final int total, passed;
   final double avgScore;
-  const _SabrHero({required this.total, required this.passed, required this.avgScore});
+  const _SabrHero(
+      {required this.total, required this.passed, required this.avgScore});
 
   @override
   Widget build(BuildContext context) {
@@ -153,30 +174,34 @@ class _SabrHero extends StatelessWidget {
                 decoration: BoxDecoration(
                   gradient: AppColors.gradientGold,
                   borderRadius: BorderRadius.circular(18),
-                  boxShadow: [BoxShadow(color: AppColors.gold.withOpacity(0.4), blurRadius: 16)],
+                  boxShadow: [
+                    BoxShadow(
+                        color: AppColors.gold.withOpacity(0.4), blurRadius: 16)
+                  ],
                 ),
-                child: const Icon(Icons.quiz_rounded, color: Colors.white, size: 32),
+                child: const Icon(Icons.quiz_rounded,
+                    color: Colors.white, size: 32),
               ),
               const SizedBox(width: 16),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text(
-                      'سجل السبر',
+                    Text(
+                      tr('سجل السبر'),
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 22,
                         fontWeight: FontWeight.w800,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                     Text(
-                      'السبر التجريبي • النهائي • الأوقاف',
+                      tr('السبر التجريبي • النهائي • الأوقاف'),
                       style: TextStyle(
                         color: Colors.white.withOpacity(0.6),
                         fontSize: 12,
-                        fontFamily: 'Cairo',
+                        fontFamily: 'Dubai',
                       ),
                     ),
                   ],
@@ -187,11 +212,22 @@ class _SabrHero extends StatelessWidget {
           const SizedBox(height: 20),
           Row(
             children: [
-              _HeroStat(value: '$total', label: 'إجمالي السبر', icon: Icons.list_alt_rounded),
+              _HeroStat(
+                  value: '$total',
+                  label: tr('إجمالي السبر'),
+                  icon: Icons.list_alt_rounded),
               _VertDivider(),
-              _HeroStat(value: '$passed', label: 'ناجح', icon: Icons.check_circle_rounded, valueColor: AppColors.primaryGlow),
+              _HeroStat(
+                  value: '$passed',
+                  label: tr('ناجح'),
+                  icon: Icons.check_circle_rounded,
+                  valueColor: AppColors.primaryGlow),
               _VertDivider(),
-              _HeroStat(value: '${avgScore.toStringAsFixed(0)}%', label: 'متوسط الدرجات', icon: Icons.bar_chart_rounded, valueColor: AppColors.goldLight),
+              _HeroStat(
+                  value: '${avgScore.toStringAsFixed(0)}%',
+                  label: tr('متوسط الدرجات'),
+                  icon: Icons.bar_chart_rounded,
+                  valueColor: AppColors.goldLight),
             ],
           ),
         ],
@@ -204,14 +240,19 @@ class _HeroStat extends StatelessWidget {
   final String value, label;
   final IconData icon;
   final Color? valueColor;
-  const _HeroStat({required this.value, required this.label, required this.icon, this.valueColor});
+  const _HeroStat(
+      {required this.value,
+      required this.label,
+      required this.icon,
+      this.valueColor});
 
   @override
   Widget build(BuildContext context) {
     return Expanded(
       child: Column(
         children: [
-          Icon(icon, color: valueColor ?? Colors.white.withOpacity(0.7), size: 20),
+          Icon(icon,
+              color: valueColor ?? Colors.white.withOpacity(0.7), size: 20),
           const SizedBox(height: 4),
           Text(
             value,
@@ -219,12 +260,15 @@ class _HeroStat extends StatelessWidget {
               color: valueColor ?? Colors.white,
               fontSize: 20,
               fontWeight: FontWeight.w900,
-              fontFamily: 'Cairo',
+              fontFamily: 'Dubai',
             ),
           ),
           Text(
             label,
-            style: TextStyle(color: Colors.white.withOpacity(0.55), fontSize: 11, fontFamily: 'Cairo'),
+            style: TextStyle(
+                color: Colors.white.withOpacity(0.55),
+                fontSize: 11,
+                fontFamily: 'Dubai'),
             textAlign: TextAlign.center,
           ),
         ],
@@ -236,7 +280,8 @@ class _HeroStat extends StatelessWidget {
 class _VertDivider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Container(width: 1, height: 48, color: Colors.white.withOpacity(0.15));
+    return Container(
+        width: 1, height: 48, color: Colors.white.withOpacity(0.15));
   }
 }
 
@@ -249,10 +294,10 @@ class _FilterStrip extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final items = <(SabrType?, String, Color)>[
-      (null, 'الكل', AppColors.primary),
-      (SabrType.trial, 'سبر تجريبي', AppColors.info),
-      (SabrType.final_, 'سبر نهائي', AppColors.primaryLight),
-      (SabrType.awqaf, 'سبر الأوقاف', AppColors.gold),
+      (null, tr('الكل'), AppColors.primary),
+      (SabrType.trial, tr('سبر تجريبي'), AppColors.info),
+      (SabrType.final_, tr('سبر نهائي'), AppColors.primaryLight),
+      (SabrType.awqaf, tr('سبر الأوقاف'), AppColors.gold),
     ];
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -266,11 +311,18 @@ class _FilterStrip extends StatelessWidget {
               margin: const EdgeInsets.only(left: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
-                color: isActive ? item.$3 : Theme.of(context).colorScheme.surface,
+                color:
+                    isActive ? item.$3 : Theme.of(context).colorScheme.surface,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: isActive ? item.$3 : Theme.of(context).dividerColor),
+                border: Border.all(
+                    color: isActive ? item.$3 : Theme.of(context).dividerColor),
                 boxShadow: isActive
-                    ? [BoxShadow(color: item.$3.withOpacity(0.3), blurRadius: 8, offset: const Offset(0, 3))]
+                    ? [
+                        BoxShadow(
+                            color: item.$3.withOpacity(0.3),
+                            blurRadius: 8,
+                            offset: const Offset(0, 3))
+                      ]
                     : null,
               ),
               child: Text(
@@ -279,7 +331,7 @@ class _FilterStrip extends StatelessWidget {
                   color: isActive ? Colors.white : AppColors.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
-                  fontFamily: 'Cairo',
+                  fontFamily: 'Dubai',
                 ),
               ),
             ),
@@ -304,25 +356,34 @@ class _SabrCardState extends State<_SabrCard> {
 
   Color get _typeColor {
     switch (widget.record.type) {
-      case SabrType.trial: return AppColors.info;
-      case SabrType.final_: return AppColors.primaryLight;
-      case SabrType.awqaf: return AppColors.gold;
+      case SabrType.trial:
+        return AppColors.info;
+      case SabrType.final_:
+        return AppColors.primaryLight;
+      case SabrType.awqaf:
+        return AppColors.gold;
     }
   }
 
   String get _typeLabel {
     switch (widget.record.type) {
-      case SabrType.trial: return 'تجريبي';
-      case SabrType.final_: return 'نهائي';
-      case SabrType.awqaf: return 'أوقاف';
+      case SabrType.trial:
+        return tr('تجريبي');
+      case SabrType.final_:
+        return tr('نهائي');
+      case SabrType.awqaf:
+        return tr('أوقاف');
     }
   }
 
   IconData get _typeIcon {
     switch (widget.record.type) {
-      case SabrType.trial: return Icons.science_rounded;
-      case SabrType.final_: return Icons.verified_rounded;
-      case SabrType.awqaf: return Icons.account_balance_rounded;
+      case SabrType.trial:
+        return Icons.science_rounded;
+      case SabrType.final_:
+        return Icons.verified_rounded;
+      case SabrType.awqaf:
+        return Icons.account_balance_rounded;
     }
   }
 
@@ -341,7 +402,10 @@ class _SabrCardState extends State<_SabrCard> {
           borderRadius: BorderRadius.circular(20),
           border: Border.all(color: _typeColor.withOpacity(0.25)),
           boxShadow: [
-            BoxShadow(color: _typeColor.withOpacity(0.08), blurRadius: 16, offset: const Offset(0, 4)),
+            BoxShadow(
+                color: _typeColor.withOpacity(0.08),
+                blurRadius: 16,
+                offset: const Offset(0, 4)),
           ],
         ),
         child: Column(
@@ -372,14 +436,19 @@ class _SabrCardState extends State<_SabrCard> {
                             const SizedBox(width: 6),
                             if (r.isPassed)
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 6, vertical: 2),
                                 decoration: BoxDecoration(
                                   color: AppColors.success.withOpacity(0.1),
                                   borderRadius: BorderRadius.circular(8),
                                 ),
-                                child: const Text(
-                                  'ناجح',
-                                  style: TextStyle(color: AppColors.success, fontSize: 10, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                                child: Text(
+                                  tr('ناجح'),
+                                  style: TextStyle(
+                                      color: AppColors.success,
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: 'Dubai'),
                                 ),
                               ),
                           ],
@@ -387,12 +456,18 @@ class _SabrCardState extends State<_SabrCard> {
                         const SizedBox(height: 4),
                         Text(
                           r.title,
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w700),
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(fontWeight: FontWeight.w700),
                         ),
                         const SizedBox(height: 2),
                         Text(
                           '${r.surahFrom}  ←  ${r.surahTo}',
-                          style: TextStyle(color: AppColors.textSecondary, fontSize: 11, fontFamily: 'Cairo'),
+                          style: TextStyle(
+                              color: AppColors.textSecondary,
+                              fontSize: 11,
+                              fontFamily: 'Dubai'),
                         ),
                       ],
                     ),
@@ -403,7 +478,9 @@ class _SabrCardState extends State<_SabrCard> {
                       _ScoreCircle(score: r.score, color: _typeColor),
                       const SizedBox(height: 4),
                       Icon(
-                        _expanded ? Icons.keyboard_arrow_up_rounded : Icons.keyboard_arrow_down_rounded,
+                        _expanded
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
                         color: AppColors.textMuted,
                         size: 20,
                       ),
@@ -423,41 +500,69 @@ class _SabrCardState extends State<_SabrCard> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Divider(height: 1, color: Theme.of(context).dividerColor),
+                          Divider(
+                              height: 1, color: Theme.of(context).dividerColor),
                           const SizedBox(height: 14),
                           // Stats row
                           Row(
                             children: [
-                              _DetailStat(label: 'المختبِر', value: r.examinerName, icon: Icons.person_rounded),
+                              _DetailStat(
+                                  label: tr('المختبِر'),
+                                  value: r.examinerName,
+                                  icon: Icons.person_rounded),
                               const SizedBox(width: 12),
-                              _DetailStat(label: 'التاريخ', value: dateStr, icon: Icons.calendar_today_rounded),
+                              _DetailStat(
+                                  label: tr('التاريخ'),
+                                  value: dateStr,
+                                  icon: Icons.calendar_today_rounded),
                             ],
                           ),
                           const SizedBox(height: 10),
                           Row(
                             children: [
-                              _DetailStat(label: 'الصفحات', value: '${r.pageNumbers.length} صفحة', icon: Icons.menu_book_rounded),
+                              _DetailStat(
+                                  label: tr('الصفحات'),
+                                  value:
+                                      trf('{0} صفحة', [r.pageNumbers.length]),
+                                  icon: Icons.menu_book_rounded),
                               const SizedBox(width: 12),
-                              Expanded(child: RatingBadge(rating: r.rating, small: false)),
+                              Expanded(
+                                  child: RatingBadge(
+                                      rating: r.rating, small: false)),
                             ],
                           ),
                           // Pages detail
                           if (sortedPages.isNotEmpty) ...[
                             const SizedBox(height: 12),
                             Text(
-                              'الصفحات التي تم سبرها:',
-                              style: TextStyle(color: AppColors.textSecondary, fontSize: 11, fontFamily: 'Cairo', fontWeight: FontWeight.w600),
+                              tr('الصفحات التي تم سبرها:'),
+                              style: TextStyle(
+                                  color: AppColors.textSecondary,
+                                  fontSize: 11,
+                                  fontFamily: 'Dubai',
+                                  fontWeight: FontWeight.w600),
                             ),
                             const SizedBox(height: 6),
                             sortedPages.length <= 20
                                 ? Wrap(
                                     spacing: 5,
                                     runSpacing: 5,
-                                    children: sortedPages.map((p) => _PagePill(page: p, color: _typeColor)).toList(),
+                                    children: sortedPages
+                                        .map((p) => _PagePill(
+                                            page: p, color: _typeColor))
+                                        .toList(),
                                   )
                                 : Text(
-                                    'صفحات ${sortedPages.first} – ${sortedPages.last} (${sortedPages.length} صفحة)',
-                                    style: TextStyle(color: _typeColor, fontSize: 12, fontFamily: 'Cairo', fontWeight: FontWeight.w700),
+                                    trf('صفحات {0} – {1} ({2} صفحة)', [
+                                      sortedPages.first,
+                                      sortedPages.last,
+                                      sortedPages.length
+                                    ]),
+                                    style: TextStyle(
+                                        color: _typeColor,
+                                        fontSize: 12,
+                                        fontFamily: 'Dubai',
+                                        fontWeight: FontWeight.w700),
                                   ),
                           ],
                           // Notes
@@ -468,12 +573,14 @@ class _SabrCardState extends State<_SabrCard> {
                               decoration: BoxDecoration(
                                 color: _typeColor.withOpacity(0.06),
                                 borderRadius: BorderRadius.circular(12),
-                                border: Border.all(color: _typeColor.withOpacity(0.15)),
+                                border: Border.all(
+                                    color: _typeColor.withOpacity(0.15)),
                               ),
                               child: Row(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Icon(Icons.format_quote_rounded, color: _typeColor, size: 16),
+                                  Icon(Icons.format_quote_rounded,
+                                      color: _typeColor, size: 16),
                                   const SizedBox(width: 8),
                                   Expanded(
                                     child: Text(
@@ -481,7 +588,7 @@ class _SabrCardState extends State<_SabrCard> {
                                       style: TextStyle(
                                         color: AppColors.textSecondary,
                                         fontSize: 12,
-                                        fontFamily: 'Cairo',
+                                        fontFamily: 'Dubai',
                                         fontStyle: FontStyle.italic,
                                         height: 1.5,
                                       ),
@@ -518,8 +625,12 @@ class _TypeBadge extends StatelessWidget {
         border: Border.all(color: color.withOpacity(0.3)),
       ),
       child: Text(
-        'سبر $label',
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+        trf('سبر {0}', [label]),
+        style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Dubai'),
       ),
     );
   }
@@ -546,9 +657,17 @@ class _ScoreCircle extends StatelessWidget {
           children: [
             Text(
               '${score.toStringAsFixed(0)}',
-              style: TextStyle(color: color, fontSize: 15, fontWeight: FontWeight.w900, fontFamily: 'Cairo'),
+              style: TextStyle(
+                  color: color,
+                  fontSize: 15,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai'),
             ),
-            Text('%', style: TextStyle(color: color.withOpacity(0.7), fontSize: 9, fontFamily: 'Cairo')),
+            Text('%',
+                style: TextStyle(
+                    color: color.withOpacity(0.7),
+                    fontSize: 9,
+                    fontFamily: 'Dubai')),
           ],
         ),
       ),
@@ -559,7 +678,8 @@ class _ScoreCircle extends StatelessWidget {
 class _DetailStat extends StatelessWidget {
   final String label, value;
   final IconData icon;
-  const _DetailStat({required this.label, required this.value, required this.icon});
+  const _DetailStat(
+      {required this.label, required this.value, required this.icon});
 
   @override
   Widget build(BuildContext context) {
@@ -578,10 +698,18 @@ class _DetailStat extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(label, style: const TextStyle(color: AppColors.textMuted, fontSize: 10, fontFamily: 'Cairo')),
+                  Text(label,
+                      style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 10,
+                          fontFamily: 'Dubai')),
                   Text(
                     value,
-                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 11, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                    style: const TextStyle(
+                        color: AppColors.textPrimary,
+                        fontSize: 11,
+                        fontWeight: FontWeight.w700,
+                        fontFamily: 'Dubai'),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -610,7 +738,11 @@ class _PagePill extends StatelessWidget {
       ),
       child: Text(
         '$page',
-        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+        style: TextStyle(
+            color: color,
+            fontSize: 10,
+            fontWeight: FontWeight.w700,
+            fontFamily: 'Dubai'),
       ),
     );
   }

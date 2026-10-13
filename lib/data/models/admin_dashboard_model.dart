@@ -1,3 +1,5 @@
+import 'package:alkheir_mosque/core/i18n/app_language.dart';
+
 // ─── Stats ────────────────────────────────────────────────────────────────────
 class AdminStats {
   final int totalStudents;
@@ -144,7 +146,9 @@ class AdminStudentItem {
   String get initials {
     final parts = fullName.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) return '${parts.first[0]}${parts[1][0]}';
-    return parts.isNotEmpty && parts.first.isNotEmpty ? parts.first[0] : '؟';
+    return parts.isNotEmpty && parts.first.isNotEmpty
+        ? parts.first[0]
+        : tr('؟');
   }
 
   bool get isActive => status == 'active';
@@ -199,7 +203,9 @@ class AdminEnrollmentItem {
   String get studentInitials {
     final parts = studentName.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) return '${parts.first[0]}${parts[1][0]}';
-    return parts.isNotEmpty && parts.first.isNotEmpty ? parts.first[0] : '؟';
+    return parts.isNotEmpty && parts.first.isNotEmpty
+        ? parts.first[0]
+        : tr('؟');
   }
 }
 
@@ -361,7 +367,9 @@ class AdminStudentDetail {
   String get initials {
     final parts = fullName.trim().split(RegExp(r'\s+'));
     if (parts.length >= 2) return '${parts.first[0]}${parts[1][0]}';
-    return parts.isNotEmpty && parts.first.isNotEmpty ? parts.first[0] : '؟';
+    return parts.isNotEmpty && parts.first.isNotEmpty
+        ? parts.first[0]
+        : tr('؟');
   }
 
   factory AdminStudentDetail.fromJson(Map<String, dynamic> json) {
@@ -381,18 +389,15 @@ class AdminStudentDetail {
       currentJuz: json['current_juz'] as int? ?? 1,
       memorizedPages: json['memorized_pages'] as int? ?? 0,
       totalPoints: json['total_points'] as int? ?? 0,
-      parentName: (parent['name'] as String? ??
-              json['parent_name'] as String? ??
-              '')
-          .trim(),
-      parentPhone: (parent['phone'] as String? ??
-              json['parent_phone'] as String? ??
-              '')
-          .trim(),
-      parentEmail: (parent['email'] as String? ??
-              json['parent_email'] as String? ??
-              '')
-          .trim(),
+      parentName:
+          (parent['name'] as String? ?? json['parent_name'] as String? ?? '')
+              .trim(),
+      parentPhone:
+          (parent['phone'] as String? ?? json['parent_phone'] as String? ?? '')
+              .trim(),
+      parentEmail:
+          (parent['email'] as String? ?? json['parent_email'] as String? ?? '')
+              .trim(),
       fatherName: (parent['father_name'] as String? ??
               json['father_name'] as String? ??
               '')

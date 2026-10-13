@@ -51,14 +51,16 @@ class _EmptyPoints extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Icon(Icons.star_border_rounded, size: 48,
+        Icon(Icons.star_border_rounded,
+            size: 48,
             color: Theme.of(context).colorScheme.onSurface.withOpacity(0.2)),
         const SizedBox(height: 12),
-        Text('لا توجد نقاط بعد',
+        Text(tr('لا توجد نقاط بعد'),
             style: TextStyle(
-                fontFamily: 'Cairo',
+                fontFamily: 'Dubai',
                 fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4))),
+                color:
+                    Theme.of(context).colorScheme.onSurface.withOpacity(0.4))),
       ],
     );
   }
@@ -80,28 +82,37 @@ class _PointTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).dividerColor),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2)),
         ],
       ),
       child: Row(
         children: [
           Container(
-            width: 5, height: 70,
+            width: 5,
+            height: 70,
             decoration: BoxDecoration(
-              gradient: record.isBonus ? AppColors.gradientGold : AppColors.gradientPrimary,
-              borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+              gradient: record.isBonus
+                  ? AppColors.gradientGold
+                  : AppColors.gradientPrimary,
+              borderRadius:
+                  const BorderRadius.horizontal(right: Radius.circular(16)),
             ),
           ),
           const SizedBox(width: 14),
           Container(
-            width: 44, height: 44,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(14),
             ),
             child: Icon(
               record.isBonus ? Icons.card_giftcard_rounded : Icons.star_rounded,
-              color: color, size: 22,
+              color: color,
+              size: 22,
             ),
           ),
           const SizedBox(width: 12),
@@ -110,22 +121,31 @@ class _PointTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(record.reason,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                    maxLines: 2, overflow: TextOverflow.ellipsis),
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis),
                 const SizedBox(height: 3),
                 Row(
                   children: [
                     Text(dateStr, style: Theme.of(context).textTheme.bodySmall),
                     const SizedBox(width: 6),
                     Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 7, vertical: 2),
                       decoration: BoxDecoration(
                         color: color.withOpacity(0.1),
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        record.isBonus ? 'مكافأة' : 'حفظ',
-                        style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                        record.isBonus ? tr('مكافأة') : tr('حفظ'),
+                        style: TextStyle(
+                            color: color,
+                            fontSize: 10,
+                            fontWeight: FontWeight.w700,
+                            fontFamily: 'Dubai'),
                       ),
                     ),
                   ],
@@ -136,13 +156,17 @@ class _PointTile extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 14),
             child: ShaderMask(
-              shaderCallback: (b) =>
-                  (record.isBonus ? AppColors.gradientGold : AppColors.gradientPrimary).createShader(b),
+              shaderCallback: (b) => (record.isBonus
+                      ? AppColors.gradientGold
+                      : AppColors.gradientPrimary)
+                  .createShader(b),
               child: Text(
                 '+${record.points}',
                 style: const TextStyle(
-                  color: Colors.white, fontSize: 20,
-                  fontWeight: FontWeight.w900, fontFamily: 'Cairo',
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai',
                 ),
               ),
             ),
@@ -156,35 +180,37 @@ class _PointTile extends StatelessWidget {
 // ─── PointEntry Tile (بيانات حقيقية من الـ API) ───────────────────────────────
 class _PointEntryTile extends StatelessWidget {
   final PointEntry entry;
-  const _PointEntryTile({required this.entry});
+  _PointEntryTile({required this.entry});
 
-  static const _categoryColors = {
+  static final _categoryColors = {
     'memorization': AppColors.primaryLight,
-    'assessment':   AppColors.info,
-    'system':       AppColors.success,
-    'manual':       AppColors.gold,
+    'assessment': AppColors.info,
+    'system': AppColors.success,
+    'manual': AppColors.gold,
   };
 
-  static const _categoryLabels = {
-    'memorization': 'حفظ',
-    'assessment':   'تقييم',
-    'system':       'نظام',
-    'manual':       'يدوي',
+  static final _categoryLabels = {
+    'memorization': tr('حفظ'),
+    'assessment': tr('تقييم'),
+    'system': tr('نظام'),
+    'manual': tr('يدوي'),
   };
 
   static const _categoryIcons = {
     'memorization': Icons.menu_book_rounded,
-    'assessment':   Icons.quiz_rounded,
-    'system':       Icons.check_circle_rounded,
-    'manual':       Icons.card_giftcard_rounded,
+    'assessment': Icons.quiz_rounded,
+    'system': Icons.check_circle_rounded,
+    'manual': Icons.card_giftcard_rounded,
   };
 
   @override
   Widget build(BuildContext context) {
     final color = _categoryColors[entry.pointTypeCategory] ?? AppColors.gold;
-    final label = _categoryLabels[entry.pointTypeCategory] ?? entry.pointTypeName;
-    final icon  = _categoryIcons[entry.pointTypeCategory]  ?? Icons.star_rounded;
-    final gradient = entry.isBonus ? AppColors.gradientGold : AppColors.gradientPrimary;
+    final label =
+        _categoryLabels[entry.pointTypeCategory] ?? entry.pointTypeName;
+    final icon = _categoryIcons[entry.pointTypeCategory] ?? Icons.star_rounded;
+    final gradient =
+        entry.isBonus ? AppColors.gradientGold : AppColors.gradientPrimary;
     final dateStr = DateFormat('d MMM yyyy', 'ar').format(entry.enteredAt);
 
     return Container(
@@ -194,23 +220,29 @@ class _PointEntryTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         border: Border.all(color: Theme.of(context).dividerColor),
         boxShadow: [
-          BoxShadow(color: Colors.black.withOpacity(0.03), blurRadius: 8, offset: const Offset(0, 2)),
+          BoxShadow(
+              color: Colors.black.withOpacity(0.03),
+              blurRadius: 8,
+              offset: const Offset(0, 2)),
         ],
       ),
       child: Row(
         children: [
           // شريط اللون الجانبي
           Container(
-            width: 5, height: 72,
+            width: 5,
+            height: 72,
             decoration: BoxDecoration(
               gradient: gradient,
-              borderRadius: const BorderRadius.horizontal(right: Radius.circular(16)),
+              borderRadius:
+                  const BorderRadius.horizontal(right: Radius.circular(16)),
             ),
           ),
           const SizedBox(width: 14),
           // أيقونة التصنيف
           Container(
-            width: 44, height: 44,
+            width: 44,
+            height: 44,
             decoration: BoxDecoration(
               color: color.withOpacity(0.1),
               borderRadius: BorderRadius.circular(14),
@@ -227,23 +259,33 @@ class _PointEntryTile extends StatelessWidget {
                 children: [
                   Text(
                     entry.notes ?? entry.pointTypeName,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.w600),
-                    maxLines: 2, overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .bodyMedium
+                        ?.copyWith(fontWeight: FontWeight.w600),
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
                   ),
                   const SizedBox(height: 4),
                   Row(
                     children: [
-                      Text(dateStr, style: Theme.of(context).textTheme.bodySmall),
+                      Text(dateStr,
+                          style: Theme.of(context).textTheme.bodySmall),
                       const SizedBox(width: 6),
                       Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 7, vertical: 2),
                         decoration: BoxDecoration(
                           color: color.withOpacity(0.1),
                           borderRadius: BorderRadius.circular(8),
                         ),
                         child: Text(
                           label,
-                          style: TextStyle(color: color, fontSize: 10, fontWeight: FontWeight.w700, fontFamily: 'Cairo'),
+                          style: TextStyle(
+                              color: color,
+                              fontSize: 10,
+                              fontWeight: FontWeight.w700,
+                              fontFamily: 'Dubai'),
                         ),
                       ),
                       if (entry.policyName != null) ...[
@@ -252,8 +294,12 @@ class _PointEntryTile extends StatelessWidget {
                           child: Text(
                             entry.policyName!,
                             style: TextStyle(
-                                fontSize: 10, fontFamily: 'Cairo',
-                                color: Theme.of(context).colorScheme.onSurface.withOpacity(0.4)),
+                                fontSize: 10,
+                                fontFamily: 'Dubai',
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSurface
+                                    .withOpacity(0.4)),
                             overflow: TextOverflow.ellipsis,
                           ),
                         ),
@@ -272,8 +318,10 @@ class _PointEntryTile extends StatelessWidget {
               child: Text(
                 '+${entry.points}',
                 style: const TextStyle(
-                  color: Colors.white, fontSize: 20,
-                  fontWeight: FontWeight.w900, fontFamily: 'Cairo',
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai',
                 ),
               ),
             ),
