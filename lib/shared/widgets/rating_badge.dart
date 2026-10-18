@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import '../../core/theme/app_theme.dart';
-import '../../data/models/student_model.dart';
-import 'package:alkheir_mosque/core/i18n/app_language.dart';
+import '../../app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
 extension EvaluationRatingX on EvaluationRating {
   String get label {
@@ -66,9 +66,9 @@ class RatingBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = rating.color;
     final bgColor =
-        dark ? Colors.white.withOpacity(0.15) : color.withOpacity(0.12);
+        dark ? Colors.white.withValues(alpha: 0.15) : color.withValues(alpha: 0.12);
     final borderColor =
-        dark ? Colors.white.withOpacity(0.25) : color.withOpacity(0.3);
+        dark ? Colors.white.withValues(alpha: 0.25) : color.withValues(alpha: 0.3);
     final textColor = dark ? Colors.white : color;
 
     return Container(

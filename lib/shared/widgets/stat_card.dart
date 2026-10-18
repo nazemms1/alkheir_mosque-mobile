@@ -1,5 +1,5 @@
-import 'package:flutter/material.dart';
-import '../../core/theme/app_theme.dart';
+﻿import 'package:flutter/material.dart';
+import '../../app/core/theme/app_theme.dart';
 
 class StatCard extends StatelessWidget {
   final String title;
@@ -33,7 +33,7 @@ class StatCard extends StatelessWidget {
           // border: Border.all(color: AppColors.divider),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.04),
+              color: Colors.black.withValues(alpha: 0.04),
               blurRadius: 8,
               offset: const Offset(0, 2),
             ),

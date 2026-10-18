@@ -1,7 +1,7 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 
-import 'package:alkheir_mosque/core/config/server_config.dart';
-import 'package:alkheir_mosque/core/rbac/app_role.dart';
+import 'package:alkheir_mosque/app/core/config/server_config.dart';
+import 'package:alkheir_mosque/app/core/rbac/app_role.dart';
 
 void main() {
   group('ServerConfig.normalize', () {

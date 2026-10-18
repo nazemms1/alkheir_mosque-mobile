@@ -1,0 +1,51 @@
+{
+  "@@locale": "en",
+  "appName": "Alkheir Mosque",
+  "@appName": {
+    "description": "Application title"
+  },
+  "errorsConnection": "Unable to connect. Please check your internet connection.",
+  "@errorsConnection": {
+    "description": "Connection error message"
+  },
+  "errorsServer": "A server error occurred. Please try again later.",
+  "@errorsServer": {
+    "description": "Server error message"
+  },
+  "errorsUnknown": "An unexpected error occurred.",
+  "@errorsUnknown": {
+    "description": "Unknown error message"
+  },
+  "errorsNotFound": "The requested resource was not found.",
+  "@errorsNotFound": {
+    "description": "Not found error message"
+  },
+  "errorsUnauthorized": "You are not authorized to perform this action.",
+  "@errorsUnauthorized": {
+    "description": "Unauthorized error message"
+  },
+  "errorsForbidden": "Access is forbidden.",
+  "@errorsForbidden": {
+    "description": "Forbidden error message"
+  },
+  "errorsTimeout": "The connection timed out. Please try again.",
+  "@errorsTimeout": {
+    "description": "Timeout error message"
+  },
+  "errorsBadRequest": "Invalid request. Please verify your input.",
+  "@errorsBadRequest": {
+    "description": "Bad request error message"
+  },
+  "maintenanceRetry": "Retry",
+  "@maintenanceRetry": {
+    "description": "Retry button label"
+  },
+  "generalCancel": "Cancel",
+  "@generalCancel": {
+    "description": "Cancel button label"
+  },
+  "generalSave": "Save",
+  "@generalSave": {
+    "description": "Save button label"
+  }
+}

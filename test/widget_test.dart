@@ -1,4 +1,3 @@
-import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -6,10 +5,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:alkheir_mosque/core/i18n/app_language.dart';
-import 'package:alkheir_mosque/core/session/theme_provider.dart';
-import 'package:alkheir_mosque/core/theme/app_theme.dart';
-import 'package:alkheir_mosque/features/auth/screens/login_screen.dart';
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/session/theme_provider.dart';
+import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/auth/presentation/screens/login_screen.dart';
 
 void main() {
   setUp(() => AppLanguage.current = AppLanguage.arabic);

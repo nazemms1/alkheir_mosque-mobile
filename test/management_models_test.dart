@@ -1,14 +1,14 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:alkheir_mosque/core/rbac/module_access.dart';
-import 'package:alkheir_mosque/core/rbac/permissions.dart';
-import 'package:alkheir_mosque/data/models/auth_token.dart';
-import 'package:alkheir_mosque/data/models/finance_model.dart';
-import 'package:alkheir_mosque/data/models/group_student_model.dart';
-import 'package:alkheir_mosque/data/models/json_helpers.dart';
-import 'package:alkheir_mosque/data/models/management_model.dart';
-import 'package:alkheir_mosque/data/models/quran_test_model.dart';
-import 'package:alkheir_mosque/data/models/student_progress_model.dart';
+import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
+import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
+import 'package:alkheir_mosque/features/finance/data/models/finance_model.dart';
+import 'package:alkheir_mosque/features/management/data/models/group_student_model.dart';
+import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
+import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
+import 'package:alkheir_mosque/features/quran_tests/data/models/quran_test_model.dart';
+import 'package:alkheir_mosque/features/students/data/models/student_progress_model.dart';
 
 AuthToken tokenWith(List<String> permissions, {List<String> roles = const []}) {
   return AuthToken.fromJson({

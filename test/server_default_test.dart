@@ -1,6 +1,6 @@
-import 'package:flutter_test/flutter_test.dart';
+﻿import 'package:flutter_test/flutter_test.dart';
 
-import 'package:alkheir_mosque/core/config/server_config.dart';
+import 'package:alkheir_mosque/app/core/config/server_config.dart';
 
 void main() {
   test('default server is the production site', () {
@@ -9,7 +9,7 @@ void main() {
 
   test('API base URL is the production /api/v1 root by default', () {
     expect(
-      ServerConfig.defaultBaseUrl + '/api/v1',
+      '${ServerConfig.defaultBaseUrl}/api/v1',
       'https://www.alkheir-mosque.com/api/v1',
     );
   });

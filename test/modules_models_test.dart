@@ -1,11 +1,11 @@
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:alkheir_mosque/core/rbac/module_access.dart';
-import 'package:alkheir_mosque/core/rbac/permissions.dart';
-import 'package:alkheir_mosque/data/models/account_model.dart';
-import 'package:alkheir_mosque/data/models/activity_invoice_model.dart';
-import 'package:alkheir_mosque/data/models/auth_token.dart';
-import 'package:alkheir_mosque/data/models/operations_model.dart';
+import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
+import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
+import 'package:alkheir_mosque/features/account/data/models/account_model.dart';
+import 'package:alkheir_mosque/features/finance_ops/data/models/activity_invoice_model.dart';
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
+import 'package:alkheir_mosque/features/operations/data/models/operations_model.dart';
 
 AuthToken tokenWith(List<String> permissions) {
   return AuthToken.fromJson({

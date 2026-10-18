@@ -2,8 +2,8 @@ import 'dart:io';
 
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:alkheir_mosque/core/i18n/app_language.dart';
-import 'package:alkheir_mosque/core/i18n/en_dictionary.dart';
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/i18n/en_dictionary.dart';
 
 void main() {
   tearDown(() => AppLanguage.current = AppLanguage.arabic);
@@ -56,7 +56,7 @@ void main() {
     expect(
       missing,
       isEmpty,
-      reason: 'Add these Arabic keys to lib/core/i18n/en_dictionary.dart',
+      reason: 'Add these Arabic keys to lib/app/core/i18n/en_dictionary.dart',
     );
   });
 }
