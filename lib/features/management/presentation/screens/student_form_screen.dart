@@ -151,111 +151,136 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
               : ModuleFormPage(
                   formKey: _formKey,
                   children: [
-                    moduleTextField(
-                      controller: _firstName,
-                      label: tr('الاسم الأول'),
-                      required: true,
-                    ),
-                    moduleTextField(
-                      controller: _lastName,
-                      label: tr('اسم العائلة'),
-                      required: true,
-                    ),
-                    moduleDateField(
-                      context: context,
-                      controller: _birthDate,
-                      label: tr('تاريخ الميلاد'),
-                      required: true,
-                    ),
-                    PickerField(
-                      label: tr('ولي الأمر'),
-                      value: _parent?.label,
-                      error: _parentError,
-                      onTap: () async {
-                        final picked = await showItemPicker(
-                          context,
-                          title: tr('اختر ولي الأمر'),
-                          load: _loadParents,
-                        );
-                        if (picked != null) setState(() => _parent = picked);
-                      },
-                    ),
-                    DropdownButtonFormField<String>(
-                      initialValue: _gender,
-                      isExpanded: true,
-                      decoration: InputDecoration(labelText: tr('الجنس')),
-                      items: [
-                        DropdownMenuItem(value: 'male', child: Text(tr('ذكر'))),
-                        DropdownMenuItem(
-                            value: 'female', child: Text(tr('أنثى'))),
+                    ModuleFormSection(
+                      title: tr('بيانات الطالب'),
+                      icon: Icons.person_rounded,
+                      children: [
+                        moduleTextField(
+                          controller: _firstName,
+                          label: tr('الاسم الأول'),
+                          required: true,
+                        ),
+                        moduleTextField(
+                          controller: _lastName,
+                          label: tr('اسم العائلة'),
+                          required: true,
+                        ),
+                        moduleDateField(
+                          context: context,
+                          controller: _birthDate,
+                          label: tr('تاريخ الميلاد'),
+                          required: true,
+                        ),
+                        DropdownButtonFormField<String>(
+                          initialValue: _gender,
+                          isExpanded: true,
+                          decoration: InputDecoration(labelText: tr('الجنس')),
+                          items: [
+                            DropdownMenuItem(
+                                value: 'male', child: Text(tr('ذكر'))),
+                            DropdownMenuItem(
+                                value: 'female', child: Text(tr('أنثى'))),
+                          ],
+                          onChanged: (v) => setState(() => _gender = v),
+                        ),
+                        const SizedBox(height: 12),
+                        DropdownButtonFormField<String>(
+                          initialValue: _status,
+                          isExpanded: true,
+                          decoration: InputDecoration(labelText: tr('الحالة')),
+                          items: [
+                            DropdownMenuItem(
+                                value: 'active', child: Text(tr('نشط'))),
+                            DropdownMenuItem(
+                                value: 'inactive', child: Text(tr('غير نشط'))),
+                            DropdownMenuItem(
+                                value: 'graduated', child: Text(tr('متخرّج'))),
+                            DropdownMenuItem(
+                                value: 'blocked', child: Text(tr('موقوف'))),
+                          ],
+                          onChanged: (v) =>
+                              setState(() => _status = v ?? _status),
+                        ),
+                        const SizedBox(height: 12),
                       ],
-                      onChanged: (v) => setState(() => _gender = v),
                     ),
-                    const SizedBox(height: 12),
-                    DropdownButtonFormField<String>(
-                      initialValue: _status,
-                      isExpanded: true,
-                      decoration: InputDecoration(labelText: tr('الحالة')),
-                      items: [
-                        DropdownMenuItem(
-                            value: 'active', child: Text(tr('نشط'))),
-                        DropdownMenuItem(
-                            value: 'inactive', child: Text(tr('غير نشط'))),
-                        DropdownMenuItem(
-                            value: 'graduated', child: Text(tr('متخرّج'))),
-                        DropdownMenuItem(
-                            value: 'blocked', child: Text(tr('موقوف'))),
+                    ModuleFormSection(
+                      title: tr('ولي الأمر والصف'),
+                      icon: Icons.family_restroom_rounded,
+                      children: [
+                        PickerField(
+                          label: tr('ولي الأمر'),
+                          value: _parent?.label,
+                          error: _parentError,
+                          onTap: () async {
+                            final picked = await showItemPicker(
+                              context,
+                              title: tr('اختر ولي الأمر'),
+                              load: _loadParents,
+                            );
+                            if (picked != null) {
+                              setState(() => _parent = picked);
+                            }
+                          },
+                        ),
+                        PickerField(
+                          label: tr('الصف الدراسي'),
+                          value: _gradeLevel?.label,
+                          onTap: () async {
+                            final picked = await showItemPicker(
+                              context,
+                              title: tr('اختر الصف'),
+                              allowClear: true,
+                              load: (s) => referencePickerItems('grade-levels',
+                                  search: s),
+                            );
+                            if (picked == null) return;
+                            setState(() => _gradeLevel =
+                                picked.id == PickerItem.clear.id
+                                    ? null
+                                    : picked);
+                          },
+                        ),
+                        PickerField(
+                          label: tr('الجزء الحالي'),
+                          value: _juz?.label,
+                          onTap: () async {
+                            final picked = await showItemPicker(
+                              context,
+                              title: tr('اختر الجزء'),
+                              allowClear: true,
+                              load: (s) =>
+                                  referencePickerItems('quran-juz', search: s),
+                            );
+                            if (picked == null) return;
+                            setState(() => _juz =
+                                picked.id == PickerItem.clear.id
+                                    ? null
+                                    : picked);
+                          },
+                        ),
+                        moduleDateField(
+                          context: context,
+                          controller: _joinedAt,
+                          label: tr('تاريخ الالتحاق'),
+                        ),
                       ],
-                      onChanged: (v) => setState(() => _status = v ?? _status),
                     ),
-                    const SizedBox(height: 12),
-                    PickerField(
-                      label: tr('الصف الدراسي'),
-                      value: _gradeLevel?.label,
-                      onTap: () async {
-                        final picked = await showItemPicker(
-                          context,
-                          title: tr('اختر الصف'),
-                          allowClear: true,
-                          load: (s) =>
-                              referencePickerItems('grade-levels', search: s),
-                        );
-                        if (picked == null) return;
-                        setState(() => _gradeLevel =
-                            picked.id == PickerItem.clear.id ? null : picked);
-                      },
+                    ModuleFormSection(
+                      title: tr('معلومات إضافية'),
+                      icon: Icons.notes_rounded,
+                      children: [
+                        moduleTextField(
+                          controller: _schoolName,
+                          label: tr('اسم المدرسة'),
+                        ),
+                        moduleTextField(
+                          controller: _notes,
+                          label: tr('ملاحظات'),
+                          maxLines: 3,
+                        ),
+                      ],
                     ),
-                    PickerField(
-                      label: tr('الجزء الحالي'),
-                      value: _juz?.label,
-                      onTap: () async {
-                        final picked = await showItemPicker(
-                          context,
-                          title: tr('اختر الجزء'),
-                          allowClear: true,
-                          load: (s) =>
-                              referencePickerItems('quran-juz', search: s),
-                        );
-                        if (picked == null) return;
-                        setState(() => _juz =
-                            picked.id == PickerItem.clear.id ? null : picked);
-                      },
-                    ),
-                    moduleDateField(
-                      context: context,
-                      controller: _joinedAt,
-                      label: tr('تاريخ الالتحاق'),
-                    ),
-                    moduleTextField(
-                      controller: _schoolName,
-                      label: tr('اسم المدرسة'),
-                    ),
-                    moduleTextField(
-                      controller: _notes,
-                      label: tr('ملاحظات'),
-                      maxLines: 3,
-                    ),
-                    const SizedBox(height: 8),
                     ModuleSaveButton(
                       saving: _saving,
                       onPressed: _save,

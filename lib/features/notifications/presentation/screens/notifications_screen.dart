@@ -74,7 +74,8 @@ class _NotificationsScreenState extends State<NotificationsScreen>
     NoteAuthor.admin: AppColors.gold,
     NoteAuthor.parent: AppColors.primaryLight,
   };
-  static final _sourceLabels = {
+  // getter لا final: النصوص تُترجم عند كل بناء فتتبع اللغة الحالية
+  static Map<NoteAuthor, String> get _sourceLabels => {
     NoteAuthor.teacher: tr('معلم'),
     NoteAuthor.admin: tr('إدارة'),
     NoteAuthor.parent: tr('ولي أمر'),

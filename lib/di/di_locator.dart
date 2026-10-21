@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app/core/http/dio_client.dart';
+import '../app/core/i18n/app_language.dart';
 import '../app/core/services/package_info_service.dart';
 import '../app/core/services/secure_storage_service.dart';
 import '../app/core/services/shared_prefs_service.dart';
@@ -90,10 +91,15 @@ class LanguageNotifier extends StateNotifier<Locale> {
   final SharedPrefsService _prefs;
 
   LanguageNotifier(this._prefs)
-      : super(Locale(_prefs.getLanguageCode(defaultCode: 'ar')));
+      : super(Locale(_prefs.getLanguageCode(defaultCode: 'ar'))) {
+    AppLanguage.current = state;
+  }
 
+  /// يحدّث اللغة في MaterialApp (الاتجاه والتوطين) وفي دالة `tr()` معاً،
+  /// ثم يحفظ الاختيار.
   Future<void> setLanguage(String languageCode) async {
     state = Locale(languageCode);
+    AppLanguage.current = state;
     await _prefs.setLanguageCode(languageCode);
   }
 

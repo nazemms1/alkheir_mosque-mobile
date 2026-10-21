@@ -117,49 +117,72 @@ class _ParentFormScreenState extends State<ParentFormScreen> {
           : ModuleFormPage(
               formKey: _formKey,
               children: [
-                moduleTextField(
-                  controller: _fatherName,
-                  label: tr('اسم الأب'),
-                  required: true,
+                ModuleFormSection(
+                  title: tr('بيانات الأب'),
+                  icon: Icons.person_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _fatherName,
+                      label: tr('اسم الأب'),
+                      required: true,
+                    ),
+                    moduleTextField(
+                      controller: _fatherWork,
+                      label: tr('جهة العمل'),
+                    ),
+                    moduleTextField(
+                      controller: _fatherPhone,
+                      label: tr('هاتف الأب'),
+                      keyboard: TextInputType.phone,
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _fatherWork,
-                  label: tr('جهة العمل'),
+                ModuleFormSection(
+                  title: tr('بيانات الأم'),
+                  icon: Icons.face_3_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _motherName,
+                      label: tr('اسم الأم'),
+                    ),
+                    moduleTextField(
+                      controller: _motherPhone,
+                      label: tr('هاتف الأم'),
+                      keyboard: TextInputType.phone,
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _fatherPhone,
-                  label: tr('هاتف الأب'),
-                  keyboard: TextInputType.phone,
+                ModuleFormSection(
+                  title: tr('التواصل والعنوان'),
+                  icon: Icons.location_on_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _homePhone,
+                      label: tr('هاتف المنزل'),
+                      keyboard: TextInputType.phone,
+                    ),
+                    moduleTextField(
+                      controller: _address,
+                      label: tr('العنوان'),
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _motherName,
-                  label: tr('اسم الأم'),
+                ModuleFormSection(
+                  title: tr('معلومات إضافية'),
+                  icon: Icons.notes_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _notes,
+                      label: tr('ملاحظات'),
+                      maxLines: 3,
+                    ),
+                    moduleSwitch(
+                      label: tr('الحساب نشط'),
+                      value: _isActive,
+                      onChanged: (v) => setState(() => _isActive = v),
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _motherPhone,
-                  label: tr('هاتف الأم'),
-                  keyboard: TextInputType.phone,
-                ),
-                moduleTextField(
-                  controller: _homePhone,
-                  label: tr('هاتف المنزل'),
-                  keyboard: TextInputType.phone,
-                ),
-                moduleTextField(
-                  controller: _address,
-                  label: tr('العنوان'),
-                ),
-                moduleTextField(
-                  controller: _notes,
-                  label: tr('ملاحظات'),
-                  maxLines: 3,
-                ),
-                moduleSwitch(
-                  label: tr('الحساب نشط'),
-                  value: _isActive,
-                  onChanged: (v) => setState(() => _isActive = v),
-                ),
-                const SizedBox(height: 8),
                 ModuleSaveButton(
                   saving: _saving,
                   onPressed: _save,

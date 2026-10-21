@@ -3,8 +3,10 @@ import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:alkheir_mosque/app/core/config/attendance_config.dart';
+import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -73,9 +75,16 @@ extension on ScanAttendanceKind {
 // شاشة مسح QR الرئيسية
 // ─────────────────────────────────────────────────────────────────────────────
 class QrScannerScreen extends StatefulWidget {
+  /// الحساب الحالي — المسح يسجّل حضوراً، لذا يُشترط امتلاك صلاحية الحضور.
+  final AuthToken token;
   final int? groupId; // اختياري — إذا عُرف مسبقاً يُستخدم كحلقة التسجيل
   final String? groupName;
-  const QrScannerScreen({super.key, this.groupId, this.groupName});
+  const QrScannerScreen({
+    super.key,
+    required this.token,
+    this.groupId,
+    this.groupName,
+  });
 
   @override
   State<QrScannerScreen> createState() => _QrScannerScreenState();
@@ -212,19 +221,17 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                 children: [
                   Text(
                     success ? tr('تم تسجيل الحضور') : tr('فشل التسجيل'),
-                    style: const TextStyle(
-                      fontFamily: 'Dubai',
-                      fontWeight: FontWeight.w700,
+                    style: appTextStyle(
+                      fontWeight: FontWeight.w800,
                       color: Colors.white,
                       fontSize: 13,
                     ),
                   ),
                   Text(
                     success ? name : (error ?? name),
-                    style: const TextStyle(
-                      fontFamily: 'Dubai',
-                      color: Colors.white,
-                      fontSize: 11,
+                    style: appTextStyle(
+                      color: Colors.white.withValues(alpha: 0.9),
+                      fontSize: 12,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -244,9 +251,51 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 
   @override
   Widget build(BuildContext context) {
+    // بدون الصلاحية لا تُبنى الكاميرا أصلاً (MobileScanner) ولا تُطلب إذن الكاميرا.
+    if (!ModuleAccess.canTakeStudentAttendance(widget.token)) {
+      return Scaffold(
+        backgroundColor: AppColors.bgDeep,
+        body: Column(
+          children: [
+            _ScanTopBar(
+              title: tr('مسح الحضور'),
+              onClose: () => Navigator.pop(context),
+            ),
+            Expanded(
+              child: Center(
+                child: Padding(
+                  padding: const EdgeInsets.all(32),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.lock_outline_rounded,
+                        size: 48,
+                        color: AppColors.goldGlow,
+                      ),
+                      const SizedBox(height: 16),
+                      Text(
+                        tr('ليس لديك صلاحية لتسجيل الحضور'),
+                        textAlign: TextAlign.center,
+                        style: appTextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
     if (_kind == null) {
       return Scaffold(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.bgDeep,
         body: _AttendanceKindPicker(
           groupName: widget.groupName,
           onSelected: _selectKind,
@@ -297,6 +346,91 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+// الشريط العلوي المشترك: بنفس هوية شاشات الإدارة (تدرّج أخضر داكن).
+// ─────────────────────────────────────────────────────────────────────────────
+class _ScanTopBar extends StatelessWidget {
+  final String title;
+  final String? subtitle;
+  final Widget? trailing;
+  final VoidCallback onClose;
+
+  const _ScanTopBar({
+    required this.title,
+    required this.onClose,
+    this.subtitle,
+    this.trailing,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [AppColors.bgDeep, Color(0xFF0D5016)],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black38,
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
+          child: Row(
+            children: [
+              _GlassIconButton(
+                icon: Icons.close_rounded,
+                tooltip: tr('إغلاق'),
+                onTap: onClose,
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      title,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: appTextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                    if (subtitle != null)
+                      Text(
+                        subtitle!,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 11,
+                          color: AppColors.textOnDarkSub,
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              if (trailing != null) ...[
+                const SizedBox(width: 12),
+                trailing!,
+              ],
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 // شاشة اختيار نوع الحضور قبل بدء المسح
 // ─────────────────────────────────────────────────────────────────────────────
 class _AttendanceKindPicker extends StatelessWidget {
@@ -311,57 +445,70 @@ class _AttendanceKindPicker extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          children: [
-            Row(
-              children: [
-                _CircleBtn(icon: Icons.close_rounded, onTap: onClose),
-                const Spacer(),
-                if (groupName != null)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white24),
+    return DecoratedBox(
+      decoration: const BoxDecoration(gradient: AppColors.gradientHero),
+      child: Column(
+        children: [
+          _ScanTopBar(
+            title: groupName ?? tr('مسح الحضور'),
+            subtitle: tr('مسح رمز QR للطالب'),
+            onClose: onClose,
+          ),
+          Expanded(
+            child: SafeArea(
+              top: false,
+              child: LayoutBuilder(
+                builder: (context, constraints) => SingleChildScrollView(
+                  padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
+                  child: ConstrainedBox(
+                    constraints: BoxConstraints(
+                      minHeight: constraints.maxHeight - 44,
                     ),
-                    child: Text(
-                      groupName!,
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 13,
-                          fontFamily: 'Dubai',
-                          fontWeight: FontWeight.w700),
+                    child: IntrinsicHeight(
+                      child: Column(
+                        children: [
+                          const Spacer(),
+                          Container(
+                            width: 96,
+                            height: 96,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              gradient: AppColors.gradientGold,
+                              boxShadow:
+                                  AppColors.coloredShadow(AppColors.gold),
+                            ),
+                            child: const Icon(
+                              Icons.qr_code_scanner_rounded,
+                              size: 48,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 18),
+                          Text(
+                            tr('اختر نوع الحضور قبل بدء المسح'),
+                            textAlign: TextAlign.center,
+                            style: appTextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+                          for (final kind in ScanAttendanceKind.values) ...[
+                            _KindButton(
+                                kind: kind, onTap: () => onSelected(kind)),
+                            const SizedBox(height: 12),
+                          ],
+                          const Spacer(flex: 2),
+                        ],
+                      ),
                     ),
                   ),
-                const Spacer(),
-                const SizedBox(width: 44),
-              ],
+                ),
+              ),
             ),
-            const Spacer(),
-            Icon(Icons.qr_code_scanner_rounded,
-                size: 56, color: Colors.white.withValues(alpha: 0.5)),
-            const SizedBox(height: 16),
-            Text(
-              tr('اختر نوع الحضور قبل بدء المسح'),
-              style: const TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontFamily: 'Dubai',
-                  fontWeight: FontWeight.w700),
-            ),
-            const SizedBox(height: 24),
-            for (final kind in ScanAttendanceKind.values) ...[
-              _KindButton(kind: kind, onTap: () => onSelected(kind)),
-              const SizedBox(height: 12),
-            ],
-            const Spacer(flex: 2),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
@@ -375,30 +522,47 @@ class _KindButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = kind.color;
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: double.infinity,
-        padding: const EdgeInsets.symmetric(vertical: 14),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.12),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.5), width: 1.5),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(kind.icon, color: color, size: 22),
-            const SizedBox(width: 10),
-            Text(
-              kind.label,
-              style: TextStyle(
-                  color: color,
-                  fontSize: 15,
-                  fontFamily: 'Dubai',
-                  fontWeight: FontWeight.w800),
-            ),
-          ],
+    final chevron = Directionality.of(context) == TextDirection.rtl
+        ? Icons.chevron_left_rounded
+        : Icons.chevron_right_rounded;
+    return Material(
+      color: color.withValues(alpha: 0.14),
+      borderRadius: BorderRadius.circular(18),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(18),
+        onTap: onTap,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            border: Border.all(color: color.withValues(alpha: 0.5), width: 1.2),
+          ),
+          child: Row(
+            children: [
+              Container(
+                width: 44,
+                height: 44,
+                decoration: BoxDecoration(
+                  color: color.withValues(alpha: 0.22),
+                  borderRadius: BorderRadius.circular(14),
+                ),
+                child: Icon(kind.icon, color: color, size: 22),
+              ),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Text(
+                  kind.label,
+                  style: appTextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    color: Colors.white,
+                  ),
+                ),
+              ),
+              Icon(chevron, color: color),
+            ],
+          ),
         ),
       ),
     );
@@ -443,74 +607,53 @@ class _ScanOverlay extends StatelessWidget {
     return Column(
       children: [
         // ── Top bar ──────────────────────────────────────────────────────
-        SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              children: [
-                _CircleBtn(icon: Icons.close_rounded, onTap: onClose),
-                const Spacer(),
-                if (groupName != null)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 14, vertical: 7),
-                    decoration: BoxDecoration(
-                      color: Colors.black54,
-                      borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: Colors.white24),
-                    ),
-                    child: Text(
-                      groupName!,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontFamily: 'Dubai',
-                        fontWeight: FontWeight.w700,
-                      ),
-                    ),
-                  ),
-                const Spacer(),
-                _CircleBtn(
-                  icon: torchOn
-                      ? Icons.flash_on_rounded
-                      : Icons.flash_off_rounded,
-                  onTap: onToggleTorch,
-                  active: torchOn,
-                ),
-              ],
-            ),
+        _ScanTopBar(
+          title: groupName ?? tr('مسح الحضور'),
+          onClose: onClose,
+          trailing: _GlassIconButton(
+            icon: torchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
+            tooltip: tr('الفلاش'),
+            onTap: onToggleTorch,
+            active: torchOn,
           ),
         ),
 
         // ── Attendance kind badge ────────────────────────────────────────
-        GestureDetector(
-          onTap: sending ? null : onChangeKind,
-          child: Container(
-            margin: const EdgeInsets.only(top: 4),
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            decoration: BoxDecoration(
-              color: kind.color.withValues(alpha: 0.18),
-              borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: kind.color.withValues(alpha: 0.5)),
-            ),
-            child: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(kind.icon, size: 16, color: kind.color),
-                const SizedBox(width: 6),
-                Text(
-                  trf('تسجيل: {0}', [kind.label]),
-                  style: TextStyle(
-                    color: kind.color,
-                    fontSize: 12.5,
-                    fontFamily: 'Dubai',
-                    fontWeight: FontWeight.w700,
-                  ),
+        Padding(
+          padding: const EdgeInsets.only(top: 14),
+          child: Material(
+            color: kind.color.withValues(alpha: 0.2),
+            borderRadius: BorderRadius.circular(22),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(22),
+              onTap: sending ? null : onChangeKind,
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 40),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 16, vertical: 9),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(22),
+                  border: Border.all(color: kind.color.withValues(alpha: 0.6)),
                 ),
-                const SizedBox(width: 6),
-                Icon(Icons.edit_rounded,
-                    size: 13, color: Colors.white.withValues(alpha: 0.6)),
-              ],
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(kind.icon, size: 16, color: kind.color),
+                    const SizedBox(width: 6),
+                    Text(
+                      trf('تسجيل: {0}', [kind.label]),
+                      style: appTextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: kind.color,
+                      ),
+                    ),
+                    const SizedBox(width: 6),
+                    Icon(Icons.edit_rounded,
+                        size: 13, color: Colors.white.withValues(alpha: 0.7)),
+                  ],
+                ),
+              ),
             ),
           ),
         ),
@@ -525,21 +668,24 @@ class _ScanOverlay extends StatelessWidget {
         const SizedBox(height: 28),
 
         // ── Hint text ────────────────────────────────────────────────────
-        Text(
-          sending
-              ? tr('جارٍ تسجيل الحضور...')
-              : paused
-                  ? tr('المسح متوقف مؤقتاً')
-                  : tr('وجّه الكاميرا نحو رمز QR الطالب'),
-          style: TextStyle(
-            color: sending
-                ? AppColors.gold
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24),
+          child: Text(
+            sending
+                ? tr('جارٍ تسجيل الحضور...')
                 : paused
-                    ? Colors.white60
-                    : Colors.white,
-            fontSize: 14,
-            fontFamily: 'Dubai',
-            fontWeight: FontWeight.w600,
+                    ? tr('المسح متوقف مؤقتاً')
+                    : tr('وجّه الكاميرا نحو رمز QR الطالب'),
+            textAlign: TextAlign.center,
+            style: appTextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w700,
+              color: sending
+                  ? AppColors.goldGlow
+                  : paused
+                      ? Colors.white70
+                      : Colors.white,
+            ),
           ),
         ),
 
@@ -547,36 +693,41 @@ class _ScanOverlay extends StatelessWidget {
 
         // ── Pause / Resume button ─────────────────────────────────────────
         if (!sending)
-          GestureDetector(
-            onTap: onTogglePause,
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 13),
-              decoration: BoxDecoration(
-                color: paused ? AppColors.primaryLight : Colors.white24,
-                borderRadius: BorderRadius.circular(30),
-                border: Border.all(
-                  color: paused ? AppColors.primaryLight : Colors.white38,
+          Material(
+            color: paused ? AppColors.primaryMid : Colors.black54,
+            borderRadius: BorderRadius.circular(30),
+            child: InkWell(
+              borderRadius: BorderRadius.circular(30),
+              onTap: onTogglePause,
+              child: Container(
+                constraints: const BoxConstraints(minHeight: 44),
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 26, vertical: 12),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(30),
+                  border: Border.all(
+                    color: paused ? AppColors.primaryGlow : Colors.white30,
+                  ),
                 ),
-              ),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Icon(
-                    paused ? Icons.play_arrow_rounded : Icons.pause_rounded,
-                    color: Colors.white,
-                    size: 20,
-                  ),
-                  const SizedBox(width: 8),
-                  Text(
-                    paused ? tr('استئناف المسح') : tr('إيقاف مؤقت'),
-                    style: const TextStyle(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      paused ? Icons.play_arrow_rounded : Icons.pause_rounded,
                       color: Colors.white,
-                      fontSize: 13,
-                      fontFamily: 'Dubai',
-                      fontWeight: FontWeight.w700,
+                      size: 20,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 8),
+                    Text(
+                      paused ? tr('استئناف المسح') : tr('إيقاف مؤقت'),
+                      style: appTextStyle(
+                        fontSize: 13,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -629,7 +780,7 @@ class _ViewfinderState extends State<_Viewfinder>
         ? AppColors.gold
         : widget.paused
             ? Colors.white38
-            : AppColors.primaryLight;
+            : AppColors.primaryGlow;
 
     return SizedBox(
       width: size,
@@ -822,11 +973,18 @@ class _SessionPanelState extends State<_SessionPanel> {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 220),
       curve: Curves.easeOutCubic,
-      constraints: BoxConstraints(maxHeight: _collapsed ? 48 : 180),
+      constraints: BoxConstraints(maxHeight: _collapsed ? 56 : 200),
       decoration: const BoxDecoration(
-        color: Colors.black87,
+        color: Color(0xF2072714),
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-        border: Border(top: BorderSide(color: Colors.white12)),
+        border: Border(top: BorderSide(color: Color(0xFF193222))),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black45,
+            blurRadius: 16,
+            offset: Offset(0, -4),
+          ),
+        ],
       ),
       child: GestureDetector(
         behavior: HitTestBehavior.opaque,
@@ -837,7 +995,7 @@ class _SessionPanelState extends State<_SessionPanel> {
           children: [
             Container(
               margin: const EdgeInsets.only(top: 8),
-              width: 36,
+              width: 40,
               height: 4,
               decoration: BoxDecoration(
                 color: Colors.white24,
@@ -848,43 +1006,49 @@ class _SessionPanelState extends State<_SessionPanel> {
               padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
               child: Row(
                 children: [
-                  const Icon(Icons.history_rounded,
-                      color: Colors.white60, size: 16),
-                  const SizedBox(width: 6),
+                  Container(
+                    width: 30,
+                    height: 30,
+                    decoration: BoxDecoration(
+                      color: AppColors.primaryGlow.withValues(alpha: 0.18),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: const Icon(Icons.history_rounded,
+                        color: AppColors.primaryGlow, size: 17),
+                  ),
+                  const SizedBox(width: 10),
                   Text(
                     tr('سجل الجلسة'),
-                    style: const TextStyle(
-                      color: Colors.white60,
-                      fontSize: 12,
-                      fontFamily: 'Dubai',
-                      fontWeight: FontWeight.w600,
+                    style: appTextStyle(
+                      fontSize: 13,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
                     ),
                   ),
                   const Spacer(),
                   Container(
                     padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                        const EdgeInsets.symmetric(horizontal: 9, vertical: 3),
                     decoration: BoxDecoration(
-                      color: AppColors.primaryLight.withValues(alpha: 0.2),
-                      borderRadius: BorderRadius.circular(10),
+                      color: AppColors.gold.withValues(alpha: 0.22),
+                      borderRadius: BorderRadius.circular(12),
                     ),
                     child: Text(
                       '${widget.records.length}',
-                      style: const TextStyle(
-                        color: AppColors.primaryLight,
+                      style: appTextStyle(
                         fontSize: 12,
-                        fontFamily: 'Dubai',
                         fontWeight: FontWeight.w800,
+                        color: AppColors.goldGlow,
                       ),
                     ),
                   ),
-                  const SizedBox(width: 6),
+                  const SizedBox(width: 8),
                   Icon(
                     _collapsed
                         ? Icons.keyboard_arrow_up_rounded
                         : Icons.keyboard_arrow_down_rounded,
-                    color: Colors.white38,
-                    size: 18,
+                    color: Colors.white54,
+                    size: 20,
                   ),
                 ],
               ),
@@ -918,41 +1082,60 @@ class _RecordTile extends StatelessWidget {
     final timeStr =
         '${record.time.hour.toString().padLeft(2, '0')}:${record.time.minute.toString().padLeft(2, '0')}';
     return Container(
-      margin: const EdgeInsets.only(bottom: 6),
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      margin: const EdgeInsets.only(bottom: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
       decoration: BoxDecoration(
         color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.25)),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(color: color.withValues(alpha: 0.3)),
       ),
       child: Row(
         children: [
-          Icon(
-            ok ? Icons.check_circle_rounded : Icons.cancel_rounded,
-            color: color,
-            size: 16,
+          Container(
+            width: 30,
+            height: 30,
+            decoration: BoxDecoration(
+              color: color.withValues(alpha: 0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Icon(
+              ok ? Icons.check_circle_rounded : Icons.cancel_rounded,
+              color: color,
+              size: 17,
+            ),
+          ),
+          const SizedBox(width: 10),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  record.studentName,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: appTextStyle(
+                    fontSize: 13,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
+                  ),
+                ),
+                if (!ok && record.error != null)
+                  Text(
+                    record.error!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(
+                      fontSize: 11,
+                      color: Colors.white70,
+                    ),
+                  ),
+              ],
+            ),
           ),
           const SizedBox(width: 8),
-          Expanded(
-            child: Text(
-              record.studentName,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 12,
-                fontFamily: 'Dubai',
-                fontWeight: FontWeight.w600,
-              ),
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
           Text(
             timeStr,
-            style: const TextStyle(
-              color: Colors.white54,
-              fontSize: 11,
-              fontFamily: 'Dubai',
-            ),
+            style: appTextStyle(fontSize: 11, color: Colors.white60),
           ),
         ],
       ),
@@ -961,34 +1144,48 @@ class _RecordTile extends StatelessWidget {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// زر دائري مساعد
+// زر دائري زجاجي مساعد
 // ─────────────────────────────────────────────────────────────────────────────
-class _CircleBtn extends StatelessWidget {
+class _GlassIconButton extends StatelessWidget {
   final IconData icon;
   final VoidCallback onTap;
+  final String tooltip;
   final bool active;
-  const _CircleBtn(
-      {required this.icon, required this.onTap, this.active = false});
+  const _GlassIconButton({
+    required this.icon,
+    required this.onTap,
+    required this.tooltip,
+    this.active = false,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        width: 44,
-        height: 44,
-        decoration: BoxDecoration(
-          color: active ? AppColors.gold.withValues(alpha: 0.25) : Colors.black54,
-          shape: BoxShape.circle,
-          border: Border.all(
-            color: active ? AppColors.gold : Colors.white24,
-            width: 1.5,
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: active
+            ? AppColors.gold.withValues(alpha: 0.25)
+            : Colors.white.withValues(alpha: 0.1),
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onTap,
+          child: Container(
+            width: 44,
+            height: 44,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              border: Border.all(
+                color: active ? AppColors.gold : Colors.white24,
+                width: 1.2,
+              ),
+            ),
+            child: Icon(
+              icon,
+              color: active ? AppColors.goldGlow : Colors.white,
+              size: 22,
+            ),
           ),
-        ),
-        child: Icon(
-          icon,
-          color: active ? AppColors.gold : Colors.white,
-          size: 22,
         ),
       ),
     );

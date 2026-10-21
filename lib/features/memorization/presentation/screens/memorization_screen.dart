@@ -573,7 +573,7 @@ class _TestEntry extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isPartial = test.isPartial;
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(test.date);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(test.date);
     final score = test.score;
 
     return Container(
@@ -841,7 +841,7 @@ class _PartAttemptRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final passed = attempt.status == 'passed';
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(attempt.testedOn);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(attempt.testedOn);
     final statusColor = passed ? AppColors.success : Colors.red;
 
     return Container(
@@ -929,7 +929,7 @@ class _AttemptRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final passed = attempt.status == 'passed';
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(attempt.testedOn);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(attempt.testedOn);
     return Container(
       margin: const EdgeInsets.only(bottom: 6),
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -1185,7 +1185,7 @@ class _SessionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(session.date);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(session.date);
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -1280,7 +1280,7 @@ class _StageRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     const orange = Color(0xFFE67E22);
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(stage.date);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(stage.date);
     return Container(
       margin: const EdgeInsets.only(bottom: 9),
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 11),
@@ -1370,7 +1370,7 @@ class _FinalCard extends StatelessWidget {
         : exam.score >= 80
             ? AppColors.gold
             : const Color(0xFFE67E22);
-    final dateStr = DateFormat('d MMMM yyyy', 'ar').format(exam.date);
+    final dateStr = DateFormat('d MMMM yyyy', AppLanguage.intlCode).format(exam.date);
 
     return _Card(
       headerIcon: Icons.workspace_premium_rounded,

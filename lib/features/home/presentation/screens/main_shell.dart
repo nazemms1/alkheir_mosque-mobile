@@ -5,7 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alkheir_mosque/app/core/navigation/app_tab.dart';
 import 'package:alkheir_mosque/app/core/navigation/tab_registry.dart';
 import 'package:alkheir_mosque/app/core/session/auth_session.dart';
-import 'package:alkheir_mosque/app/core/session/theme_provider.dart';
+import 'package:alkheir_mosque/di/di_locator.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
@@ -1183,7 +1183,7 @@ class _LanguageToggleItem extends ConsumerWidget {
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => ref.read(localeProvider.notifier).toggle(),
+        onTap: () => ref.read(languageProvider.notifier).toggleLanguage(),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           decoration: BoxDecoration(
@@ -1228,7 +1228,7 @@ class _ThemeToggleItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<void> toggle() => ref.read(themeModeProvider.notifier).toggle();
+    Future<void> toggle() => ref.read(themeProvider.notifier).toggleTheme();
     final color = isDark ? AppColors.goldLight : AppColors.gold;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),

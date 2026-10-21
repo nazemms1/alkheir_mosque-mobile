@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
+import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/app/core/widgets/app_toast.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
@@ -14,12 +15,14 @@ import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 class SupervisorHomeData {
   final String userName;
   final String roleLabel;
+  final AuthToken token;
   final AdminStats stats;
   final List<AdminGroupItem> groups;
   final List<AdminStudentItem> students;
   const SupervisorHomeData({
     required this.userName,
     required this.roleLabel,
+    required this.token,
     required this.stats,
     required this.groups,
     required this.students,
@@ -48,11 +51,18 @@ final List<HomeWidgetDef<SupervisorHomeData>> supervisorHomeWidgets = [
   // شبكة الإحصائيات
   HomeWidgetDef(
     id: 'sup-stats',
+    anyOfPermissions: const [
+      Permissions.studentsView,
+      Permissions.groupsView,
+      Permissions.enrollmentsView,
+      Permissions.assessmentsView,
+      Permissions.activitiesView,
+    ],
     slivers: (context, d) => [
       SliverPadding(
         padding: const EdgeInsets.fromLTRB(16, 20, 16, 0),
         sliver: SliverToBoxAdapter(
-          child: _SupervisorStatsGrid(stats: d.stats)
+          child: _SupervisorStatsGrid(stats: d.stats, token: d.token)
               .animate()
               .fadeIn(delay: 100.ms, duration: 400.ms)
               .slideY(begin: 0.05, end: 0, delay: 100.ms),
@@ -149,26 +159,26 @@ class _SupervisorHomeTabState extends State<SupervisorHomeTab> {
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        _service.fetchSupervisorStats(),
-        _service.fetchGroups(perPage: 6, isActive: true),
-        _service.fetchStudents(perPage: 6, status: 'active'),
-      ]);
+      // كل قائمة تُطلب فقط إذا كانت صلاحيتها في الحساب.
+      final token = widget.token;
+      final groupsFuture = token.hasPermission(Permissions.groupsView)
+          ? _service
+              .fetchGroups(perPage: 6, isActive: true)
+              .then((p) => p.items)
+          : Future.value(const <AdminGroupItem>[]);
+      final studentsFuture = token.hasPermission(Permissions.studentsView)
+          ? _service
+              .fetchStudents(perPage: 6, status: 'active')
+              .then((p) => p.items)
+          : Future.value(const <AdminStudentItem>[]);
+      final stats = await _service.fetchSupervisorStats(token);
+      final groups = await groupsFuture;
+      final students = await studentsFuture;
       if (!mounted) return;
       setState(() {
-        _stats = results[0] as AdminStats;
-        _groups = (results[1] as ({
-          List<AdminGroupItem> items,
-          int total,
-          int lastPage
-        }))
-            .items;
-        _students = (results[2] as ({
-          List<AdminStudentItem> items,
-          int total,
-          int lastPage
-        }))
-            .items;
+        _stats = stats;
+        _groups = groups;
+        _students = students;
         _loading = false;
       });
     } catch (e) {
@@ -190,6 +200,7 @@ class _SupervisorHomeTabState extends State<SupervisorHomeTab> {
     final data = SupervisorHomeData(
       userName: widget.token.user?.name ?? tr('المشرف'),
       roleLabel: widget.token.displayRole,
+      token: widget.token,
       stats: _stats!,
       groups: _groups,
       students: _students,
@@ -359,21 +370,28 @@ class _HeroPill extends StatelessWidget {
 // ─── Stats grid ───────────────────────────────────────────────────────────────
 class _SupervisorStatsGrid extends StatelessWidget {
   final AdminStats stats;
-  const _SupervisorStatsGrid({required this.stats});
+  final AuthToken token;
+  const _SupervisorStatsGrid({required this.stats, required this.token});
 
   @override
   Widget build(BuildContext context) {
+    // كل بطاقة تظهر فقط إذا كانت صلاحية مصدرها في الحساب.
     final items = [
-      _SI(Icons.people_rounded, tr('إجمالي الطلاب'), '${stats.totalStudents}',
-          AppColors.info),
-      _SI(Icons.groups_rounded, tr('حلقات نشطة'), '${stats.activeGroups}',
-          AppColors.success),
-      _SI(Icons.how_to_reg_rounded, tr('التسجيلات'),
-          '${stats.totalEnrollments}', AppColors.primaryLight),
-      _SI(Icons.assignment_rounded, tr('التقييمات'),
-          '${stats.totalAssessments}', AppColors.gold),
-      _SI(Icons.event_rounded, tr('الأنشطة'), '${stats.totalActivities}',
-          AppColors.error),
+      if (token.hasPermission(Permissions.studentsView))
+        _SI(Icons.people_rounded, tr('إجمالي الطلاب'), '${stats.totalStudents}',
+            AppColors.info),
+      if (token.hasPermission(Permissions.groupsView))
+        _SI(Icons.groups_rounded, tr('حلقات نشطة'), '${stats.activeGroups}',
+            AppColors.success),
+      if (token.hasPermission(Permissions.enrollmentsView))
+        _SI(Icons.how_to_reg_rounded, tr('التسجيلات'),
+            '${stats.totalEnrollments}', AppColors.primaryLight),
+      if (token.hasPermission(Permissions.assessmentsView))
+        _SI(Icons.assignment_rounded, tr('التقييمات'),
+            '${stats.totalAssessments}', AppColors.gold),
+      if (token.hasPermission(Permissions.activitiesView))
+        _SI(Icons.event_rounded, tr('الأنشطة'), '${stats.totalActivities}',
+            AppColors.error),
     ];
     return GridView.builder(
       shrinkWrap: true,
@@ -685,25 +703,18 @@ class StudentsProgressTabState extends State<StudentsProgressTab> {
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        _service.fetchStudents(
-            perPage: 50, groupId: _selectedGroupId, status: 'active'),
-        _service.fetchGroups(perPage: 100),
-      ]);
+      // قائمة الحلقات للتصفية تُطلب فقط إذا كانت صلاحيتها في الحساب.
+      final token = widget.token;
+      final groupsFuture = token.hasPermission(Permissions.groupsView)
+          ? _service.fetchGroups(perPage: 100).then((p) => p.items)
+          : Future.value(const <AdminGroupItem>[]);
+      final students = await _service.fetchStudents(
+          perPage: 50, groupId: _selectedGroupId, status: 'active');
+      final groups = await groupsFuture;
       if (!mounted) return;
       setState(() {
-        _students = (results[0] as ({
-          List<AdminStudentItem> items,
-          int total,
-          int lastPage
-        }))
-            .items;
-        _groups = (results[1] as ({
-          List<AdminGroupItem> items,
-          int total,
-          int lastPage
-        }))
-            .items;
+        _students = students.items;
+        _groups = groups;
         _loading = false;
       });
     } catch (e) {
@@ -1084,7 +1095,8 @@ class RecitationTabState extends State<RecitationTab> {
       );
     }
 
-    final dateStr = DateFormat('d MMMM yyyy', 'ar').format(_recordedOn);
+    final dateStr =
+        DateFormat('d MMMM yyyy', AppLanguage.intlCode).format(_recordedOn);
     final fillColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.white.withValues(alpha: 0.06)
         : AppColors.primaryLight.withValues(alpha: 0.06);

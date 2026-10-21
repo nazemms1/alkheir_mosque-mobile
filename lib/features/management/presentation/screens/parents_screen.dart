@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
@@ -21,15 +22,8 @@ class ParentsScreen extends StatefulWidget {
 
 class _ParentsScreenState extends State<ParentsScreen> {
   final _service = ManagementRepositoryImpl();
-  final _searchCtrl = TextEditingController();
   String _search = '';
   int _reloadToken = 0;
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
 
   void _refresh() => setState(() => _reloadToken++);
 
@@ -115,78 +109,111 @@ class _ParentsScreenState extends State<ParentsScreen> {
     return ModuleScaffold(
       title: tr('الأولياء'),
       floatingActionButton: ModuleAccess.canCreateParents(t)
-          ? FloatingActionButton.extended(
+          ? AdminFab(
+              label: tr('ولي أمر جديد'),
+              icon: Icons.person_add_alt_1_rounded,
               onPressed: _create,
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.person_add_alt_1_rounded,
-                  color: Colors.white),
-              label: Text(
-                tr('ولي أمر جديد'),
-                style: appTextStyle(
-                    fontWeight: FontWeight.w700, color: Colors.white),
-              ),
             )
           : null,
       body: PagedList<ParentItem>(
         reloadToken: _reloadToken,
         emptyText: tr('لا يوجد أولياء مطابقون للبحث'),
-        header: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-          child: TextField(
-            controller: _searchCtrl,
-            textInputAction: TextInputAction.search,
-            style: appTextStyle(),
-            decoration: InputDecoration(
-              hintText: tr('بحث بالاسم أو رقم الهاتف'),
-              prefixIcon: const Icon(Icons.search_rounded),
-            ),
-            onSubmitted: (value) => setState(() {
-              _search = value.trim();
-              _reloadToken++;
-            }),
-          ),
+        header: ModuleSearchBar(
+          hint: tr('بحث بالاسم أو رقم الهاتف'),
+          onSearch: (value) => setState(() {
+            _search = value;
+            _reloadToken++;
+          }),
         ),
         fetch: (page) => _service.parents(page: page, search: _search),
-        itemBuilder: (context, parent, _) => ModuleCard(
-          accent:
-              parent.isActive ? AppColors.primaryLight : AppColors.textMuted,
+        itemBuilder: (context, parent, _) => _ParentCard(
+          parent: parent,
           onTap: () => _openDetail(parent),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        ),
+      ),
+    );
+  }
+}
+
+class _ParentCard extends StatelessWidget {
+  final ParentItem parent;
+  final VoidCallback onTap;
+
+  const _ParentCard({required this.parent, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = AdminTheme.muted(context);
+    final color = parent.isActive ? AppColors.primaryLight : muted;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminCard(
+        accent: color,
+        onTap: onTap,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            AdminAvatar(
+              text: moduleInitials(parent.fatherName),
+              color: color,
+              size: 46,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      parent.fatherName,
-                      style: appTextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).colorScheme.onSurface,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          parent.fatherName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: AdminTheme.text(context),
+                          ),
+                        ),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                      const SizedBox(width: 8),
+                      AdminBadge(
+                        label: parent.isActive ? tr('نشط') : tr('غير نشط'),
+                        color: parent.isActive ? AppColors.success : muted,
+                      ),
+                    ],
                   ),
-                  StatusPill(
-                    label: parent.isActive ? tr('نشط') : tr('غير نشط'),
-                    color: parent.isActive
-                        ? AppColors.success
-                        : AppColors.textMuted,
+                  const SizedBox(height: 2),
+                  Text(
+                    parent.parentNumber,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(fontSize: 12, color: muted),
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      if ((parent.fatherPhone ?? '').isNotEmpty)
+                        AdminBadge(
+                          icon: Icons.phone_rounded,
+                          label: parent.fatherPhone!,
+                          color: AppColors.info,
+                        ),
+                      AdminBadge(
+                        icon: Icons.people_rounded,
+                        label: trf('عدد الطلاب: {0}', [parent.studentsCount]),
+                        color: AppColors.gold,
+                      ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                '${parent.parentNumber}  ·  ${parent.fatherPhone ?? '—'}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
-              ),
-              const SizedBox(height: 4),
-              Text(
-                trf('عدد الطلاب: {0}', [parent.studentsCount]),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
-              ),
-            ],
-          ),
+            ),
+            Icon(AdminTheme.chevron(context), color: muted),
+          ],
         ),
       ),
     );

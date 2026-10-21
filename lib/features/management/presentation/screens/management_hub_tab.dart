@@ -21,6 +21,7 @@ import 'package:alkheir_mosque/features/quran_tests/presentation/screens/awqaf_t
 import 'package:alkheir_mosque/features/quran_tests/presentation/screens/quran_tests_screen.dart';
 import 'package:alkheir_mosque/features/reports/presentation/screens/reports_screen.dart';
 import 'package:alkheir_mosque/features/students/presentation/screens/student_picker_screen.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import '../widgets/module_widgets.dart';
 import 'courses_screen.dart';
 import 'enrollments_screen.dart';
@@ -261,26 +262,38 @@ class _ManagementHubTabState extends State<ManagementHubTab> {
         if (s.tiles.isNotEmpty) s,
     ];
 
+    final moduleCount = visible.fold<int>(0, (n, s) => n + s.tiles.length);
+
     return ListView(
-      padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+      padding: kAdminPagePadding,
       children: [
+        AdminHero(
+          icon: Icons.apps_rounded,
+          title: tr('الإدارة'),
+          subtitle: tr('الوحدات الإدارية حسب صلاحياتك'),
+          metrics: [
+            AdminHeroMetric(
+              icon: Icons.apps_rounded,
+              label: tr('وحدة متاحة'),
+              value: '$moduleCount',
+            ),
+            AdminHeroMetric(
+              icon: Icons.category_rounded,
+              label: tr('الأقسام'),
+              value: '${visible.length}',
+            ),
+          ],
+        ),
         if (visible.isEmpty)
-          ModuleMessage(
+          AdminEmptyState(
             icon: Icons.lock_outline_rounded,
-            text: tr('لا توجد وحدات إدارية متاحة لحسابك'),
+            title: tr('لا توجد وحدات إدارية متاحة لحسابك'),
           )
         else
           for (final section in visible) ...[
             Padding(
-              padding: const EdgeInsets.fromLTRB(4, 14, 4, 8),
-              child: Text(
-                section.title,
-                style: appTextStyle(
-                  fontSize: 13,
-                  fontWeight: FontWeight.w800,
-                  color: moduleMuted(context),
-                ),
-              ),
+              padding: const EdgeInsets.fromLTRB(4, 18, 4, 10),
+              child: AdminSectionTitle(title: section.title),
             ),
             ...section.tiles,
           ],
@@ -312,15 +325,7 @@ class _Tile extends StatelessWidget {
       onTap: onTap,
       child: Row(
         children: [
-          Container(
-            width: 46,
-            height: 46,
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(14),
-            ),
-            child: Icon(icon, color: color),
-          ),
+          AdminIconBubble(icon: icon, color: color, size: 46),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -331,19 +336,23 @@ class _Tile extends StatelessWidget {
                   style: appTextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.onSurface,
+                    color: AdminTheme.text(context),
                   ),
                 ),
                 const SizedBox(height: 2),
                 Text(
                   subtitle,
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: 12, color: AdminTheme.muted(context)),
                 ),
               ],
             ),
           ),
-          Icon(Icons.chevron_left_rounded, color: moduleMuted(context)),
+          const SizedBox(width: 6),
+          Icon(
+            AdminTheme.chevron(context),
+            color: AdminTheme.muted(context),
+          ),
         ],
       ),
     );

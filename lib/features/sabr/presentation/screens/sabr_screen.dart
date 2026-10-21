@@ -390,7 +390,7 @@ class _SabrCardState extends State<_SabrCard> {
   @override
   Widget build(BuildContext context) {
     final r = widget.record;
-    final dateStr = DateFormat('d MMMM yyyy', 'ar').format(r.date);
+    final dateStr = DateFormat('d MMMM yyyy', AppLanguage.intlCode).format(r.date);
     final sortedPages = List<int>.from(r.pageNumbers)..sort();
 
     return GestureDetector(

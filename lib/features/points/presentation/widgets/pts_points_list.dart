@@ -73,7 +73,7 @@ class _PointTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = record.isBonus ? AppColors.gold : AppColors.primaryLight;
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(record.date);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(record.date);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
@@ -211,7 +211,7 @@ class _PointEntryTile extends StatelessWidget {
     final icon = _categoryIcons[entry.pointTypeCategory] ?? Icons.star_rounded;
     final gradient =
         entry.isBonus ? AppColors.gradientGold : AppColors.gradientPrimary;
-    final dateStr = DateFormat('d MMM yyyy', 'ar').format(entry.enteredAt);
+    final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(entry.enteredAt);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 8),

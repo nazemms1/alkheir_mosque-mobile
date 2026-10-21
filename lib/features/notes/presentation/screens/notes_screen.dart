@@ -255,7 +255,7 @@ class _DateDivider extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final label = DateFormat('EEEE، d MMMM yyyy', 'ar').format(date);
+    final label = DateFormat('EEEE، d MMMM yyyy', AppLanguage.intlCode).format(date);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 12),
       child: Row(
@@ -310,7 +310,7 @@ class _MessageBubble extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final timeStr = DateFormat('HH:mm', 'ar').format(message.dateTime);
+    final timeStr = DateFormat('HH:mm', AppLanguage.intlCode).format(message.dateTime);
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 10),
