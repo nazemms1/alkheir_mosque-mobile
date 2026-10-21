@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/features/students/data/repositories/student_repository_impl.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
 class InvoiceDetailScreen extends StatefulWidget {
@@ -50,7 +51,10 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: _buildAppBar(context),
+      appBar: AdminAppBar(
+        title: _invoice?.invoiceNo ?? tr('تفاصيل الفاتورة'),
+        subtitle: _invoice != null ? tr('تفاصيل الفاتورة') : null,
+      ),
       body: _buildBody(),
     );
   }
@@ -102,53 +106,6 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
         else
           ...invoice.payments.map((p) => _PaymentRow(payment: p)),
       ],
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(64),
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.gradientPrimary,
-          boxShadow: [
-            BoxShadow(
-                color: Color(0x30000000), blurRadius: 12, offset: Offset(0, 3))
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.glassWhite,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.glassBorder),
-                    ),
-                    child: const Icon(Icons.arrow_forward_ios_rounded,
-                        color: Colors.white, size: 18),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(_invoice?.invoiceNo ?? tr('تفاصيل الفاتورة'),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 18,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Dubai')),
-                ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 
 /// عناصر واجهة موحّدة لشاشات الإدارة (الرئيسية، الحلقات، الطلاب، المالية، الوحدات...).
@@ -44,73 +45,535 @@ abstract final class AdminTheme {
           : Icons.chevron_right_rounded;
 }
 
-/// شريط علوي متدرّج بنفس هوية الشريط الرئيسي للتطبيق.
+/// شريط علوي متدرّج ومثبت بنفس هوية الشريط الرئيسي للتطبيق (مسجد الخير).
 class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
   final List<Widget> actions;
+  final Widget? leading;
   final PreferredSizeWidget? bottom;
+  final VoidCallback? onBack;
+  final bool showBrandLogo;
 
   const AdminAppBar({
     super.key,
     required this.title,
     this.subtitle,
     this.actions = const [],
+    this.leading,
     this.bottom,
+    this.onBack,
+    this.showBrandLogo = true,
   });
 
   @override
   Size get preferredSize => Size.fromHeight(
-        kToolbarHeight +
-            (subtitle != null ? 14 : 0) +
-            (bottom?.preferredSize.height ?? 0),
+        72.0 + (bottom?.preferredSize.height ?? 0.0),
       );
 
   @override
   Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      foregroundColor: Colors.white,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      centerTitle: true,
-      flexibleSpace: const DecoratedBox(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
-            begin: Alignment.topRight,
-            end: Alignment.bottomLeft,
+    final width = MediaQuery.sizeOf(context).width;
+    final canPop = Navigator.canPop(context);
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF071A0A),
+            Color(0xFF0D5016),
+            Color(0xFF1A7A26),
+          ],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0D5016).withValues(alpha: 0.5),
+            blurRadius: 28,
+            offset: const Offset(0, 6),
+          ),
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.25),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        bottom: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            SizedBox(
+              height: 72,
+              child: Stack(
+                children: [
+                  // Decorative glow orb in corner
+                  Positioned(
+                    top: -30,
+                    left: -20,
+                    child: Container(
+                      width: 100,
+                      height: 100,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: AppColors.primaryLight.withValues(alpha: 0.08),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 16, vertical: 10),
+                    child: Row(
+                      children: [
+                        // Leading / Brand
+                        _buildLeading(context, canPop, width),
+                        const SizedBox(width: 10),
+                        // Current page title (pill)
+                        Expanded(
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 14, vertical: 7),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.10),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.15)),
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  title,
+                                  textAlign: TextAlign.center,
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    fontFamily: 'Dubai',
+                                  ),
+                                ),
+                                if (subtitle != null &&
+                                    subtitle!.isNotEmpty) ...[
+                                  const SizedBox(height: 1),
+                                  Text(
+                                    subtitle!,
+                                    textAlign: TextAlign.center,
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      color:
+                                          Colors.white.withValues(alpha: 0.65),
+                                      fontSize: 10,
+                                      fontFamily: 'Dubai',
+                                    ),
+                                  ),
+                                ],
+                              ],
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 10),
+                        // Actions / Trailing
+                        _buildTrailing(canPop),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            if (bottom != null) bottom!,
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildLeading(BuildContext context, bool canPop, double width) {
+    if (leading != null) return leading!;
+
+    if (canPop) {
+      return GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: onBack ?? () => Navigator.maybePop(context),
+        child: Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            color: Colors.white.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.2),
+              width: 1.2,
+            ),
+          ),
+          child: Icon(
+            Directionality.of(context) == TextDirection.rtl
+                ? Icons.arrow_forward_ios_rounded
+                : Icons.arrow_back_ios_new_rounded,
+            color: Colors.white,
+            size: 18,
+          ),
+        ),
+      );
+    }
+
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          width: 42,
+          height: 42,
+          decoration: BoxDecoration(
+            gradient: const LinearGradient(
+              colors: [Color(0xFF2EA043), Color(0xFF1A7A26)],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(
+              color: Colors.white.withValues(alpha: 0.25),
+              width: 1.5,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: AppColors.primaryLight.withValues(alpha: 0.3),
+                blurRadius: 10,
+              ),
+            ],
+          ),
+          child:
+              const Icon(Icons.mosque_rounded, color: Colors.white, size: 22),
+        ),
+        if (showBrandLogo && width > 360) ...[
+          const SizedBox(width: 8),
+          Text(
+            tr('مسجد الخير'),
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.w800,
+              fontFamily: 'Dubai',
+              letterSpacing: 0.3,
+            ),
+          ),
+        ],
+      ],
+    );
+  }
+
+  Widget _buildTrailing(bool canPop) {
+    if (actions.isNotEmpty) {
+      return Row(
+        mainAxisSize: MainAxisSize.min,
+        children: actions,
+      );
+    }
+    return const SizedBox(width: 42);
+  }
+}
+
+/// عنصر إجراء زجاجي أنيق متوافق مع شريط التطبيق الرئيسي
+class AdminActionItem extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onTap;
+  final String? tooltip;
+  final int? badge;
+
+  const AdminActionItem({
+    super.key,
+    required this.icon,
+    required this.onTap,
+    this.tooltip,
+    this.badge,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    Widget button = Container(
+      width: 42,
+      height: 42,
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.12),
+        borderRadius: BorderRadius.circular(14),
+        border: Border.all(
+          color: Colors.white.withValues(alpha: 0.18),
+          width: 1.2,
+        ),
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onTap,
+          child: Center(
+            child: Icon(icon, color: Colors.white, size: 20),
           ),
         ),
       ),
-      title: Column(
-        mainAxisSize: MainAxisSize.min,
+    );
+
+    if (badge != null && badge! > 0) {
+      button = Stack(
+        clipBehavior: Clip.none,
         children: [
-          Text(
-            title,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: appTextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w800,
-              color: Colors.white,
-            ),
-          ),
-          if (subtitle != null)
-            Text(
-              subtitle!,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: appTextStyle(
-                fontSize: 11,
-                color: Colors.white.withValues(alpha: 0.7),
+          button,
+          Positioned(
+            top: -3,
+            right: -3,
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+              decoration: BoxDecoration(
+                color: AppColors.gold,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white, width: 1.5),
+              ),
+              child: Text(
+                '$badge',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 10,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Dubai',
+                ),
               ),
             ),
+          ),
+        ],
+      );
+    }
+
+    if (tooltip != null) {
+      return Tooltip(message: tooltip!, child: button);
+    }
+    return button;
+  }
+}
+
+/// زر إغلاق زجاجي أنيق مخصص للنوافذ السفلية
+class AdminSheetCloseButton extends StatelessWidget {
+  final VoidCallback onTap;
+  const AdminSheetCloseButton({super.key, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = AdminTheme.isDark(context);
+    return Tooltip(
+      message: tr('إغلاق'),
+      child: Material(
+        color: isDark
+            ? Colors.white.withValues(alpha: 0.08)
+            : Colors.black.withValues(alpha: 0.05),
+        borderRadius: BorderRadius.circular(12),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(12),
+          onTap: onTap,
+          child: Container(
+            width: 36,
+            height: 36,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12),
+              border: Border.all(
+                color: isDark
+                    ? Colors.white.withValues(alpha: 0.12)
+                    : Colors.black.withValues(alpha: 0.08),
+              ),
+            ),
+            child: Icon(
+              Icons.close_rounded,
+              size: 18,
+              color: AdminTheme.muted(context),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// حاوية موحدة بتصميم فاخر واحترافي للنوافذ السفلية (Bottom Sheets) في التطبيق
+class AdminBottomSheetShell extends StatelessWidget {
+  final Widget child;
+  final String? title;
+  final String? subtitle;
+  final IconData? icon;
+  final Color? iconColor;
+  final Widget? trailing;
+  final bool showCloseButton;
+  final VoidCallback? onClose;
+  final double? maxHeight;
+  final EdgeInsetsGeometry padding;
+
+  const AdminBottomSheetShell({
+    super.key,
+    required this.child,
+    this.title,
+    this.subtitle,
+    this.icon,
+    this.iconColor,
+    this.trailing,
+    this.showCloseButton = true,
+    this.onClose,
+    this.maxHeight,
+    this.padding = const EdgeInsets.fromLTRB(20, 0, 20, 20),
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final isDark = AdminTheme.isDark(context);
+    final bg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
+    final borderColor =
+        isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+    final handleColor =
+        isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+
+    final content = Container(
+      decoration: BoxDecoration(
+        color: bg,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+        border: Border(
+          top: BorderSide(color: borderColor, width: 1.5),
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
+            blurRadius: 36,
+            offset: const Offset(0, -8),
+          ),
+          BoxShadow(
+            color: const Color(0xFF0D5016).withValues(alpha: isDark ? 0.25 : 0.08),
+            blurRadius: 18,
+            offset: const Offset(0, -2),
+          ),
         ],
       ),
-      actions: actions,
-      bottom: bottom,
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            // مقبض السحب (Drag Handle)
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 8),
+                width: 48,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: handleColor,
+                  borderRadius: BorderRadius.circular(2.5),
+                ),
+              ),
+            ),
+            // ترويسة النافذة
+            if (title != null || icon != null || showCloseButton) ...[
+              Padding(
+                padding: const EdgeInsets.fromLTRB(20, 6, 16, 12),
+                child: Row(
+                  children: [
+                    if (icon != null) ...[
+                      Container(
+                        width: 42,
+                        height: 42,
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            colors: [
+                              (iconColor ?? AppColors.primaryLight)
+                                  .withValues(alpha: 0.18),
+                              (iconColor ?? AppColors.primary)
+                                  .withValues(alpha: 0.08),
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(14),
+                          border: Border.all(
+                            color: (iconColor ?? AppColors.primaryLight)
+                                .withValues(alpha: 0.3),
+                            width: 1.2,
+                          ),
+                        ),
+                        child: Icon(
+                          icon,
+                          size: 20,
+                          color: iconColor ?? AppColors.primaryLight,
+                        ),
+                      ),
+                      const SizedBox(width: 12),
+                    ],
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          if (title != null)
+                            Text(
+                              title!,
+                              style: appTextStyle(
+                                fontSize: 17,
+                                fontWeight: FontWeight.w800,
+                                color: AdminTheme.text(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          if (subtitle != null && subtitle!.isNotEmpty) ...[
+                            const SizedBox(height: 2),
+                            Text(
+                              subtitle!,
+                              style: appTextStyle(
+                                fontSize: 12,
+                                color: AdminTheme.muted(context),
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ],
+                        ],
+                      ),
+                    ),
+                    if (trailing != null) ...[
+                      const SizedBox(width: 8),
+                      trailing!,
+                    ],
+                    if (showCloseButton) ...[
+                      const SizedBox(width: 8),
+                      AdminSheetCloseButton(
+                        onTap: onClose ?? () => Navigator.pop(context),
+                      ),
+                    ],
+                  ],
+                ),
+              ),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: borderColor.withValues(alpha: 0.6),
+              ),
+              const SizedBox(height: 10),
+            ],
+            Flexible(
+              child: Padding(
+                padding: padding,
+                child: child,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
+
+    if (maxHeight != null) {
+      return ConstrainedBox(
+        constraints: BoxConstraints(maxHeight: maxHeight!),
+        child: content,
+      );
+    }
+    return content;
   }
 }
 

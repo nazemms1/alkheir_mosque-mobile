@@ -8,6 +8,7 @@ import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import '../widgets/admin_ui.dart';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // نتيجة مسح QR — يُفترض أن يحتوي رمز QR الخاص بالطالب على معرّفه (student_id)
@@ -255,40 +256,34 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     if (!ModuleAccess.canTakeStudentAttendance(widget.token)) {
       return Scaffold(
         backgroundColor: AppColors.bgDeep,
-        body: Column(
-          children: [
-            _ScanTopBar(
-              title: tr('مسح الحضور'),
-              onClose: () => Navigator.pop(context),
-            ),
-            Expanded(
-              child: Center(
-                child: Padding(
-                  padding: const EdgeInsets.all(32),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Icon(
-                        Icons.lock_outline_rounded,
-                        size: 48,
-                        color: AppColors.goldGlow,
-                      ),
-                      const SizedBox(height: 16),
-                      Text(
-                        tr('ليس لديك صلاحية لتسجيل الحضور'),
-                        textAlign: TextAlign.center,
-                        style: appTextStyle(
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
+        appBar: _ScanTopBar(
+          title: tr('مسح الحضور'),
+          onClose: () => Navigator.pop(context),
+        ),
+        body: Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(
+                  Icons.lock_outline_rounded,
+                  size: 48,
+                  color: AppColors.goldGlow,
+                ),
+                const SizedBox(height: 16),
+                Text(
+                  tr('ليس لديك صلاحية لتسجيل الحضور'),
+                  textAlign: TextAlign.center,
+                  style: appTextStyle(
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
+                    color: Colors.white,
                   ),
                 ),
-              ),
+              ],
             ),
-          ],
+          ),
         ),
       );
     }
@@ -296,16 +291,30 @@ class _QrScannerScreenState extends State<QrScannerScreen>
     if (_kind == null) {
       return Scaffold(
         backgroundColor: AppColors.bgDeep,
+        appBar: _ScanTopBar(
+          title: widget.groupName ?? tr('مسح الحضور'),
+          subtitle: tr('مسح رمز QR للطالب'),
+          onClose: () => Navigator.pop(context),
+        ),
         body: _AttendanceKindPicker(
           groupName: widget.groupName,
           onSelected: _selectKind,
-          onClose: () => Navigator.pop(context),
         ),
       );
     }
 
     return Scaffold(
       backgroundColor: Colors.black,
+      appBar: _ScanTopBar(
+        title: widget.groupName ?? tr('مسح الحضور'),
+        onClose: () => Navigator.pop(context),
+        trailing: _GlassIconButton(
+          icon: _torchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
+          tooltip: tr('الفلاش'),
+          onTap: _toggleTorch,
+          active: _torchOn,
+        ),
+      ),
       body: Stack(
         children: [
           // ── Camera view ────────────────────────────────────────────────
@@ -320,15 +329,11 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 
           // ── Overlay (viewfinder + controls) ────────────────────────────
           _ScanOverlay(
-            groupName: widget.groupName,
             kind: _kind!,
-            torchOn: _torchOn,
             paused: _paused,
             sending: _sending,
-            onToggleTorch: _toggleTorch,
             onTogglePause: _togglePause,
             onChangeKind: () => setState(() => _kind = null),
-            onClose: () => Navigator.pop(context),
           ),
 
           // ── Session records panel ──────────────────────────────────────
@@ -346,9 +351,9 @@ class _QrScannerScreenState extends State<QrScannerScreen>
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
-// الشريط العلوي المشترك: بنفس هوية شاشات الإدارة (تدرّج أخضر داكن).
+// الشريط العلوي المشترك: متدرّج ومثبت بهوية الشريط الرئيسي (AdminAppBar)
 // ─────────────────────────────────────────────────────────────────────────────
-class _ScanTopBar extends StatelessWidget {
+class _ScanTopBar extends StatelessWidget implements PreferredSizeWidget {
   final String title;
   final String? subtitle;
   final Widget? trailing;
@@ -362,70 +367,15 @@ class _ScanTopBar extends StatelessWidget {
   });
 
   @override
+  Size get preferredSize => const Size.fromHeight(72);
+
+  @override
   Widget build(BuildContext context) {
-    return DecoratedBox(
-      decoration: const BoxDecoration(
-        gradient: LinearGradient(
-          colors: [AppColors.bgDeep, Color(0xFF0D5016)],
-          begin: Alignment.topRight,
-          end: Alignment.bottomLeft,
-        ),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black38,
-            blurRadius: 12,
-            offset: Offset(0, 4),
-          ),
-        ],
-      ),
-      child: SafeArea(
-        bottom: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(12, 8, 12, 12),
-          child: Row(
-            children: [
-              _GlassIconButton(
-                icon: Icons.close_rounded,
-                tooltip: tr('إغلاق'),
-                onTap: onClose,
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: appTextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
-                      ),
-                    ),
-                    if (subtitle != null)
-                      Text(
-                        subtitle!,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: appTextStyle(
-                          fontSize: 11,
-                          color: AppColors.textOnDarkSub,
-                        ),
-                      ),
-                  ],
-                ),
-              ),
-              if (trailing != null) ...[
-                const SizedBox(width: 12),
-                trailing!,
-              ],
-            ],
-          ),
-        ),
-      ),
+    return AdminAppBar(
+      title: title,
+      subtitle: subtitle,
+      onBack: onClose,
+      actions: trailing != null ? [trailing!] : const [],
     );
   }
 }
@@ -436,28 +386,18 @@ class _ScanTopBar extends StatelessWidget {
 class _AttendanceKindPicker extends StatelessWidget {
   final String? groupName;
   final ValueChanged<ScanAttendanceKind> onSelected;
-  final VoidCallback onClose;
   const _AttendanceKindPicker({
     required this.groupName,
     required this.onSelected,
-    required this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
       decoration: const BoxDecoration(gradient: AppColors.gradientHero),
-      child: Column(
-        children: [
-          _ScanTopBar(
-            title: groupName ?? tr('مسح الحضور'),
-            subtitle: tr('مسح رمز QR للطالب'),
-            onClose: onClose,
-          ),
-          Expanded(
-            child: SafeArea(
-              top: false,
-              child: LayoutBuilder(
+      child: SafeArea(
+        top: false,
+        child: LayoutBuilder(
                 builder: (context, constraints) => SingleChildScrollView(
                   padding: const EdgeInsets.fromLTRB(20, 24, 20, 20),
                   child: ConstrainedBox(
@@ -507,10 +447,7 @@ class _AttendanceKindPicker extends StatelessWidget {
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          );
   }
 }
 
@@ -573,20 +510,15 @@ class _KindButton extends StatelessWidget {
 // Overlay (viewfinder + controls)
 // ─────────────────────────────────────────────────────────────────────────────
 class _ScanOverlay extends StatelessWidget {
-  final String? groupName;
   final ScanAttendanceKind kind;
-  final bool torchOn, paused, sending;
-  final VoidCallback onToggleTorch, onTogglePause, onChangeKind, onClose;
+  final bool paused, sending;
+  final VoidCallback onTogglePause, onChangeKind;
   const _ScanOverlay({
-    required this.groupName,
     required this.kind,
-    required this.torchOn,
     required this.paused,
     required this.sending,
-    required this.onToggleTorch,
     required this.onTogglePause,
     required this.onChangeKind,
-    required this.onClose,
   });
 
   @override
@@ -606,17 +538,6 @@ class _ScanOverlay extends StatelessWidget {
   Widget _buildContent(BuildContext context) {
     return Column(
       children: [
-        // ── Top bar ──────────────────────────────────────────────────────
-        _ScanTopBar(
-          title: groupName ?? tr('مسح الحضور'),
-          onClose: onClose,
-          trailing: _GlassIconButton(
-            icon: torchOn ? Icons.flash_on_rounded : Icons.flash_off_rounded,
-            tooltip: tr('الفلاش'),
-            onTap: onToggleTorch,
-            active: torchOn,
-          ),
-        ),
 
         // ── Attendance kind badge ────────────────────────────────────────
         Padding(

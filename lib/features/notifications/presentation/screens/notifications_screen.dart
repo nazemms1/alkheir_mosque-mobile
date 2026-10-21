@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/features/students/data/repositories/student_repository_impl.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
 class NotificationsScreen extends StatefulWidget {
@@ -85,7 +86,12 @@ class _NotificationsScreenState extends State<NotificationsScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
-      appBar: _buildAppBar(context),
+      appBar: AdminAppBar(
+        title: tr('الإشعارات'),
+        subtitle: (!_loading && _notes.isNotEmpty)
+            ? trf('{0} ملاحظة', [_notes.length])
+            : null,
+      ),
       body: FadeTransition(
         opacity: _fade,
         child: _buildBody(),
@@ -155,76 +161,6 @@ class _NotificationsScreenState extends State<NotificationsScreen>
           ),
         ),
       ],
-    );
-  }
-
-  PreferredSizeWidget _buildAppBar(BuildContext context) {
-    return PreferredSize(
-      preferredSize: const Size.fromHeight(64),
-      child: Container(
-        decoration: const BoxDecoration(
-          gradient: AppColors.gradientPrimary,
-          boxShadow: [
-            BoxShadow(
-                color: Color(0x30000000), blurRadius: 12, offset: Offset(0, 3)),
-          ],
-        ),
-        child: SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            child: Row(
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      color: AppColors.glassWhite,
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: AppColors.glassBorder),
-                    ),
-                    child: const Icon(Icons.arrow_forward_ios_rounded,
-                        color: Colors.white, size: 18),
-                  ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    tr('الإشعارات'),
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Dubai',
-                    ),
-                  ),
-                ),
-                if (!_loading && _notes.isNotEmpty)
-                  Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
-                    decoration: BoxDecoration(
-                      color: AppColors.gold.withValues(alpha: 0.25),
-                      borderRadius: BorderRadius.circular(20),
-                      border:
-                          Border.all(color: AppColors.gold.withValues(alpha: 0.5)),
-                    ),
-                    child: Text(
-                      trf('{0} ملاحظة', [_notes.length]),
-                      style: const TextStyle(
-                        color: AppColors.goldLight,
-                        fontSize: 12,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Dubai',
-                      ),
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ),
-      ),
     );
   }
 }

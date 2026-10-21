@@ -8,6 +8,7 @@ import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart' show StudentParentInfo;
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 class SupervisorStudentDetail extends StatefulWidget {
   final int studentId;
@@ -81,126 +82,34 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (_, __) => [_buildAppBar()],
-        body: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _error != null
-                ? _ErrorView(message: _error!, onRetry: _load)
-                : _Body(
-                    enrollments: _enrollments,
-                    assessments: _assessments,
-                    parentInfo: _parentInfo,
-                    totalPoints: _totalPoints,
-                    totalMemorizedPages: _totalMemorizedPages,
-                    canViewAssessments: _canViewAssessments,
-                    canRecordMemorization: _canRecordMemorization,
-                    teacherId: widget.token.teacherId,
-                    service: _service,
-                    onRecorded: _load,
-                  ),
+      appBar: AdminAppBar(
+        title: widget.studentName,
+        subtitle: tr('ملف الطالب'),
       ),
-    );
-  }
-
-  Widget _buildAppBar() {
-    return SliverAppBar(
-      expandedHeight: 190,
-      pinned: true,
-      stretch: true,
-      backgroundColor: const Color(0xFF0D5016),
-      leading: IconButton(
-        icon: const Icon(Icons.arrow_back_ios_rounded,
-            color: Colors.white, size: 20),
-        onPressed: () => Navigator.pop(context),
-      ),
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [StretchMode.blurBackground],
-        background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 44),
-                Container(
-                  width: 82,
-                  height: 82,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.gradientGold,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3), width: 2.5),
-                    boxShadow: [
-                      BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.4),
-                          blurRadius: 20,
-                          spreadRadius: 2),
-                    ],
-                  ),
-                  child: Center(
-                    child: Text(
-                      widget.studentName.isNotEmpty
-                          ? widget.studentName[0]
-                          : tr('؟'),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 26,
-                        fontWeight: FontWeight.w800,
-                        fontFamily: 'Dubai',
-                      ),
-                    ),
-                  ),
-                )
-                    .animate()
-                    .scale(
-                        begin: const Offset(0.7, 0.7),
-                        curve: Curves.easeOutBack,
-                        duration: 500.ms)
-                    .fadeIn(),
-                const SizedBox(height: 10),
-                Text(
-                  widget.studentName,
-                  style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      fontFamily: 'Dubai'),
-                ).animate().fadeIn(delay: 150.ms),
-                if (!_loading && _error == null) ...[
-                  const SizedBox(height: 6),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _Chip(
-                          label: trf('{0} صفحة', [_totalMemorizedPages]),
-                          color: AppColors.gold,
-                          icon: Icons.menu_book_rounded),
-                      const SizedBox(width: 8),
-                      _Chip(
-                          label: trf('{0} نقطة', [_totalPoints]),
-                          color: AppColors.primaryLight,
-                          icon: Icons.star_rounded),
-                    ],
-                  ).animate().fadeIn(delay: 250.ms),
-                ],
-              ],
-            ),
-          ),
-        ),
-      ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? _ErrorView(message: _error!, onRetry: _load)
+              : _Body(
+                  studentName: widget.studentName,
+                  enrollments: _enrollments,
+                  assessments: _assessments,
+                  parentInfo: _parentInfo,
+                  totalPoints: _totalPoints,
+                  totalMemorizedPages: _totalMemorizedPages,
+                  canViewAssessments: _canViewAssessments,
+                  canRecordMemorization: _canRecordMemorization,
+                  teacherId: widget.token.teacherId,
+                  service: _service,
+                  onRecorded: _load,
+                ),
     );
   }
 }
 
 // ─── Body ─────────────────────────────────────────────────────────────────────
 class _Body extends StatelessWidget {
+  final String studentName;
   final List<AdminEnrollmentItem> enrollments;
   final List<AdminAssessmentItem> assessments;
   final StudentParentInfo? parentInfo;
@@ -213,6 +122,7 @@ class _Body extends StatelessWidget {
   final VoidCallback onRecorded;
 
   const _Body({
+    required this.studentName,
     required this.enrollments,
     required this.assessments,
     required this.parentInfo,
@@ -225,16 +135,113 @@ class _Body extends StatelessWidget {
     required this.onRecorded,
   });
 
+  Widget _buildHeroBanner() {
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
+          begin: Alignment.topRight,
+          end: Alignment.bottomLeft,
+        ),
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF0D5016).withValues(alpha: 0.25),
+            blurRadius: 16,
+            offset: const Offset(0, 4),
+          ),
+        ],
+      ),
+      child: Row(
+        children: [
+          Container(
+            width: 58,
+            height: 58,
+            decoration: BoxDecoration(
+              gradient: AppColors.gradientGold,
+              shape: BoxShape.circle,
+              border: Border.all(
+                  color: Colors.white.withValues(alpha: 0.3), width: 2),
+              boxShadow: [
+                BoxShadow(
+                  color: AppColors.gold.withValues(alpha: 0.35),
+                  blurRadius: 12,
+                ),
+              ],
+            ),
+            child: Center(
+              child: Text(
+                studentName.isNotEmpty ? studentName[0] : '؟',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w800,
+                  fontFamily: 'Dubai',
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  studentName,
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w800,
+                    fontFamily: 'Dubai',
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Wrap(
+                  spacing: 8,
+                  runSpacing: 4,
+                  children: [
+                    _Chip(
+                      label: trf('{0} صفحة', [totalMemorizedPages]),
+                      color: AppColors.gold,
+                      icon: Icons.menu_book_rounded,
+                    ),
+                    _Chip(
+                      label: trf('{0} نقطة', [totalPoints]),
+                      color: AppColors.primaryLight,
+                      icon: Icons.star_rounded,
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    ).animate().fadeIn(duration: 300.ms).slideY(begin: 0.05, end: 0);
+  }
+
   @override
   Widget build(BuildContext context) {
     if (enrollments.isEmpty) {
-      return _Empty(
-          icon: Icons.school_outlined,
-          message: tr('لا توجد تسجيلات لهذا الطالب'));
+      return ListView(
+        padding: const EdgeInsets.all(16),
+        children: [
+          _buildHeroBanner(),
+          const SizedBox(height: 32),
+          _Empty(
+            icon: Icons.school_outlined,
+            message: tr('لا توجد تسجيلات لهذا الطالب'),
+          ),
+        ],
+      );
     }
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 120),
       children: [
+        _buildHeroBanner(),
+        const SizedBox(height: 12),
+
         _Card(
           title: tr('ملخص الطالب'),
           icon: Icons.insights_rounded,
@@ -626,33 +633,56 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
         minChildSize: 0.5,
         maxChildSize: 0.95,
         expand: false,
-        builder: (_, scrollCtrl) => Container(
-          decoration: BoxDecoration(
-            color: bg,
-            borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.18),
-                  blurRadius: 30,
-                  offset: const Offset(0, -4))
-            ],
-          ),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(top: 10, bottom: 4),
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                      color: Colors.grey.withValues(alpha: 0.3),
-                      borderRadius: BorderRadius.circular(2)),
+        builder: (_, scrollCtrl) {
+          final isDark = Theme.of(context).brightness == Brightness.dark;
+          final borderColor =
+              isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+          final handleColor =
+              isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+
+          return Container(
+            decoration: BoxDecoration(
+              color: bg,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(32)),
+              border: Border(top: BorderSide(color: borderColor, width: 1.5)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
+                  blurRadius: 36,
+                  offset: const Offset(0, -8),
                 ),
-                _SheetHeaderRow(
-                    studentName: widget.enrollment.studentName,
-                    groupName: widget.enrollment.groupName),
-                const Divider(height: 1),
+                BoxShadow(
+                  color: const Color(0xFF0D5016)
+                      .withValues(alpha: isDark ? 0.25 : 0.08),
+                  blurRadius: 18,
+                  offset: const Offset(0, -2),
+                ),
+              ],
+            ),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 12, bottom: 6),
+                      width: 48,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: handleColor,
+                        borderRadius: BorderRadius.circular(2.5),
+                      ),
+                    ),
+                  ),
+                  _SheetHeaderRow(
+                      studentName: widget.enrollment.studentName,
+                      groupName: widget.enrollment.groupName),
+                  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: borderColor.withValues(alpha: 0.6),
+                  ),
                 Expanded(
                   child: ListView(
                     controller: scrollCtrl,
@@ -906,10 +936,11 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
               ],
             ),
           ),
-        ),
-      ),
-    );
-  }
+        );
+      },
+    ),
+  );
+}
 }
 
 class _SheetHeaderRow extends StatelessWidget {
@@ -953,6 +984,8 @@ class _SheetHeaderRow extends StatelessWidget {
               ],
             ),
           ),
+          const SizedBox(width: 8),
+          AdminSheetCloseButton(onTap: () => Navigator.pop(context)),
         ],
       ),
     );

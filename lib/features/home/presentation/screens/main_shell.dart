@@ -14,6 +14,7 @@ import 'package:alkheir_mosque/features/auth/presentation/screens/login_screen.d
 import 'package:alkheir_mosque/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/di/di_locator.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
@@ -179,28 +180,71 @@ class _MainShellState extends ConsumerState<MainShell>
           final dividerColor =
               isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
 
+          final borderColor =
+              isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+          final handleColor =
+              isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+
           return Container(
             decoration: BoxDecoration(
               color: sheetBg,
               borderRadius:
                   const BorderRadius.vertical(top: Radius.circular(32)),
+              border: Border(top: BorderSide(color: borderColor, width: 1.5)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
+                  blurRadius: 36,
+                  offset: const Offset(0, -8),
+                ),
+                BoxShadow(
+                  color: const Color(0xFF0D5016)
+                      .withValues(alpha: isDark ? 0.25 : 0.08),
+                  blurRadius: 18,
+                  offset: const Offset(0, -2),
+                ),
+              ],
             ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              margin: const EdgeInsets.only(top: 12),
-              width: 44,
-              height: 4,
-              decoration: BoxDecoration(
-                color: dividerColor,
-                borderRadius: BorderRadius.circular(2),
-              ),
-            ),
-            Container(
-              width: double.infinity,
-              margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-              padding: const EdgeInsets.all(20),
+            child: SafeArea(
+              top: false,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.only(top: 12, bottom: 6),
+                      width: 48,
+                      height: 5,
+                      decoration: BoxDecoration(
+                        color: handleColor,
+                        borderRadius: BorderRadius.circular(2.5),
+                      ),
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(20, 2, 16, 6),
+                    child: Row(
+                      children: [
+                        Text(
+                          tr('الملف الشخصي'),
+                          style: TextStyle(
+                            color: isDark ? Colors.white : AppColors.textPrimary,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w800,
+                            fontFamily: 'Dubai',
+                          ),
+                        ),
+                        const Spacer(),
+                        AdminSheetCloseButton(
+                          onTap: () => Navigator.pop(sheetCtx),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    width: double.infinity,
+                    margin: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+                    padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
@@ -356,7 +400,8 @@ class _MainShellState extends ConsumerState<MainShell>
             ),
           ],
         ),
-      );
+      ),
+    );
     },
   ),
 );
@@ -810,29 +855,71 @@ class _UserProfileSheet extends ConsumerWidget {
         data.children.fold<int>(
             0, (s, c) => s + c.memorizationProgress.totalPagesMemorized);
 
+    final borderColor =
+        isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+    final handleColor =
+        isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+
     return Container(
       decoration: BoxDecoration(
         color: sheetBg,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-      ),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Handle
-          Container(
-            margin: const EdgeInsets.only(top: 12),
-            width: 44,
-            height: 4,
-            decoration: BoxDecoration(
-              color: dividerColor,
-              borderRadius: BorderRadius.circular(2),
-            ),
+        border: Border(top: BorderSide(color: borderColor, width: 1.5)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
+            blurRadius: 36,
+            offset: const Offset(0, -8),
           ),
-          // Hero section
-          Container(
-            width: double.infinity,
-            margin: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-            padding: const EdgeInsets.all(20),
+          BoxShadow(
+            color: const Color(0xFF0D5016)
+                .withValues(alpha: isDark ? 0.25 : 0.08),
+            blurRadius: 18,
+            offset: const Offset(0, -2),
+          ),
+        ],
+      ),
+      child: SafeArea(
+        top: false,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Center(
+              child: Container(
+                margin: const EdgeInsets.only(top: 12, bottom: 6),
+                width: 48,
+                height: 5,
+                decoration: BoxDecoration(
+                  color: handleColor,
+                  borderRadius: BorderRadius.circular(2.5),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(20, 2, 16, 6),
+              child: Row(
+                children: [
+                  Text(
+                    tr('الملف الشخصي'),
+                    style: TextStyle(
+                      color: isDark ? Colors.white : AppColors.textPrimary,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w800,
+                      fontFamily: 'Dubai',
+                    ),
+                  ),
+                  const Spacer(),
+                  AdminSheetCloseButton(
+                    onTap: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            // Hero section
+            Container(
+              width: double.infinity,
+              margin: const EdgeInsets.fromLTRB(16, 6, 16, 0),
+              padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [
@@ -1039,8 +1126,9 @@ class _UserProfileSheet extends ConsumerWidget {
           ),
         ],
       ),
-    );
-  }
+    ),
+  );
+}
 }
 
 class _SheetStat extends StatelessWidget {

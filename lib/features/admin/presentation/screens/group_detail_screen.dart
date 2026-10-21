@@ -114,14 +114,34 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: NestedScrollView(
-        headerSliverBuilder: (_, __) => [_buildAppBar()],
-        body: _loading
-            ? const Center(child: CircularProgressIndicator())
-            : _error != null
-                ? _errorBody()
-                : _Body(group: _detail!),
+      appBar: AdminAppBar(
+        title: widget.group.name,
+        subtitle: tr('تفاصيل الحلقة'),
+        actions: [
+          if (_canDelete)
+            _deleting
+                ? const Padding(
+                    padding: EdgeInsets.all(14),
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                          color: Colors.white, strokeWidth: 2.5),
+                    ),
+                  )
+                : IconButton(
+                    tooltip: tr('حذف الحلقة'),
+                    icon: const Icon(Icons.delete_outline_rounded,
+                        color: Colors.white),
+                    onPressed: _deleteGroup,
+                  ),
+        ],
       ),
+      body: _loading
+          ? const Center(child: CircularProgressIndicator())
+          : _error != null
+              ? _errorBody()
+              : _Body(group: _detail!),
       floatingActionButton: (!_loading && _error == null && _canUpdate)
           ? AdminFab(
               label: tr('تعديل'),
@@ -148,118 +168,33 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
       retryLabel: tr('إعادة المحاولة'),
     );
   }
+}
 
-  Widget _buildAppBar() {
-    final group = widget.group;
-    return SliverAppBar(
-      expandedHeight: 190,
-      pinned: true,
-      stretch: true,
-      backgroundColor: const Color(0xFF0D5016),
-      leading: IconButton(
-        tooltip: tr('رجوع'),
-        icon: const Icon(Icons.arrow_back_ios_rounded,
-            color: Colors.white, size: 20),
-        onPressed: () => Navigator.pop(context),
-      ),
-      actions: [
-        if (_canDelete)
-          _deleting
-              ? const Padding(
-                  padding: EdgeInsets.all(14),
-                  child: SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(
-                        color: Colors.white, strokeWidth: 2.5),
-                  ),
-                )
-              : IconButton(
-                  tooltip: tr('حذف الحلقة'),
-                  icon: const Icon(Icons.delete_outline_rounded,
-                      color: Colors.white),
-                  onPressed: _deleteGroup,
-                ),
-      ],
-      flexibleSpace: FlexibleSpaceBar(
-        stretchModes: const [StretchMode.blurBackground],
-        background: Container(
-          decoration: const BoxDecoration(
-            gradient: LinearGradient(
-              colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
-              begin: Alignment.topRight,
-              end: Alignment.bottomLeft,
-            ),
-          ),
-          child: SafeArea(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const SizedBox(height: 44),
-                Container(
-                  width: 82,
-                  height: 82,
-                  decoration: BoxDecoration(
-                    gradient: AppColors.gradientGold,
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                        color: Colors.white.withValues(alpha: 0.3), width: 2.5),
-                    boxShadow: [
-                      BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.4),
-                          blurRadius: 20,
-                          spreadRadius: 2),
-                    ],
-                  ),
-                  child: const Center(
-                    child: Icon(Icons.groups_rounded,
-                        color: Colors.white, size: 34),
-                  ),
-                )
-                    .animate()
-                    .scale(
-                        begin: const Offset(0.7, 0.7),
-                        curve: Curves.easeOutBack,
-                        duration: 500.ms)
-                    .fadeIn(),
-                const SizedBox(height: 10),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24),
-                  child: Text(
-                    group.name,
-                    textAlign: TextAlign.center,
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: appTextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.w800,
-                      color: Colors.white,
-                    ),
-                  ),
-                ).animate().fadeIn(delay: 150.ms),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _Chip(
-                        label: group.isActive ? tr('نشطة') : tr('منتهية'),
-                        color:
-                            group.isActive ? AppColors.success : Colors.white70,
-                        icon: group.isActive
-                            ? Icons.check_circle_rounded
-                            : Icons.archive_rounded),
-                    const SizedBox(width: 8),
-                    _Chip(
-                        label: trf('{0} طالب', [group.enrollmentsCount]),
-                        color: AppColors.primaryGlow,
-                        icon: Icons.people_rounded),
-                  ],
-                ).animate().fadeIn(delay: 250.ms),
-              ],
-            ),
-          ),
+// ─── Group Hero Banner ────────────────────────────────────────────────────────
+class _GroupHeroBanner extends StatelessWidget {
+  final AdminGroupDetail group;
+  const _GroupHeroBanner({required this.group});
+
+  @override
+  Widget build(BuildContext context) {
+    return AdminHero(
+      icon: Icons.groups_rounded,
+      title: group.name,
+      subtitle: group.course,
+      metrics: [
+        AdminHeroMetric(
+          icon: group.isActive
+              ? Icons.check_circle_rounded
+              : Icons.archive_rounded,
+          label: tr('الحالة'),
+          value: group.isActive ? tr('نشطة') : tr('منتهية'),
         ),
-      ),
+        AdminHeroMetric(
+          icon: Icons.people_rounded,
+          label: tr('الطلاب'),
+          value: '${group.enrollments.length}',
+        ),
+      ],
     );
   }
 }
@@ -274,6 +209,8 @@ class _Body extends StatelessWidget {
     return ListView(
       padding: const EdgeInsets.fromLTRB(16, 16, 16, 100),
       children: [
+        _GroupHeroBanner(group: group),
+        const SizedBox(height: 14),
         _Card(
           title: tr('بيانات الحلقة'),
           icon: Icons.info_outline_rounded,
@@ -452,29 +389,5 @@ class _EmptyRow extends StatelessWidget {
             textAlign: TextAlign.center,
             style:
                 appTextStyle(fontSize: 13, color: AdminTheme.muted(context))),
-      );
-}
-
-class _Chip extends StatelessWidget {
-  final String label;
-  final Color color;
-  final IconData? icon;
-  const _Chip({required this.label, required this.color, this.icon});
-
-  @override
-  Widget build(BuildContext context) => Container(
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        decoration: BoxDecoration(
-            color: color.withValues(alpha: 0.2),
-            borderRadius: BorderRadius.circular(20)),
-        child: Row(mainAxisSize: MainAxisSize.min, children: [
-          if (icon != null) ...[
-            Icon(icon, size: 12, color: color),
-            const SizedBox(width: 4)
-          ],
-          Text(label,
-              style: appTextStyle(
-                  fontSize: 11, fontWeight: FontWeight.w700, color: color)),
-        ]),
       );
 }

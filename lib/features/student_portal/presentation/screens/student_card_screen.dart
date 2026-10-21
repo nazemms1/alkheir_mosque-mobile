@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 class StudentCardScreen extends StatefulWidget {
   final StudentDashboardData data;
@@ -48,39 +49,53 @@ class _StudentCardScreenState extends State<StudentCardScreen>
     final s = widget.data.student;
     return Scaffold(
       backgroundColor: AppColors.bgDeep,
+      appBar: AdminAppBar(
+        title: tr('بطاقة الطالب'),
+        subtitle: s.name,
+        actions: [
+          AdminActionItem(
+            icon: Icons.download_rounded,
+            tooltip: tr('حفظ كـ Pass'),
+            onTap: () {
+              HapticFeedback.lightImpact();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(
+                    tr('يمكنك تصوير الشاشة لحفظ البطاقة كـ Pass'),
+                    style: const TextStyle(fontFamily: 'Dubai'),
+                  ),
+                  backgroundColor: AppColors.primary,
+                  duration: const Duration(seconds: 2),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
       body: Stack(
         children: [
           _AnimatedBg(controller: _bgCtrl),
-          SafeArea(
-            child: Column(
-              children: [
-                _TopBar(onClose: () => Navigator.of(context).pop()),
-                Expanded(
-                  child: SingleChildScrollView(
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.all(20),
-                    child: FadeTransition(
-                      opacity: _cardFade,
-                      child: SlideTransition(
-                        position: _cardSlide,
-                        child: Column(
-                          children: [
-                            _IDCard(student: s, data: widget.data),
-                            const SizedBox(height: 20),
-                            _StatsGrid(data: widget.data),
-                            const SizedBox(height: 20),
-                            _ProgressSection(data: widget.data),
-                            const SizedBox(height: 20),
-                            _RecentSabr(records: widget.data.sabrRecords),
-                            const SizedBox(height: 20),
-                            _SavePassHint(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
+          SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            padding: const EdgeInsets.all(20),
+            child: FadeTransition(
+              opacity: _cardFade,
+              child: SlideTransition(
+                position: _cardSlide,
+                child: Column(
+                  children: [
+                    _IDCard(student: s, data: widget.data),
+                    const SizedBox(height: 20),
+                    _StatsGrid(data: widget.data),
+                    const SizedBox(height: 20),
+                    _ProgressSection(data: widget.data),
+                    const SizedBox(height: 20),
+                    _RecentSabr(records: widget.data.sabrRecords),
+                    const SizedBox(height: 20),
+                    _SavePassHint(),
+                  ],
                 ),
-              ],
+              ),
             ),
           ),
         ],
@@ -150,76 +165,6 @@ class _Orb extends StatelessWidget {
         shape: BoxShape.circle,
         gradient: RadialGradient(
             colors: [color.withValues(alpha: opacity), Colors.transparent]),
-      ),
-    );
-  }
-}
-
-// ─── Top Bar ──────────────────────────────────────────────────────────────────
-class _TopBar extends StatelessWidget {
-  final VoidCallback onClose;
-  const _TopBar({required this.onClose});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: onClose,
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.2)),
-              ),
-              child: const Icon(Icons.close_rounded,
-                  color: Colors.white, size: 20),
-            ),
-          ),
-          Expanded(
-            child: Text(
-              tr('بطاقة الطالب'),
-              textAlign: TextAlign.center,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 17,
-                fontWeight: FontWeight.w700,
-                fontFamily: 'Dubai',
-              ),
-            ),
-          ),
-          GestureDetector(
-            onTap: () {
-              HapticFeedback.lightImpact();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(tr('يمكنك تصوير الشاشة لحفظ البطاقة كـ Pass'),
-                      style: const TextStyle(fontFamily: 'Dubai')),
-                  backgroundColor: AppColors.primary,
-                  duration: const Duration(seconds: 2),
-                ),
-              );
-            },
-            child: Container(
-              width: 40,
-              height: 40,
-              decoration: BoxDecoration(
-                gradient: AppColors.gradientGold,
-                borderRadius: BorderRadius.circular(12),
-                boxShadow: [
-                  BoxShadow(
-                      color: AppColors.gold.withValues(alpha: 0.4), blurRadius: 10)
-                ],
-              ),
-              child: const Icon(Icons.download_rounded,
-                  color: Colors.white, size: 20),
-            ),
-          ),
-        ],
       ),
     );
   }
@@ -387,7 +332,8 @@ class _IDCard extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
                 // Divider
-                Container(height: 1, color: Colors.white.withValues(alpha: 0.15)),
+                Container(
+                    height: 1, color: Colors.white.withValues(alpha: 0.15)),
                 const SizedBox(height: 14),
                 // Info row
                 Row(
@@ -645,7 +591,8 @@ class _RecentSabr extends StatelessWidget {
         children: [
           Row(
             children: [
-              const Icon(Icons.quiz_rounded, color: AppColors.goldLight, size: 18),
+              const Icon(Icons.quiz_rounded,
+                  color: AppColors.goldLight, size: 18),
               const SizedBox(width: 8),
               Text(
                 tr('آخر نتائج السبر'),

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -15,19 +16,23 @@ import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart
 
 Color moduleMuted(BuildContext context) => AdminTheme.muted(context);
 
-/// هيكل شاشة وحدة: شريط علوي متدرّج بألوان الهوية ومحتوى.
+/// هيكل شاشة وحدة: شريط علوي متدرّج ومثبت بألوان الهوية ومحتوى.
 class ModuleScaffold extends StatelessWidget {
   final String title;
+  final String? subtitle;
   final Widget body;
   final List<Widget> actions;
+  final Widget? leading;
   final Widget? floatingActionButton;
   final PreferredSizeWidget? bottom;
 
   const ModuleScaffold({
     super.key,
     required this.title,
+    this.subtitle,
     required this.body,
     this.actions = const [],
+    this.leading,
     this.floatingActionButton,
     this.bottom,
   });
@@ -37,7 +42,9 @@ class ModuleScaffold extends StatelessWidget {
     return Scaffold(
       appBar: AdminAppBar(
         title: title,
+        subtitle: subtitle,
         actions: actions,
+        leading: leading,
         bottom: bottom,
       ),
       body: body,
@@ -253,103 +260,156 @@ class _RecordSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 44,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
+    final isDark = AdminTheme.isDark(context);
+    final cardBg = isDark
+        ? Colors.white.withValues(alpha: 0.04)
+        : const Color(0xFFF7FBF8);
+    final cardBorder =
+        isDark ? const Color(0xFF1E3A24) : const Color(0xFFE2EDE4);
+
+    return AdminBottomSheetShell(
+      title: title,
+      subtitle: subtitle,
+      icon: Icons.description_rounded,
+      iconColor: AppColors.primaryLight,
+      child: SingleChildScrollView(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            if (rows.isNotEmpty)
+              Container(
+                margin: const EdgeInsets.only(bottom: 16),
+                decoration: BoxDecoration(
+                  color: cardBg,
+                  borderRadius: BorderRadius.circular(18),
+                  border: Border.all(color: cardBorder, width: 1.2),
                 ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                title,
-                style: appTextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-              if (subtitle != null)
-                Text(
-                  subtitle!,
-                  style: appTextStyle(
-                    fontSize: 12,
-                    color: moduleMuted(context),
-                  ),
-                ),
-              const SizedBox(height: 12),
-              for (final row in rows) ...[
-                if (_isPhoneField(row.key, row.value))
-                  InfoRow(
-                    label: row.key,
-                    value: row.value,
-                    onTap: () => UrlLauncherService().launchPhone(row.value),
-                    trailing: Tooltip(
-                      message: tr('اتصال بالرقم'),
-                      child: GestureDetector(
-                        onTap: () =>
-                            UrlLauncherService().launchPhone(row.value),
-                        behavior: HitTestBehavior.opaque,
-                        child: Container(
-                          padding: const EdgeInsets.all(4),
-                          decoration: BoxDecoration(
-                            color:
-                                AppColors.primaryLight.withValues(alpha: 0.12),
-                            borderRadius: BorderRadius.circular(6),
-                            border: Border.all(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                child: Column(
+                  children: [
+                    for (int i = 0; i < rows.length; i++) ...[
+                      if (i > 0)
+                        Divider(
+                          height: 14,
+                          thickness: 1,
+                          color: cardBorder.withValues(alpha: 0.7),
+                        ),
+                      if (_isPhoneField(rows[i].key, rows[i].value))
+                        InfoRow(
+                          label: rows[i].key,
+                          value: rows[i].value,
+                          onTap: () =>
+                              UrlLauncherService().launchPhone(rows[i].value),
+                          trailing: Tooltip(
+                            message: tr('اتصال بالرقم'),
+                            child: Material(
                               color: AppColors.primaryLight
-                                  .withValues(alpha: 0.25),
+                                  .withValues(alpha: 0.12),
+                              borderRadius: BorderRadius.circular(8),
+                              child: InkWell(
+                                borderRadius: BorderRadius.circular(8),
+                                onTap: () => UrlLauncherService()
+                                    .launchPhone(rows[i].value),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 8, vertical: 4),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8),
+                                    border: Border.all(
+                                      color: AppColors.primaryLight
+                                          .withValues(alpha: 0.3),
+                                    ),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      const Icon(
+                                        Icons.phone_in_talk_rounded,
+                                        size: 14,
+                                        color: AppColors.primaryLight,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        tr('اتصال'),
+                                        style: const TextStyle(
+                                          fontFamily: 'Dubai',
+                                          fontSize: 11,
+                                          fontWeight: FontWeight.w700,
+                                          color: AppColors.primaryLight,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
                             ),
                           ),
-                          child: const Icon(
-                            Icons.phone_in_talk_rounded,
-                            size: 15,
-                            color: AppColors.primaryLight,
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                else
-                  InfoRow(label: row.key, value: row.value),
-              ],
-              if (actions.isNotEmpty) ...[
-                const SizedBox(height: 16),
-                Wrap(
-                  spacing: 8,
-                  runSpacing: 8,
-                  children: [
-                    for (final action in actions)
-                      OutlinedButton.icon(
-                        onPressed: () => Navigator.pop(context, action.id),
-                        icon: Icon(action.icon, size: 18),
-                        label: Text(action.label, style: appTextStyle()),
-                        style: OutlinedButton.styleFrom(
-                          foregroundColor: action.destructive
-                              ? AppColors.error
-                              : AppColors.primary,
-                        ),
-                      ),
+                        )
+                      else
+                        InfoRow(label: rows[i].key, value: rows[i].value),
+                    ],
                   ],
                 ),
-              ],
+              ),
+            if (actions.isNotEmpty)
+              Wrap(
+                spacing: 10,
+                runSpacing: 10,
+                children: [
+                  for (final action in actions)
+                    _SheetActionButton(
+                      action: action,
+                      onTap: () => Navigator.pop(context, action.id),
+                    ),
+                ],
+              ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _SheetActionButton extends StatelessWidget {
+  final SheetAction action;
+  final VoidCallback onTap;
+
+  const _SheetActionButton({required this.action, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final color = action.destructive ? AppColors.error : AppColors.primaryLight;
+    return Material(
+      color: color.withValues(alpha: 0.1),
+      borderRadius: BorderRadius.circular(14),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(14),
+        onTap: () {
+          HapticFeedback.lightImpact();
+          onTap();
+        },
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 11),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(14),
+            border: Border.all(color: color.withValues(alpha: 0.35), width: 1.2),
+          ),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(action.icon, size: 18, color: color),
+              const SizedBox(width: 8),
+              Text(
+                action.label,
+                style: TextStyle(
+                  fontFamily: 'Dubai',
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
+                  color: color,
+                ),
+              ),
             ],
           ),
         ),
@@ -358,7 +418,7 @@ class _RecordSheet extends StatelessWidget {
   }
 }
 
-/// نافذة نموذج سفلية تتكيّف مع لوحة المفاتيح.
+/// نافذة نموذج سفلية فاخرة تتكيّف مع لوحة المفاتيح.
 class ModuleFormSheet extends StatelessWidget {
   final String title;
   final Widget child;
@@ -367,45 +427,14 @@ class ModuleFormSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final keyboard = MediaQuery.viewInsetsOf(context).bottom;
-    return Container(
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.fromLTRB(20, 12, 20, 20 + keyboard),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: 44,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: theme.dividerColor,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 14),
-              Text(
-                title,
-                style: appTextStyle(
-                  fontSize: 17,
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
-                ),
-              ),
-              const SizedBox(height: 14),
-              child,
-            ],
-          ),
-        ),
+    return AdminBottomSheetShell(
+      title: title,
+      icon: Icons.edit_note_rounded,
+      iconColor: AppColors.gold,
+      child: SingleChildScrollView(
+        padding: EdgeInsets.only(bottom: keyboard),
+        child: child,
       ),
     );
   }

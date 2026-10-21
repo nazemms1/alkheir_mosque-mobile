@@ -1,4 +1,4 @@
-﻿import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
 enum AttendanceStatus {
   present,

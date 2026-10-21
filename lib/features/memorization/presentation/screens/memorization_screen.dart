@@ -5,6 +5,7 @@ import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/features/students/data/repositories/student_repository_impl.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 class MemorizationScreen extends StatefulWidget {
   final MemorizationProgress progress;
@@ -469,28 +470,52 @@ class _JuzDetailSheet extends StatelessWidget {
       initialChildSize: 0.82,
       minChildSize: 0.5,
       maxChildSize: 0.95,
-      builder: (_, ctrl) => Container(
-        decoration: BoxDecoration(
-          color: bg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-          boxShadow: [
-            BoxShadow(
-                color: Colors.black.withValues(alpha: 0.18),
-                blurRadius: 30,
-                offset: const Offset(0, -4))
-          ],
-        ),
-        child: Column(children: [
-          Container(
-            margin: const EdgeInsets.only(top: 10, bottom: 4),
-            width: 40,
-            height: 4,
-            decoration: BoxDecoration(
-                color: Colors.grey.withValues(alpha: 0.3),
-                borderRadius: BorderRadius.circular(2)),
+      builder: (_, ctrl) {
+        final isDark = Theme.of(context).brightness == Brightness.dark;
+        final borderColor =
+            isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+        final handleColor =
+            isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+
+        return Container(
+          decoration: BoxDecoration(
+            color: bg,
+            borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
+            border: Border(top: BorderSide(color: borderColor, width: 1.5)),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
+                blurRadius: 36,
+                offset: const Offset(0, -8),
+              ),
+              BoxShadow(
+                color: const Color(0xFF0D5016)
+                    .withValues(alpha: isDark ? 0.25 : 0.08),
+                blurRadius: 18,
+                offset: const Offset(0, -2),
+              ),
+            ],
           ),
-          _SheetHeader(section: section),
-          const SizedBox(height: 4),
+          child: Column(
+            children: [
+              Center(
+                child: Container(
+                  margin: const EdgeInsets.only(top: 12, bottom: 6),
+                  width: 48,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: handleColor,
+                    borderRadius: BorderRadius.circular(2.5),
+                  ),
+                ),
+              ),
+              _SheetHeader(section: section),
+              Divider(
+                height: 1,
+                thickness: 1,
+                color: borderColor.withValues(alpha: 0.6),
+              ),
+              const SizedBox(height: 6),
           Expanded(
             child: ListView(
               controller: ctrl,
@@ -531,9 +556,11 @@ class _JuzDetailSheet extends StatelessWidget {
               ],
             ),
           ),
-        ]),
+        ],
       ),
     );
+  },
+);
   }
 }
 
@@ -1078,6 +1105,8 @@ class _SheetHeader extends StatelessWidget {
             ),
           ]),
         ])),
+        const SizedBox(width: 8),
+        AdminSheetCloseButton(onTap: () => Navigator.pop(context)),
       ]),
     );
   }

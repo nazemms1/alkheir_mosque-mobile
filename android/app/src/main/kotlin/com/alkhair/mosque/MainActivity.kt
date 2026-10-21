@@ -1,4 +1,4 @@
-package com.example.alkheir_mosque
+package com.alkhair.mosque
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -122,59 +122,44 @@ class _ItemPickerSheetState extends State<_ItemPickerSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final height = MediaQuery.sizeOf(context).height * 0.7;
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: Column(
-          children: [
-            const SizedBox(height: 12),
-            Container(
-              width: 44,
-              height: 4,
-              decoration: BoxDecoration(
-                color: theme.dividerColor,
-                borderRadius: BorderRadius.circular(2),
+    final height = MediaQuery.sizeOf(context).height * 0.75;
+    return AdminBottomSheetShell(
+      maxHeight: height,
+      title: widget.title,
+      icon: Icons.manage_search_rounded,
+      iconColor: AppColors.primaryLight,
+      padding: EdgeInsets.zero,
+      trailing: widget.allowClear
+          ? TextButton(
+              onPressed: () => Navigator.pop(context, PickerItem.clear),
+              style: TextButton.styleFrom(
+                foregroundColor: AppColors.error,
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 14, 16, 8),
               child: Text(
-                widget.title,
-                style: appTextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w800,
-                  color: theme.colorScheme.onSurface,
+                tr('بلا اختيار'),
+                style: const TextStyle(
+                  fontFamily: 'Dubai',
+                  fontSize: 12,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
+            )
+          : null,
+      child: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 4, 16, 10),
+            child: AdminSearchField(
+              controller: _searchCtrl,
+              hint: tr('ابحث…'),
+              autofocus: true,
+              onChanged: _onChanged,
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: AdminSearchField(
-                controller: _searchCtrl,
-                hint: tr('ابحث…'),
-                autofocus: true,
-                onChanged: _onChanged,
-              ),
-            ),
-            if (widget.allowClear)
-              Align(
-                alignment: AlignmentDirectional.centerStart,
-                child: TextButton(
-                  onPressed: () => Navigator.pop(context, PickerItem.clear),
-                  child: Text(tr('بلا اختيار'), style: appTextStyle()),
-                ),
-              ),
-            const SizedBox(height: 4),
-            Expanded(child: _buildList(context)),
-          ],
-        ),
+          ),
+          Expanded(child: _buildList(context)),
+        ],
       ),
     );
   }
