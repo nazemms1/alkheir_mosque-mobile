@@ -32,6 +32,8 @@ class _MyAppState extends ConsumerState<MyApp> {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: themeMode,
+      themeAnimationDuration: const Duration(milliseconds: 60),
+      themeAnimationCurve: Curves.easeOut,
       locale: locale,
       supportedLocales: AppLocalizations.supportedLocales,
       localizationsDelegates: const [
@@ -48,7 +50,10 @@ class _MyAppState extends ConsumerState<MyApp> {
         if (l10n != null) {
           L10nGateway.update(l10n);
         }
-        return child ?? const SizedBox.shrink();
+        return KeyedSubtree(
+          key: ValueKey('app-locale-${locale.languageCode}'),
+          child: child ?? const SizedBox.shrink(),
+        );
       },
     );
   }

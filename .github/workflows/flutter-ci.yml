@@ -1,0 +1,71 @@
+
+name: Flutter CI
+
+on:
+  push:
+    branches:
+      - main
+      - mhd-khair
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test-build-upload:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: gradle
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Check formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+
+      - name: Analyze code
+        run: flutter analyze
+
+      - name: Run tests
+        run: flutter test
+
+      - name: Build release APK
+        run: flutter build apk --release
+
+      - name: Prepare artifact
+        run: |
+          mkdir -p release
+          cp build/app/outputs/flutter-apk/app-release.apk \
+            "release/app-${GITHUB_SHA::7}.apk"
+
+      - name: Configure Google Drive
+        env:
+          RCLONE_CONFIG: ${{ secrets.RCLONE_CONFIG }}
+        run: |
+          mkdir -p "$HOME/.config/rclone"
+          printf '%s' "$RCLONE_CONFIG" \
+            > "$HOME/.config/rclone/rclone.conf"
+
+      - name: Upload APK to Google Drive
+        env:
+          COMMIT_SHA: ${{ github.sha }}
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+          rclone copy release \
+            "gdrive:FlutterBuilds/${GITHUB_REF_NAME}" \
+            --metadata-set "commit=${COMMIT_SHA}"

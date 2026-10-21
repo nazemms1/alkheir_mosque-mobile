@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../session/theme_provider.dart';
+import '../../../di/di_locator.dart';
 import 'en_dictionary.dart';
+
+export '../../../di/di_locator.dart' show languageProvider, LanguageNotifier;
 
 /// اللغات المدعومة في التطبيق: العربية (الأساسية) والإنجليزية.
 abstract final class AppLanguage {
@@ -39,31 +40,5 @@ String trf(String arabic, List<Object?> args) {
   return text;
 }
 
-/// مزوّد اللغة — يحفظ الاختيار محلياً ويُعيد بناء التطبيق عند تغييرها.
-class LocaleNotifier extends Notifier<Locale> {
-  static const _prefsKey = 'app_language';
-
-  @override
-  Locale build() {
-    final code = ref.read(sharedPrefsProvider).getString(_prefsKey);
-    final locale = code == 'en' ? AppLanguage.english : AppLanguage.arabic;
-    AppLanguage.current = locale;
-    return locale;
-  }
-
-  Future<void> setLanguage(String languageCode) async {
-    final locale =
-        languageCode == 'en' ? AppLanguage.english : AppLanguage.arabic;
-    AppLanguage.current = locale;
-    state = locale;
-    await ref
-        .read(sharedPrefsProvider)
-        .setString(_prefsKey, locale.languageCode);
-  }
-
-  Future<void> toggle() =>
-      setLanguage(state.languageCode == 'ar' ? 'en' : 'ar');
-}
-
-final localeProvider =
-    NotifierProvider<LocaleNotifier, Locale>(LocaleNotifier.new);
+/// مزوّد اللغة المتوافق مع [languageProvider] في `di_locator.dart`
+final localeProvider = languageProvider;

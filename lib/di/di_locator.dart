@@ -9,6 +9,7 @@ import '../app/core/services/package_info_service.dart';
 import '../app/core/services/secure_storage_service.dart';
 import '../app/core/services/shared_prefs_service.dart';
 import '../app/core/services/url_launcher_service.dart';
+import '../app/core/i18n/app_language.dart';
 import '../ui/app_routes.dart';
 
 /// SharedPreferences raw instance provider (must be overridden in main)
@@ -69,15 +70,27 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
 
   ThemeModeNotifier(this._prefs) : super(_prefs.getThemeMode());
 
+  /// Returns true if currently displaying dark mode, accounting for system theme
+  bool get isDarkMode {
+    if (state == ThemeMode.system) {
+      return WidgetsBinding.instance.platformDispatcher.platformBrightness ==
+          Brightness.dark;
+    }
+    return state == ThemeMode.dark;
+  }
+
   Future<void> setThemeMode(ThemeMode mode) async {
     state = mode;
-    await _prefs.setThemeMode(mode);
+    _prefs.setThemeMode(mode);
   }
 
   Future<void> toggleTheme() async {
-    final next = state == ThemeMode.dark ? ThemeMode.light : ThemeMode.dark;
+    final next = isDarkMode ? ThemeMode.light : ThemeMode.dark;
     await setThemeMode(next);
   }
+
+  /// Alias for toggleTheme for compatibility
+  Future<void> toggle() => toggleTheme();
 }
 
 final themeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
@@ -90,17 +103,24 @@ class LanguageNotifier extends StateNotifier<Locale> {
   final SharedPrefsService _prefs;
 
   LanguageNotifier(this._prefs)
-      : super(Locale(_prefs.getLanguageCode(defaultCode: 'ar')));
+      : super(Locale(_prefs.getLanguageCode(defaultCode: 'ar'))) {
+    AppLanguage.current = state;
+  }
 
   Future<void> setLanguage(String languageCode) async {
-    state = Locale(languageCode);
-    await _prefs.setLanguageCode(languageCode);
+    final newLocale = Locale(languageCode);
+    AppLanguage.current = newLocale;
+    state = newLocale;
+    _prefs.setLanguageCode(languageCode);
   }
 
   Future<void> toggleLanguage() async {
     final newCode = state.languageCode == 'ar' ? 'en' : 'ar';
     await setLanguage(newCode);
   }
+
+  /// Alias for toggleLanguage for compatibility
+  Future<void> toggle() => toggleLanguage();
 }
 
 final languageProvider = StateNotifierProvider<LanguageNotifier, Locale>((ref) {

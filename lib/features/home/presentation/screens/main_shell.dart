@@ -5,7 +5,6 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alkheir_mosque/app/core/navigation/app_tab.dart';
 import 'package:alkheir_mosque/app/core/navigation/tab_registry.dart';
 import 'package:alkheir_mosque/app/core/session/auth_session.dart';
-import 'package:alkheir_mosque/app/core/session/theme_provider.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
@@ -14,6 +13,7 @@ import 'package:alkheir_mosque/features/account/presentation/screens/account_scr
 import 'package:alkheir_mosque/features/auth/presentation/screens/login_screen.dart';
 import 'package:alkheir_mosque/features/notifications/presentation/screens/notifications_screen.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/di/di_locator.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
@@ -164,20 +164,27 @@ class _MainShellState extends ConsumerState<MainShell>
 
   void _showAdminProfileSheet() {
     final user = widget.token.user;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
-    final sheetBg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
-    final dividerColor =
-        isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
 
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetCtx) => Container(
-        decoration: BoxDecoration(
-          color: sheetBg,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        ),
+      builder: (sheetCtx) => Consumer(
+        builder: (context, ref, _) {
+          final themeMode = ref.watch(themeProvider);
+          final isDark = themeMode == ThemeMode.dark ||
+              (themeMode == ThemeMode.system &&
+                  MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+          final sheetBg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
+          final dividerColor =
+              isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
+
+          return Container(
+            decoration: BoxDecoration(
+              color: sheetBg,
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(32)),
+            ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -349,9 +356,11 @@ class _MainShellState extends ConsumerState<MainShell>
             ),
           ],
         ),
-      ),
-    );
-  }
+      );
+    },
+  ),
+);
+}
 
   void _handleLogout() {
     Navigator.of(context).pop(); // close sheet
@@ -760,7 +769,7 @@ class _NotificationButton extends StatelessWidget {
 }
 
 // ─── User Profile Bottom Sheet ────────────────────────────────────────────────
-class _UserProfileSheet extends StatelessWidget {
+class _UserProfileSheet extends ConsumerWidget {
   final ParentDashboardData data;
   final ParentProfile? parentProfile;
   final ParentSummary? parentSummary;
@@ -774,9 +783,12 @@ class _UserProfileSheet extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final student = data.children.first.student;
-    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final themeMode = ref.watch(themeProvider);
+    final isDark = themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
     final sheetBg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
     final dividerColor =
         isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
@@ -923,10 +935,7 @@ class _UserProfileSheet extends StatelessWidget {
                 ),
               ],
             ),
-          )
-              .animate()
-              .fadeIn(duration: 300.ms)
-              .slideY(begin: 0.1, end: 0, curve: Curves.easeOutCubic),
+          ),
           const SizedBox(height: 16),
           // Quick stats row — totals across all children
           Padding(
@@ -952,7 +961,7 @@ class _UserProfileSheet extends StatelessWidget {
                     color: AppColors.primaryLight),
               ],
             ),
-          ).animate().fadeIn(delay: 100.ms, duration: 300.ms),
+          ),
           const SizedBox(height: 16),
           // Menu items
           _SheetMenuItem(
@@ -961,29 +970,23 @@ class _UserProfileSheet extends StatelessWidget {
             subtitle: tr('معلومات ولي الأمر والطالب'),
             color: AppColors.info,
             onTap: () => _openAccount(context),
-          ).animate().fadeIn(delay: 150.ms).slideX(begin: 0.05, end: 0),
+          ),
           _SheetMenuItem(
             icon: Icons.notifications_rounded,
             label: tr('إعدادات الإشعارات'),
             subtitle: tr('تخصيص التنبيهات والإشعارات'),
             color: AppColors.warning,
             onTap: () => Navigator.pop(context),
-          ).animate().fadeIn(delay: 200.ms).slideX(begin: 0.05, end: 0),
+          ),
           _SheetMenuItem(
             icon: Icons.help_rounded,
             label: tr('المساعدة والدعم'),
             subtitle: tr('تواصل مع إدارة المسجد'),
             color: AppColors.primaryLight,
             onTap: () => Navigator.pop(context),
-          ).animate().fadeIn(delay: 250.ms).slideX(begin: 0.05, end: 0),
-          _ThemeToggleItem(isDark: isDark)
-              .animate()
-              .fadeIn(delay: 300.ms)
-              .slideX(begin: 0.05, end: 0),
-          const _LanguageToggleItem()
-              .animate()
-              .fadeIn(delay: 330.ms)
-              .slideX(begin: 0.05, end: 0),
+          ),
+          _ThemeToggleItem(isDark: isDark),
+          const _LanguageToggleItem(),
           const SizedBox(height: 8),
           // Divider
           Padding(
@@ -1032,7 +1035,7 @@ class _UserProfileSheet extends StatelessWidget {
                   ],
                 ),
               ),
-            ).animate().fadeIn(delay: 300.ms).slideY(begin: 0.1, end: 0),
+            ),
           ),
         ],
       ),
@@ -1175,15 +1178,17 @@ class _LanguageToggleItem extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
     final isDark = theme.brightness == Brightness.dark;
-    final color = isDark ? AppColors.primaryGlow : AppColors.primaryMid;
-    final label = AppLanguage.isArabic
+    final locale = ref.watch(languageProvider);
+    final isArabic = locale.languageCode == 'ar';
+    final label = isArabic
         ? tr('التبديل إلى الإنجليزية')
         : tr('التبديل إلى العربية');
+    final color = isDark ? AppColors.primaryGlow : AppColors.primaryMid;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: InkWell(
         borderRadius: BorderRadius.circular(16),
-        onTap: () => ref.read(localeProvider.notifier).toggle(),
+        onTap: () => ref.read(languageProvider.notifier).toggleLanguage(),
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           decoration: BoxDecoration(
@@ -1223,24 +1228,29 @@ class _LanguageToggleItem extends ConsumerWidget {
 }
 
 class _ThemeToggleItem extends ConsumerWidget {
-  final bool isDark;
-  const _ThemeToggleItem({required this.isDark});
+  final bool? isDark;
+  const _ThemeToggleItem({this.isDark});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    Future<void> toggle() => ref.read(themeModeProvider.notifier).toggle();
-    final color = isDark ? AppColors.goldLight : AppColors.gold;
+    final themeMode = ref.watch(themeProvider);
+    final activeDark = themeMode == ThemeMode.dark ||
+        (themeMode == ThemeMode.system &&
+            MediaQuery.platformBrightnessOf(context) == Brightness.dark);
+    Future<void> toggle() => ref.read(themeProvider.notifier).toggleTheme();
+    final color = activeDark ? AppColors.goldLight : AppColors.gold;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: GestureDetector(
+        behavior: HitTestBehavior.opaque,
         onTap: toggle,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           decoration: BoxDecoration(
-            color: isDark ? const Color(0xFF111F14) : Colors.white,
+            color: activeDark ? const Color(0xFF111F14) : Colors.white,
             borderRadius: BorderRadius.circular(16),
             border: Border.all(
-              color: isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4),
+              color: activeDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4),
             ),
             boxShadow: [
               BoxShadow(
@@ -1260,7 +1270,7 @@ class _ThemeToggleItem extends ConsumerWidget {
                   borderRadius: BorderRadius.circular(12),
                 ),
                 child: Icon(
-                  isDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
+                  activeDark ? Icons.light_mode_rounded : Icons.dark_mode_rounded,
                   color: color,
                   size: 22,
                 ),
@@ -1271,24 +1281,24 @@ class _ThemeToggleItem extends ConsumerWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      isDark ? tr('الوضع النهاري') : tr('الوضع الليلي'),
+                      activeDark ? tr('الوضع النهاري') : tr('الوضع الليلي'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        color: isDark
+                        color: activeDark
                             ? AppColors.textOnDark
                             : AppColors.textPrimary,
                       ),
                     ),
                     Text(
-                      isDark
+                      activeDark
                           ? tr('التبديل إلى المظهر الفاتح')
                           : tr('التبديل إلى المظهر الداكن'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
                         fontSize: 11,
-                        color: isDark
+                        color: activeDark
                             ? AppColors.textOnDarkMute
                             : AppColors.textMuted,
                       ),
@@ -1296,11 +1306,13 @@ class _ThemeToggleItem extends ConsumerWidget {
                   ],
                 ),
               ),
-              Switch.adaptive(
-                value: isDark,
-                onChanged: (_) => toggle(),
-                activeThumbColor: AppColors.primaryGlow,
-                activeTrackColor: AppColors.primaryLight.withValues(alpha: 0.4),
+              IgnorePointer(
+                child: Switch.adaptive(
+                  value: activeDark,
+                  onChanged: (_) {},
+                  activeThumbColor: AppColors.primaryGlow,
+                  activeTrackColor: AppColors.primaryLight.withValues(alpha: 0.4),
+                ),
               ),
             ],
           ),

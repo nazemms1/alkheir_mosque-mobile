@@ -12,16 +12,25 @@ class SharedPrefsService {
 
   /// Language code management ('ar', 'en')
   String getLanguageCode({String defaultCode = 'ar'}) {
-    return _prefs.getString(_keyLanguageCode) ?? defaultCode;
+    return _prefs.getString(_keyLanguageCode) ??
+        _prefs.getString('app_language') ??
+        defaultCode;
   }
 
-  Future<bool> setLanguageCode(String languageCode) {
+  Future<bool> setLanguageCode(String languageCode) async {
+    await _prefs.setString('app_language', languageCode);
     return _prefs.setString(_keyLanguageCode, languageCode);
   }
 
   /// ThemeMode management (ThemeMode.system, ThemeMode.light, ThemeMode.dark)
   ThemeMode getThemeMode() {
     final mode = _prefs.getString(_keyThemeMode);
+    if (mode == null) {
+      final legacyDark = _prefs.getBool('isDarkMode');
+      if (legacyDark != null) {
+        return legacyDark ? ThemeMode.dark : ThemeMode.light;
+      }
+    }
     switch (mode) {
       case 'light':
         return ThemeMode.light;
@@ -33,7 +42,12 @@ class SharedPrefsService {
     }
   }
 
-  Future<bool> setThemeMode(ThemeMode mode) {
+  Future<bool> setThemeMode(ThemeMode mode) async {
+    if (mode == ThemeMode.dark) {
+      await _prefs.setBool('isDarkMode', true);
+    } else if (mode == ThemeMode.light) {
+      await _prefs.setBool('isDarkMode', false);
+    }
     return _prefs.setString(_keyThemeMode, mode.name);
   }
 
