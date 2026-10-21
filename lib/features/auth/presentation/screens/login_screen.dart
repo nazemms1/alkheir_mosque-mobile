@@ -81,10 +81,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
 
       if (!mounted) return;
 
-      // ØªØ®Ø²ÙŠÙ† Ø§Ù„Ø¬Ù„Ø³Ø© Ù…Ø±ÙƒØ²ÙŠØ§Ù‹ â€” Ø£ÙŠ Ø´Ø§Ø´Ø© ØªÙ‚Ø±Ø£ Ø§Ù„Ø¯ÙˆØ±/Ø§Ù„ØµÙ„Ø§Ø­ÙŠØ§Øª Ù…Ù† authSessionProvider
+      // تخزين الجلسة مركزياً — أي شاشة تقرأ الدور/الصلاحيات من authSessionProvider
       ref.read(authSessionProvider.notifier).setToken(token);
 
-      // Ø§Ù„ØªÙˆØ¬ÙŠÙ‡ Ø­Ø³Ø¨ Ø§Ù„Ø¯ÙˆØ± â€” MainShell ÙŠØ¹Ø±Ø¶ Ø§Ù„Ø´Ø§Ø´Ø§Øª Ø§Ù„Ù…Ù†Ø§Ø³Ø¨Ø© Ù„ÙƒÙ„ Ø¯ÙˆØ±
+      // التوجيه حسب الدور — MainShell يعرض الشاشات المناسبة لكل دور
       Navigator.of(context).pushReplacement(
         PageRouteBuilder(
           pageBuilder: (_, a, __) => MainShell(token: token),
@@ -97,10 +97,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
       if (!mounted) return;
       _showError(e.message);
     } catch (e) {
-      // Ø®Ø·Ø£ ØºÙŠØ± Ù…ØªÙˆÙ‚Ø¹: Ù„Ø§ Ù†Ø¹Ø±Ø¶ Ù†Øµ Ø§Ù„Ø§Ø³ØªØ«Ù†Ø§Ø¡ Ø§Ù„Ø®Ø§Ù… Ù„Ù„Ù…Ø³ØªØ®Ø¯Ù….
+      // خطأ غير متوقع: لا نعرض نص الاستثناء الخام للمستخدم.
       debugPrint('login failed: $e');
       if (!mounted) return;
-      _showError(tr('Ø­Ø¯Ø« Ø®Ø·Ø£ØŒ Ø­Ø§ÙˆÙ„ Ù…Ø±Ø© Ø£Ø®Ø±Ù‰'));
+      _showError(tr('حدث خطأ، حاول مرة أخرى'));
     } finally {
       if (mounted) setState(() => _loading = false);
     }
@@ -134,14 +134,14 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     );
   }
 
-  /// ÙŠÙØªØ­ Ø­ÙˆØ§Ø±Ø§Ù‹ Ù„ØªØºÙŠÙŠØ± Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø§Ø¯Ù… (Ù…Ø«Ù„Ø§Ù‹ Ø¹Ù†ÙˆØ§Ù† Ø¬Ù‡Ø§Ø² Ø§Ù„ÙƒÙ…Ø¨ÙŠÙˆØªØ± Ø¹Ù„Ù‰ Ø§Ù„Ø´Ø¨ÙƒØ©).
+  /// يفتح حواراً لتغيير عنوان الخادم (مثلاً عنوان جهاز الكمبيوتر على الشبكة).
   Future<void> _editServerUrl() async {
     final controller = TextEditingController(text: ServerConfig.baseUrl);
     final prefs = ref.read(sharedPrefsProvider);
     final value = await showDialog<String>(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: Text(tr('Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø§Ø¯Ù…')),
+        title: Text(tr('عنوان الخادم')),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -155,7 +155,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
             ),
             const SizedBox(height: 8),
             Text(
-              tr('Ù…Ø«Ø§Ù„: http://10.0.2.2:8000'),
+              tr('مثال: http://10.0.2.2:8000'),
               style: appTextStyle(fontSize: 12, color: AppColors.textMuted),
             ),
           ],
@@ -163,20 +163,20 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, ServerConfig.defaultBaseUrl),
-            child: Text(tr('Ø§Ø³ØªØ¹Ø§Ø¯Ø© Ø§Ù„Ø§ÙØªØ±Ø§Ø¶ÙŠ')),
+            child: Text(tr('استعادة الافتراضي')),
           ),
           TextButton(
             onPressed: () => Navigator.pop(ctx),
-            child: Text(tr('Ø¥Ù„ØºØ§Ø¡')),
+            child: Text(tr('إلغاء')),
           ),
           FilledButton(
             onPressed: () => Navigator.pop(ctx, controller.text),
-            child: Text(tr('Ø­ÙØ¸')),
+            child: Text(tr('حفظ')),
           ),
         ],
       ),
     );
-    // Ù†Ø¤Ø¬Ù‘Ù„ Ø§Ù„ØªØ®Ù„Øµ Ù…Ù† Ø§Ù„Ù…ØªØ­ÙƒÙ… Ø­ØªÙ‰ ÙŠÙ†ØªÙ‡ÙŠ ØªØ­Ø±ÙŠÙƒ Ø¥ØºÙ„Ø§Ù‚ Ø§Ù„Ø­ÙˆØ§Ø±.
+    // نؤجّل التخلص من المتحكم حتى ينتهي تحريك إغلاق الحوار.
     await Future<void>.delayed(const Duration(milliseconds: 300));
     controller.dispose();
     if (value == null || !mounted) return;
@@ -186,7 +186,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Text(
-          saved ? tr('ØªÙ… Ø­ÙØ¸ Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø§Ø¯Ù…') : tr('Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø§Ø¯Ù… ØºÙŠØ± ØµØ§Ù„Ø­'),
+          saved ? tr('تم حفظ عنوان الخادم') : tr('عنوان الخادم غير صالح'),
         ),
       ),
     );
@@ -240,7 +240,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   }
 }
 
-/// Ø£Ø²Ø±Ø§Ø± Ø£Ø¹Ù„Ù‰ Ø§Ù„Ø´Ø§Ø´Ø©: ØªØºÙŠÙŠØ± Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø§Ø¯Ù… ÙˆØªØ¨Ø¯ÙŠÙ„ Ø§Ù„Ù„ØºØ©.
+/// أزرار أعلى الشاشة: تغيير عنوان الخادم وتبديل اللغة.
 class _TopActions extends ConsumerWidget {
   final VoidCallback onServerTap;
   const _TopActions({required this.onServerTap});
@@ -253,14 +253,14 @@ class _TopActions extends ConsumerWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           IconButton(
-            tooltip: tr('ØªØºÙŠÙŠØ± Ø¹Ù†ÙˆØ§Ù† Ø§Ù„Ø®Ø§Ø¯Ù…'),
+            tooltip: tr('تغيير عنوان الخادم'),
             icon: const Icon(Icons.dns_rounded, color: Colors.white70),
             onPressed: onServerTap,
           ),
           IconButton(
-            tooltip: tr('ØªØ¨Ø¯ÙŠÙ„ Ø§Ù„Ù„ØºØ©'),
+            tooltip: tr('تبديل اللغة'),
             icon: const Icon(Icons.translate_rounded, color: Colors.white70),
-            onPressed: () => ref.read(localeProvider.notifier).toggle(),
+            onPressed: () => ref.read(languageProvider.notifier).toggleLanguage(),
           ),
         ],
       ),
@@ -268,7 +268,7 @@ class _TopActions extends ConsumerWidget {
   }
 }
 
-// â”€â”€â”€ Animated Background â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Animated Background ──────────────────────────────────────────────────────
 class _AnimatedBackground extends StatelessWidget {
   final AnimationController controller;
   final Size size;
@@ -348,7 +348,7 @@ class _GlowOrb extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Hero Section â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Hero Section ─────────────────────────────────────────────────────────────
 class _HeroSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -376,7 +376,7 @@ class _HeroSection extends StatelessWidget {
             ),
             child: ClipOval(
               child: Image.asset(
-                'assets/logo/Ù„ÙˆØºÙˆ.png',
+                'assets/logo/لوغو.png',
                 fit: BoxFit.cover,
               ),
             ),
@@ -387,7 +387,7 @@ class _HeroSection extends StatelessWidget {
               colors: [Colors.white, AppColors.primaryGlow],
             ).createShader(bounds),
             child: Text(
-              tr('Ù…Ø³Ø¬Ø¯ Ø§Ù„Ø®ÙŠØ±'),
+              tr('مسجد الخير'),
               style: Theme.of(context).textTheme.displayMedium?.copyWith(
                     color: Colors.white,
                     fontWeight: FontWeight.w900,
@@ -404,7 +404,7 @@ class _HeroSection extends StatelessWidget {
               color: AppColors.glassWhite,
             ),
             child: Text(
-              tr('Ø§Ù„Ø¨ÙˆØ§Ø¨Ø© Ø§Ù„ØªØ¹Ù„ÙŠÙ…ÙŠØ©'),
+              tr('البوابة التعليمية'),
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                     color: AppColors.textOnDarkSub,
                     letterSpacing: 0.5,
@@ -417,7 +417,7 @@ class _HeroSection extends StatelessWidget {
   }
 }
 
-// â”€â”€â”€ Form Panel â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Form Panel ───────────────────────────────────────────────────────────────
 class _FormPanel extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final TextEditingController loginCtrl, passCtrl;
@@ -466,7 +466,7 @@ class _FormPanel extends StatelessWidget {
                 ),
               ),
               Text(
-                tr('ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„'),
+                tr('تسجيل الدخول'),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color:
                           isDark ? AppColors.textOnDark : AppColors.textPrimary,
@@ -475,7 +475,7 @@ class _FormPanel extends StatelessWidget {
               ),
               const SizedBox(height: 4),
               Text(
-                tr('Ø£Ø¯Ø®Ù„ Ø¨ÙŠØ§Ù†Ø§ØªÙƒ Ù„Ù…ØªØ§Ø¨Ø¹Ø© ØªÙ‚Ø¯Ù… Ø·ÙÙ„Ùƒ ÙÙŠ Ø§Ù„Ø­Ù„Ù‚Ø©'),
+                tr('أدخل بياناتك لمتابعة تقدم طفلك في الحلقة'),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: AppColors.textSecondary,
                     ),
@@ -485,8 +485,8 @@ class _FormPanel extends StatelessWidget {
               // Login field (email / username / phone)
               _PremiumField(
                 controller: loginCtrl,
-                label: tr('Ø§Ù„Ø¨Ø±ÙŠØ¯ / Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… / Ø§Ù„Ù‡Ø§ØªÙ'),
-                hint: tr('Ø£Ø¯Ø®Ù„ Ø¨Ø±ÙŠØ¯Ùƒ Ø£Ùˆ Ø§Ø³Ù… Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø£Ùˆ Ø±Ù‚Ù… Ø§Ù„Ù‡Ø§ØªÙ'),
+                label: tr('البريد / اسم المستخدم / الهاتف'),
+                hint: tr('أدخل بريدك أو اسم المستخدم أو رقم الهاتف'),
                 icon: Icons.person_rounded,
                 isLtr: true,
                 validator: null,
@@ -496,8 +496,8 @@ class _FormPanel extends StatelessWidget {
               // Password field
               _PremiumField(
                 controller: passCtrl,
-                label: tr('ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±'),
-                hint: 'â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢',
+                label: tr('كلمة المرور'),
+                hint: '••••••••',
                 icon: Icons.lock_rounded,
                 obscure: obscure,
                 suffixIcon: IconButton(
@@ -512,9 +512,9 @@ class _FormPanel extends StatelessWidget {
                 ),
                 validator: (v) {
                   if (v == null || v.isEmpty) {
-                    return tr('ÙŠØ±Ø¬Ù‰ Ø¥Ø¯Ø®Ø§Ù„ ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±');
+                    return tr('يرجى إدخال كلمة المرور');
                   }
-                  if (v.length < 4) return tr('ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ± Ù‚ØµÙŠØ±Ø© Ø¬Ø¯Ø§Ù‹');
+                  if (v.length < 4) return tr('كلمة المرور قصيرة جداً');
                   return null;
                 },
               ),
@@ -531,7 +531,7 @@ class _FormPanel extends StatelessWidget {
                   GestureDetector(
                     onTap: () => onRememberChanged(!remember),
                     child: Text(
-                      tr('ØªØ°ÙƒÙ‘Ø±Ù†ÙŠ'),
+                      tr('تذكّرني'),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                             color: AppColors.textSecondary,
                             fontWeight: FontWeight.w600,
@@ -546,7 +546,7 @@ class _FormPanel extends StatelessWidget {
                       padding: const EdgeInsets.symmetric(horizontal: 4),
                     ),
                     child: Text(
-                      tr('Ù†Ø³ÙŠØª ÙƒÙ„Ù…Ø© Ø§Ù„Ù…Ø±ÙˆØ±ØŸ'),
+                      tr('نسيت كلمة المرور؟'),
                       style: Theme.of(context).textTheme.bodySmall?.copyWith(
                             color: AppColors.primaryLight,
                             fontWeight: FontWeight.w600,
@@ -688,7 +688,7 @@ class _GradientButton extends StatelessWidget {
                         color: Colors.white, size: 20),
                     const SizedBox(width: 10),
                     Text(
-                      tr('ØªØ³Ø¬ÙŠÙ„ Ø§Ù„Ø¯Ø®ÙˆÙ„'),
+                      tr('تسجيل الدخول'),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
                             fontSize: 16,
                             letterSpacing: 0.5,
@@ -729,14 +729,14 @@ class _SupportHint extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  tr('Ù‡Ù„ ØªØ­ØªØ§Ø¬ Ù…Ø³Ø§Ø¹Ø¯Ø©ØŸ'),
+                  tr('هل تحتاج مساعدة؟'),
                   style: Theme.of(context).textTheme.titleSmall?.copyWith(
                         color: AppColors.primary,
                         fontWeight: FontWeight.w700,
                       ),
                 ),
                 Text(
-                  tr('ØªÙˆØ§ØµÙ„ Ù…Ø¹ Ø¥Ø¯Ø§Ø±Ø© Ø§Ù„Ù…Ø³Ø¬Ø¯ Ø¹Ø¨Ø± ÙˆØ§ØªØ³Ø§Ø¨ Ù„Ù„Ø­ØµÙˆÙ„ Ø¹Ù„Ù‰ Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø¯Ø®ÙˆÙ„'),
+                  tr('تواصل مع إدارة المسجد عبر واتساب للحصول على بيانات الدخول'),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
                         color: AppColors.textSecondary,
                       ),

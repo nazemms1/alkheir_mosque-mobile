@@ -30,8 +30,8 @@ class _AttendanceTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cfg = _cfg[record.status]!;
-    final dateStr = DateFormat('EEEE، d MMMM', 'ar').format(record.date);
-    final yearStr = DateFormat('yyyy', 'ar').format(record.date);
+    final dateStr = DateFormat('EEEE، d MMMM', AppLanguage.intlCode).format(record.date);
+    final yearStr = DateFormat('yyyy', AppLanguage.intlCode).format(record.date);
 
     return Container(
       margin: const EdgeInsets.only(bottom: 10),

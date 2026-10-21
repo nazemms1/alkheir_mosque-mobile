@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
+/// شاشة المالية: تبويب الفواتير وتبويب الأنشطة، ويظهر كل تبويب حسب صلاحيته.
+/// لا تُطلب بيانات تبويب لا يملك الحساب صلاحيته.
 class AdminFinanceScreen extends StatefulWidget {
-  const AdminFinanceScreen({super.key});
+  final AuthToken token;
+  const AdminFinanceScreen({super.key, required this.token});
 
   @override
   State<AdminFinanceScreen> createState() => _AdminFinanceScreenState();
@@ -15,6 +21,10 @@ class AdminFinanceScreen extends StatefulWidget {
 class _AdminFinanceScreenState extends State<AdminFinanceScreen>
     with SingleTickerProviderStateMixin {
   final _service = AdminRepositoryImpl();
+
+  bool get _showInvoices => ModuleAccess.canViewInvoices(widget.token);
+  bool get _showActivities => ModuleAccess.canViewActivities(widget.token);
+
   late final TabController _tabCtrl;
 
   List<AdminInvoiceItem> _invoices = [];
@@ -25,7 +35,8 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
   @override
   void initState() {
     super.initState();
-    _tabCtrl = TabController(length: 2, vsync: this);
+    final tabCount = (_showInvoices ? 1 : 0) + (_showActivities ? 1 : 0);
+    _tabCtrl = TabController(length: tabCount < 1 ? 1 : tabCount, vsync: this);
     _load();
   }
 
@@ -41,20 +52,18 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        _service.fetchInvoices(perPage: 50),
-        _service.fetchActivities(perPage: 50),
-      ]);
+      final invoicesFuture = _showInvoices
+          ? _service.fetchInvoices(perPage: 50).then((r) => r.items)
+          : Future.value(const <AdminInvoiceItem>[]);
+      final activitiesFuture = _showActivities
+          ? _service.fetchActivities(perPage: 50).then((r) => r.items)
+          : Future.value(const <AdminActivityItem>[]);
+      final invoices = await invoicesFuture;
+      final activities = await activitiesFuture;
       if (!mounted) return;
       setState(() {
-        _invoices = (results[0] as ({
-          List<AdminInvoiceItem> items,
-          int total,
-          int lastPage
-        }))
-            .items;
-        _activities =
-            (results[1] as ({List<AdminActivityItem> items, int total})).items;
+        _invoices = invoices;
+        _activities = activities;
         _loading = false;
       });
     } catch (e) {
@@ -73,91 +82,97 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
 
   @override
   Widget build(BuildContext context) {
+    if (!_showInvoices && !_showActivities) {
+      return AdminEmptyState(
+        icon: Icons.lock_outline_rounded,
+        title: tr('ليس لديك صلاحية لعرض هذه الشاشة'),
+      );
+    }
     if (_loading) return const Center(child: CircularProgressIndicator());
-    if (_error != null) return _ErrorView(message: _error!, onRetry: _load);
+    if (_error != null) {
+      return AdminErrorState(
+        message: _error!,
+        onRetry: _load,
+        retryLabel: tr('إعادة المحاولة'),
+      );
+    }
+
+    final accent = AdminTheme.accent(context);
+    final bothTabs = _showInvoices && _showActivities;
+
+    final lists = <Widget>[
+      if (_showInvoices) _InvoiceList(invoices: _invoices, onRefresh: _load),
+      if (_showActivities)
+        _ActivityList(activities: _activities, onRefresh: _load),
+    ];
 
     return Column(
       children: [
-        // ── Finance summary cards ──────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Column(
-            children: [
-              Row(
-                children: [
-                  _FinancePill(
-                      label: tr('إجمالي الفواتير'),
-                      value: _fmt(_totalAmount),
-                      color: AppColors.info,
-                      icon: Icons.receipt_long_rounded),
-                  const SizedBox(width: 8),
-                  _FinancePill(
-                      label: tr('المدفوع'),
-                      value: _fmt(_totalPaid),
-                      color: AppColors.success,
-                      icon: Icons.check_circle_rounded),
-                ],
-              ),
-              const SizedBox(height: 8),
-              Row(
-                children: [
-                  _FinancePill(
-                      label: tr('المتبقي'),
-                      value: _fmt(_totalBalance),
-                      color: AppColors.error,
-                      icon: Icons.pending_actions_rounded),
-                  const SizedBox(width: 8),
-                  _FinancePill(
-                      label: tr('عدد الفواتير'),
-                      value: '${_invoices.length}',
-                      color: AppColors.warning,
-                      icon: Icons.description_rounded),
-                ],
-              ),
-            ],
-          ),
-        ),
-        // ── Tabs ────────────────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
-          child: Container(
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surface,
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(color: Theme.of(context).dividerColor),
-            ),
-            child: TabBar(
-              controller: _tabCtrl,
-              indicator: BoxDecoration(
-                gradient: AppColors.gradientPrimary,
-                borderRadius: BorderRadius.circular(12),
-              ),
-              indicatorSize: TabBarIndicatorSize.tab,
-              labelColor: Colors.white,
-              unselectedLabelColor:
-                  Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-              labelStyle: const TextStyle(
-                  fontFamily: 'Dubai',
-                  fontWeight: FontWeight.w700,
-                  fontSize: 13),
-              unselectedLabelStyle:
-                  const TextStyle(fontFamily: 'Dubai', fontSize: 13),
-              dividerColor: Colors.transparent,
-              tabs: [
-                Tab(text: tr('الفواتير')),
-                Tab(text: tr('الأنشطة')),
+        if (_showInvoices)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            child: AdminHero(
+              icon: Icons.account_balance_wallet_rounded,
+              title: tr('المالية'),
+              subtitle: tr('الفواتير والأنشطة والتحصيل'),
+              metrics: [
+                AdminHeroMetric(
+                  icon: Icons.receipt_long_rounded,
+                  label: tr('إجمالي الفواتير'),
+                  value: _fmt(_totalAmount),
+                ),
+                AdminHeroMetric(
+                  icon: Icons.check_circle_rounded,
+                  label: tr('المدفوع'),
+                  value: _fmt(_totalPaid),
+                ),
+                AdminHeroMetric(
+                  icon: Icons.pending_actions_rounded,
+                  label: tr('المتبقي'),
+                  value: _fmt(_totalBalance),
+                ),
+                AdminHeroMetric(
+                  icon: Icons.description_rounded,
+                  label: tr('عدد الفواتير'),
+                  value: '${_invoices.length}',
+                ),
               ],
             ),
           ),
-        ),
-        Expanded(
-          child: TabBarView(
-            controller: _tabCtrl,
-            children: [
-              _InvoiceList(invoices: _invoices, onRefresh: _load),
-              _ActivityList(activities: _activities, onRefresh: _load),
-            ],
+        if (bothTabs)
+          Padding(
+            padding: const EdgeInsets.fromLTRB(16, 14, 16, 0),
+            child: Container(
+              padding: const EdgeInsets.all(4),
+              decoration: BoxDecoration(
+                color: AdminTheme.card(context),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: AdminTheme.border(context)),
+              ),
+              child: TabBar(
+                controller: _tabCtrl,
+                indicator: BoxDecoration(
+                  color: accent,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                indicatorSize: TabBarIndicatorSize.tab,
+                dividerColor: Colors.transparent,
+                labelColor: Colors.white,
+                unselectedLabelColor: AdminTheme.muted(context),
+                labelStyle:
+                    appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                unselectedLabelStyle: appTextStyle(fontSize: 13),
+                tabs: [
+                  Tab(height: 40, text: tr('الفواتير')),
+                  Tab(height: 40, text: tr('الأنشطة')),
+                ],
+              ),
+            ),
           ),
+        Expanded(
+          child: bothTabs
+              ? TabBarView(controller: _tabCtrl, children: lists)
+              : lists.first,
         ),
       ],
     );
@@ -170,64 +185,6 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
   }
 }
 
-// ─── Finance pill ─────────────────────────────────────────────────────────────
-class _FinancePill extends StatelessWidget {
-  final String label, value;
-  final Color color;
-  final IconData icon;
-  const _FinancePill(
-      {required this.label,
-      required this.value,
-      required this.color,
-      required this.icon});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      child: Container(
-        padding: const EdgeInsets.all(14),
-        decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.07),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: color.withValues(alpha: 0.2)),
-        ),
-        child: Row(
-          children: [
-            Container(
-              width: 36,
-              height: 36,
-              decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.12),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Icon(icon, color: color, size: 18),
-            ),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(value,
-                      style: TextStyle(
-                          color: color,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'Dubai')),
-                  Text(label,
-                      style: const TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 10,
-                          fontFamily: 'Dubai')),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
 // ─── Invoice list ─────────────────────────────────────────────────────────────
 class _InvoiceList extends StatelessWidget {
   final List<AdminInvoiceItem> invoices;
@@ -237,21 +194,25 @@ class _InvoiceList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (invoices.isEmpty) {
-      return Center(
-          child: Text(tr('لا توجد فواتير'),
-              style:
-                  const TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)));
+      return AdminEmptyState(
+        icon: Icons.receipt_long_outlined,
+        title: tr('لا توجد فواتير'),
+      );
     }
     return RefreshIndicator(
       onRefresh: onRefresh,
       color: AppColors.primaryLight,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 120),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, kAdminBottomInset),
         itemCount: invoices.length,
-        itemBuilder: (_, i) => _InvoiceCard(invoice: invoices[i])
-            .animate()
-            .fadeIn(delay: (i * 40).ms, duration: 350.ms)
-            .slideY(begin: 0.05, end: 0, delay: (i * 40).ms),
+        itemBuilder: (_, i) => Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: _InvoiceCard(invoice: invoices[i])
+              .animate()
+              .fadeIn(delay: (i * 40).ms, duration: 350.ms)
+              .slideY(begin: 0.05, end: 0, delay: (i * 40).ms),
+        ),
       ),
     );
   }
@@ -276,36 +237,23 @@ class _InvoiceCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _statusColor;
+    final muted = AdminTheme.muted(context);
     final paidPercent = invoice.total > 0
         ? (invoice.paidTotal / invoice.total * 100).clamp(0, 100).round()
         : 0;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+    return AdminCard(
+      accent: color,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-              color: color.withValues(alpha: 0.08),
-              blurRadius: 16,
-              offset: const Offset(0, 5)),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(Icons.receipt_long_rounded, color: color, size: 20),
+              AdminIconBubble(
+                icon: Icons.receipt_long_rounded,
+                color: color,
+                size: 40,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -314,47 +262,31 @@ class _InvoiceCard extends StatelessWidget {
                   children: [
                     Text(
                       invoice.invoiceNo,
-                      style: TextStyle(
-                        fontFamily: 'Dubai',
-                        fontSize: 14,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                    ),
-                    Text(
-                      invoice.parentName ?? tr('— ولي أمر غير محدد'),
-                      style: const TextStyle(
-                          fontFamily: 'Dubai',
-                          fontSize: 11,
-                          color: AppColors.textMuted),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
+                      style: appTextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: AdminTheme.text(context),
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      invoice.parentName ?? tr('— ولي أمر غير محدد'),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: appTextStyle(fontSize: 12, color: muted),
                     ),
                   ],
                 ),
               ),
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  _statusLabel,
-                  style: TextStyle(
-                      color: color,
-                      fontSize: 11,
-                      fontWeight: FontWeight.w700,
-                      fontFamily: 'Dubai'),
-                ),
-              ),
+              const SizedBox(width: 8),
+              AdminBadge(label: _statusLabel, color: color),
             ],
           ),
           const SizedBox(height: 14),
-          // Progress bar
           ClipRRect(
-            borderRadius: BorderRadius.circular(4),
+            borderRadius: BorderRadius.circular(6),
             child: LinearProgressIndicator(
               value: paidPercent / 100,
               backgroundColor: color.withValues(alpha: 0.15),
@@ -362,31 +294,30 @@ class _InvoiceCard extends StatelessWidget {
               minHeight: 6,
             ),
           ),
-          const SizedBox(height: 10),
-          // Amounts row
-          Row(
+          const SizedBox(height: 12),
+          Wrap(
+            spacing: 18,
+            runSpacing: 8,
+            crossAxisAlignment: WrapCrossAlignment.center,
             children: [
               _AmountChip(
-                  label: tr('الإجمالي'),
-                  value: '${invoice.total.toInt()}',
-                  color: AppColors.info),
-              const SizedBox(width: 6),
+                label: tr('الإجمالي'),
+                value: '${invoice.total.toInt()}',
+                color: AppColors.info,
+              ),
               _AmountChip(
-                  label: tr('المدفوع'),
-                  value: '${invoice.paidTotal.toInt()}',
-                  color: AppColors.success),
-              const SizedBox(width: 6),
+                label: tr('المدفوع'),
+                value: '${invoice.paidTotal.toInt()}',
+                color: AppColors.success,
+              ),
               _AmountChip(
-                  label: tr('المتبقي'),
-                  value: '${invoice.balance.toInt()}',
-                  color: AppColors.error),
-              const Spacer(),
+                label: tr('المتبقي'),
+                value: '${invoice.balance.toInt()}',
+                color: AppColors.error,
+              ),
               Text(
                 invoice.issueDate,
-                style: const TextStyle(
-                    fontFamily: 'Dubai',
-                    fontSize: 10,
-                    color: AppColors.textMuted),
+                style: appTextStyle(fontSize: 11, color: muted),
               ),
             ],
           ),
@@ -406,16 +337,23 @@ class _AmountChip extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Text(value,
-            style: TextStyle(
-                color: color,
-                fontSize: 13,
-                fontWeight: FontWeight.w800,
-                fontFamily: 'Dubai')),
-        Text(label,
-            style: const TextStyle(
-                color: AppColors.textMuted, fontSize: 9, fontFamily: 'Dubai')),
+        Text(
+          value,
+          style: appTextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.w800,
+            color: color,
+          ),
+        ),
+        Text(
+          label,
+          style: appTextStyle(
+            fontSize: 11,
+            color: AdminTheme.muted(context),
+          ),
+        ),
       ],
     );
   }
@@ -430,21 +368,25 @@ class _ActivityList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (activities.isEmpty) {
-      return Center(
-          child: Text(tr('لا توجد أنشطة'),
-              style:
-                  const TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)));
+      return AdminEmptyState(
+        icon: Icons.event_busy_rounded,
+        title: tr('لا توجد أنشطة'),
+      );
     }
     return RefreshIndicator(
       onRefresh: onRefresh,
       color: AppColors.primaryLight,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 14, 16, 120),
+        physics: const AlwaysScrollableScrollPhysics(),
+        padding: const EdgeInsets.fromLTRB(16, 14, 16, kAdminBottomInset),
         itemCount: activities.length,
-        itemBuilder: (_, i) => _ActivityCard(activity: activities[i])
-            .animate()
-            .fadeIn(delay: (i * 40).ms, duration: 350.ms)
-            .slideY(begin: 0.05, end: 0, delay: (i * 40).ms),
+        itemBuilder: (_, i) => Padding(
+          padding: const EdgeInsets.only(bottom: 12),
+          child: _ActivityCard(activity: activities[i])
+              .animate()
+              .fadeIn(delay: (i * 40).ms, duration: 350.ms)
+              .slideY(begin: 0.05, end: 0, delay: (i * 40).ms),
+        ),
       ),
     );
   }
@@ -457,33 +399,20 @@ class _ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color =
-        activity.isActive ? AppColors.primaryLight : AppColors.textMuted;
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+        activity.isActive ? AppColors.primaryLight : AdminTheme.muted(context);
+    final muted = AdminTheme.muted(context);
+    return AdminCard(
+      accent: color,
       padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-              color: color.withValues(alpha: 0.07),
-              blurRadius: 14,
-              offset: const Offset(0, 4)),
-        ],
-      ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
             children: [
-              Container(
-                padding: const EdgeInsets.all(10),
-                decoration: BoxDecoration(
-                  color: color.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Icon(Icons.event_rounded, color: color, size: 20),
+              AdminIconBubble(
+                icon: Icons.event_rounded,
+                color: color,
+                size: 40,
               ),
               const SizedBox(width: 12),
               Expanded(
@@ -492,46 +421,26 @@ class _ActivityCard extends StatelessWidget {
                   children: [
                     Text(
                       activity.title,
-                      style: TextStyle(
-                        fontFamily: 'Dubai',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
+                      style: appTextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w800,
+                        color: AdminTheme.text(context),
+                      ),
                     ),
                     if (activity.activityDate != null)
                       Text(
                         activity.activityDate!,
-                        style: const TextStyle(
-                            fontFamily: 'Dubai',
-                            fontSize: 11,
-                            color: AppColors.textMuted),
+                        style: appTextStyle(fontSize: 12, color: muted),
                       ),
                   ],
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: (activity.isActive
-                          ? AppColors.success
-                          : AppColors.textMuted)
-                      .withValues(alpha: 0.12),
-                  borderRadius: BorderRadius.circular(20),
-                ),
-                child: Text(
-                  activity.isActive ? tr('نشط') : tr('منتهي'),
-                  style: TextStyle(
-                    fontFamily: 'Dubai',
-                    fontSize: 10,
-                    fontWeight: FontWeight.w700,
-                    color: activity.isActive
-                        ? AppColors.success
-                        : AppColors.textMuted,
-                  ),
-                ),
+              const SizedBox(width: 8),
+              AdminBadge(
+                label: activity.isActive ? tr('نشط') : tr('منتهي'),
+                color: activity.isActive ? AppColors.success : muted,
               ),
             ],
           ),
@@ -539,66 +448,43 @@ class _ActivityCard extends StatelessWidget {
             const SizedBox(height: 10),
             Row(
               children: [
-                const Icon(Icons.groups_rounded,
-                    size: 13, color: AppColors.textMuted),
-                const SizedBox(width: 4),
-                Text(activity.groupName!,
-                    style: const TextStyle(
-                        fontFamily: 'Dubai',
-                        fontSize: 11,
-                        color: AppColors.textMuted)),
+                Icon(Icons.groups_rounded, size: 15, color: muted),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    activity.groupName!,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(fontSize: 12, color: muted),
+                  ),
+                ),
               ],
             ),
           ],
           if (activity.feeAmount > 0 || activity.expectedRevenue > 0) ...[
-            const SizedBox(height: 10),
-            Row(
+            const SizedBox(height: 12),
+            Wrap(
+              spacing: 18,
+              runSpacing: 8,
               children: [
                 _AmountChip(
-                    label: tr('الرسوم'),
-                    value: '${activity.feeAmount.toInt()}',
-                    color: AppColors.info),
-                const SizedBox(width: 12),
+                  label: tr('الرسوم'),
+                  value: '${activity.feeAmount.toInt()}',
+                  color: AppColors.info,
+                ),
                 _AmountChip(
-                    label: tr('المتوقع'),
-                    value: '${activity.expectedRevenue.toInt()}',
-                    color: AppColors.warning),
-                const SizedBox(width: 12),
+                  label: tr('المتوقع'),
+                  value: '${activity.expectedRevenue.toInt()}',
+                  color: AppColors.warning,
+                ),
                 _AmountChip(
-                    label: tr('المحصّل'),
-                    value: '${activity.collectedRevenue.toInt()}',
-                    color: AppColors.success),
+                  label: tr('المحصّل'),
+                  value: '${activity.collectedRevenue.toInt()}',
+                  color: AppColors.success,
+                ),
               ],
             ),
           ],
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  const _ErrorView({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.error_outline_rounded,
-              size: 48, color: AppColors.error),
-          const SizedBox(height: 12),
-          Text(message,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Dubai')),
-          const SizedBox(height: 16),
-          ElevatedButton(
-              onPressed: onRetry,
-              child: Text(tr('إعادة المحاولة'),
-                  style: const TextStyle(fontFamily: 'Dubai'))),
         ],
       ),
     );

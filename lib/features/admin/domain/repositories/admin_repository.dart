@@ -1,11 +1,15 @@
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart'
     show ChildDetail, AttendanceEntry, PointEntry, StudentParentInfo;
 import '../../data/models/admin_dashboard_model.dart';
 
 abstract class AdminRepository {
-  Future<AdminStats> fetchStats();
+  /// إحصائيات الإداري. كل رقم يُجلب فقط إذا كانت صلاحيته في الحساب،
+  /// وغيره يعود صفراً دون أي طلب للخادم.
+  Future<AdminStats> fetchStats(AuthToken token);
 
-  Future<AdminStats> fetchSupervisorStats();
+  /// إحصائيات المشرف بالقواعد نفسها (بدون الفواتير).
+  Future<AdminStats> fetchSupervisorStats(AuthToken token);
 
   Future<({List<AdminGroupItem> items, int total, int lastPage})> fetchGroups({
     int page = 1,
@@ -146,5 +150,5 @@ abstract class AdminRepository {
         AdminStats stats,
         List<AdminGroupItem> groups,
         List<AdminStudentItem> students,
-      })> fetchDashboard();
+      })> fetchDashboard(AuthToken token);
 }

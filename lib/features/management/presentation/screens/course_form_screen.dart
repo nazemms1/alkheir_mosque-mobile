@@ -123,48 +123,59 @@ class _CourseFormScreenState extends State<CourseFormScreen> {
           : ModuleFormPage(
               formKey: _formKey,
               children: [
-                moduleTextField(
-                  controller: _name,
-                  label: tr('اسم الكورس'),
-                  required: true,
+                ModuleFormSection(
+                  title: tr('بيانات الكورس'),
+                  icon: Icons.menu_book_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _name,
+                      label: tr('اسم الكورس'),
+                      required: true,
+                    ),
+                    if (_loadingYears)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: LinearProgressIndicator(),
+                      )
+                    else
+                      _yearDropdown(),
+                    moduleDateField(
+                      context: context,
+                      controller: _startsOn,
+                      label: tr('تاريخ البداية'),
+                      required: true,
+                    ),
+                    moduleDateField(
+                      context: context,
+                      controller: _endsOn,
+                      label: tr('تاريخ النهاية'),
+                      required: true,
+                    ),
+                  ],
                 ),
-                if (_loadingYears)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: LinearProgressIndicator(),
-                  )
-                else
-                  _yearDropdown(),
-                moduleDateField(
-                  context: context,
-                  controller: _startsOn,
-                  label: tr('تاريخ البداية'),
-                  required: true,
+                ModuleFormSection(
+                  title: tr('إعدادات الكورس'),
+                  icon: Icons.tune_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _description,
+                      label: tr('الوصف'),
+                      maxLines: 3,
+                    ),
+                    moduleSwitch(
+                      label: tr('يمنح نقاطاً'),
+                      value: _awardsPoints,
+                      onChanged: (v) => setState(() => _awardsPoints = v),
+                    ),
+                    moduleSwitch(
+                      label: tr('الكورس الافتراضي'),
+                      subtitle:
+                          tr('يُستخدم تلقائياً في الشاشات التي لا تحدد كورساً'),
+                      value: _isDefault,
+                      onChanged: (v) => setState(() => _isDefault = v),
+                    ),
+                  ],
                 ),
-                moduleDateField(
-                  context: context,
-                  controller: _endsOn,
-                  label: tr('تاريخ النهاية'),
-                  required: true,
-                ),
-                moduleTextField(
-                  controller: _description,
-                  label: tr('الوصف'),
-                  maxLines: 3,
-                ),
-                moduleSwitch(
-                  label: tr('يمنح نقاطاً'),
-                  value: _awardsPoints,
-                  onChanged: (v) => setState(() => _awardsPoints = v),
-                ),
-                moduleSwitch(
-                  label: tr('الكورس الافتراضي'),
-                  subtitle:
-                      tr('يُستخدم تلقائياً في الشاشات التي لا تحدد كورساً'),
-                  value: _isDefault,
-                  onChanged: (v) => setState(() => _isDefault = v),
-                ),
-                const SizedBox(height: 8),
                 ModuleSaveButton(
                   saving: _saving,
                   onPressed: _save,

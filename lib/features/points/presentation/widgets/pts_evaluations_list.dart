@@ -21,7 +21,7 @@ class _EvalCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = DateFormat('d MMMM yyyy', 'ar').format(eval.date);
+    final dateStr = DateFormat('d MMMM yyyy', AppLanguage.intlCode).format(eval.date);
     final color = eval.rating.color;
 
     return Container(

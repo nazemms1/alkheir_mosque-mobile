@@ -11,13 +11,16 @@ abstract final class AppLanguage {
   static const english = Locale('en');
   static const supported = [arabic, english];
 
-  /// اللغة الحالية — تُحدَّث من [LocaleNotifier] فقط.
+  /// اللغة الحالية — تُحدَّث من [LanguageNotifier] (di/di_locator.dart) فقط.
   static Locale current = arabic;
 
   static bool get isArabic => current.languageCode == 'ar';
 
   static TextDirection get direction =>
       isArabic ? TextDirection.rtl : TextDirection.ltr;
+
+  /// رمز اللغة لتنسيق التواريخ والأرقام (intl): يتبع اللغة الحالية.
+  static String get intlCode => isArabic ? 'ar' : 'en';
 }
 
 /// ترجمة نص عربي إلى اللغة الحالية.

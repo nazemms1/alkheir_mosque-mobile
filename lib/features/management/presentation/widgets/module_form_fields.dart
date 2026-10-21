@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'module_widgets.dart';
 
 /// حقول نماذج الوحدات المشتركة (نص، هاتف، تاريخ، مفتاح تشغيل).
@@ -75,16 +76,19 @@ Widget moduleSwitch({
   required ValueChanged<bool> onChanged,
   String? subtitle,
 }) {
-  return SwitchListTile.adaptive(
-    contentPadding: EdgeInsets.zero,
-    activeTrackColor: AppColors.primaryLight,
-    title: Text(label,
-        style: appTextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-    subtitle: subtitle == null
-        ? null
-        : Text(subtitle, style: appTextStyle(fontSize: 12)),
-    value: value,
-    onChanged: onChanged,
+  return Padding(
+    padding: const EdgeInsets.only(bottom: 6),
+    child: SwitchListTile.adaptive(
+      contentPadding: const EdgeInsetsDirectional.only(start: 4, end: 4),
+      activeTrackColor: AppColors.primaryLight,
+      title: Text(label,
+          style: appTextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+      subtitle: subtitle == null
+          ? null
+          : Text(subtitle, style: appTextStyle(fontSize: 12)),
+      value: value,
+      onChanged: onChanged,
+    ),
   );
 }
 
@@ -106,8 +110,11 @@ class ModuleSaveButton extends StatelessWidget {
     return FilledButton(
       onPressed: saving ? null : onPressed,
       style: FilledButton.styleFrom(
-        minimumSize: const Size.fromHeight(50),
+        minimumSize: const Size.fromHeight(52),
         backgroundColor: AppColors.primary,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+        ),
       ),
       child: saving
           ? const SizedBox(
@@ -117,12 +124,67 @@ class ModuleSaveButton extends StatelessWidget {
             )
           : Text(label,
               style: appTextStyle(
-                  fontWeight: FontWeight.w700, color: Colors.white)),
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white)),
     );
   }
 }
 
-/// عمود نموذج صفحة كاملة مع حواف مناسبة للجوال.
+/// مجموعة حقول بعنوان وأيقونة داخل بطاقة واحدة، لتقسيم النموذج الطويل.
+class ModuleFormSection extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final List<Widget> children;
+
+  const ModuleFormSection({
+    super.key,
+    required this.title,
+    required this.icon,
+    required this.children,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: AdminCard(
+        padding: const EdgeInsets.fromLTRB(14, 14, 14, 2),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            Row(
+              children: [
+                AdminIconBubble(
+                  icon: icon,
+                  color: AdminTheme.accent(context),
+                  size: 34,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: AdminTheme.text(context),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 14),
+            ...children,
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+/// عمود نموذج صفحة كاملة مع حواف مناسبة للجوال، وحقول بتنسيق الشاشات الإدارية.
 class ModuleFormPage extends StatelessWidget {
   final GlobalKey<FormState> formKey;
   final List<Widget> children;
@@ -135,13 +197,49 @@ class ModuleFormPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
-      child: Form(
-        key: formKey,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: children,
+    final border = AdminTheme.border(context);
+    final accent = AdminTheme.accent(context);
+    final muted = AdminTheme.muted(context);
+    OutlineInputBorder outline(Color color, {double width = 1}) =>
+        OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide(color: color, width: width),
+        );
+
+    final themed = Theme.of(context).copyWith(
+      inputDecorationTheme: InputDecorationTheme(
+        filled: true,
+        fillColor: AdminTheme.card(context),
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+        labelStyle: appTextStyle(fontSize: 14, color: muted),
+        floatingLabelStyle: appTextStyle(
+          fontSize: 13,
+          fontWeight: FontWeight.w700,
+          color: accent,
+        ),
+        helperStyle: appTextStyle(fontSize: 12, color: muted),
+        prefixIconColor: muted,
+        suffixIconColor: muted,
+        border: outline(border),
+        enabledBorder: outline(border),
+        disabledBorder: outline(border),
+        focusedBorder: outline(accent, width: 1.5),
+        errorBorder: outline(AppColors.error),
+        focusedErrorBorder: outline(AppColors.error, width: 1.5),
+      ),
+    );
+
+    return Theme(
+      data: themed,
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, 32),
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: children,
+          ),
         ),
       ),
     );

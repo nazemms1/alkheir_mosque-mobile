@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -6,11 +8,12 @@ import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
 import 'package:alkheir_mosque/app/core/api/api_service.dart';
 import 'package:alkheir_mosque/features/auth/domain/repositories/auth_repository.dart';
 import 'package:alkheir_mosque/app/core/services/url_launcher_service.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 /// عناصر واجهة مشتركة لشاشات وحدات الإدارة (المالية، الأولياء، المعلمون...).
+/// تستخدم نفس عناصر شاشات الإدارة (admin_ui.dart) لتبقى الواجهتان متطابقتين.
 
-Color moduleMuted(BuildContext context) =>
-    Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6);
+Color moduleMuted(BuildContext context) => AdminTheme.muted(context);
 
 /// هيكل شاشة وحدة: شريط علوي متدرّج بألوان الهوية ومحتوى.
 class ModuleScaffold extends StatelessWidget {
@@ -32,19 +35,8 @@ class ModuleScaffold extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text(
-          title,
-          style: appTextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: Colors.white,
-          ),
-        ),
-        backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
-        elevation: 0,
-        scrolledUnderElevation: 0,
+      appBar: AdminAppBar(
+        title: title,
         actions: actions,
         bottom: bottom,
       ),
@@ -71,33 +63,15 @@ class ModuleMessage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(icon, size: 48, color: color ?? moduleMuted(context)),
-            const SizedBox(height: 12),
-            Text(
-              text,
-              textAlign: TextAlign.center,
-              style: appTextStyle(
-                fontSize: 14,
-                color: Theme.of(context).colorScheme.onSurface,
-              ),
-            ),
-            if (onRetry != null) ...[
-              const SizedBox(height: 16),
-              ElevatedButton(
-                onPressed: onRetry,
-                child: Text(tr('إعادة المحاولة'), style: appTextStyle()),
-              ),
-            ],
-          ],
-        ),
-      ),
-    );
+    final retry = onRetry;
+    if (retry != null) {
+      return AdminErrorState(
+        message: text,
+        onRetry: retry,
+        retryLabel: tr('إعادة المحاولة'),
+      );
+    }
+    return AdminEmptyState(icon: icon, title: text);
   }
 }
 
@@ -124,26 +98,13 @@ class ModuleCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final borderColor = (accent ?? theme.dividerColor).withValues(alpha: 0.3);
     return Padding(
       padding: const EdgeInsets.only(bottom: 12),
-      child: Material(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(18),
-          onTap: onTap,
-          child: Container(
-            width: double.infinity,
-            padding: const EdgeInsets.all(14),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: borderColor),
-            ),
-            child: child,
-          ),
-        ),
+      child: AdminCard(
+        onTap: onTap,
+        accent: accent,
+        padding: const EdgeInsets.all(14),
+        child: child,
       ),
     );
   }
@@ -158,21 +119,7 @@ class StatusPill extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-      decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.12),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Text(
-        label,
-        style: appTextStyle(
-          fontSize: 11,
-          fontWeight: FontWeight.w700,
-          color: color,
-        ),
-      ),
-    );
+    return AdminBadge(label: label, color: color);
   }
 }
 
@@ -635,46 +582,56 @@ class _PagedListState<T> extends State<PagedList<T>> {
     }
   }
 
+  /// الترويسة (بحث وفلاتر) تتمرّر مع القائمة بدل أن تثبت أعلى الشاشة.
   @override
   Widget build(BuildContext context) {
-    final body = _buildBody(context);
     final header = widget.header;
-    if (header == null) return body;
-    return Column(
-      children: [
-        header,
-        Expanded(child: body),
-      ],
+    return RefreshIndicator(
+      onRefresh: _reset,
+      color: AppColors.primaryLight,
+      child: CustomScrollView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          if (header != null) SliverToBoxAdapter(child: header),
+          ..._buildSlivers(context),
+        ],
+      ),
     );
   }
 
-  Widget _buildBody(BuildContext context) {
+  List<Widget> _buildSlivers(BuildContext context) {
     if (_items.isEmpty) {
-      if (_loading) return const Center(child: CircularProgressIndicator());
-      if (_error != null) {
-        return ModuleMessage(
+      final Widget message;
+      if (_loading) {
+        message = const Center(child: CircularProgressIndicator());
+      } else if (_error != null) {
+        message = ModuleMessage(
           text: errorText(_error!),
           icon: Icons.error_outline_rounded,
           color: AppColors.error,
           onRetry: _reset,
         );
+      } else {
+        message = ModuleMessage(text: widget.emptyText);
       }
-      return ModuleMessage(text: widget.emptyText);
+      return [SliverFillRemaining(hasScrollBody: false, child: message)];
     }
-    return RefreshIndicator(
-      onRefresh: _reset,
-      color: AppColors.primaryLight,
-      child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
-        itemCount: _items.length + 1,
-        itemBuilder: (ctx, index) {
-          if (index < _items.length) {
-            return widget.itemBuilder(ctx, _items[index], _reset);
-          }
-          return _buildFooter(ctx);
-        },
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, kAdminBottomInset),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (ctx, index) {
+              if (index < _items.length) {
+                return widget.itemBuilder(ctx, _items[index], _reset);
+              }
+              return _buildFooter(ctx);
+            },
+            childCount: _items.length + 1,
+          ),
+        ),
       ),
-    );
+    ];
   }
 
   Widget _buildFooter(BuildContext context) {
@@ -694,4 +651,76 @@ class _PagedListState<T> extends State<PagedList<T>> {
     }
     return const SizedBox(height: 8);
   }
+}
+
+/// حقل بحث لقوائم الوحدات: يطلب النتائج بعد توقّف الكتابة (350ms)،
+/// أو فور الضغط على بحث. المسح يعيد القائمة كاملة.
+class ModuleSearchBar extends StatefulWidget {
+  final String hint;
+  final ValueChanged<String> onSearch;
+
+  const ModuleSearchBar({
+    super.key,
+    required this.hint,
+    required this.onSearch,
+  });
+
+  @override
+  State<ModuleSearchBar> createState() => _ModuleSearchBarState();
+}
+
+class _ModuleSearchBarState extends State<ModuleSearchBar> {
+  final _ctrl = TextEditingController();
+  Timer? _debounce;
+  String _applied = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _ctrl.addListener(_onTextChanged);
+  }
+
+  @override
+  void dispose() {
+    _debounce?.cancel();
+    _ctrl.dispose();
+    super.dispose();
+  }
+
+  void _onTextChanged() {
+    _debounce?.cancel();
+    _debounce =
+        Timer(const Duration(milliseconds: 350), () => _apply(_ctrl.text));
+  }
+
+  void _apply(String value) {
+    final next = value.trim();
+    if (next == _applied) return;
+    _applied = next;
+    widget.onSearch(next);
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 10),
+      child: AdminSearchField(
+        controller: _ctrl,
+        hint: widget.hint,
+        onSubmitted: (value) {
+          _debounce?.cancel();
+          _apply(value);
+        },
+      ),
+    );
+  }
+}
+
+/// أول حرف من أول كلمتين في الاسم، للصور الرمزية.
+String moduleInitials(String name) {
+  final parts = name.trim().split(RegExp(r'\s+'))
+    ..removeWhere((p) => p.isEmpty);
+  if (parts.isEmpty) return '?';
+  if (parts.length == 1) return parts.first.substring(0, 1);
+  return parts.first.substring(0, 1) + parts[1].substring(0, 1);
 }

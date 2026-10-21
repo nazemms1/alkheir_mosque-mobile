@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
@@ -21,15 +22,8 @@ class TeachersScreen extends StatefulWidget {
 
 class _TeachersScreenState extends State<TeachersScreen> {
   final _service = ManagementRepositoryImpl();
-  final _searchCtrl = TextEditingController();
   String _search = '';
   int _reloadToken = 0;
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
 
   void _refresh() => setState(() => _reloadToken++);
 
@@ -108,78 +102,110 @@ class _TeachersScreenState extends State<TeachersScreen> {
     return ModuleScaffold(
       title: tr('المعلمون'),
       floatingActionButton: ModuleAccess.canCreateTeachers(t)
-          ? FloatingActionButton.extended(
+          ? AdminFab(
+              label: tr('معلم جديد'),
+              icon: Icons.person_add_alt_1_rounded,
               onPressed: () => _openForm(),
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.person_add_alt_1_rounded,
-                  color: Colors.white),
-              label: Text(
-                tr('معلم جديد'),
-                style: appTextStyle(
-                    fontWeight: FontWeight.w700, color: Colors.white),
-              ),
             )
           : null,
       body: PagedList<TeacherItem>(
         reloadToken: _reloadToken,
         emptyText: tr('لا يوجد معلمون مطابقون للبحث'),
-        header: Padding(
-          padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-          child: TextField(
-            controller: _searchCtrl,
-            textInputAction: TextInputAction.search,
-            style: appTextStyle(),
-            decoration: InputDecoration(
-              hintText: tr('بحث بالاسم أو رقم الهاتف'),
-              prefixIcon: const Icon(Icons.search_rounded),
-            ),
-            onSubmitted: (value) => setState(() {
-              _search = value.trim();
-              _reloadToken++;
-            }),
-          ),
+        header: ModuleSearchBar(
+          hint: tr('بحث بالاسم أو رقم الهاتف'),
+          onSearch: (value) => setState(() {
+            _search = value;
+            _reloadToken++;
+          }),
         ),
         fetch: (page) => _service.teachers(page: page, search: _search),
-        itemBuilder: (context, teacher, _) => ModuleCard(
-          accent:
-              teacher.isActive ? AppColors.primaryLight : AppColors.textMuted,
+        itemBuilder: (context, teacher, _) => _TeacherCard(
+          teacher: teacher,
           onTap: () => _openDetail(teacher),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
+        ),
+      ),
+    );
+  }
+}
+
+class _TeacherCard extends StatelessWidget {
+  final TeacherItem teacher;
+  final VoidCallback onTap;
+
+  const _TeacherCard({required this.teacher, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = AdminTheme.muted(context);
+    final color = teacher.isActive ? AppColors.primaryLight : muted;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminCard(
+        accent: color,
+        onTap: onTap,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            AdminAvatar(
+              text: moduleInitials(teacher.fullName),
+              color: color,
+              size: 46,
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: Text(
-                      teacher.fullName,
-                      style: appTextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).colorScheme.onSurface,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          teacher.fullName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w800,
+                            color: AdminTheme.text(context),
+                          ),
+                        ),
                       ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
+                      const SizedBox(width: 8),
+                      AdminBadge(
+                        label: teacher.isActive ? tr('نشط') : tr('غير نشط'),
+                        color: teacher.isActive ? AppColors.success : muted,
+                      ),
+                    ],
                   ),
-                  StatusPill(
-                    label: teacher.isActive ? tr('نشط') : tr('غير نشط'),
-                    color: teacher.isActive
-                        ? AppColors.success
-                        : AppColors.textMuted,
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 6,
+                    runSpacing: 6,
+                    children: [
+                      if (teacher.phone.isNotEmpty)
+                        AdminBadge(
+                          icon: Icons.phone_rounded,
+                          label: teacher.phone,
+                          color: AppColors.info,
+                        ),
+                      AdminBadge(
+                        icon: Icons.menu_book_rounded,
+                        label: teacher.courseName ?? tr('بلا كورس'),
+                        color: AppColors.gold,
+                      ),
+                      if (teacher.isHelping)
+                        AdminBadge(
+                          icon: Icons.support_agent_rounded,
+                          label: tr('معلم مساعد'),
+                          color: AppColors.primaryGlow,
+                        ),
+                    ],
                   ),
                 ],
               ),
-              const SizedBox(height: 4),
-              Text(
-                '${teacher.phone}  ·  ${teacher.courseName ?? tr('بلا كورس')}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
-                overflow: TextOverflow.ellipsis,
-              ),
-              if (teacher.isHelping) ...[
-                const SizedBox(height: 6),
-                StatusPill(label: tr('معلم مساعد'), color: AppColors.info),
-              ],
-            ],
-          ),
+            ),
+            Icon(AdminTheme.chevron(context), color: muted),
+          ],
         ),
       ),
     );

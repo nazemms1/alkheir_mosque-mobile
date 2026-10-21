@@ -5,6 +5,7 @@ import 'package:intl/intl.dart';
 import 'package:alkheir_mosque/app/core/session/service_providers.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 /// شاشة تقارير الإدارة — تعتمد endpoints بصلاحية `reports.view`:
 ///   - نظرة عامة (reports/overview) مع فلترة بالفترة الزمنية.
@@ -22,7 +23,9 @@ class AdminReportsScreen extends ConsumerStatefulWidget {
 
 class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
   static final _apiDate = DateFormat('yyyy-MM-dd');
-  static final _displayDate = DateFormat('d MMM yyyy', 'ar');
+  // getter: التنسيق يتبع اللغة الحالية عند كل بناء
+  static DateFormat get _displayDate =>
+      DateFormat('d MMM yyyy', AppLanguage.intlCode);
 
   int _view = 0; // 0 = نظرة عامة، 1 = ملخص المعلمين
 
@@ -92,7 +95,7 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
       initialDate: initial ?? DateTime.now(),
       firstDate: DateTime(2020),
       lastDate: DateTime.now().add(const Duration(days: 1)),
-      locale: const Locale('ar'),
+      locale: AppLanguage.current,
     );
     if (picked != null) onPicked(picked);
   }
@@ -210,43 +213,17 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
   Widget _body() {
     if (_loading) return const Center(child: CircularProgressIndicator());
     if (_error != null) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.error_outline_rounded,
-                size: 48, color: AppColors.error),
-            const SizedBox(height: 12),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24),
-              child: Text(_error!,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontFamily: 'Dubai')),
-            ),
-            const SizedBox(height: 16),
-            ElevatedButton(
-              onPressed: _load,
-              child: Text(tr('إعادة المحاولة'),
-                  style: const TextStyle(fontFamily: 'Dubai')),
-            ),
-          ],
-        ),
+      return AdminErrorState(
+        message: _error!,
+        onRetry: _load,
+        retryLabel: tr('إعادة المحاولة'),
       );
     }
     final data = _data ?? const {};
     if (data.isEmpty) {
-      return Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(Icons.bar_chart_rounded,
-                size: 56, color: AppColors.textMuted),
-            const SizedBox(height: 12),
-            Text(tr('لا توجد بيانات لهذه الفترة'),
-                style: const TextStyle(
-                    fontFamily: 'Dubai', color: AppColors.textMuted)),
-          ],
-        ),
+      return AdminEmptyState(
+        icon: Icons.bar_chart_rounded,
+        title: tr('لا توجد بيانات لهذه الفترة'),
       );
     }
     return RefreshIndicator(
@@ -308,7 +285,7 @@ class _ViewSwitcher extends StatelessWidget {
             children: [
               Icon(icon,
                   size: 17,
-                  color: selected ? Colors.white : AppColors.textMuted),
+                  color: selected ? Colors.white : AdminTheme.muted(context)),
               const SizedBox(width: 6),
               Text(
                 label,
@@ -316,7 +293,7 @@ class _ViewSwitcher extends StatelessWidget {
                   fontFamily: 'Dubai',
                   fontSize: 12.5,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-                  color: selected ? Colors.white : AppColors.textMuted,
+                  color: selected ? Colors.white : AdminTheme.muted(context),
                 ),
               ),
             ],
@@ -342,7 +319,7 @@ class _FilterChipButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = active ? AppColors.primaryLight : AppColors.textMuted;
+    final color = active ? AppColors.primaryLight : AdminTheme.muted(context);
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -510,7 +487,8 @@ String _formatValue(Object value) {
     if (value is double && value != value.roundToDouble()) {
       return value.toStringAsFixed(1);
     }
-    return NumberFormat.decimalPattern('ar').format(value);
+    return NumberFormat.decimalPattern(AppLanguage.isArabic ? 'ar' : 'en')
+        .format(value);
   }
   return value.toString();
 }
@@ -1498,8 +1476,8 @@ class _ItemCard extends StatelessWidget {
                                   : accentColor.withValues(alpha: 0.04),
                               borderRadius: BorderRadius.circular(11),
                               border: Border.all(
-                                color: accentColor
-                                    .withValues(alpha: isDark ? 0.2 : 0.12),
+                                color: accentColor.withValues(
+                                    alpha: isDark ? 0.2 : 0.12),
                                 width: 0.9,
                               ),
                             ),
@@ -1524,8 +1502,7 @@ class _ItemCard extends StatelessWidget {
                                     fontFamily: 'Dubai',
                                     fontSize: 12,
                                     fontWeight: FontWeight.w800,
-                                    color:
-                                        _metricColor(row.key, accentColor),
+                                    color: _metricColor(row.key, accentColor),
                                   ),
                                 ),
                               ],

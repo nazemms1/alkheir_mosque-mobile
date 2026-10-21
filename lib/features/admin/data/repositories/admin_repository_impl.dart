@@ -1,4 +1,6 @@
 import 'package:alkheir_mosque/app/core/api/api_service.dart';
+import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart'
     show ChildDetail, AttendanceEntry, PointEntry, StudentParentInfo;
 import '../../domain/repositories/admin_repository.dart';
@@ -9,56 +11,64 @@ class AdminRepositoryImpl implements AdminRepository {
 
   AdminRepositoryImpl({ApiService? api}) : _api = api ?? ApiService();
 
-  // ─── Dashboard stats (parallel) ───────────────────────────────────────────
+  // ─── Dashboard stats (parallel, per-account) ──────────────────────────────
+  /// عدد عناصر قائمة واحدة (`total`). إن لم يملك الحساب الصلاحية لا يُرسل
+  /// الطلب أصلاً ويعود الرقم صفراً.
+  Future<int> _countIf(
+    bool allowed,
+    String path, {
+    Map<String, String> extra = const {},
+  }) async {
+    if (!allowed) return 0;
+    final json = await _api.get(path, query: {'per_page': '1', ...extra});
+    return (json as Map<String, dynamic>?)?['total'] as int? ?? 0;
+  }
+
   @override
-  Future<AdminStats> fetchStats() async {
-    final results = await Future.wait([
-      _api.get('students', query: {'per_page': '1'}),
-      _api.get('groups', query: {'per_page': '1'}),
-      _api.get('groups', query: {'per_page': '1', 'is_active': '1'}),
-      _api.get('enrollments', query: {'per_page': '1'}),
-      _api.get('invoices', query: {'per_page': '1'}),
-      _api.get('activities', query: {'per_page': '1'}),
-      _api.get('assessments', query: {'per_page': '1'}),
+  Future<AdminStats> fetchStats(AuthToken token) async {
+    final counts = await Future.wait<int>([
+      _countIf(token.hasPermission(Permissions.studentsView), 'students'),
+      _countIf(token.hasPermission(Permissions.groupsView), 'groups'),
+      _countIf(token.hasPermission(Permissions.groupsView), 'groups',
+          extra: {'is_active': '1'}),
+      _countIf(token.hasPermission(Permissions.enrollmentsView), 'enrollments'),
+      _countIf(token.hasPermission(Permissions.invoicesView), 'invoices'),
+      _countIf(token.hasPermission(Permissions.activitiesView), 'activities'),
+      _countIf(token.hasPermission(Permissions.assessmentsView), 'assessments'),
     ]);
 
-    int total(dynamic r) => (r as Map<String, dynamic>?)?['total'] as int? ?? 0;
-
     return AdminStats(
-      totalStudents: total(results[0]),
-      totalGroups: total(results[1]),
-      activeGroups: total(results[2]),
-      totalEnrollments: total(results[3]),
-      totalInvoices: total(results[4]),
-      totalActivities: total(results[5]),
-      totalAssessments: total(results[6]),
+      totalStudents: counts[0],
+      totalGroups: counts[1],
+      activeGroups: counts[2],
+      totalEnrollments: counts[3],
+      totalInvoices: counts[4],
+      totalActivities: counts[5],
+      totalAssessments: counts[6],
     );
   }
 
-  /// إحصائيات آمنة لأدوار الإشراف — تتجاهل الاستدعاءات التي لا تملك صلاحيتها
-  /// (مثل invoices) بدل أن تفشل الشاشة كلها بخطأ 403.
+  /// إحصائيات المشرف: الفواتير غير متاحة للمشرف، والباقي حسب صلاحياته.
   @override
-  Future<AdminStats> fetchSupervisorStats() async {
-    final results = await Future.wait([
-      _api.get('students', query: {'per_page': '1'}).catchError((_) => null),
-      _api.get('groups', query: {'per_page': '1'}).catchError((_) => null),
-      _api.get('groups',
-          query: {'per_page': '1', 'is_active': '1'}).catchError((_) => null),
-      _api.get('enrollments', query: {'per_page': '1'}).catchError((_) => null),
-      _api.get('activities', query: {'per_page': '1'}).catchError((_) => null),
-      _api.get('assessments', query: {'per_page': '1'}).catchError((_) => null),
+  Future<AdminStats> fetchSupervisorStats(AuthToken token) async {
+    final counts = await Future.wait<int>([
+      _countIf(token.hasPermission(Permissions.studentsView), 'students'),
+      _countIf(token.hasPermission(Permissions.groupsView), 'groups'),
+      _countIf(token.hasPermission(Permissions.groupsView), 'groups',
+          extra: {'is_active': '1'}),
+      _countIf(token.hasPermission(Permissions.enrollmentsView), 'enrollments'),
+      _countIf(token.hasPermission(Permissions.activitiesView), 'activities'),
+      _countIf(token.hasPermission(Permissions.assessmentsView), 'assessments'),
     ]);
 
-    int total(dynamic r) => (r as Map<String, dynamic>?)?['total'] as int? ?? 0;
-
     return AdminStats(
-      totalStudents: total(results[0]),
-      totalGroups: total(results[1]),
-      activeGroups: total(results[2]),
-      totalEnrollments: total(results[3]),
+      totalStudents: counts[0],
+      totalGroups: counts[1],
+      activeGroups: counts[2],
+      totalEnrollments: counts[3],
       totalInvoices: 0,
-      totalActivities: total(results[4]),
-      totalAssessments: total(results[5]),
+      totalActivities: counts[4],
+      totalAssessments: counts[5],
     );
   }
 
@@ -499,26 +509,18 @@ class AdminRepositoryImpl implements AdminRepository {
         AdminStats stats,
         List<AdminGroupItem> groups,
         List<AdminStudentItem> students,
-      })> fetchDashboard() async {
-    final results = await Future.wait([
-      fetchStats(),
-      fetchGroups(perPage: 6, isActive: true),
-      fetchStudents(perPage: 6),
-    ]);
+      })> fetchDashboard(AuthToken token) async {
+    final stats = fetchStats(token);
+    final groups = token.hasPermission(Permissions.groupsView)
+        ? fetchGroups(perPage: 6, isActive: true).then((p) => p.items)
+        : Future.value(const <AdminGroupItem>[]);
+    final students = token.hasPermission(Permissions.studentsView)
+        ? fetchStudents(perPage: 6).then((p) => p.items)
+        : Future.value(const <AdminStudentItem>[]);
     return (
-      stats: results[0] as AdminStats,
-      groups: (results[1] as ({
-        List<AdminGroupItem> items,
-        int total,
-        int lastPage
-      }))
-          .items,
-      students: (results[2] as ({
-        List<AdminStudentItem> items,
-        int total,
-        int lastPage
-      }))
-          .items,
+      stats: await stats,
+      groups: await groups,
+      students: await students,
     );
   }
 }

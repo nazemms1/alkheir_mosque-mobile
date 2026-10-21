@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/records_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
@@ -130,26 +131,27 @@ class _EnrollmentsScreenState extends State<EnrollmentsScreen> {
     return ModuleScaffold(
       title: _title,
       floatingActionButton: ModuleAccess.canCreateEnrollments(t)
-          ? FloatingActionButton.extended(
+          ? AdminFab(
+              label: tr('تسجيل جديد'),
+              icon: Icons.add_rounded,
               onPressed: () => _openForm(),
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label: Text(
-                tr('تسجيل جديد'),
-                style: appTextStyle(
-                    fontWeight: FontWeight.w700, color: Colors.white),
-              ),
             )
           : null,
       body: PagedList<EnrollmentRecord>(
         reloadToken: _reloadToken,
         emptyText: tr('لا توجد تسجيلات'),
-        header: _StatusFilter(
-          selected: _status,
-          onSelected: (value) => setState(() {
-            _status = value;
-            _reloadToken++;
-          }),
+        header: Padding(
+          padding: const EdgeInsets.only(top: 12, bottom: 10),
+          child: AdminChoiceBar<String?>(
+            options: const <String?>[null, 'active', 'completed', 'cancelled'],
+            selected: _status,
+            labelOf: (value) =>
+                value == null ? tr('الكل') : enrollmentStatusLabel(value),
+            onSelected: (value) => setState(() {
+              _status = value;
+              _reloadToken++;
+            }),
+          ),
         ),
         fetch: (page) => _operations.enrollments(
           page: page,
@@ -157,79 +159,91 @@ class _EnrollmentsScreenState extends State<EnrollmentsScreen> {
           groupId: widget.groupId,
           status: _status,
         ),
-        itemBuilder: (context, e, _) => ModuleCard(
-          accent: e.isActive ? AppColors.success : AppColors.textMuted,
+        itemBuilder: (context, e, _) => _EnrollmentCard(
+          enrollment: e,
           onTap: () => _openSheet(e),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      e.studentName,
-                      style: appTextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                  ),
-                  StatusPill(
-                    label: enrollmentStatusLabel(e.status),
-                    color: e.isActive ? AppColors.success : AppColors.textMuted,
-                  ),
-                ],
-              ),
-              const SizedBox(height: 4),
-              Text(
-                '${e.groupName ?? ''}  ·  ${e.enrolledAt ?? ''}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
-              ),
-              Text(
-                trf('النقاط: {0}  ·  الصفحات: {1}',
-                    [e.finalPoints, e.memorizedPages]),
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
-              ),
-            ],
-          ),
         ),
       ),
     );
   }
 }
 
-class _StatusFilter extends StatelessWidget {
-  final String? selected;
-  final ValueChanged<String?> onSelected;
+class _EnrollmentCard extends StatelessWidget {
+  final EnrollmentRecord enrollment;
+  final VoidCallback onTap;
 
-  const _StatusFilter({required this.selected, required this.onSelected});
+  const _EnrollmentCard({required this.enrollment, required this.onTap});
 
   @override
   Widget build(BuildContext context) {
-    final options = <String?, String>{
-      null: tr('الكل'),
-      'active': tr('نشط'),
-      'completed': tr('مكتمل'),
-      'cancelled': tr('ملغى'),
-    };
-    return SizedBox(
-      height: 52,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.fromLTRB(16, 10, 16, 6),
-        children: [
-          for (final entry in options.entries)
-            Padding(
-              padding: const EdgeInsets.only(left: 8),
-              child: ChoiceChip(
-                label: Text(entry.value, style: appTextStyle(fontSize: 12)),
-                selected: entry.key == selected,
-                onSelected: (_) => onSelected(entry.key),
-              ),
+    final e = enrollment;
+    final muted = AdminTheme.muted(context);
+    final color = e.isActive ? AppColors.success : muted;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminCard(
+        accent: color,
+        onTap: onTap,
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                AdminIconBubble(
+                  icon: Icons.how_to_reg_rounded,
+                  color: color,
+                  size: 40,
+                ),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        e.studentName,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: AdminTheme.text(context),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        '${e.groupName ?? ''}  ·  ${e.enrolledAt ?? ''}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(fontSize: 12, color: muted),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                AdminBadge(
+                    label: enrollmentStatusLabel(e.status), color: color),
+              ],
             ),
-        ],
+            const SizedBox(height: 10),
+            Row(
+              children: [
+                Icon(Icons.stars_rounded, size: 15, color: AppColors.gold),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    trf('النقاط: {0}  ·  الصفحات: {1}',
+                        [e.finalPoints, e.memorizedPages]),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(fontSize: 12, color: muted),
+                  ),
+                ),
+                Icon(AdminTheme.chevron(context), color: muted),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
@@ -365,64 +379,82 @@ class _EnrollmentFormScreenState extends State<EnrollmentFormScreen> {
           : ModuleFormPage(
               formKey: _formKey,
               children: [
-                PickerField(
-                  label: tr('الطالب'),
-                  value: _student?.label,
-                  error: _error,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر الطالب'),
-                      load: _loadStudents,
-                    );
-                    if (picked != null) setState(() => _student = picked);
-                  },
-                ),
-                PickerField(
-                  label: tr('الحلقة'),
-                  value: _group?.label,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر الحلقة'),
-                      load: _loadGroups,
-                    );
-                    if (picked != null) setState(() => _group = picked);
-                  },
-                ),
-                moduleDateField(
-                  context: context,
-                  controller: _enrolledAt,
-                  label: tr('تاريخ الالتحاق'),
-                  required: true,
-                ),
-                DropdownButtonFormField<String>(
-                  initialValue: _status,
-                  isExpanded: true,
-                  decoration: InputDecoration(labelText: tr('الحالة')),
-                  items: [
-                    for (final code in const [
-                      'active',
-                      'completed',
-                      'cancelled'
-                    ])
-                      DropdownMenuItem(
-                        value: code,
-                        child: Text(enrollmentStatusLabel(code)),
-                      ),
+                ModuleFormSection(
+                  title: tr('الطالب والحلقة'),
+                  icon: Icons.how_to_reg_rounded,
+                  children: [
+                    PickerField(
+                      label: tr('الطالب'),
+                      value: _student?.label,
+                      error: _error,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر الطالب'),
+                          load: _loadStudents,
+                        );
+                        if (picked != null) setState(() => _student = picked);
+                      },
+                    ),
+                    PickerField(
+                      label: tr('الحلقة'),
+                      value: _group?.label,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر الحلقة'),
+                          load: _loadGroups,
+                        );
+                        if (picked != null) setState(() => _group = picked);
+                      },
+                    ),
                   ],
-                  onChanged: (v) => setState(() => _status = v ?? _status),
                 ),
-                const SizedBox(height: 12),
-                moduleDateField(
-                  context: context,
-                  controller: _leftAt,
-                  label: tr('تاريخ الخروج'),
+                ModuleFormSection(
+                  title: tr('التواريخ والحالة'),
+                  icon: Icons.event_rounded,
+                  children: [
+                    moduleDateField(
+                      context: context,
+                      controller: _enrolledAt,
+                      label: tr('تاريخ الالتحاق'),
+                      required: true,
+                    ),
+                    DropdownButtonFormField<String>(
+                      initialValue: _status,
+                      isExpanded: true,
+                      decoration: InputDecoration(labelText: tr('الحالة')),
+                      items: [
+                        for (final code in const [
+                          'active',
+                          'completed',
+                          'cancelled'
+                        ])
+                          DropdownMenuItem(
+                            value: code,
+                            child: Text(enrollmentStatusLabel(code)),
+                          ),
+                      ],
+                      onChanged: (v) => setState(() => _status = v ?? _status),
+                    ),
+                    const SizedBox(height: 12),
+                    moduleDateField(
+                      context: context,
+                      controller: _leftAt,
+                      label: tr('تاريخ الخروج'),
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _notes,
-                  label: tr('ملاحظات'),
-                  maxLines: 2,
+                ModuleFormSection(
+                  title: tr('معلومات إضافية'),
+                  icon: Icons.notes_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _notes,
+                      label: tr('ملاحظات'),
+                      maxLines: 2,
+                    ),
+                  ],
                 ),
                 const SizedBox(height: 8),
                 ModuleSaveButton(

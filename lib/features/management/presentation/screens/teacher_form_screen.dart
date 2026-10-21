@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
-import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
@@ -143,70 +142,80 @@ class _TeacherFormScreenState extends State<TeacherFormScreen> {
           : ModuleFormPage(
               formKey: _formKey,
               children: [
-                moduleTextField(
-                  controller: _firstName,
-                  label: tr('الاسم الأول'),
-                  required: true,
+                ModuleFormSection(
+                  title: tr('بيانات المعلم'),
+                  icon: Icons.school_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _firstName,
+                      label: tr('الاسم الأول'),
+                      required: true,
+                    ),
+                    moduleTextField(
+                      controller: _lastName,
+                      label: tr('اسم العائلة'),
+                      required: true,
+                    ),
+                    moduleTextField(
+                      controller: _phone,
+                      label: tr('رقم الهاتف'),
+                      keyboard: TextInputType.phone,
+                      required: true,
+                    ),
+                    if (_loadingRefs)
+                      const Padding(
+                        padding: EdgeInsets.only(bottom: 12),
+                        child: LinearProgressIndicator(),
+                      )
+                    else ...[
+                      if (_courses.isNotEmpty) _courseDropdown(),
+                      if (_jobTitles.isNotEmpty) _jobTitleDropdown(),
+                    ],
+                    moduleDateField(
+                      context: context,
+                      controller: _hiredAt,
+                      label: tr('تاريخ التعيين'),
+                    ),
+                    moduleSwitch(
+                      label: tr('معلم مساعد'),
+                      value: _isHelping,
+                      onChanged: (v) => setState(() => _isHelping = v),
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _lastName,
-                  label: tr('اسم العائلة'),
-                  required: true,
+                ModuleFormSection(
+                  title: tr('حساب الدخول'),
+                  icon: Icons.lock_person_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _username,
+                      label: tr('اسم المستخدم'),
+                      helper: tr('اتركه فارغاً لاستخدام الافتراضي'),
+                    ),
+                    moduleTextField(
+                      controller: _password,
+                      label: tr('كلمة المرور الجديدة'),
+                      helper: tr('8 أحرف على الأقل، أو اتركها فارغة'),
+                      obscure: true,
+                    ),
+                    moduleSwitch(
+                      label: tr('الحساب نشط'),
+                      value: _accountActive,
+                      onChanged: (v) => setState(() => _accountActive = v),
+                    ),
+                  ],
                 ),
-                moduleTextField(
-                  controller: _phone,
-                  label: tr('رقم الهاتف'),
-                  keyboard: TextInputType.phone,
-                  required: true,
+                ModuleFormSection(
+                  title: tr('معلومات إضافية'),
+                  icon: Icons.notes_rounded,
+                  children: [
+                    moduleTextField(
+                      controller: _notes,
+                      label: tr('ملاحظات'),
+                      maxLines: 3,
+                    ),
+                  ],
                 ),
-                if (_loadingRefs)
-                  const Padding(
-                    padding: EdgeInsets.symmetric(vertical: 12),
-                    child: LinearProgressIndicator(),
-                  )
-                else ...[
-                  if (_courses.isNotEmpty) _courseDropdown(),
-                  if (_jobTitles.isNotEmpty) _jobTitleDropdown(),
-                ],
-                moduleDateField(
-                  context: context,
-                  controller: _hiredAt,
-                  label: tr('تاريخ التعيين'),
-                ),
-                moduleSwitch(
-                  label: tr('معلم مساعد'),
-                  value: _isHelping,
-                  onChanged: (v) => setState(() => _isHelping = v),
-                ),
-                moduleTextField(
-                  controller: _notes,
-                  label: tr('ملاحظات'),
-                  maxLines: 3,
-                ),
-                const SizedBox(height: 8),
-                Text(
-                  tr('حساب الدخول'),
-                  style:
-                      appTextStyle(fontSize: 15, fontWeight: FontWeight.w800),
-                ),
-                const SizedBox(height: 8),
-                moduleTextField(
-                  controller: _username,
-                  label: tr('اسم المستخدم'),
-                  helper: tr('اتركه فارغاً لاستخدام الافتراضي'),
-                ),
-                moduleTextField(
-                  controller: _password,
-                  label: tr('كلمة المرور الجديدة'),
-                  helper: tr('8 أحرف على الأقل، أو اتركها فارغة'),
-                  obscure: true,
-                ),
-                moduleSwitch(
-                  label: tr('الحساب نشط'),
-                  value: _accountActive,
-                  onChanged: (v) => setState(() => _accountActive = v),
-                ),
-                const SizedBox(height: 8),
                 ModuleSaveButton(
                   saving: _saving,
                   onPressed: _save,

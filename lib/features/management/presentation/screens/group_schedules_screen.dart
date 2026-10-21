@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/group_student_model.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
@@ -52,44 +53,67 @@ class GroupPickerScreen extends StatelessWidget {
       body: PagedList<GroupItem>(
         emptyText: tr('لا توجد حلقات'),
         fetch: (page) => service.groups(page: page),
-        itemBuilder: (context, group, _) => ModuleCard(
-          accent: group.isActive ? AppColors.primaryLight : AppColors.textMuted,
+        itemBuilder: (context, group, _) => _GroupPickCard(
+          group: group,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => GroupSchedulesScreen(token: token, group: group),
             ),
           ),
-          child: Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      group.name,
-                      style: appTextStyle(
-                        fontSize: 15,
-                        fontWeight: FontWeight.w800,
-                        color: Theme.of(context).colorScheme.onSurface,
-                      ),
+        ),
+      ),
+    );
+  }
+}
+
+class _GroupPickCard extends StatelessWidget {
+  final GroupItem group;
+  final VoidCallback onTap;
+
+  const _GroupPickCard({required this.group, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final muted = AdminTheme.muted(context);
+    final color = group.isActive ? AppColors.primaryLight : muted;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminCard(
+        accent: color,
+        onTap: onTap,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            AdminIconBubble(icon: Icons.groups_rounded, color: color, size: 44),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    group.name,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w800,
+                      color: AdminTheme.text(context),
                     ),
-                    const SizedBox(height: 4),
+                  ),
+                  if ((group.courseName ?? '').isNotEmpty) ...[
+                    const SizedBox(height: 2),
                     Text(
-                      group.courseName ?? '',
-                      style: appTextStyle(
-                        fontSize: 12,
-                        color: moduleMuted(context),
-                      ),
+                      group.courseName!,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: appTextStyle(fontSize: 12, color: muted),
                     ),
                   ],
-                ),
+                ],
               ),
-              Icon(
-                Icons.chevron_left_rounded,
-                color: moduleMuted(context),
-              ),
-            ],
-          ),
+            ),
+            Icon(AdminTheme.chevron(context), color: muted),
+          ],
         ),
       ),
     );
@@ -212,15 +236,10 @@ class _GroupSchedulesScreenState extends State<GroupSchedulesScreen> {
     return ModuleScaffold(
       title: widget.group.name,
       floatingActionButton: canManage
-          ? FloatingActionButton.extended(
+          ? AdminFab(
+              label: tr('إضافة حصة'),
+              icon: Icons.add_rounded,
               onPressed: () => _edit(),
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label: Text(
-                tr('إضافة حصة'),
-                style: appTextStyle(
-                    fontWeight: FontWeight.w700, color: Colors.white),
-              ),
             )
           : null,
       body: _buildBody(context),
@@ -238,66 +257,95 @@ class _GroupSchedulesScreenState extends State<GroupSchedulesScreen> {
       );
     }
     if (_slots.isEmpty) {
-      return ModuleMessage(text: tr('لا توجد حصص لهذه الحلقة'));
+      return ModuleMessage(
+        text: tr('لا توجد حصص لهذه الحلقة'),
+        icon: Icons.event_busy_rounded,
+      );
     }
     return RefreshIndicator(
       onRefresh: () async => _reload(),
       color: AppColors.primaryLight,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 12, 16, 120),
+        padding: const EdgeInsets.fromLTRB(16, 12, 16, kAdminBottomInset),
         itemCount: _slots.length,
-        itemBuilder: (_, index) {
-          final slot = _slots[index];
-          return ModuleCard(
-            onTap: () => _openSlot(slot),
-            child: Row(
-              children: [
-                Container(
-                  width: 44,
-                  height: 44,
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AppColors.primaryLight.withValues(alpha: 0.12),
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Text(
-                    dayName(slot.dayOfWeek).isEmpty
-                        ? '?'
-                        : dayName(slot.dayOfWeek).substring(0, 1),
+        itemBuilder: (_, index) => _SlotCard(
+          slot: _slots[index],
+          onTap: () => _openSlot(_slots[index]),
+        ),
+      ),
+    );
+  }
+}
+
+class _SlotCard extends StatelessWidget {
+  final GroupScheduleSlot slot;
+  final VoidCallback onTap;
+
+  const _SlotCard({required this.slot, required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    final day = dayName(slot.dayOfWeek);
+    final muted = AdminTheme.muted(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminCard(
+        onTap: onTap,
+        padding: const EdgeInsets.all(14),
+        child: Row(
+          children: [
+            Container(
+              width: 44,
+              height: 44,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                color: AppColors.primaryLight.withValues(alpha: 0.14),
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Text(
+                day.isEmpty ? '?' : day.substring(0, 1),
+                style: appTextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w800,
+                  color: AppColors.primaryLight,
+                ),
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    day,
                     style: appTextStyle(
-                      fontSize: 16,
+                      fontSize: 14,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.primaryLight,
+                      color: AdminTheme.text(context),
                     ),
                   ),
-                ),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                  const SizedBox(height: 4),
+                  Row(
                     children: [
-                      Text(
-                        dayName(slot.dayOfWeek),
-                        style: appTextStyle(
-                          fontSize: 14,
-                          fontWeight: FontWeight.w800,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
-                      ),
-                      Text(
-                        '${slot.timeSlotLabel}  ·  ${slot.startsAt} - ${slot.endsAt}',
-                        style: appTextStyle(
-                          fontSize: 12,
-                          color: moduleMuted(context),
+                      Icon(Icons.schedule_rounded, size: 14, color: muted),
+                      const SizedBox(width: 4),
+                      Expanded(
+                        child: Text(
+                          '${slot.timeSlotLabel}  ·  ${slot.startsAt} - ${slot.endsAt}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(fontSize: 12, color: muted),
                         ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
-          );
-        },
+            const SizedBox(width: 6),
+            Icon(AdminTheme.chevron(context), color: muted),
+          ],
+        ),
       ),
     );
   }

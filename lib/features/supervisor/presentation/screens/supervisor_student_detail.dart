@@ -612,7 +612,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
 
   @override
   Widget build(BuildContext context) {
-    final dateStr = DateFormat('d MMMM yyyy', 'ar').format(_recordedOn);
+    final dateStr = DateFormat('d MMMM yyyy', AppLanguage.intlCode).format(_recordedOn);
     final fillColor = Theme.of(context).brightness == Brightness.dark
         ? Colors.white.withValues(alpha: 0.06)
         : AppColors.primaryLight.withValues(alpha: 0.06);

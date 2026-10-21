@@ -5,16 +5,17 @@ import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../app/core/http/dio_client.dart';
+import '../app/core/i18n/app_language.dart';
 import '../app/core/services/package_info_service.dart';
 import '../app/core/services/secure_storage_service.dart';
 import '../app/core/services/shared_prefs_service.dart';
 import '../app/core/services/url_launcher_service.dart';
-import '../app/core/i18n/app_language.dart';
 import '../ui/app_routes.dart';
 
 /// SharedPreferences raw instance provider (must be overridden in main)
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {
-  throw UnimplementedError('sharedPreferencesProvider must be overridden in ProviderScope');
+  throw UnimplementedError(
+      'sharedPreferencesProvider must be overridden in ProviderScope');
 });
 
 /// SharedPrefsService provider
@@ -93,7 +94,8 @@ class ThemeModeNotifier extends StateNotifier<ThemeMode> {
   Future<void> toggle() => toggleTheme();
 }
 
-final themeProvider = StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
+final themeProvider =
+    StateNotifierProvider<ThemeModeNotifier, ThemeMode>((ref) {
   final prefs = ref.watch(sharedPrefsServiceProvider);
   return ThemeModeNotifier(prefs);
 });
@@ -107,6 +109,8 @@ class LanguageNotifier extends StateNotifier<Locale> {
     AppLanguage.current = state;
   }
 
+  /// يحدّث اللغة في MaterialApp (الاتجاه والتوطين) وفي دالة `tr()` معاً،
+  /// ثم يحفظ الاختيار.
   Future<void> setLanguage(String languageCode) async {
     final newLocale = Locale(languageCode);
     AppLanguage.current = newLocale;

@@ -3,6 +3,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 
 class AdminAssessmentsScreen extends StatefulWidget {
@@ -89,78 +90,93 @@ class _AdminAssessmentsScreenState extends State<AdminAssessmentsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        // ── Header ────────────────────────────────────────────────────
-        Padding(
-          padding: const EdgeInsets.fromLTRB(16, 16, 16, 0),
-          child: Row(
-            children: [
-              Container(
-                padding:
-                    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  gradient: AppColors.gradientPrimary,
-                  borderRadius: BorderRadius.circular(14),
-                ),
-                child: Row(
-                  children: [
-                    const Icon(Icons.assignment_rounded,
-                        color: Colors.white, size: 18),
-                    const SizedBox(width: 6),
-                    Text(
-                      trf('{0} تقييم', [_total]),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 13,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Dubai',
-                      ),
-                    ),
-                  ],
-                ),
+    return RefreshIndicator(
+      onRefresh: _load,
+      color: AppColors.primaryLight,
+      child: CustomScrollView(
+        controller: _scrollCtrl,
+        physics: const AlwaysScrollableScrollPhysics(),
+        slivers: [
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 12, 16, 0),
+            sliver: SliverToBoxAdapter(
+              child: AdminHero(
+                icon: Icons.assignment_rounded,
+                title: tr('التقييمات'),
+                subtitle: tr('التقييمات والاختبارات ونتائجها'),
+                metrics: [
+                  AdminHeroMetric(
+                    icon: Icons.assignment_turned_in_rounded,
+                    label: tr('إجمالي التقييمات'),
+                    value: _loading ? '…' : '$_total',
+                  ),
+                ],
               ),
-            ],
+            ),
+          ),
+          ..._buildBody(),
+        ],
+      ),
+    );
+  }
+
+  List<Widget> _buildBody() {
+    if (_loading) {
+      return [
+        const SliverFillRemaining(
+          hasScrollBody: false,
+          child: Center(child: CircularProgressIndicator()),
+        ),
+      ];
+    }
+    if (_error != null) {
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: AdminErrorState(
+            message: _error!,
+            onRetry: _load,
+            retryLabel: tr('إعادة المحاولة'),
           ),
         ),
-        // ── List ──────────────────────────────────────────────────────
-        Expanded(
-          child: _loading
-              ? const Center(child: CircularProgressIndicator())
-              : _error != null
-                  ? _ErrorRetry(message: _error!, onRetry: _load)
-                  : _items.isEmpty
-                      ? Center(
-                          child: Text(tr('لا توجد تقييمات'),
-                              style: const TextStyle(
-                                  fontFamily: 'Dubai',
-                                  color: AppColors.textMuted)))
-                      : RefreshIndicator(
-                          onRefresh: _load,
-                          color: AppColors.primaryLight,
-                          child: ListView.builder(
-                            controller: _scrollCtrl,
-                            padding: const EdgeInsets.fromLTRB(16, 14, 16, 120),
-                            itemCount: _items.length + (_loadingMore ? 1 : 0),
-                            itemBuilder: (_, i) {
-                              if (i == _items.length) {
-                                return const Padding(
-                                  padding: EdgeInsets.symmetric(vertical: 16),
-                                  child: Center(
-                                      child: CircularProgressIndicator()),
-                                );
-                              }
-                              return _AssessmentCard(assessment: _items[i])
-                                  .animate()
-                                  .fadeIn(delay: (i * 40).ms, duration: 350.ms)
-                                  .slideY(
-                                      begin: 0.05, end: 0, delay: (i * 40).ms);
-                            },
-                          ),
-                        ),
+      ];
+    }
+    if (_items.isEmpty) {
+      return [
+        SliverFillRemaining(
+          hasScrollBody: false,
+          child: AdminEmptyState(
+            icon: Icons.assignment_outlined,
+            title: tr('لا توجد تقييمات'),
+          ),
         ),
-      ],
-    );
+      ];
+    }
+    return [
+      SliverPadding(
+        padding: const EdgeInsets.fromLTRB(16, 16, 16, kAdminBottomInset),
+        sliver: SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (ctx, i) {
+              if (i == _items.length) {
+                return const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16),
+                  child: Center(child: CircularProgressIndicator()),
+                );
+              }
+              return Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _AssessmentCard(assessment: _items[i])
+                    .animate()
+                    .fadeIn(delay: (i * 40).ms, duration: 350.ms)
+                    .slideY(begin: 0.05, end: 0, delay: (i * 40).ms),
+              );
+            },
+            childCount: _items.length + (_loadingMore ? 1 : 0),
+          ),
+        ),
+      ),
+    ];
   }
 }
 
@@ -180,46 +196,25 @@ class _AssessmentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color = _typeColor;
+    final muted = AdminTheme.muted(context);
     final passPercent = assessment.totalMark > 0
         ? (assessment.passMark / assessment.totalMark * 100).round()
         : 0;
 
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: color.withValues(alpha: 0.2), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-            color: color.withValues(alpha: 0.08),
-            blurRadius: 16,
-            offset: const Offset(0, 5),
-          ),
-        ],
-      ),
+    return AdminCard(
+      padding: EdgeInsets.zero,
+      accent: color,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Header strip
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-            decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.08),
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(18)),
-              border:
-                  Border(bottom: BorderSide(color: color.withValues(alpha: 0.15))),
-            ),
+          Padding(
+            padding: const EdgeInsets.fromLTRB(14, 14, 14, 12),
             child: Row(
               children: [
-                Container(
-                  padding: const EdgeInsets.all(8),
-                  decoration: BoxDecoration(
-                    color: color.withValues(alpha: 0.15),
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: Icon(Icons.assignment_rounded, color: color, size: 20),
+                AdminIconBubble(
+                  icon: Icons.assignment_rounded,
+                  color: color,
+                  size: 40,
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -228,52 +223,37 @@ class _AssessmentCard extends StatelessWidget {
                     children: [
                       Text(
                         assessment.title,
-                        style: TextStyle(
-                          fontFamily: 'Dubai',
-                          fontSize: 13,
-                          fontWeight: FontWeight.w700,
-                          color: Theme.of(context).colorScheme.onSurface,
-                        ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w800,
+                          color: AdminTheme.text(context),
+                        ),
                       ),
                       const SizedBox(height: 2),
                       Text(
                         assessment.type,
-                        style: TextStyle(
-                            color: color,
-                            fontSize: 11,
-                            fontFamily: 'Dubai',
-                            fontWeight: FontWeight.w600),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                          color: color,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: assessment.isActive
-                        ? AppColors.success.withValues(alpha: 0.12)
-                        : AppColors.textMuted.withValues(alpha: 0.1),
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Text(
-                    assessment.isActive ? tr('نشط') : tr('منتهي'),
-                    style: TextStyle(
-                      fontFamily: 'Dubai',
-                      fontSize: 10,
-                      fontWeight: FontWeight.w700,
-                      color: assessment.isActive
-                          ? AppColors.success
-                          : AppColors.textMuted,
-                    ),
-                  ),
+                const SizedBox(width: 8),
+                AdminBadge(
+                  label: assessment.isActive ? tr('نشط') : tr('منتهي'),
+                  color: assessment.isActive ? AppColors.success : muted,
                 ),
               ],
             ),
           ),
-          // Body
+          Divider(height: 1, color: AdminTheme.border(context)),
           Padding(
             padding: const EdgeInsets.all(14),
             child: Column(
@@ -309,45 +289,36 @@ class _AssessmentCard extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 10),
-                // Group + date
                 Container(
+                  width: double.infinity,
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      const EdgeInsets.symmetric(horizontal: 12, vertical: 9),
                   decoration: BoxDecoration(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .surfaceContainerHighest
-                        .withValues(alpha: 0.5),
+                    color: AdminTheme.border(context).withValues(alpha: 0.18),
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Row(
                     children: [
-                      const Icon(Icons.groups_rounded,
-                          size: 14, color: AppColors.textMuted),
+                      Icon(Icons.groups_rounded, size: 15, color: muted),
                       const SizedBox(width: 6),
                       Expanded(
                         child: Text(
                           assessment.groupName.isEmpty
                               ? '—'
                               : '${assessment.groupName} · ${assessment.courseName}',
-                          style: const TextStyle(
-                              fontFamily: 'Dubai',
-                              fontSize: 11,
-                              color: AppColors.textMuted),
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(fontSize: 12, color: muted),
                         ),
                       ),
                       if (assessment.scheduledAt != null) ...[
-                        const Icon(Icons.calendar_today_rounded,
-                            size: 12, color: AppColors.textMuted),
+                        const SizedBox(width: 8),
+                        Icon(Icons.calendar_today_rounded,
+                            size: 12, color: muted),
                         const SizedBox(width: 4),
                         Text(
                           assessment.formattedDate,
-                          style: const TextStyle(
-                              fontFamily: 'Dubai',
-                              fontSize: 11,
-                              color: AppColors.textMuted),
+                          style: appTextStyle(fontSize: 12, color: muted),
                         ),
                       ],
                     ],
@@ -375,55 +346,39 @@ class _StatBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
+      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
       decoration: BoxDecoration(
-        color: color.withValues(alpha: 0.07),
+        color: color.withValues(alpha: 0.08),
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: color.withValues(alpha: 0.18)),
+        border: Border.all(color: color.withValues(alpha: 0.2)),
       ),
       child: Column(
         children: [
           Icon(icon, color: color, size: 16),
           const SizedBox(height: 4),
-          Text(value,
-              style: TextStyle(
-                  color: color,
-                  fontSize: 12,
-                  fontWeight: FontWeight.w800,
-                  fontFamily: 'Dubai'),
-              textAlign: TextAlign.center),
-          Text(label,
-              style: const TextStyle(
-                  color: AppColors.textMuted, fontSize: 9, fontFamily: 'Dubai'),
-              textAlign: TextAlign.center),
-        ],
-      ),
-    );
-  }
-}
-
-class _ErrorRetry extends StatelessWidget {
-  final String message;
-  final VoidCallback onRetry;
-  const _ErrorRetry({required this.message, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const Icon(Icons.error_outline_rounded,
-              size: 48, color: AppColors.error),
-          const SizedBox(height: 12),
-          Text(message,
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
               textAlign: TextAlign.center,
-              style: const TextStyle(fontFamily: 'Dubai')),
-          const SizedBox(height: 16),
-          ElevatedButton(
-              onPressed: onRetry,
-              child: Text(tr('إعادة المحاولة'),
-                  style: const TextStyle(fontFamily: 'Dubai'))),
+              style: appTextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w800,
+                color: color,
+              ),
+            ),
+          ),
+          const SizedBox(height: 2),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.center,
+            style: appTextStyle(
+              fontSize: 10,
+              color: AdminTheme.muted(context),
+            ),
+          ),
         ],
       ),
     );

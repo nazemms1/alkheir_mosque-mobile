@@ -7,6 +7,7 @@ import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
 import 'package:alkheir_mosque/features/students/data/repositories/student_file_repository_impl.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'module_widgets.dart';
 
 /// عنصر قابل للاختيار في منتقٍ بحثي (طالب، ولي أمر، حلقة، كتالوج...).
@@ -155,15 +156,11 @@ class _ItemPickerSheetState extends State<_ItemPickerSheet> {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: TextField(
+              child: AdminSearchField(
                 controller: _searchCtrl,
+                hint: tr('ابحث…'),
                 autofocus: true,
-                style: appTextStyle(),
                 onChanged: _onChanged,
-                decoration: InputDecoration(
-                  hintText: tr('ابحث…'),
-                  prefixIcon: const Icon(Icons.search_rounded),
-                ),
               ),
             ),
             if (widget.allowClear)
@@ -238,17 +235,48 @@ class _ItemPickerSheetState extends State<_ItemPickerSheet> {
     return ListView.separated(
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 16),
       itemCount: _items.length,
-      separatorBuilder: (_, __) => const Divider(height: 1),
+      separatorBuilder: (_, __) => const SizedBox(height: 8),
       itemBuilder: (_, index) {
         final item = _items[index];
-        return ListTile(
-          contentPadding: EdgeInsets.zero,
-          title: Text(item.label,
-              style: appTextStyle(fontWeight: FontWeight.w700)),
-          subtitle: item.subtitle == null
-              ? null
-              : Text(item.subtitle!, style: appTextStyle(fontSize: 12)),
+        final subtitle = item.subtitle ?? '';
+        return AdminCard(
+          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
           onTap: () => Navigator.pop(context, item),
+          child: Row(
+            children: [
+              AdminAvatar(text: moduleInitials(item.label), size: 38),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      item.label,
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                      style: appTextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
+                        color: AdminTheme.text(context),
+                      ),
+                    ),
+                    if (subtitle.isNotEmpty)
+                      Text(
+                        subtitle,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 12,
+                          color: AdminTheme.muted(context),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              Icon(AdminTheme.chevron(context),
+                  color: AdminTheme.muted(context)),
+            ],
+          ),
         );
       },
     );

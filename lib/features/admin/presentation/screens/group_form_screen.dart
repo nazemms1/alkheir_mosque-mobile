@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.dart';
+import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
 import 'package:alkheir_mosque/features/operations/data/repositories/operations_repository_impl.dart';
@@ -12,9 +14,11 @@ import 'package:alkheir_mosque/features/management/presentation/widgets/pickers.
 /// نموذج إنشاء حلقة أو تعديلها. الكورس والسنة والمعلم والصف تُختار من قوائم
 /// بحث بدل إدخال المعرّفات يدوياً. عند التعديل تُحمَّل بيانات الحلقة كاملة.
 class GroupFormScreen extends StatefulWidget {
+  /// الحساب الحالي — الإنشاء يتطلب `groups.create` والتعديل `groups.update`.
+  final AuthToken token;
   final AdminGroupDetail? group;
 
-  const GroupFormScreen({super.key, this.group});
+  const GroupFormScreen({super.key, required this.token, this.group});
 
   @override
   State<GroupFormScreen> createState() => _GroupFormScreenState();
@@ -102,7 +106,8 @@ class _GroupFormScreenState extends State<GroupFormScreen> {
       );
 
   Future<List<PickerItem>> _loadCourses(String search) async {
-    final page = await ManagementRepositoryImpl().courses(search: search, perPage: 50);
+    final page =
+        await ManagementRepositoryImpl().courses(search: search, perPage: 50);
     return [
       for (final c in page.items)
         PickerItem(id: c.id, label: c.name, subtitle: c.academicYear),
@@ -170,122 +175,129 @@ class _GroupFormScreenState extends State<GroupFormScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final allowed = _isEdit
+        ? ModuleAccess.canUpdateGroups(widget.token)
+        : ModuleAccess.canCreateGroups(widget.token);
     return ModuleScaffold(
       title: _isEdit ? tr('تعديل الحلقة') : tr('إضافة حلقة'),
-      body: _loading
-          ? const Center(child: CircularProgressIndicator())
-          : ModuleFormPage(
-              formKey: _formKey,
-              children: [
-                moduleTextField(
-                  controller: _name,
-                  label: tr('اسم الحلقة'),
-                  required: true,
+      body: !allowed
+          ? const ModuleAccessDenied()
+          : _loading
+              ? const Center(child: CircularProgressIndicator())
+              : ModuleFormPage(
+                  formKey: _formKey,
+                  children: [
+                    moduleTextField(
+                      controller: _name,
+                      label: tr('اسم الحلقة'),
+                      required: true,
+                    ),
+                    PickerField(
+                      label: tr('السنة الدراسية'),
+                      value: _academicYear?.label,
+                      error: _error,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر السنة الدراسية'),
+                          load: _loadYears,
+                        );
+                        if (picked != null) {
+                          setState(() => _academicYear = picked);
+                        }
+                      },
+                    ),
+                    PickerField(
+                      label: tr('الكورس'),
+                      value: _course?.label,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر الكورس'),
+                          load: _loadCourses,
+                        );
+                        if (picked != null) setState(() => _course = picked);
+                      },
+                    ),
+                    PickerField(
+                      label: tr('المعلم'),
+                      value: _teacher?.label,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر المعلم'),
+                          load: _loadTeachers,
+                        );
+                        if (picked != null) setState(() => _teacher = picked);
+                      },
+                    ),
+                    PickerField(
+                      label: tr('المعلم المساعد'),
+                      value: _assistant?.label,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر المعلم المساعد'),
+                          allowClear: true,
+                          load: _loadTeachers,
+                        );
+                        if (picked == null) return;
+                        setState(() => _assistant =
+                            picked.id == PickerItem.clear.id ? null : picked);
+                      },
+                    ),
+                    PickerField(
+                      label: tr('الصف الدراسي'),
+                      value: _gradeLevel?.label,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر الصف'),
+                          allowClear: true,
+                          load: (s) =>
+                              referencePickerItems('grade-levels', search: s),
+                        );
+                        if (picked == null) return;
+                        setState(() => _gradeLevel =
+                            picked.id == PickerItem.clear.id ? null : picked);
+                      },
+                    ),
+                    moduleTextField(
+                      controller: _capacity,
+                      label: tr('السعة القصوى'),
+                      keyboard: TextInputType.number,
+                      required: true,
+                      helper: tr('عدد صحيح أكبر من أو يساوي صفر'),
+                    ),
+                    moduleTextField(
+                      controller: _monthlyFee,
+                      label: tr('الرسوم الشهرية'),
+                      keyboard:
+                          const TextInputType.numberWithOptions(decimal: true),
+                    ),
+                    moduleDateField(
+                      context: context,
+                      controller: _startsOn,
+                      label: tr('تاريخ البدء'),
+                    ),
+                    moduleDateField(
+                      context: context,
+                      controller: _endsOn,
+                      label: tr('تاريخ الانتهاء'),
+                    ),
+                    moduleSwitch(
+                      label: tr('حلقة نشطة'),
+                      value: _isActive,
+                      onChanged: (v) => setState(() => _isActive = v),
+                    ),
+                    const SizedBox(height: 8),
+                    ModuleSaveButton(
+                      saving: _saving,
+                      onPressed: _save,
+                      label: _isEdit ? tr('حفظ التعديلات') : tr('إنشاء الحلقة'),
+                    ),
+                  ],
                 ),
-                PickerField(
-                  label: tr('السنة الدراسية'),
-                  value: _academicYear?.label,
-                  error: _error,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر السنة الدراسية'),
-                      load: _loadYears,
-                    );
-                    if (picked != null) setState(() => _academicYear = picked);
-                  },
-                ),
-                PickerField(
-                  label: tr('الكورس'),
-                  value: _course?.label,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر الكورس'),
-                      load: _loadCourses,
-                    );
-                    if (picked != null) setState(() => _course = picked);
-                  },
-                ),
-                PickerField(
-                  label: tr('المعلم'),
-                  value: _teacher?.label,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر المعلم'),
-                      load: _loadTeachers,
-                    );
-                    if (picked != null) setState(() => _teacher = picked);
-                  },
-                ),
-                PickerField(
-                  label: tr('المعلم المساعد'),
-                  value: _assistant?.label,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر المعلم المساعد'),
-                      allowClear: true,
-                      load: _loadTeachers,
-                    );
-                    if (picked == null) return;
-                    setState(() => _assistant =
-                        picked.id == PickerItem.clear.id ? null : picked);
-                  },
-                ),
-                PickerField(
-                  label: tr('الصف الدراسي'),
-                  value: _gradeLevel?.label,
-                  onTap: () async {
-                    final picked = await showItemPicker(
-                      context,
-                      title: tr('اختر الصف'),
-                      allowClear: true,
-                      load: (s) =>
-                          referencePickerItems('grade-levels', search: s),
-                    );
-                    if (picked == null) return;
-                    setState(() => _gradeLevel =
-                        picked.id == PickerItem.clear.id ? null : picked);
-                  },
-                ),
-                moduleTextField(
-                  controller: _capacity,
-                  label: tr('السعة القصوى'),
-                  keyboard: TextInputType.number,
-                  required: true,
-                  helper: tr('عدد صحيح أكبر من أو يساوي صفر'),
-                ),
-                moduleTextField(
-                  controller: _monthlyFee,
-                  label: tr('الرسوم الشهرية'),
-                  keyboard:
-                      const TextInputType.numberWithOptions(decimal: true),
-                ),
-                moduleDateField(
-                  context: context,
-                  controller: _startsOn,
-                  label: tr('تاريخ البدء'),
-                ),
-                moduleDateField(
-                  context: context,
-                  controller: _endsOn,
-                  label: tr('تاريخ الانتهاء'),
-                ),
-                moduleSwitch(
-                  label: tr('حلقة نشطة'),
-                  value: _isActive,
-                  onChanged: (v) => setState(() => _isActive = v),
-                ),
-                const SizedBox(height: 8),
-                ModuleSaveButton(
-                  saving: _saving,
-                  onPressed: _save,
-                  label: _isEdit ? tr('حفظ التعديلات') : tr('إنشاء الحلقة'),
-                ),
-              ],
-            ),
     );
   }
 }

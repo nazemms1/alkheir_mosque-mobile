@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
@@ -22,18 +23,11 @@ class CoursesScreen extends StatefulWidget {
 
 class _CoursesScreenState extends State<CoursesScreen> {
   final _service = ManagementRepositoryImpl();
-  final _searchCtrl = TextEditingController();
   String _search = '';
 
   /// null = الكل، true = نشط، false = منتهٍ.
   bool? _isActive;
   int _reloadToken = 0;
-
-  @override
-  void dispose() {
-    _searchCtrl.dispose();
-    super.dispose();
-  }
 
   void _refresh() => setState(() => _reloadToken++);
 
@@ -176,15 +170,10 @@ class _CoursesScreenState extends State<CoursesScreen> {
     return ModuleScaffold(
       title: tr('الكورسات'),
       floatingActionButton: ModuleAccess.canCreateCourses(t)
-          ? FloatingActionButton.extended(
+          ? AdminFab(
+              label: tr('كورس جديد'),
+              icon: Icons.add_rounded,
               onPressed: () => _openForm(),
-              backgroundColor: AppColors.primary,
-              icon: const Icon(Icons.add_rounded, color: Colors.white),
-              label: Text(
-                tr('كورس جديد'),
-                style: appTextStyle(
-                    fontWeight: FontWeight.w700, color: Colors.white),
-              ),
             )
           : null,
       body: PagedList<CourseItem>(
@@ -192,32 +181,27 @@ class _CoursesScreenState extends State<CoursesScreen> {
         emptyText: tr('لا توجد كورسات مطابقة'),
         header: Column(
           children: [
+            ModuleSearchBar(
+              hint: tr('بحث باسم الكورس'),
+              onSearch: (value) => setState(() {
+                _search = value;
+                _reloadToken++;
+              }),
+            ),
             Padding(
-              padding: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-              child: TextField(
-                controller: _searchCtrl,
-                textInputAction: TextInputAction.search,
-                style: appTextStyle(),
-                decoration: InputDecoration(
-                  hintText: tr('بحث باسم الكورس'),
-                  prefixIcon: const Icon(Icons.search_rounded),
-                ),
-                onSubmitted: (value) => setState(() {
-                  _search = value.trim();
+              padding: const EdgeInsets.only(bottom: 10),
+              child: AdminChoiceBar<bool?>(
+                options: const <bool?>[null, true, false],
+                selected: _isActive,
+                labelOf: (value) => value == null
+                    ? tr('الكل')
+                    : value
+                        ? tr('نشط')
+                        : tr('منتهٍ'),
+                onSelected: (value) => setState(() {
+                  _isActive = value;
                   _reloadToken++;
                 }),
-              ),
-            ),
-            SizedBox(
-              height: 52,
-              child: ListView(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.fromLTRB(16, 6, 16, 6),
-                children: [
-                  _filterChip(tr('الكل'), null),
-                  _filterChip(tr('نشط'), true),
-                  _filterChip(tr('منتهٍ'), false),
-                ],
               ),
             ),
           ],
@@ -234,20 +218,6 @@ class _CoursesScreenState extends State<CoursesScreen> {
       ),
     );
   }
-
-  Widget _filterChip(String label, bool? value) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 8),
-      child: ChoiceChip(
-        label: Text(label, style: appTextStyle(fontSize: 12)),
-        selected: _isActive == value,
-        onSelected: (_) => setState(() {
-          _isActive = value;
-          _reloadToken++;
-        }),
-      ),
-    );
-  }
 }
 
 class _CourseCard extends StatelessWidget {
@@ -258,51 +228,100 @@ class _CourseCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = course.isActive ? AppColors.success : AppColors.textMuted;
-    return ModuleCard(
-      accent: color,
-      onTap: onTap,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            children: [
-              Expanded(
-                child: Text(
-                  course.name,
-                  style: appTextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w800,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  overflow: TextOverflow.ellipsis,
+    final muted = AdminTheme.muted(context);
+    final color = course.isActive ? AppColors.success : muted;
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 12),
+      child: AdminCard(
+        accent: color,
+        onTap: onTap,
+        padding: const EdgeInsets.all(14),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                AdminIconBubble(
+                  icon: Icons.menu_book_rounded,
+                  color: color,
+                  size: 40,
                 ),
-              ),
-              if (course.isDefault) ...[
-                StatusPill(label: tr('افتراضي'), color: AppColors.gold),
-                const SizedBox(width: 6),
+                const SizedBox(width: 12),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        course.name,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w800,
+                          color: AdminTheme.text(context),
+                        ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        course.academicYear ?? '—',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: appTextStyle(fontSize: 12, color: muted),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    AdminBadge(
+                      label: course.isActive ? tr('نشط') : tr('منتهٍ'),
+                      color: color,
+                    ),
+                    if (course.isDefault) ...[
+                      const SizedBox(height: 6),
+                      AdminBadge(label: tr('افتراضي'), color: AppColors.gold),
+                    ],
+                  ],
+                ),
               ],
-              StatusPill(
-                label: course.isActive ? tr('نشط') : tr('منتهٍ'),
-                color: color,
-              ),
-            ],
-          ),
-          const SizedBox(height: 4),
-          Text(
-            '${course.academicYear ?? '—'}  ·  ${course.startsOn ?? ''} - ${course.endsOn ?? ''}',
-            style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
-            overflow: TextOverflow.ellipsis,
-          ),
-          const SizedBox(height: 4),
-          Text(
-            trf('الحلقات: {0}  ·  التسجيلات: {1}', [
-              course.groupsCount,
-              course.enrollmentsCount,
-            ]),
-            style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
-          ),
-        ],
+            ),
+            const SizedBox(height: 12),
+            Row(
+              children: [
+                Icon(Icons.date_range_rounded, size: 15, color: muted),
+                const SizedBox(width: 6),
+                Expanded(
+                  child: Text(
+                    '${course.startsOn ?? ''} - ${course.endsOn ?? ''}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: appTextStyle(fontSize: 12, color: muted),
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 10),
+            Wrap(
+              spacing: 6,
+              runSpacing: 6,
+              children: [
+                AdminBadge(
+                  icon: Icons.groups_rounded,
+                  label: trf('الحلقات: {0}', [course.groupsCount]),
+                  color: AppColors.primaryLight,
+                ),
+                AdminBadge(
+                  icon: Icons.how_to_reg_rounded,
+                  label: trf('التسجيلات: {0}', [course.enrollmentsCount]),
+                  color: AppColors.info,
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
