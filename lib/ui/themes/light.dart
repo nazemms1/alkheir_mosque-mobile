@@ -7,12 +7,12 @@ final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
   fontFamily: UIConstants.fontFamily,
-  primaryColor: AppColors.primaryLight,
-  scaffoldBackgroundColor: const Color(0xFFF8F9FA),
+  primaryColor: const Color(0xFF006B2D),
+  scaffoldBackgroundColor: const Color(0xFFF6F8F5),
   colorScheme: ColorScheme.fromSeed(
-    seedColor: AppColors.primaryLight,
+    seedColor: const Color(0xFF006B2D),
     brightness: Brightness.light,
-    primary: AppColors.primaryLight,
+    primary: const Color(0xFF006B2D),
     secondary: AppColors.secondaryLight,
     surface: const Color(0xFFFFFFFF),
     error: const Color(0xFFDC2626),
@@ -21,12 +21,12 @@ final ThemeData lightTheme = ThemeData(
     elevation: 0,
     centerTitle: true,
     backgroundColor: Color(0xFFFFFFFF),
-    foregroundColor: Color(0xFF1E293B),
+    foregroundColor: Color(0xFF112B1C),
     titleTextStyle: TextStyle(
       fontFamily: UIConstants.fontFamily,
       fontSize: FontSize.s18,
       fontWeight: FontWeight.w600,
-      color: Color(0xFF1E293B),
+      color: Color(0xFF112B1C),
     ),
   ),
   cardTheme: CardThemeData(
@@ -34,13 +34,13 @@ final ThemeData lightTheme = ThemeData(
     color: const Color(0xFFFFFFFF),
     shape: RoundedRectangleBorder(
       borderRadius: BorderRadius.circular(UIConstants.radiusLarge),
-      side: const BorderSide(color: Color(0xFFE2E8F0)),
+      side: const BorderSide(color: Color(0xFFDCE4D8)),
     ),
     margin: EdgeInsets.zero,
   ),
   elevatedButtonTheme: ElevatedButtonThemeData(
     style: ElevatedButton.styleFrom(
-      backgroundColor: AppColors.primaryLight,
+      backgroundColor: const Color(0xFF006B2D),
       foregroundColor: Colors.white,
       elevation: 0,
       padding: UIConstants.buttonPadding,
@@ -56,9 +56,9 @@ final ThemeData lightTheme = ThemeData(
   ),
   outlinedButtonTheme: OutlinedButtonThemeData(
     style: OutlinedButton.styleFrom(
-      foregroundColor: AppColors.primaryLight,
+      foregroundColor: const Color(0xFF006B2D),
       padding: UIConstants.buttonPadding,
-      side: const BorderSide(color: AppColors.primaryLight),
+      side: const BorderSide(color: Color(0xFF006B2D)),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(UIConstants.radiusMedium),
       ),
@@ -75,15 +75,15 @@ final ThemeData lightTheme = ThemeData(
     contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
     border: OutlineInputBorder(
       borderRadius: BorderRadius.circular(UIConstants.radiusMedium),
-      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+      borderSide: const BorderSide(color: Color(0xFFDCE4D8)),
     ),
     enabledBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(UIConstants.radiusMedium),
-      borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
+      borderSide: const BorderSide(color: Color(0xFFDCE4D8)),
     ),
     focusedBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(UIConstants.radiusMedium),
-      borderSide: const BorderSide(color: AppColors.primaryLight, width: 1.5),
+      borderSide: const BorderSide(color: Color(0xFF006B2D), width: 1.5),
     ),
     errorBorder: OutlineInputBorder(
       borderRadius: BorderRadius.circular(UIConstants.radiusMedium),
@@ -91,7 +91,7 @@ final ThemeData lightTheme = ThemeData(
     ),
   ),
   dividerTheme: const DividerThemeData(
-    color: Color(0xFFEDF2F7),
+    color: Color(0xFFE8EFE5),
     thickness: 1,
     space: 1,
   ),

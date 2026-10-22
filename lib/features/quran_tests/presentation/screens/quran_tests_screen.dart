@@ -11,6 +11,8 @@ import 'package:alkheir_mosque/features/students/data/models/student_progress_mo
 import 'package:alkheir_mosque/features/quran_tests/data/repositories/quran_tests_repository_impl.dart';
 import 'package:alkheir_mosque/features/management/presentation/widgets/module_form_fields.dart';
 import 'package:alkheir_mosque/features/management/presentation/widgets/module_widgets.dart';
+import 'package:alkheir_mosque/features/sabr/presentation/screens/saber_entry_screen.dart';
+import 'package:alkheir_mosque/features/management/presentation/widgets/pickers.dart';
 import 'quran_cycle_screen.dart';
 
 /// اختبارات القرآن لطالب واحد: الدورات الجزئية والنهائية، وبدء دورة جديدة.
@@ -97,6 +99,24 @@ class _QuranTestsScreenState extends State<QuranTestsScreen>
         _canRecord(activeKind) && widget.enrollments.any((e) => e.isActive);
     return ModuleScaffold(
       title: name,
+      actions: [
+        IconButton(
+          tooltip: tr('إدخال سبر'),
+          icon: const Icon(Icons.playlist_add_check_circle_rounded),
+          onPressed: () => Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => SaberEntryScreen(
+                token: widget.token,
+                initialStudent: PickerItem(
+                  id: widget.student.id,
+                  label: widget.student.fullName,
+                  subtitle: widget.student.studentNumber,
+                ),
+              ),
+            ),
+          ),
+        ),
+      ],
       bottom: _kinds.length > 1
           ? TabBar(
               controller: _tabCtrl,

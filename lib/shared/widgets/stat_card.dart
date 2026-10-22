@@ -55,7 +55,7 @@ class StatCard extends StatelessWidget {
                   child: Icon(icon, color: iconColor, size: 22),
                 ),
                 if (onTap != null)
-                  const Icon(Icons.chevron_left,
+                  Icon(AppIcons.chevronForward(context),
                       color: AppColors.textSecondary, size: 18),
               ],
             ),

@@ -47,6 +47,9 @@ abstract final class AppColors {
   static const glassWhite = Color(0x1AFFFFFF);
   static const glassBorder = Color(0x33FFFFFF);
   static const glassGreen = Color(0x1A0B8F43);
+  /// لون خلفية الحقول والقوائم الجديد (#0F0C09B3)
+  static const fieldDark = Color(0xB30F0C09);
+  static const inputBgDark = Color(0xB30F0C09);
 
   // النصوص
   static const textOnDark = Color(0xFFF3FFF6);
@@ -160,6 +163,19 @@ abstract final class AppColors {
           offset: const Offset(0, 8),
         ),
       ];
+}
+
+/// أيقونات اتجاهية تتوافق تلقائياً مع اللغتين العربية والإنجليزية
+abstract final class AppIcons {
+  static IconData chevronForward(BuildContext context) =>
+      Directionality.of(context) == TextDirection.rtl
+          ? Icons.chevron_left_rounded
+          : Icons.chevron_right_rounded;
+
+  static IconData chevronBack(BuildContext context) =>
+      Directionality.of(context) == TextDirection.rtl
+          ? Icons.chevron_right_rounded
+          : Icons.chevron_left_rounded;
 }
 
 abstract final class AppTheme {

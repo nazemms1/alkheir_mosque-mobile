@@ -43,6 +43,12 @@ abstract final class AdminTheme {
       Directionality.of(context) == TextDirection.rtl
           ? Icons.chevron_left_rounded
           : Icons.chevron_right_rounded;
+
+  /// سهم "السابق" يتجه حسب اتجاه الصفحة (يمين في العربية، يسار في الإنجليزية).
+  static IconData chevronBack(BuildContext context) =>
+      Directionality.of(context) == TextDirection.rtl
+          ? Icons.chevron_right_rounded
+          : Icons.chevron_left_rounded;
 }
 
 /// شريط علوي متدرّج ومثبت بنفس هوية الشريط الرئيسي للتطبيق (مسجد الخير).
@@ -54,6 +60,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
   final PreferredSizeWidget? bottom;
   final VoidCallback? onBack;
   final bool showBrandLogo;
+  final bool showTitle;
 
   const AdminAppBar({
     super.key,
@@ -64,6 +71,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
     this.bottom,
     this.onBack,
     this.showBrandLogo = true,
+    this.showTitle = true,
   });
 
   @override
@@ -131,52 +139,55 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                         _buildLeading(context, canPop, width),
                         const SizedBox(width: 10),
                         // Current page title (pill)
-                        Expanded(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 14, vertical: 7),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withValues(alpha: 0.10),
-                              borderRadius: BorderRadius.circular(20),
-                              border: Border.all(
-                                  color: Colors.white.withValues(alpha: 0.15)),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  title,
-                                  textAlign: TextAlign.center,
-                                  maxLines: 1,
-                                  overflow: TextOverflow.ellipsis,
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Dubai',
-                                  ),
-                                ),
-                                if (subtitle != null &&
-                                    subtitle!.isNotEmpty) ...[
-                                  const SizedBox(height: 1),
+                        if (showTitle && (title.trim().isNotEmpty || (subtitle != null && subtitle!.trim().isNotEmpty)))
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 14, vertical: 7),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withValues(alpha: 0.10),
+                                borderRadius: BorderRadius.circular(20),
+                                border: Border.all(
+                                    color: Colors.white.withValues(alpha: 0.15)),
+                              ),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
                                   Text(
-                                    subtitle!,
+                                    title,
                                     textAlign: TextAlign.center,
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
-                                    style: TextStyle(
-                                      color:
-                                          Colors.white.withValues(alpha: 0.65),
-                                      fontSize: 10,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 14,
+                                      fontWeight: FontWeight.w700,
                                       fontFamily: 'Dubai',
                                     ),
                                   ),
+                                  if (subtitle != null &&
+                                      subtitle!.isNotEmpty) ...[
+                                    const SizedBox(height: 1),
+                                    Text(
+                                      subtitle!,
+                                      textAlign: TextAlign.center,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        color:
+                                            Colors.white.withValues(alpha: 0.65),
+                                        fontSize: 10,
+                                        fontFamily: 'Dubai',
+                                      ),
+                                    ),
+                                  ],
                                 ],
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
+                          )
+                        else
+                          const Spacer(),
                         const SizedBox(width: 10),
                         // Actions / Trailing
                         _buildTrailing(canPop),

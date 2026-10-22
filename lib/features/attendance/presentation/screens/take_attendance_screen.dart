@@ -159,6 +159,29 @@ class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
     }
     return ModuleScaffold(
       title: tr('أخذ الحضور'),
+      actions: [
+        if (!_loading && _error == null && _enrollments.isNotEmpty)
+          Padding(
+            padding: const EdgeInsetsDirectional.only(end: 8),
+            child: _saving
+                ? const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    tooltip: tr('حفظ الحضور'),
+                    icon: const Icon(Icons.check_circle_rounded,
+                        color: Colors.white, size: 26),
+                    onPressed: _save,
+                  ),
+          ),
+      ],
       body: ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
@@ -178,6 +201,15 @@ class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
             label: tr('ملاحظات عامة'),
             maxLines: 2,
           ),
+          if (_enrollments.isNotEmpty) ...[
+            const SizedBox(height: 10),
+            ModuleSaveButton(
+              saving: _saving,
+              onPressed: _save,
+              label: tr('حفظ الحضور'),
+            ),
+            const SizedBox(height: 14),
+          ],
           if (_loading)
             const Padding(
               padding: EdgeInsets.all(24),

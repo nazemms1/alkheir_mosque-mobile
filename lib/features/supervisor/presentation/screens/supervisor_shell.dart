@@ -10,6 +10,7 @@ import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.
 import 'package:alkheir_mosque/features/home/presentation/state_management/home_widget_registry.dart';
 import 'supervisor_student_detail.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 
 /// بيانات لوحة الدور الإشرافي بعد جلبها — تُمرَّر لويدجتس [supervisorHomeWidgets].
 class SupervisorHomeData {
@@ -41,6 +42,7 @@ final List<HomeWidgetDef<SupervisorHomeData>> supervisorHomeWidgets = [
           userName: d.userName,
           roleLabel: d.roleLabel,
           stats: d.stats,
+          token: d.token,
         )
             .animate()
             .fadeIn(duration: 450.ms)
@@ -57,6 +59,7 @@ final List<HomeWidgetDef<SupervisorHomeData>> supervisorHomeWidgets = [
       Permissions.enrollmentsView,
       Permissions.assessmentsView,
       Permissions.activitiesView,
+      Permissions.invoicesView,
     ],
     slivers: (context, d) => [
       SliverPadding(
@@ -227,11 +230,46 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
   final String userName;
   final String roleLabel;
   final AdminStats stats;
-  const _SupervisorWelcomeBanner(
-      {required this.userName, required this.roleLabel, required this.stats});
+  final AuthToken token;
+  const _SupervisorWelcomeBanner({
+    required this.userName,
+    required this.roleLabel,
+    required this.stats,
+    required this.token,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final pills = [
+      if (token.hasPermission(Permissions.studentsView))
+        _HeroPill(
+            label: tr('طالب'),
+            value: '${stats.totalStudents}',
+            icon: Icons.people_rounded),
+      if (token.hasPermission(Permissions.groupsView))
+        _HeroPill(
+            label: tr('حلقة نشطة'),
+            value: '${stats.activeGroups}',
+            icon: Icons.groups_rounded),
+      if (token.hasPermission(Permissions.enrollmentsView))
+        _HeroPill(
+            label: tr('تسجيل'),
+            value: '${stats.totalEnrollments}',
+            icon: Icons.how_to_reg_rounded),
+      if (!token.hasPermission(Permissions.studentsView) &&
+          token.hasPermission(Permissions.assessmentsView))
+        _HeroPill(
+            label: tr('تقييم'),
+            value: '${stats.totalAssessments}',
+            icon: Icons.assignment_rounded),
+      if (!token.hasPermission(Permissions.enrollmentsView) &&
+          token.hasPermission(Permissions.activitiesView))
+        _HeroPill(
+            label: tr('نشاط'),
+            value: '${stats.totalActivities}',
+            icon: Icons.event_rounded),
+    ];
+
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
       padding: const EdgeInsets.all(20),
@@ -304,25 +342,17 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
               ),
             ],
           ),
-          const SizedBox(height: 18),
-          Row(
-            children: [
-              _HeroPill(
-                  label: tr('طالب'),
-                  value: '${stats.totalStudents}',
-                  icon: Icons.people_rounded),
-              const SizedBox(width: 8),
-              _HeroPill(
-                  label: tr('حلقة نشطة'),
-                  value: '${stats.activeGroups}',
-                  icon: Icons.groups_rounded),
-              const SizedBox(width: 8),
-              _HeroPill(
-                  label: tr('تسجيل'),
-                  value: '${stats.totalEnrollments}',
-                  icon: Icons.how_to_reg_rounded),
-            ],
-          ),
+          if (pills.isNotEmpty) ...[
+            const SizedBox(height: 18),
+            Row(
+              children: [
+                for (var i = 0; i < pills.length; i++) ...[
+                  if (i > 0) const SizedBox(width: 8),
+                  pills[i],
+                ],
+              ],
+            ),
+          ],
         ],
       ),
     );
@@ -375,115 +405,56 @@ class _SupervisorStatsGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // كل بطاقة تظهر فقط إذا كانت صلاحية مصدرها في الحساب.
-    final items = [
+    final tiles = <Widget>[
       if (token.hasPermission(Permissions.studentsView))
-        _SI(Icons.people_rounded, tr('إجمالي الطلاب'), '${stats.totalStudents}',
-            AppColors.info),
+        AdminStatTile(
+          icon: Icons.people_rounded,
+          label: tr('إجمالي الطلاب'),
+          value: '${stats.totalStudents}',
+          color: AppColors.info,
+        ),
       if (token.hasPermission(Permissions.groupsView))
-        _SI(Icons.groups_rounded, tr('حلقات نشطة'), '${stats.activeGroups}',
-            AppColors.success),
+        AdminStatTile(
+          icon: Icons.groups_rounded,
+          label: tr('حلقات نشطة'),
+          value: '${stats.activeGroups}',
+          color: AppColors.success,
+        ),
       if (token.hasPermission(Permissions.enrollmentsView))
-        _SI(Icons.how_to_reg_rounded, tr('التسجيلات'),
-            '${stats.totalEnrollments}', AppColors.primaryLight),
+        AdminStatTile(
+          icon: Icons.how_to_reg_rounded,
+          label: tr('التسجيلات'),
+          value: '${stats.totalEnrollments}',
+          color: AppColors.primaryLight,
+        ),
+      if (token.hasPermission(Permissions.invoicesView))
+        AdminStatTile(
+          icon: Icons.receipt_long_rounded,
+          label: tr('الفواتير'),
+          value: '${stats.totalInvoices}',
+          color: AppColors.warning,
+        ),
       if (token.hasPermission(Permissions.assessmentsView))
-        _SI(Icons.assignment_rounded, tr('التقييمات'),
-            '${stats.totalAssessments}', AppColors.gold),
+        AdminStatTile(
+          icon: Icons.assignment_rounded,
+          label: tr('التقييمات'),
+          value: '${stats.totalAssessments}',
+          color: AppColors.gold,
+        ),
       if (token.hasPermission(Permissions.activitiesView))
-        _SI(Icons.event_rounded, tr('الأنشطة'), '${stats.totalActivities}',
-            AppColors.error),
+        AdminStatTile(
+          icon: Icons.event_rounded,
+          label: tr('الأنشطة'),
+          value: '${stats.totalActivities}',
+          color: AppColors.error,
+        ),
     ];
-    return GridView.builder(
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 1,
-        crossAxisSpacing: 10,
-        mainAxisSpacing: 10,
-        childAspectRatio: 0.82,
-      ),
-      itemCount: items.length,
-      itemBuilder: (_, i) => _StatCard(item: items[i]),
-    );
-  }
-}
 
-class _SI {
-  final IconData icon;
-  final String label, value;
-  final Color color;
-  const _SI(this.icon, this.label, this.value, this.color);
-}
+    if (tiles.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
-class _StatCard extends StatelessWidget {
-  final _SI item;
-  const _StatCard({required this.item});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(18),
-        border:
-            Border.all(color: item.color.withValues(alpha: 0.18), width: 1.5),
-        boxShadow: [
-          BoxShadow(
-              color: item.color.withValues(alpha: 0.1),
-              blurRadius: 16,
-              offset: const Offset(0, 5))
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  item.color.withValues(alpha: 0.18),
-                  item.color.withValues(alpha: 0.08)
-                ],
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(item.icon, color: item.color, size: 20),
-          ),
-          const SizedBox(height: 6),
-          Text(
-            item.value,
-            style: TextStyle(
-              color: item.color,
-              fontSize: 17,
-              fontWeight: FontWeight.w800,
-              fontFamily: 'Dubai',
-              height: 1.1,
-            ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            item.label,
-            textAlign: TextAlign.center,
-            style: TextStyle(
-              color: Theme.of(context)
-                  .colorScheme
-                  .onSurface
-                  .withValues(alpha: 0.55),
-              fontSize: 10,
-              fontFamily: 'Dubai',
-              height: 1.2,
-            ),
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ],
-      ),
-    );
+    return AdminStatGrid(tiles: tiles);
   }
 }
 

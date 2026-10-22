@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -10,6 +11,8 @@ import 'package:alkheir_mosque/features/management/data/repositories/management_
 import 'package:alkheir_mosque/features/operations/data/repositories/operations_repository_impl.dart';
 import 'package:alkheir_mosque/features/management/presentation/widgets/module_form_fields.dart';
 import 'package:alkheir_mosque/features/management/presentation/widgets/module_widgets.dart';
+import 'package:alkheir_mosque/features/management/presentation/widgets/pickers.dart';
+
 
 /// حضور المعلمين: قائمة الأيام مع تفاصيل كل يوم، وتسجيل حضور يوم لجميع المعلمين النشطين.
 class TeacherAttendanceScreen extends StatefulWidget {
@@ -35,18 +38,80 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
     if (saved == true) setState(() => _reloadToken++);
   }
 
+  Future<void> _editDay(TeacherAttendanceDay day) async {
+    try {
+      final detail = await _service.teacherAttendanceDay(day.id);
+      if (!mounted) return;
+      final saved = await Navigator.of(context).push<bool>(
+        MaterialPageRoute(
+          builder: (_) => TeacherAttendanceFormScreen(
+            token: widget.token,
+            initialDay: detail,
+          ),
+        ),
+      );
+      if (saved == true && mounted) {
+        setState(() => _reloadToken++);
+      }
+    } catch (error) {
+      if (!mounted) return;
+      showModuleSnack(context, errorText(error), error: true);
+    }
+  }
+
+  Future<void> _deleteDay(TeacherAttendanceDay day) async {
+    final ok = await confirmAction(
+      context,
+      title: tr('حذف حضور المعلمين'),
+      message: tr('سيتم حذف سجل حضور هذا اليوم للمعلمين. لا يمكن التراجع.'),
+      confirmLabel: tr('حذف'),
+      destructive: true,
+    );
+    if (!ok || !mounted) return;
+    try {
+      await _service.deleteTeacherAttendanceDay(day.id);
+      if (!mounted) return;
+      showModuleSnack(context, tr('تم حذف سجل الحضور بنجاح'));
+      setState(() => _reloadToken++);
+    } catch (error) {
+      if (!mounted) return;
+      showModuleSnack(context, errorText(error), error: true);
+    }
+  }
+
   Future<void> _openDay(TeacherAttendanceDay day) async {
     try {
       final detail = await _service.teacherAttendanceDay(day.id);
       if (!mounted) return;
-      await showRecordSheet(
+      final action = await showRecordSheet(
         context,
         title: detail.attendanceDate,
         subtitle: detail.courseName ?? '',
         rows: [
           for (final r in detail.records) MapEntry(r.teacherName, r.statusName),
         ],
+        actions: [
+          if (ModuleAccess.canTakeTeacherAttendance(widget.token)) ...[
+            SheetAction(
+              id: 'edit',
+              label: tr('تعديل الحضور'),
+              icon: Icons.edit_rounded,
+            ),
+            SheetAction(
+              id: 'delete',
+              label: tr('حذف'),
+              icon: Icons.delete_outline_rounded,
+              destructive: true,
+            ),
+          ],
+        ],
       );
+      if (!mounted) return;
+      if (action == 'edit') {
+        _editDay(detail);
+      } else if (action == 'delete') {
+        _deleteDay(day);
+      }
     } catch (error) {
       if (!mounted) return;
       showModuleSnack(context, errorText(error), error: true);
@@ -62,9 +127,10 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
         body: const ModuleAccessDenied(),
       );
     }
+    final canEdit = ModuleAccess.canTakeTeacherAttendance(t);
     return ModuleScaffold(
       title: tr('حضور المعلمين'),
-      floatingActionButton: ModuleAccess.canTakeTeacherAttendance(t)
+      floatingActionButton: canEdit
           ? FloatingActionButton.extended(
               onPressed: _record,
               icon: const Icon(Icons.how_to_reg_rounded),
@@ -103,7 +169,23 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_left_rounded, color: moduleMuted(context)),
+              if (canEdit) ...[
+                IconButton(
+                  tooltip: tr('تعديل الحضور'),
+                  icon: const Icon(Icons.edit_outlined, size: 20),
+                  onPressed: () => _editDay(day),
+                ),
+                IconButton(
+                  tooltip: tr('حذف'),
+                  icon: const Icon(
+                    Icons.delete_outline_rounded,
+                    size: 20,
+                    color: AppColors.error,
+                  ),
+                  onPressed: () => _deleteDay(day),
+                ),
+              ],
+              Icon(moduleChevronForward(context), color: moduleMuted(context)),
             ],
           ),
         ),
@@ -112,11 +194,16 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
   }
 }
 
-/// نموذج تسجيل حضور المعلمين لتاريخ محدد.
+/// نموذج تسجيل أو تعديل حضور المعلمين لتاريخ محدد.
 class TeacherAttendanceFormScreen extends StatefulWidget {
   final AuthToken token;
+  final TeacherAttendanceDay? initialDay;
 
-  const TeacherAttendanceFormScreen({super.key, required this.token});
+  const TeacherAttendanceFormScreen({
+    super.key,
+    required this.token,
+    this.initialDay,
+  });
 
   @override
   State<TeacherAttendanceFormScreen> createState() =>
@@ -126,8 +213,9 @@ class TeacherAttendanceFormScreen extends StatefulWidget {
 class _TeacherAttendanceFormScreenState
     extends State<TeacherAttendanceFormScreen> {
   final _operations = OperationsRepositoryImpl();
-  final _notes = TextEditingController();
-  final _date = TextEditingController(text: isoDate(DateTime.now()));
+  late final TextEditingController _notes;
+  late final TextEditingController _date;
+  PickerItem? _course;
   List<TeacherItem> _teachers = const [];
   List<RefItem> _statuses = const [];
   final Map<int, int> _chosen = {};
@@ -138,6 +226,10 @@ class _TeacherAttendanceFormScreenState
   @override
   void initState() {
     super.initState();
+    _notes = TextEditingController(text: widget.initialDay?.notes ?? '');
+    _date = TextEditingController(
+      text: widget.initialDay?.attendanceDate ?? isoDate(DateTime.now()),
+    );
     _load();
   }
 
@@ -150,23 +242,112 @@ class _TeacherAttendanceFormScreenState
 
   Future<void> _load() async {
     try {
-      final teachersPage = await ManagementRepositoryImpl().teachers(
+      final teachersPageFuture = ManagementRepositoryImpl().teachers(
         status: 'active',
         perPage: 100,
       );
-      final statuses = await _operations.attendanceStatuses('teacher');
+      final statusesFuture = _operations.attendanceStatuses('teacher');
+      final coursesFuture = ManagementRepositoryImpl().courses(
+        isActive: true,
+        perPage: 50,
+      );
+      final results = await Future.wait([
+        teachersPageFuture,
+        statusesFuture,
+        coursesFuture,
+      ]);
       if (!mounted) return;
-      RefItem? fallback;
-      for (final s in statuses) {
-        if (s.code == 'present') fallback = s;
+      final teachersPage = results[0] as PagedResult<TeacherItem>;
+      final statuses = results[1] as List<RefItem>;
+      final coursesPage = results[2] as PagedResult<CourseItem>;
+
+      PickerItem? initialCourse;
+      if (widget.initialDay != null) {
+        final initCId = widget.initialDay!.courseId;
+        final initCName = widget.initialDay!.courseName;
+        if (initCId != null) {
+          for (final c in coursesPage.items) {
+            if (c.id == initCId) {
+              initialCourse = PickerItem(id: c.id, label: c.name);
+              break;
+            }
+          }
+          initialCourse ??= PickerItem(id: initCId, label: initCName ?? '');
+        } else if (initCName != null && initCName.isNotEmpty) {
+          for (final c in coursesPage.items) {
+            if (c.name.trim() == initCName.trim()) {
+              initialCourse = PickerItem(id: c.id, label: c.name);
+              break;
+            }
+          }
+        }
       }
-      fallback ??= statuses.isEmpty ? null : statuses.first;
+
+      if (initialCourse == null) {
+        for (final c in coursesPage.items) {
+          if (c.isDefault) {
+            initialCourse = PickerItem(id: c.id, label: c.name);
+            break;
+          }
+        }
+        initialCourse ??= coursesPage.items.isNotEmpty
+            ? PickerItem(
+                id: coursesPage.items.first.id,
+                label: coursesPage.items.first.name,
+              )
+            : null;
+      }
+      RefItem? defaultStatus;
+      for (final s in statuses) {
+        final c = (s.code ?? '').toLowerCase();
+        final n = s.name.toLowerCase();
+        if (c == 'absent' || n.contains('غياب') || n.contains('غائب')) {
+          defaultStatus = s;
+          break;
+        }
+      }
+      defaultStatus ??= statuses.firstWhere(
+        (s) => s.code == 'present',
+        orElse: () => statuses.isNotEmpty
+            ? statuses.first
+            : const RefItem(
+                id: 0, name: '', code: null, isActive: true, isCurrent: false),
+      );
+
+      final existingByTeacherId = <int, int>{};
+      final existingByTeacherName = <String, int>{};
+      if (widget.initialDay != null) {
+        for (final r in widget.initialDay!.records) {
+          int? statusId = r.statusId;
+          if (statusId == null) {
+            for (final s in statuses) {
+              if (s.code == r.statusCode || s.name == r.statusName) {
+                statusId = s.id;
+                break;
+              }
+            }
+            statusId ??= defaultStatus.id;
+          }
+          if (r.teacherId != null) {
+            existingByTeacherId[r.teacherId!] = statusId;
+          }
+          existingByTeacherName[r.teacherName.trim().toLowerCase()] = statusId;
+        }
+      }
+
       setState(() {
         _teachers = teachersPage.items;
         _statuses = statuses;
-        if (fallback != null) {
-          for (final t in teachersPage.items) {
-            _chosen[t.id] = fallback.id;
+        _course = initialCourse;
+        for (final t in teachersPage.items) {
+          if (widget.initialDay != null) {
+            final existing = existingByTeacherId[t.id] ??
+                existingByTeacherName[t.fullName.trim().toLowerCase()];
+            _chosen[t.id] = existing ?? defaultStatus?.id ?? 0;
+          } else {
+            if (defaultStatus != null) {
+              _chosen[t.id] = defaultStatus.id;
+            }
           }
         }
         _loading = false;
@@ -186,6 +367,7 @@ class _TeacherAttendanceFormScreenState
     try {
       await _operations.recordTeacherAttendance(
         attendanceDate: _date.text,
+        courseId: _course?.id,
         notes: nullIfBlank(_notes.text),
         records: [
           for (final t in _teachers)
@@ -204,16 +386,75 @@ class _TeacherAttendanceFormScreenState
     }
   }
 
+  Future<void> _delete() async {
+    if (widget.initialDay == null) return;
+    final ok = await confirmAction(
+      context,
+      title: tr('حذف حضور المعلمين'),
+      message: tr('سيتم حذف سجل حضور هذا اليوم للمعلمين. لا يمكن التراجع.'),
+      confirmLabel: tr('حذف'),
+      destructive: true,
+    );
+    if (!ok || !mounted) return;
+    setState(() => _saving = true);
+    try {
+      await _operations.deleteTeacherAttendanceDay(widget.initialDay!.id);
+      if (!mounted) return;
+      showModuleSnack(context, tr('تم حذف سجل الحضور بنجاح'));
+      Navigator.pop(context, true);
+    } catch (error) {
+      if (!mounted) return;
+      setState(() => _saving = false);
+      showModuleSnack(context, errorText(error), error: true);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isEdit = widget.initialDay != null;
+    final screenTitle =
+        isEdit ? tr('تعديل حضور المعلمين') : tr('تسجيل حضور المعلمين');
     if (!ModuleAccess.canTakeTeacherAttendance(widget.token)) {
       return ModuleScaffold(
-        title: tr('تسجيل حضور المعلمين'),
+        title: screenTitle,
         body: const ModuleAccessDenied(),
       );
     }
     return ModuleScaffold(
-      title: tr('تسجيل حضور المعلمين'),
+      title: screenTitle,
+      actions: [
+        if (!_loading && _error == null) ...[
+          if (isEdit)
+            IconButton(
+              tooltip: tr('حذف'),
+              icon: const Icon(
+                Icons.delete_outline_rounded,
+                color: AppColors.error,
+              ),
+              onPressed: _saving ? null : _delete,
+            ),
+          Padding(
+            padding: const EdgeInsetsDirectional.only(end: 8),
+            child: _saving
+                ? const Center(
+                    child: SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.white,
+                      ),
+                    ),
+                  )
+                : IconButton(
+                    tooltip: isEdit ? tr('حفظ التعديلات') : tr('حفظ الحضور'),
+                    icon: const Icon(Icons.check_circle_rounded,
+                        color: Colors.white, size: 26),
+                    onPressed: _save,
+                  ),
+          ),
+        ],
+      ],
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -225,6 +466,21 @@ class _TeacherAttendanceFormScreenState
               : ListView(
                   padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
                   children: [
+                    PickerField(
+                      label: tr('الدورة'),
+                      value: _course?.label,
+                      onTap: () async {
+                        final picked = await showItemPicker(
+                          context,
+                          title: tr('اختر الدورة'),
+                          load: activeCoursePickerItems,
+                        );
+                        if (picked != null) {
+                          setState(() => _course = picked);
+                        }
+                      },
+                      onClear: () => setState(() => _course = null),
+                    ),
                     moduleDateField(
                       context: context,
                       controller: _date,
@@ -236,6 +492,14 @@ class _TeacherAttendanceFormScreenState
                       label: tr('ملاحظات عامة'),
                       maxLines: 2,
                     ),
+                    const SizedBox(height: 10),
+                    // زر الحفظ بالأعلى لسهولة الوصول المباشر دون الحاجة لعمل سكرول
+                    ModuleSaveButton(
+                      saving: _saving,
+                      onPressed: _save,
+                      label: isEdit ? tr('حفظ التعديلات') : tr('حفظ الحضور'),
+                    ),
+                    const SizedBox(height: 14),
                     if (_teachers.isEmpty)
                       ModuleMessage(text: tr('لا يوجد معلمون نشطون'))
                     else
@@ -284,7 +548,7 @@ class _TeacherAttendanceFormScreenState
                     ModuleSaveButton(
                       saving: _saving,
                       onPressed: _save,
-                      label: tr('حفظ الحضور'),
+                      label: isEdit ? tr('حفظ التعديلات') : tr('حفظ الحضور'),
                     ),
                   ],
                 ),

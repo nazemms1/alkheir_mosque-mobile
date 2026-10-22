@@ -44,8 +44,12 @@ abstract class OperationsRepository {
   Future<void> recordTeacherAttendance({
     required String attendanceDate,
     required List<Map<String, dynamic>> records,
+    int? courseId,
     String? notes,
   });
+
+  Future<void> deleteTeacherAttendanceDay(int id);
+
 
   Future<PagedResult<MemorizationEntry>> memorization({
     int page = 1,
@@ -156,6 +160,12 @@ abstract class OperationsRepository {
   Future<GroupCurriculum> groupCurriculum(int groupId);
 
   Future<Uint8List> downloadCurriculumResource(int resourceId);
+
+  Future<void> updateLessonTaught({
+    required int groupId,
+    required int lessonId,
+    required bool isTaught,
+  });
 
   Future<StudentRecord> student(int id);
 

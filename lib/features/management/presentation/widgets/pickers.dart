@@ -375,3 +375,21 @@ Future<List<PickerItem>> referencePickerItems(
       ),
   ];
 }
+
+/// الكورسات النشطة كعناصر منتقٍ مع البحث بالاسم.
+Future<List<PickerItem>> activeCoursePickerItems(String search) async {
+  final page = await ManagementRepositoryImpl().courses(
+    search: search,
+    isActive: true,
+    perPage: 50,
+  );
+  return [
+    for (final c in page.items)
+      PickerItem(
+        id: c.id,
+        label: c.name,
+        subtitle: c.isDefault ? tr('الكورس الافتراضي') : c.academicYear,
+      ),
+  ];
+}
+

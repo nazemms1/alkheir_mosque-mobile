@@ -81,17 +81,20 @@ class AppColors extends ThemeExtension<AppColors> {
     900: Color(0xFFE65100),
   });
 
+  /// لون الحقول والقوائم الجديد (#0F0C09B3)
+  static const Color fieldDark = Color(0xB30F0C09);
+
   factory AppColors.light() {
     return const AppColors(
       primary: primaryLight,
       secondary: secondaryLight,
-      background: Color(0xFFF8F9FA),
+      background: Color(0xFFF6F8F5),
       surface: Color(0xFFFFFFFF),
       card: Color(0xFFFFFFFF),
-      textPrimary: Color(0xFF1E293B),
-      textSecondary: Color(0xFF64748B),
-      border: Color(0xFFE2E8F0),
-      divider: Color(0xFFEDF2F7),
+      textPrimary: Color(0xFF112B1C),
+      textSecondary: Color(0xFF48614F),
+      border: Color(0xFFDCE4D8),
+      divider: Color(0xFFE8EFE5),
       error: Color(0xFFDC2626),
       success: Color(0xFF16A34A),
       warning: Color(0xFFD97706),
@@ -102,13 +105,13 @@ class AppColors extends ThemeExtension<AppColors> {
     return const AppColors(
       primary: primaryDark,
       secondary: secondaryDark,
-      background: Color(0xFF0F172A),
-      surface: Color(0xFF1E293B),
-      card: Color(0xFF1E293B),
-      textPrimary: Color(0xFFF8FAFC),
-      textSecondary: Color(0xFF94A3B8),
-      border: Color(0xFF334155),
-      divider: Color(0xFF1E293B),
+      background: Color(0xFF04160B),
+      surface: Color(0xFF072714),
+      card: Color(0xFF072714),
+      textPrimary: Color(0xFFF3FFF6),
+      textSecondary: Color(0xFFACCDB5),
+      border: Color(0xFF193222),
+      divider: Color(0xFF193222),
       error: Color(0xFFEF4444),
       success: Color(0xFF22C55E),
       warning: Color(0xFFF59E0B),

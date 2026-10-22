@@ -16,6 +16,13 @@ import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart
 
 Color moduleMuted(BuildContext context) => AdminTheme.muted(context);
 
+/// سهم "التالي" يتجه تلقائياً حسب لغة الواجهة (يسار في العربية، يمين في الإنجليزية).
+IconData moduleChevron(BuildContext context) => AdminTheme.chevron(context);
+IconData moduleChevronForward(BuildContext context) => AdminTheme.chevron(context);
+
+/// سهم "السابق" يتجه تلقائياً حسب لغة الواجهة (يمين في العربية، يسار في الإنجليزية).
+IconData moduleChevronBack(BuildContext context) => AdminTheme.chevronBack(context);
+
 /// هيكل شاشة وحدة: شريط علوي متدرّج ومثبت بألوان الهوية ومحتوى.
 class ModuleScaffold extends StatelessWidget {
   final String title;
@@ -25,6 +32,7 @@ class ModuleScaffold extends StatelessWidget {
   final Widget? leading;
   final Widget? floatingActionButton;
   final PreferredSizeWidget? bottom;
+  final bool showTitle;
 
   const ModuleScaffold({
     super.key,
@@ -35,6 +43,7 @@ class ModuleScaffold extends StatelessWidget {
     this.leading,
     this.floatingActionButton,
     this.bottom,
+    this.showTitle = true,
   });
 
   @override
@@ -46,6 +55,7 @@ class ModuleScaffold extends StatelessWidget {
         actions: actions,
         leading: leading,
         bottom: bottom,
+        showTitle: showTitle,
       ),
       body: body,
       floatingActionButton: floatingActionButton,

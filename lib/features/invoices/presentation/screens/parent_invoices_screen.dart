@@ -180,7 +180,7 @@ class _InvoiceTile extends StatelessWidget {
                           fontFamily: 'Dubai')),
                 ),
                 const SizedBox(width: 4),
-                Icon(Icons.chevron_left_rounded,
+                Icon(AppIcons.chevronForward(context),
                     color: Theme.of(context)
                         .colorScheme
                         .onSurface

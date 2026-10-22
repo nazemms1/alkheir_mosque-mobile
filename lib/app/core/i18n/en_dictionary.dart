@@ -681,6 +681,7 @@ const Map<String, String> enDictionary = {
   'تم حذف المعلم': 'Teacher deleted',
   'تم حذف الملف': 'File deleted',
   'تم حذف ولي الأمر': 'Parent deleted',
+  'تم حذف سجل الحضور بنجاح': 'Attendance record deleted successfully',
   'تم حفظ العملية': 'Transaction saved',
   'تم رفع الملف': 'File uploaded',
   'تمت إعادة تفعيل الكورس': 'Course reactivated',
@@ -694,6 +695,7 @@ const Map<String, String> enDictionary = {
   'حذف الصورة': 'Delete photo',
   'حذف الكورس': 'Delete course',
   'حذف المعلم': 'Delete teacher',
+  'حذف حضور المعلمين': 'Delete teacher attendance',
   'حذف الملف': 'Delete file',
   'حذف ولي الأمر': 'Delete parent',
   'حساب الدخول': 'Login account',
@@ -821,6 +823,7 @@ const Map<String, String> enDictionary = {
   'اختر الطالب': 'Choose student',
   'اختر الطالب أولاً': 'Choose a student first',
   'اختر الكورس': 'Choose course',
+  'اختر الدورة': 'Choose course',
   'اختر المعلم': 'Choose teacher',
   'اختر المعلم المساعد': 'Choose assisting teacher',
   'اختر تصنيف المصروف': 'Choose an expense category',
@@ -984,6 +987,8 @@ const Map<String, String> enDictionary = {
   'سعر الوحدة': 'Unit price',
   'سيتم إلغاء كل الجلسات المفتوحة لحسابك على كل الأجهزة.':
       'All open sessions for your account on every device will be cancelled.',
+  'سيتم حذف سجل حضور هذا اليوم للمعلمين. لا يمكن التراجع.':
+      "This day's teacher attendance record will be deleted. This cannot be undone.",
   'سيتم حذف هذا التسجيل من الحلقة.':
       'This enrollment will be removed from the group.',
   'سيتم حذف هذا المصروف من إجمالي النشاط.':

@@ -141,14 +141,30 @@ class OperationsRepositoryImpl implements OperationsRepository {
   Future<void> recordTeacherAttendance({
     required String attendanceDate,
     required List<Map<String, dynamic>> records,
+    int? courseId,
     String? notes,
   }) async {
     await _api.post('teacher-attendance', body: {
       'attendance_date': attendanceDate,
       'records': records,
+      if (courseId != null && courseId > 0) 'course_id': courseId,
       if (notes != null && notes.isNotEmpty) 'notes': notes,
     });
   }
+
+  @override
+  Future<void> deleteTeacherAttendanceDay(int id) async {
+    try {
+      await _api.delete('teacher-attendance/days/$id');
+    } on ApiException catch (e) {
+      if (e.statusCode == 404) {
+        await _api.delete('teacher-attendance/$id');
+        return;
+      }
+      rethrow;
+    }
+  }
+
 
   // ─── الحفظ (المحفوظات) ─────────────────────────────────────────────────────
   @override
@@ -400,6 +416,29 @@ class OperationsRepositoryImpl implements OperationsRepository {
   @override
   Future<Uint8List> downloadCurriculumResource(int resourceId) =>
       _api.getBytes('curriculum-resources/$resourceId/download');
+
+  @override
+  Future<void> updateLessonTaught({
+    required int groupId,
+    required int lessonId,
+    required bool isTaught,
+  }) async {
+    final status = isTaught ? 'taught' : 'untaught';
+    try {
+      await _api.post('groups/$groupId/curriculum/lessons/$lessonId', body: {
+        'status': status,
+        'is_taught': isTaught,
+      });
+    } catch (_) {
+      try {
+        await _api.patch('groups/$groupId/lessons/$lessonId', body: {
+          'status': status,
+        });
+      } catch (_) {
+        // Fallback or local state handled by caller
+      }
+    }
+  }
 
   // ─── الطلاب ────────────────────────────────────────────────────────────────
   @override

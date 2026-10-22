@@ -20,8 +20,25 @@ class AdminRepositoryImpl implements AdminRepository {
     Map<String, String> extra = const {},
   }) async {
     if (!allowed) return 0;
-    final json = await _api.get(path, query: {'per_page': '1', ...extra});
-    return (json as Map<String, dynamic>?)?['total'] as int? ?? 0;
+    try {
+      final json = await _api.get(path, query: {'per_page': '1', ...extra});
+      if (json is Map<String, dynamic>) {
+        if (json.containsKey('total')) {
+          return (json['total'] as num?)?.toInt() ?? 0;
+        }
+        final meta = json['meta'];
+        if (meta is Map<String, dynamic> && meta.containsKey('total')) {
+          return (meta['total'] as num?)?.toInt() ?? 0;
+        }
+        final data = json['data'];
+        if (data is List) {
+          return data.length;
+        }
+      }
+      return 0;
+    } catch (_) {
+      return 0;
+    }
   }
 
   @override
@@ -48,7 +65,7 @@ class AdminRepositoryImpl implements AdminRepository {
     );
   }
 
-  /// إحصائيات المشرف: الفواتير غير متاحة للمشرف، والباقي حسب صلاحياته.
+  /// إحصائيات المشرف: حسب صلاحيات الحساب.
   @override
   Future<AdminStats> fetchSupervisorStats(AuthToken token) async {
     final counts = await Future.wait<int>([
@@ -59,6 +76,7 @@ class AdminRepositoryImpl implements AdminRepository {
       _countIf(token.hasPermission(Permissions.enrollmentsView), 'enrollments'),
       _countIf(token.hasPermission(Permissions.activitiesView), 'activities'),
       _countIf(token.hasPermission(Permissions.assessmentsView), 'assessments'),
+      _countIf(token.hasPermission(Permissions.invoicesView), 'invoices'),
     ]);
 
     return AdminStats(
@@ -66,7 +84,7 @@ class AdminRepositoryImpl implements AdminRepository {
       totalGroups: counts[1],
       activeGroups: counts[2],
       totalEnrollments: counts[3],
-      totalInvoices: 0,
+      totalInvoices: counts[6],
       totalActivities: counts[4],
       totalAssessments: counts[5],
     );

@@ -10,6 +10,7 @@ class AttendanceDaySummary {
   final int id;
   final String attendanceDate;
   final String? courseName;
+  final int? courseId;
   final String status;
   final String? notes;
   final int groupsCount;
@@ -20,6 +21,7 @@ class AttendanceDaySummary {
     required this.id,
     required this.attendanceDate,
     required this.courseName,
+    this.courseId,
     required this.status,
     required this.notes,
     required this.groupsCount,
@@ -32,6 +34,8 @@ class AttendanceDaySummary {
       id: jsonInt(json['id']),
       attendanceDate: jsonString(json['attendance_date']),
       courseName: _nameOf(json['course']),
+      courseId:
+          jsonIntOrNull(json['course_id'] ?? jsonMap(json['course'])?['id']),
       status: jsonString(json['status']),
       notes: jsonStringOrNull(json['notes']),
       groupsCount: jsonInt(json['groups_count']),
@@ -132,14 +136,18 @@ class AttendanceGroupDay {
 
 class TeacherAttendanceRecord {
   final int id;
+  final int? teacherId;
   final String teacherName;
+  final int? statusId;
   final String statusName;
   final String statusCode;
   final String? notes;
 
   const TeacherAttendanceRecord({
     required this.id,
+    this.teacherId,
     required this.teacherName,
+    this.statusId,
     required this.statusName,
     required this.statusCode,
     required this.notes,
@@ -147,11 +155,16 @@ class TeacherAttendanceRecord {
 
   factory TeacherAttendanceRecord.fromJson(Map<String, dynamic> json) {
     final status = jsonMap(json['attendance_status']);
+    final teacher = jsonMap(json['teacher']);
     return TeacherAttendanceRecord(
       id: jsonInt(json['id']),
-      teacherName: jsonString(jsonMap(json['teacher'])?['name']),
-      statusName: jsonString(status?['name']),
-      statusCode: jsonString(status?['code']),
+      teacherId: jsonIntOrNull(json['teacher_id']) ??
+          (teacher != null ? jsonIntOrNull(teacher['id']) : null),
+      teacherName: jsonString(teacher?['name'] ?? json['teacher_name']),
+      statusId: jsonIntOrNull(json['attendance_status_id']) ??
+          (status != null ? jsonIntOrNull(status['id']) : null),
+      statusName: jsonString(status?['name'] ?? json['status_name']),
+      statusCode: jsonString(status?['code'] ?? json['status_code']),
       notes: jsonStringOrNull(json['notes']),
     );
   }
@@ -161,6 +174,7 @@ class TeacherAttendanceDay {
   final int id;
   final String attendanceDate;
   final String? courseName;
+  final int? courseId;
   final String status;
   final String? notes;
   final int recordsCount;
@@ -170,6 +184,7 @@ class TeacherAttendanceDay {
     required this.id,
     required this.attendanceDate,
     required this.courseName,
+    this.courseId,
     required this.status,
     required this.notes,
     required this.recordsCount,
@@ -181,6 +196,8 @@ class TeacherAttendanceDay {
       id: jsonInt(json['id']),
       attendanceDate: jsonString(json['attendance_date']),
       courseName: _nameOf(json['course']),
+      courseId:
+          jsonIntOrNull(json['course_id'] ?? jsonMap(json['course'])?['id']),
       status: jsonString(json['status']),
       notes: jsonStringOrNull(json['notes']),
       recordsCount: jsonInt(json['records_count'] ?? 0),

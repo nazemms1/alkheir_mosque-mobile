@@ -20,6 +20,7 @@ import 'package:alkheir_mosque/features/points/presentation/screens/points_ledge
 import 'package:alkheir_mosque/features/quran_tests/presentation/screens/awqaf_tests_screen.dart';
 import 'package:alkheir_mosque/features/quran_tests/presentation/screens/quran_tests_screen.dart';
 import 'package:alkheir_mosque/features/reports/presentation/screens/reports_screen.dart';
+import 'package:alkheir_mosque/features/sabr/presentation/screens/saber_entry_screen.dart';
 import 'package:alkheir_mosque/features/students/presentation/screens/student_picker_screen.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import '../widgets/module_widgets.dart';
@@ -166,6 +167,14 @@ class _ManagementHubTabState extends State<ManagementHubTab> {
                 onPicked: (ctx, s) => _openQuranTests(ctx, s),
               ),
             ),
+          ),
+        if (ModuleAccess.canRecordPartialTests(t) || ModuleAccess.canViewQuranTests(t))
+          _Tile(
+            Icons.playlist_add_check_circle_rounded,
+            AppColors.primary,
+            tr('إدخال سبر'),
+            tr('تسجيل سبر الأرباع والأجزاء والطلاب'),
+            () => _push(context, SaberEntryScreen(token: t)),
           ),
         if (ModuleAccess.canViewAwqafTests(t))
           _Tile(

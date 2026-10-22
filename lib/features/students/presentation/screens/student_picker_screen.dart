@@ -103,7 +103,7 @@ class _StudentPickerScreenState extends State<StudentPickerScreen> {
                   ],
                 ),
               ),
-              Icon(Icons.chevron_left_rounded, color: moduleMuted(context)),
+              Icon(moduleChevronForward(context), color: moduleMuted(context)),
             ],
           ),
         ),
