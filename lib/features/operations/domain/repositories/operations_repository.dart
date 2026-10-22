@@ -44,11 +44,9 @@ abstract class OperationsRepository {
   Future<void> recordTeacherAttendance({
     required String attendanceDate,
     required List<Map<String, dynamic>> records,
-    int? courseId,
+    required int courseId,
     String? notes,
   });
-
-  Future<void> deleteTeacherAttendanceDay(int id);
 
 
   Future<PagedResult<MemorizationEntry>> memorization({

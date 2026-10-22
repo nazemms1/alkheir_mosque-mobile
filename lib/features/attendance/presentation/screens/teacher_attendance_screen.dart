@@ -59,26 +59,6 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
     }
   }
 
-  Future<void> _deleteDay(TeacherAttendanceDay day) async {
-    final ok = await confirmAction(
-      context,
-      title: tr('حذف حضور المعلمين'),
-      message: tr('سيتم حذف سجل حضور هذا اليوم للمعلمين. لا يمكن التراجع.'),
-      confirmLabel: tr('حذف'),
-      destructive: true,
-    );
-    if (!ok || !mounted) return;
-    try {
-      await _service.deleteTeacherAttendanceDay(day.id);
-      if (!mounted) return;
-      showModuleSnack(context, tr('تم حذف سجل الحضور بنجاح'));
-      setState(() => _reloadToken++);
-    } catch (error) {
-      if (!mounted) return;
-      showModuleSnack(context, errorText(error), error: true);
-    }
-  }
-
   Future<void> _openDay(TeacherAttendanceDay day) async {
     try {
       final detail = await _service.teacherAttendanceDay(day.id);
@@ -91,17 +71,12 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           for (final r in detail.records) MapEntry(r.teacherName, r.statusName),
         ],
         actions: [
-          if (ModuleAccess.canTakeTeacherAttendance(widget.token)) ...[
+          if (ModuleAccess.canTakeTeacherAttendance(widget.token) &&
+              detail.status != 'closed') ...[
             SheetAction(
               id: 'edit',
               label: tr('تعديل الحضور'),
               icon: Icons.edit_rounded,
-            ),
-            SheetAction(
-              id: 'delete',
-              label: tr('حذف'),
-              icon: Icons.delete_outline_rounded,
-              destructive: true,
             ),
           ],
         ],
@@ -109,8 +84,6 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
       if (!mounted) return;
       if (action == 'edit') {
         _editDay(detail);
-      } else if (action == 'delete') {
-        _deleteDay(day);
       }
     } catch (error) {
       if (!mounted) return;
@@ -169,20 +142,11 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                   ],
                 ),
               ),
-              if (canEdit) ...[
+              if (canEdit && day.status != 'closed') ...[
                 IconButton(
                   tooltip: tr('تعديل الحضور'),
                   icon: const Icon(Icons.edit_outlined, size: 20),
                   onPressed: () => _editDay(day),
-                ),
-                IconButton(
-                  tooltip: tr('حذف'),
-                  icon: const Icon(
-                    Icons.delete_outline_rounded,
-                    size: 20,
-                    color: AppColors.error,
-                  ),
-                  onPressed: () => _deleteDay(day),
                 ),
               ],
               Icon(moduleChevronForward(context), color: moduleMuted(context)),
@@ -363,11 +327,15 @@ class _TeacherAttendanceFormScreenState
 
   Future<void> _save() async {
     if (_teachers.isEmpty) return;
+    if (_course == null) {
+      showModuleSnack(context, tr('اختر الدورة'), error: true);
+      return;
+    }
     setState(() => _saving = true);
     try {
       await _operations.recordTeacherAttendance(
         attendanceDate: _date.text,
-        courseId: _course?.id,
+        courseId: _course!.id,
         notes: nullIfBlank(_notes.text),
         records: [
           for (final t in _teachers)
@@ -378,29 +346,6 @@ class _TeacherAttendanceFormScreenState
         ],
       );
       if (!mounted) return;
-      Navigator.pop(context, true);
-    } catch (error) {
-      if (!mounted) return;
-      setState(() => _saving = false);
-      showModuleSnack(context, errorText(error), error: true);
-    }
-  }
-
-  Future<void> _delete() async {
-    if (widget.initialDay == null) return;
-    final ok = await confirmAction(
-      context,
-      title: tr('حذف حضور المعلمين'),
-      message: tr('سيتم حذف سجل حضور هذا اليوم للمعلمين. لا يمكن التراجع.'),
-      confirmLabel: tr('حذف'),
-      destructive: true,
-    );
-    if (!ok || !mounted) return;
-    setState(() => _saving = true);
-    try {
-      await _operations.deleteTeacherAttendanceDay(widget.initialDay!.id);
-      if (!mounted) return;
-      showModuleSnack(context, tr('تم حذف سجل الحضور بنجاح'));
       Navigator.pop(context, true);
     } catch (error) {
       if (!mounted) return;
@@ -424,15 +369,6 @@ class _TeacherAttendanceFormScreenState
       title: screenTitle,
       actions: [
         if (!_loading && _error == null) ...[
-          if (isEdit)
-            IconButton(
-              tooltip: tr('حذف'),
-              icon: const Icon(
-                Icons.delete_outline_rounded,
-                color: AppColors.error,
-              ),
-              onPressed: _saving ? null : _delete,
-            ),
           Padding(
             padding: const EdgeInsetsDirectional.only(end: 8),
             child: _saving

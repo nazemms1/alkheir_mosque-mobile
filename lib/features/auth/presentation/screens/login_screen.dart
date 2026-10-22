@@ -7,6 +7,7 @@ import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/session/auth_session.dart';
 import 'package:alkheir_mosque/app/core/session/theme_provider.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/brand_logo.dart';
 import 'package:alkheir_mosque/features/auth/domain/repositories/auth_repository.dart';
 import 'package:alkheir_mosque/features/auth/presentation/state_management/auth_state.dart';
 
@@ -357,30 +358,7 @@ class _HeroSection extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 96,
-            height: 96,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              border: Border.all(
-                color: AppColors.gold.withValues(alpha: 0.5),
-                width: 2,
-              ),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primaryLight.withValues(alpha: 0.4),
-                  blurRadius: 24,
-                  spreadRadius: 2,
-                ),
-              ],
-            ),
-            child: ClipOval(
-              child: Image.asset(
-                'assets/logo/لوغو.png',
-                fit: BoxFit.cover,
-              ),
-            ),
-          ),
+          const BrandLogo(size: 104),
           const SizedBox(height: 20),
           ShaderMask(
             shaderCallback: (bounds) => const LinearGradient(

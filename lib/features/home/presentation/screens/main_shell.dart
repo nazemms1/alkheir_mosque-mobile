@@ -15,6 +15,7 @@ import 'package:alkheir_mosque/features/notifications/presentation/screens/notif
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/di/di_locator.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
+import 'package:alkheir_mosque/features/home/presentation/widgets/app_drawer.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
@@ -28,6 +29,8 @@ class _MainShellState extends ConsumerState<MainShell>
     with TickerProviderStateMixin {
   int _currentIndex = 0;
   int _selectedChildIndex = 0;
+  static const _maxBarItems = 4;
+  final _scaffoldKey = GlobalKey<ScaffoldState>();
   ParentDashboardData? _data;
   ParentProfile? _parentProfile;
   ParentSummary? _parentSummary;
@@ -127,6 +130,17 @@ class _MainShellState extends ConsumerState<MainShell>
     setState(() => _currentIndex = index);
   }
 
+  void _openDrawer() {
+    HapticFeedback.selectionClick();
+    _scaffoldKey.currentState?.openDrawer();
+  }
+
+  void _openAccountFromDrawer() {
+    Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const AccountScreen()),
+    );
+  }
+
   void _openNotifications() {
     final studentId =
         (!widget.token.isAdmin && _data != null && _data!.children.isNotEmpty)
@@ -164,291 +178,130 @@ class _MainShellState extends ConsumerState<MainShell>
   }
 
   void _showAdminProfileSheet() {
-    final user = widget.token.user;
-
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (sheetCtx) => Consumer(
-        builder: (context, ref, _) {
-          final themeMode = ref.watch(themeProvider);
-          final isDark = themeMode == ThemeMode.dark ||
-              (themeMode == ThemeMode.system &&
-                  MediaQuery.platformBrightnessOf(context) == Brightness.dark);
-          final sheetBg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
-          final dividerColor =
-              isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
+      builder: (sheetCtx) => _StaffProfileSheet(
+        token: widget.token,
+        onOpenAccount: () {
+          Navigator.pop(sheetCtx);
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (_) => const AccountScreen()),
+          );
+        },
+        onLogout: () {
+          Navigator.pop(sheetCtx);
+          _confirmLogout();
+        },
+      ),
+    );
+  }
 
-          final borderColor =
-              isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
-          final handleColor =
-              isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+  /// يغلق ورقة الملف الشخصي ثم يسأل عن تسجيل الخروج.
+  void _handleLogout() {
+    Navigator.of(context).pop(); // close sheet
+    _confirmLogout();
+  }
 
-          return Container(
-            decoration: BoxDecoration(
-              color: sheetBg,
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(32)),
-              border: Border(top: BorderSide(color: borderColor, width: 1.5)),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
-                  blurRadius: 36,
-                  offset: const Offset(0, -8),
+  void _confirmLogout() {
+    showDialog(
+      context: context,
+      builder: (ctx) {
+        final scheme = Theme.of(ctx).colorScheme;
+        return Dialog(
+          backgroundColor: scheme.surface,
+          shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(28)),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(22, 26, 22, 18),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 64,
+                  height: 64,
+                  decoration: BoxDecoration(
+                    color: AppColors.error.withValues(alpha: 0.12),
+                    shape: BoxShape.circle,
+                  ),
+                  child: const Icon(Icons.logout_rounded,
+                      color: AppColors.error, size: 30),
                 ),
-                BoxShadow(
-                  color: const Color(0xFF0D5016)
-                      .withValues(alpha: isDark ? 0.25 : 0.08),
-                  blurRadius: 18,
-                  offset: const Offset(0, -2),
+                const SizedBox(height: 16),
+                Text(
+                  tr('تسجيل الخروج'),
+                  style: appTextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w800,
+                    color: scheme.onSurface,
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Text(
+                  tr('هل تريد تسجيل الخروج من الحساب؟'),
+                  textAlign: TextAlign.center,
+                  style: appTextStyle(
+                    fontSize: 14,
+                    color: scheme.onSurface.withValues(alpha: 0.7),
+                  ),
+                ),
+                const SizedBox(height: 22),
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.pop(ctx),
+                        style: OutlinedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                        ),
+                        child: Text(
+                          tr('إلغاء'),
+                          style: appTextStyle(
+                              fontSize: 14, fontWeight: FontWeight.w700),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: () async {
+                          Navigator.pop(ctx);
+                          await ref
+                              .read(authSessionProvider.notifier)
+                              .logout();
+                          if (!mounted) return;
+                          Navigator.of(context).pushAndRemoveUntil(
+                            MaterialPageRoute(
+                                builder: (_) => const LoginScreen()),
+                            (_) => false,
+                          );
+                        },
+                        style: FilledButton.styleFrom(
+                          backgroundColor: AppColors.error,
+                          padding: const EdgeInsets.symmetric(vertical: 14),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(14)),
+                        ),
+                        child: Text(
+                          tr('تسجيل الخروج'),
+                          style: appTextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w700,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
-            child: SafeArea(
-              top: false,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Center(
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 12, bottom: 6),
-                      width: 48,
-                      height: 5,
-                      decoration: BoxDecoration(
-                        color: handleColor,
-                        borderRadius: BorderRadius.circular(2.5),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 2, 16, 6),
-                    child: Row(
-                      children: [
-                        Text(
-                          tr('الملف الشخصي'),
-                          style: TextStyle(
-                            color: isDark ? Colors.white : AppColors.textPrimary,
-                            fontSize: 16,
-                            fontWeight: FontWeight.w800,
-                            fontFamily: 'Dubai',
-                          ),
-                        ),
-                        const Spacer(),
-                        AdminSheetCloseButton(
-                          onTap: () => Navigator.pop(sheetCtx),
-                        ),
-                      ],
-                    ),
-                  ),
-                  Container(
-                    width: double.infinity,
-                    margin: const EdgeInsets.fromLTRB(16, 6, 16, 0),
-                    padding: const EdgeInsets.all(20),
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xFF071A0A),
-                    Color(0xFF0D5016),
-                    Color(0xFF1A7A26)
-                  ],
-                  begin: Alignment.topRight,
-                  end: Alignment.bottomLeft,
-                ),
-                borderRadius: BorderRadius.circular(24),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.primary.withValues(alpha: 0.35),
-                    blurRadius: 24,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
-              ),
-              child: Row(
-                children: [
-                  Container(
-                    width: 64,
-                    height: 64,
-                    decoration: BoxDecoration(
-                      gradient: AppColors.gradientGold,
-                      shape: BoxShape.circle,
-                      boxShadow: [
-                        BoxShadow(
-                            color: AppColors.gold.withValues(alpha: 0.45),
-                            blurRadius: 18,
-                            spreadRadius: 2),
-                      ],
-                    ),
-                    child: const Icon(Icons.admin_panel_settings_rounded,
-                        color: Colors.white, size: 30),
-                  ),
-                  const SizedBox(width: 14),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          user?.name ?? tr('المدير'),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 15,
-                            fontWeight: FontWeight.w700,
-                            fontFamily: 'Dubai',
-                          ),
-                        ),
-                        const SizedBox(height: 4),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 10, vertical: 3),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.15),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                                color: Colors.white.withValues(alpha: 0.25)),
-                          ),
-                          child: Text(
-                            widget.token.displayRole,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 11,
-                              fontFamily: 'Dubai',
-                            ),
-                          ),
-                        ),
-                        if (user?.username.isNotEmpty == true) ...[
-                          const SizedBox(height: 6),
-                          Row(
-                            children: [
-                              Icon(Icons.badge_rounded,
-                                  color: Colors.white.withValues(alpha: 0.6),
-                                  size: 13),
-                              const SizedBox(width: 4),
-                              Text(
-                                user!.username,
-                                style: TextStyle(
-                                  color: Colors.white.withValues(alpha: 0.65),
-                                  fontSize: 11,
-                                  fontFamily: 'Dubai',
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            const SizedBox(height: 16),
-            _SheetMenuItem(
-              icon: Icons.person_rounded,
-              label: tr('حسابي'),
-              subtitle: tr('البيانات الشخصية وكلمة المرور والصورة'),
-              color: AppColors.info,
-              onTap: () => _openAccount(sheetCtx),
-            ),
-            _ThemeToggleItem(isDark: isDark),
-            const _LanguageToggleItem(),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: Divider(color: dividerColor, height: 1),
-            ),
-            const SizedBox(height: 8),
-            Padding(
-              padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-              child: GestureDetector(
-                onTap: _handleLogout,
-                child: Container(
-                  width: double.infinity,
-                  padding: const EdgeInsets.symmetric(vertical: 15),
-                  decoration: BoxDecoration(
-                    gradient: const LinearGradient(
-                      colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    borderRadius: BorderRadius.circular(16),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.error.withValues(alpha: 0.35),
-                        blurRadius: 16,
-                        offset: const Offset(0, 6),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(Icons.logout_rounded,
-                          color: Colors.white, size: 20),
-                      const SizedBox(width: 10),
-                      Text(
-                        tr('تسجيل الخروج'),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 15,
-                          fontWeight: FontWeight.w700,
-                          fontFamily: 'Dubai',
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-    },
-  ),
-);
-}
-
-  void _handleLogout() {
-    Navigator.of(context).pop(); // close sheet
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
-        title: Text(tr('تسجيل الخروج'),
-            style: const TextStyle(
-                fontFamily: 'Dubai', fontWeight: FontWeight.w700)),
-        content: Text(tr('هل تريد تسجيل الخروج من الحساب؟'),
-            style: const TextStyle(fontFamily: 'Dubai')),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(tr('إلغاء'),
-                style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.6),
-                    fontFamily: 'Dubai')),
           ),
-          ElevatedButton(
-            onPressed: () async {
-              Navigator.pop(ctx);
-              await ref.read(authSessionProvider.notifier).logout();
-              if (!mounted) return;
-              Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(builder: (_) => const LoginScreen()),
-                (_) => false,
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: AppColors.error,
-              shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12)),
-            ),
-            child: Text(tr('تسجيل الخروج'),
-                style: const TextStyle(fontFamily: 'Dubai')),
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 
@@ -525,29 +378,54 @@ class _MainShellState extends ConsumerState<MainShell>
     }
     final ctx = _tabContext;
     final safeIndex = _currentIndex.clamp(0, tabs.length - 1);
+    // الشريط السفلي 4 عناصر كحدّ أقصى: إذا زادت التبويبات تظهر 3 منها و"المزيد"
+    // الذي يفتح القائمة الجانبية، وتبقى كل الصفحات متاحة من الدرج.
+    final overflow = tabs.length > _maxBarItems;
+    final directCount = overflow ? _maxBarItems - 1 : tabs.length;
+    final navItems = [
+      for (final t in tabs.take(directCount))
+        _NavConfig(icon: t.icon, activeIcon: t.activeIcon, label: t.label),
+      if (overflow)
+        _NavConfig(
+          icon: Icons.apps_outlined,
+          activeIcon: Icons.apps_rounded,
+          label: tr('المزيد'),
+        ),
+    ];
+    final navIndex =
+        safeIndex < directCount ? safeIndex : (overflow ? directCount : 0);
 
     return Scaffold(
+      key: _scaffoldKey,
       backgroundColor: Theme.of(context).scaffoldBackgroundColor,
       extendBody: true,
       appBar: _buildAppBar(tabs, safeIndex),
+      drawer: AppDrawer(
+        token: widget.token,
+        userName: widget.token.user?.name ?? '',
+        roleLabel: widget.token.displayRole,
+        tabs: tabs,
+        overflowFrom: directCount,
+        activeIndex: safeIndex,
+        onPageSelected: _changeTab,
+        onAccount: _openAccountFromDrawer,
+        onLogout: _confirmLogout,
+      ),
       body: IndexedStack(
           key: ValueKey(_selectedChildIndex),
           index: safeIndex,
           children: tabs.map((t) => t.builder(ctx)).toList()),
       bottomNavigationBar: _PremiumNavBar(
-        items: tabs
-            .map((t) => _NavConfig(
-                icon: t.icon, activeIcon: t.activeIcon, label: t.label))
-            .toList(),
-        currentIndex: safeIndex,
-        onTap: _changeTab,
+        items: navItems,
+        currentIndex: navIndex,
+        onTap: (i) =>
+            overflow && i == directCount ? _openDrawer() : _changeTab(i),
       ),
     );
   }
 
   PreferredSizeWidget _buildAppBar(List<AppTab> tabs, int index) {
     final titles = tabs.map((t) => t.effectiveTitle).toList();
-    final subtitles = tabs.map((t) => t.subtitle).toList();
 
     return PreferredSize(
       preferredSize: const Size.fromHeight(72),
@@ -595,70 +473,10 @@ class _MainShellState extends ConsumerState<MainShell>
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   child: Row(
                     children: [
-                      // Brand logo + name
-                      GestureDetector(
-                        onTap: _showUserProfileSheet,
-                        child: Row(
-                          children: [
-                            AnimatedBuilder(
-                              animation: _pulseAnim,
-                              builder: (_, child) => Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  gradient: const LinearGradient(
-                                    colors: [
-                                      Color(0xFF2EA043),
-                                      Color(0xFF1A7A26)
-                                    ],
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                  ),
-                                  borderRadius: BorderRadius.circular(14),
-                                  border: Border.all(
-                                      color: Colors.white.withValues(
-                                          alpha: 0.2 + 0.1 * _pulseAnim.value),
-                                      width: 1.5),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: AppColors.primaryLight.withValues(
-                                          alpha: 0.3 + 0.15 * _pulseAnim.value),
-                                      blurRadius: 12,
-                                      spreadRadius: 1,
-                                    ),
-                                  ],
-                                ),
-                                child: const Icon(Icons.mosque_rounded,
-                                    color: Colors.white, size: 24),
-                              ),
-                            ),
-                            const SizedBox(width: 10),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  tr('مسجد الخير'),
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w800,
-                                    fontFamily: 'Dubai',
-                                    letterSpacing: 0.3,
-                                  ),
-                                ),
-                                Text(
-                                  subtitles[index],
-                                  style: TextStyle(
-                                    color: Colors.white.withValues(alpha: 0.6),
-                                    fontSize: 10,
-                                    fontFamily: 'Dubai',
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
+                      _HeaderButton(
+                        icon: Icons.menu_rounded,
+                        tooltip: tr('القائمة'),
+                        onTap: _openDrawer,
                       ),
                       const SizedBox(width: 12),
                       // Current page title (pill)
@@ -689,6 +507,12 @@ class _MainShellState extends ConsumerState<MainShell>
                       _NotificationButton(
                         count: _data?.unreadNotifications ?? 0,
                         onTap: _openNotifications,
+                      ),
+                      const SizedBox(width: 10),
+                      _HeaderButton(
+                        icon: Icons.account_circle_rounded,
+                        tooltip: tr('الملف الشخصي'),
+                        onTap: _showUserProfileSheet,
                       ),
                     ],
                   ),
@@ -1400,6 +1224,198 @@ class _ThemeToggleItem extends ConsumerWidget {
                   onChanged: (_) {},
                   activeThumbColor: AppColors.primaryGlow,
                   activeTrackColor: AppColors.primaryLight.withValues(alpha: 0.4),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// زر أيقوني في الشريط العلوي (القائمة، الملف الشخصي).
+class _HeaderButton extends StatelessWidget {
+  final IconData icon;
+  final String tooltip;
+  final VoidCallback onTap;
+
+  const _HeaderButton({
+    required this.icon,
+    required this.tooltip,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Tooltip(
+      message: tooltip,
+      child: Material(
+        color: Colors.white.withValues(alpha: 0.10),
+        borderRadius: BorderRadius.circular(14),
+        child: InkWell(
+          borderRadius: BorderRadius.circular(14),
+          onTap: onTap,
+          child: SizedBox(
+            width: 42,
+            height: 42,
+            child: Icon(icon, color: Colors.white, size: 22),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+/// ملف الشخصي للحسابات الإدارية: هوية الحساب، الإعدادات السريعة، الحساب، والخروج.
+class _StaffProfileSheet extends StatelessWidget {
+  final AuthToken token;
+  final VoidCallback onOpenAccount;
+  final VoidCallback onLogout;
+
+  const _StaffProfileSheet({
+    required this.token,
+    required this.onOpenAccount,
+    required this.onLogout,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final scheme = Theme.of(context).colorScheme;
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final user = token.user;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: scheme.surface,
+        borderRadius: const BorderRadius.vertical(top: Radius.circular(30)),
+      ),
+      child: SafeArea(
+        top: false,
+        child: Padding(
+          padding: const EdgeInsets.fromLTRB(20, 12, 20, 20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Container(
+                  width: 44,
+                  height: 5,
+                  decoration: BoxDecoration(
+                    color: scheme.onSurface.withValues(alpha: 0.2),
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 18),
+              Row(
+                children: [
+                  Container(
+                    width: 64,
+                    height: 64,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      gradient: AppColors.gradientGold,
+                      boxShadow: [
+                        BoxShadow(
+                          color: AppColors.gold.withValues(alpha: 0.35),
+                          blurRadius: 18,
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.admin_panel_settings_rounded,
+                        color: Colors.white, size: 30),
+                  ),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          user?.name ?? tr('المدير'),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(
+                            fontSize: 17,
+                            fontWeight: FontWeight.w800,
+                            color: scheme.onSurface,
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        Text(
+                          token.displayRole,
+                          style: appTextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.w700,
+                            color: AppColors.primaryLight,
+                          ),
+                        ),
+                        if (user?.username.isNotEmpty == true) ...[
+                          const SizedBox(height: 2),
+                          Text(
+                            user!.username,
+                            style: appTextStyle(
+                              fontSize: 12,
+                              color: scheme.onSurface.withValues(alpha: 0.6),
+                            ),
+                          ),
+                        ],
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 20),
+              _SheetMenuItem(
+                icon: Icons.person_rounded,
+                label: tr('حسابي'),
+                subtitle: tr('البيانات الشخصية وكلمة المرور والصورة'),
+                color: AppColors.info,
+                onTap: onOpenAccount,
+              ),
+              _ThemeToggleItem(isDark: isDark),
+              const _LanguageToggleItem(),
+              const SizedBox(height: 12),
+              _LogoutButton(onTap: onLogout),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _LogoutButton extends StatelessWidget {
+  final VoidCallback onTap;
+
+  const _LogoutButton({required this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 15),
+          decoration: BoxDecoration(
+            color: AppColors.error.withValues(alpha: 0.12),
+            borderRadius: BorderRadius.circular(16),
+            border: Border.all(color: AppColors.error.withValues(alpha: 0.35)),
+          ),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              const Icon(Icons.logout_rounded, color: AppColors.error, size: 20),
+              const SizedBox(width: 10),
+              Text(
+                tr('تسجيل الخروج'),
+                style: appTextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w700,
+                  color: AppColors.error,
                 ),
               ),
             ],

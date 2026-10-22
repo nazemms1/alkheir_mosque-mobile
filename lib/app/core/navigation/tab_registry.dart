@@ -149,7 +149,6 @@ List<AppTab> get adminTabs => [
         ],
         builder: (ctx) => AdminFinanceScreen(token: ctx.token),
       ),
-      managementTab,
     ];
 
 /// تبويب "الإدارة" المشترك: يظهر لكل حساب يملك صلاحية وحدة إدارية واحدة على الأقل.
@@ -291,7 +290,6 @@ List<AppTab> get supervisorTabs => [
         ],
         builder: (_) => const SupervisorAssessmentsTab(),
       ),
-      managementTab,
     ];
 
 /// يعيد تبويبات الحساب الحالي: تُختار عائلة التبويبات حسب الدور

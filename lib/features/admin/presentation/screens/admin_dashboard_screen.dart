@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/brand_logo.dart';
 import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
@@ -251,30 +252,169 @@ class _WelcomeBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return AdminHero(
-      icon: Icons.admin_panel_settings_rounded,
-      title: trf('مرحباً، {0}', [userName]),
-      subtitle: tr('لوحة التحكم الإدارية'),
-      metrics: [
-        if (token.hasPermission(Permissions.studentsView))
-          AdminHeroMetric(
-            icon: Icons.people_rounded,
-            label: tr('طالب'),
-            value: '${stats.totalStudents}',
+    final hour = DateTime.now().hour;
+    final greeting = hour < 12 ? tr('صباح الخير') : tr('مساء الخير');
+    final metrics = [
+      if (token.hasPermission(Permissions.studentsView))
+        _BannerMetric(
+          icon: Icons.people_rounded,
+          label: tr('طالب'),
+          value: '${stats.totalStudents}',
+        ),
+      if (token.hasPermission(Permissions.groupsView))
+        _BannerMetric(
+          icon: Icons.groups_rounded,
+          label: tr('حلقة نشطة'),
+          value: '${stats.activeGroups}',
+        ),
+      if (token.hasPermission(Permissions.enrollmentsView))
+        _BannerMetric(
+          icon: Icons.how_to_reg_rounded,
+          label: tr('تسجيل'),
+          value: '${stats.totalEnrollments}',
+        ),
+    ];
+
+    return Container(
+      padding: const EdgeInsets.all(20),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), Color(0xFF0D4515)],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+        borderRadius: BorderRadius.circular(26),
+        boxShadow: AppColors.heroShadow,
+      ),
+      child: Stack(
+        children: [
+          PositionedDirectional(
+            top: -50,
+            end: -40,
+            child: Container(
+              width: 160,
+              height: 160,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    AppColors.gold.withValues(alpha: 0.22),
+                    Colors.transparent,
+                  ],
+                ),
+              ),
+            ),
           ),
-        if (token.hasPermission(Permissions.groupsView))
-          AdminHeroMetric(
-            icon: Icons.groups_rounded,
-            label: tr('حلقة نشطة'),
-            value: '${stats.activeGroups}',
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                children: [
+                  const BrandLogo(size: 54, glow: false),
+                  const SizedBox(width: 14),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          greeting,
+                          style: appTextStyle(
+                            fontSize: 12,
+                            color: Colors.white.withValues(alpha: 0.7),
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          userName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: appTextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w800,
+                            color: Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 2),
+                        Text(
+                          tr('لوحة التحكم الإدارية'),
+                          style: appTextStyle(
+                            fontSize: 12,
+                            color: AppColors.goldLight,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              if (metrics.isNotEmpty) ...[
+                const SizedBox(height: 18),
+                Row(
+                  children: [
+                    for (var i = 0; i < metrics.length; i++) ...[
+                      if (i > 0) const SizedBox(width: 8),
+                      Expanded(child: metrics[i]),
+                    ],
+                  ],
+                ),
+              ],
+            ],
           ),
-        if (token.hasPermission(Permissions.enrollmentsView))
-          AdminHeroMetric(
-            icon: Icons.how_to_reg_rounded,
-            label: tr('تسجيل'),
-            value: '${stats.totalEnrollments}',
+        ],
+      ),
+    );
+  }
+}
+
+/// مقياس داخل ترويسة لوحة التحكم.
+class _BannerMetric extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final String value;
+
+  const _BannerMetric({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.08),
+        borderRadius: BorderRadius.circular(18),
+        border: Border.all(color: Colors.white.withValues(alpha: 0.14)),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, color: AppColors.goldLight, size: 18),
+          const SizedBox(height: 6),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              value,
+              style: appTextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: Colors.white,
+              ),
+            ),
           ),
-      ],
+          const SizedBox(height: 2),
+          Text(
+            label,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: appTextStyle(
+              fontSize: 11,
+              color: Colors.white.withValues(alpha: 0.65),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

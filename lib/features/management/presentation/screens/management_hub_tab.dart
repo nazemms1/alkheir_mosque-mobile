@@ -30,248 +30,255 @@ import 'group_schedules_screen.dart';
 import 'parents_screen.dart';
 import 'teachers_screen.dart';
 
-/// تبويب "الإدارة": مؤشرات اليوم، ثم وحدات مجمّعة. كل وحدة تظهر فقط إذا وُجدت
-/// صلاحيتها في تسجيل الدخول — لا يُقرأ اسم الدور هنا.
-class ManagementHubTab extends StatefulWidget {
+/// وحدة إدارية واحدة: تظهر في صفحة الإدارة وفي القائمة الجانبية.
+class ManagementEntry {
+  final IconData icon;
+  final Color color;
+  final String title;
+  final String subtitle;
+  final void Function(BuildContext context) open;
+
+  const ManagementEntry({
+    required this.icon,
+    required this.color,
+    required this.title,
+    required this.subtitle,
+    required this.open,
+  });
+}
+
+/// قسم من الوحدات الإدارية (مثل "المالية").
+class ManagementSection {
+  final String title;
+  final List<ManagementEntry> entries;
+
+  const ManagementSection(this.title, this.entries);
+}
+
+/// يفتح شاشة وحدة. القائمة الجانبية تغلق نفسها قبل الفتح.
+typedef ManagementOpener = void Function(BuildContext context, Widget screen);
+
+/// الأقسام الإدارية المتاحة لحساب الدخول — كل وحدة تظهر فقط إذا وُجدت صلاحيتها.
+List<ManagementSection> managementSections(
+    AuthToken t, ManagementOpener push) {
+  return [
+    ManagementSection(tr('الطلاب والحلقات'), [
+      if (ModuleAccess.canViewGroups(t))
+        ManagementEntry(
+          icon: Icons.calendar_view_week_rounded,
+          color: AppColors.warning,
+          title: tr('جداول الحلقات'),
+          subtitle: tr('حصص كل حلقة وأوقاتها'),
+          open: (ctx) => push(ctx, GroupPickerScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewEnrollments(t))
+        ManagementEntry(
+          icon: Icons.how_to_reg_rounded,
+          color: AppColors.info,
+          title: tr('التسجيلات'),
+          subtitle: tr('تسجيل الطلاب في الحلقات وإنهاؤها'),
+          open: (ctx) => push(ctx, EnrollmentsScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewCourses(t))
+        ManagementEntry(
+          icon: Icons.menu_book_rounded,
+          color: AppColors.primary,
+          title: tr('الكورسات'),
+          subtitle: tr('إنشاء الكورسات وإنهاؤها وإعادة تفعيلها'),
+          open: (ctx) => push(ctx, CoursesScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewParents(t))
+        ManagementEntry(
+          icon: Icons.family_restroom_rounded,
+          color: AppColors.info,
+          title: tr('الأولياء'),
+          subtitle: tr('ملفات أولياء الأمور وحساباتهم'),
+          open: (ctx) => push(ctx, ParentsScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewTeachers(t))
+        ManagementEntry(
+          icon: Icons.school_rounded,
+          color: AppColors.primaryLight,
+          title: tr('المعلمون'),
+          subtitle: tr('ملفات المعلمين وحساباتهم وكورساتهم'),
+          open: (ctx) => push(ctx, TeachersScreen(token: t)),
+        ),
+    ]),
+    ManagementSection(tr('الحضور والحفظ'), [
+      if (ModuleAccess.canViewStudentAttendance(t))
+        ManagementEntry(
+          icon: Icons.event_available_rounded,
+          color: AppColors.success,
+          title: tr('حضور الطلاب'),
+          subtitle: tr('أيام الحضور، وأخذ حضور الحلقة'),
+          open: (ctx) => push(ctx, StudentAttendanceScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewTeacherAttendance(t))
+        ManagementEntry(
+          icon: Icons.badge_rounded,
+          color: AppColors.info,
+          title: tr('حضور المعلمين'),
+          subtitle: tr('تسجيل حضور المعلمين لكل يوم'),
+          open: (ctx) => push(ctx, TeacherAttendanceScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewMemorization(t))
+        ManagementEntry(
+          icon: Icons.menu_book_outlined,
+          color: AppColors.primaryGlow,
+          title: tr('الحفظ'),
+          subtitle: tr('سجل الحفظ والمراجعة وتسجيل الصفحات'),
+          open: (ctx) => push(ctx, StaffMemorizationScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewQuranTests(t))
+        ManagementEntry(
+          icon: Icons.record_voice_over_rounded,
+          color: AppColors.primaryGlow,
+          title: tr('اختبارات القرآن'),
+          subtitle: tr('الاختبارات الجزئية والنهائية لكل طالب'),
+          open: (ctx) => push(
+            ctx,
+            StudentPickerScreen(
+              token: t,
+              title: tr('اختبارات القرآن'),
+              onPicked: (pickerCtx, s) =>
+                  _openQuranTests(pickerCtx, t, s, push),
+            ),
+          ),
+        ),
+      if (ModuleAccess.canRecordPartialTests(t) ||
+          ModuleAccess.canViewQuranTests(t))
+        ManagementEntry(
+          icon: Icons.playlist_add_check_circle_rounded,
+          color: AppColors.primary,
+          title: tr('إدخال سبر'),
+          subtitle: tr('تسجيل سبر الأرباع والأجزاء والطلاب'),
+          open: (ctx) => push(ctx, SaberEntryScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewAwqafTests(t))
+        ManagementEntry(
+          icon: Icons.fact_check_rounded,
+          color: AppColors.gold,
+          title: tr('اختبارات الأوقاف'),
+          subtitle: tr('تسجيل اختبارات الأوقاف وعرضها'),
+          open: (ctx) => push(ctx, AwqafTestsScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewPoints(t))
+        ManagementEntry(
+          icon: Icons.star_rounded,
+          color: AppColors.gold,
+          title: tr('سجل النقاط'),
+          subtitle: tr('النقاط، والنقاط اليدوية، وإلغاء القيود'),
+          open: (ctx) => push(ctx, PointsLedgerScreen(token: t)),
+        ),
+    ]),
+    ManagementSection(tr('التقييم والمناهج'), [
+      if (ModuleAccess.canViewAssessments(t))
+        ManagementEntry(
+          icon: Icons.assignment_rounded,
+          color: AppColors.warning,
+          title: tr('التقييمات'),
+          subtitle: tr('نتائج التقييمات وتسجيلها'),
+          open: (ctx) => push(ctx, AssessmentsScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewNotes(t))
+        ManagementEntry(
+          icon: Icons.sticky_note_2_outlined,
+          color: AppColors.gold,
+          title: tr('ملاحظات الطلاب'),
+          subtitle: tr('ملاحظات الإدارة والمعلمين'),
+          open: (ctx) => push(ctx, StudentNotesScreen(token: t)),
+        ),
+      if (ModuleAccess.canCurricula(t))
+        ManagementEntry(
+          icon: Icons.auto_stories_rounded,
+          color: AppColors.info,
+          title: tr('المناهج'),
+          subtitle: tr('المواد والدروس وتقدّم الحلقات وملفات PDF'),
+          open: (ctx) => push(ctx, CurriculaScreen(token: t)),
+        ),
+    ]),
+    ManagementSection(tr('المالية'), [
+      if (ModuleAccess.canViewFinance(t))
+        ManagementEntry(
+          icon: Icons.account_balance_wallet_rounded,
+          color: AppColors.gold,
+          title: tr('المالية'),
+          subtitle: tr('الصناديق والسجل والتحويلات والطلبات'),
+          open: (ctx) => push(ctx, FinanceScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewActivities(t))
+        ManagementEntry(
+          icon: Icons.celebration_rounded,
+          color: AppColors.primaryLight,
+          title: tr('الأنشطة'),
+          subtitle: tr('التسجيلات والمدفوعات والمصروفات'),
+          open: (ctx) => push(ctx, ActivitiesScreen(token: t)),
+        ),
+      if (ModuleAccess.canViewInvoices(t))
+        ManagementEntry(
+          icon: Icons.receipt_long_rounded,
+          color: AppColors.info,
+          title: tr('الفواتير'),
+          subtitle: tr('البنود والمدفوعات وإلغاء الدفعات'),
+          open: (ctx) => push(ctx, InvoicesScreen(token: t)),
+        ),
+    ]),
+    ManagementSection(tr('التقارير'), [
+      if (ModuleAccess.canViewReports(t))
+        ManagementEntry(
+          icon: Icons.bar_chart_rounded,
+          color: AppColors.primaryLight,
+          title: tr('التقارير'),
+          subtitle: tr('نظرة عامة بالفلاتر وملخص المعلمين اليومي'),
+          open: (ctx) => push(ctx, ReportsScreen(token: t)),
+        ),
+    ]),
+    ManagementSection(tr('الحساب'), [
+      ManagementEntry(
+        icon: Icons.person_rounded,
+        color: AppColors.info,
+        title: tr('حسابي'),
+        subtitle: tr('البيانات الشخصية وكلمة المرور والجلسات'),
+        open: (ctx) => push(ctx, const AccountScreen()),
+      ),
+    ]),
+  ].where((s) => s.entries.isNotEmpty).toList();
+}
+
+/// الطالب المختار: يُحمَّل تقدّمه لاستخراج تسجيلاته ثم تُفتح شاشة الاختبارات.
+Future<void> _openQuranTests(BuildContext context, AuthToken t,
+    StudentListItem student, ManagementOpener push) async {
+  try {
+    final progress = await StudentFileRepositoryImpl().progress(student.id);
+    if (!context.mounted) return;
+    push(
+      context,
+      QuranTestsScreen(
+        token: t,
+        student: student,
+        enrollments: progress.enrollments,
+      ),
+    );
+  } catch (error) {
+    if (!context.mounted) return;
+    showModuleSnack(context, errorText(error), error: true);
+  }
+}
+
+/// تبويب "الإدارة" — يُستخدم للحسابات التي لا تملك تبويبات أخرى.
+class ManagementHubTab extends StatelessWidget {
   final AuthToken token;
 
   const ManagementHubTab({super.key, required this.token});
 
-  @override
-  State<ManagementHubTab> createState() => _ManagementHubTabState();
-}
-
-class _ManagementHubTabState extends State<ManagementHubTab> {
   void _push(BuildContext context, Widget screen) {
     Navigator.of(context).push(MaterialPageRoute(builder: (_) => screen));
   }
 
-  /// الطالب المختار: يُحمَّل تقدّمه لاستخراج تسجيلاته ثم تُفتح شاشة الاختبارات.
-  Future<void> _openQuranTests(
-      BuildContext context, StudentListItem student) async {
-    try {
-      final progress = await StudentFileRepositoryImpl().progress(student.id);
-      if (!context.mounted) return;
-      _push(
-        context,
-        QuranTestsScreen(
-          token: widget.token,
-          student: student,
-          enrollments: progress.enrollments,
-        ),
-      );
-    } catch (error) {
-      if (!context.mounted) return;
-      showModuleSnack(context, errorText(error), error: true);
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final t = widget.token;
-    final sections = <_Section>[
-      _Section(tr('الطلاب والحلقات'), [
-        // if (ModuleAccess.canViewStudents(t))
-        //   _Tile(
-        //     Icons.groups_rounded,
-        //     AppColors.primaryLight,
-        //     tr('الطلاب'),
-        //     tr('بحث وإضافة وتعديل، والوصول لملف الطالب'),
-        //     () => _push(context, StudentsDirectoryScreen(token: t)),
-        //   ),
-        // if (ModuleAccess.canViewGroups(t))
-        //   _Tile(
-        //     Icons.class_rounded,
-        //     AppColors.primary,
-        //     tr('الحلقات'),
-        //     tr('إنشاء الحلقات وتعديلها'),
-        //     () => _push(context, AdminGroupsScreen(token: t)),
-        //   ),
-        if (ModuleAccess.canViewGroups(t))
-          _Tile(
-            Icons.calendar_view_week_rounded,
-            AppColors.warning,
-            tr('جداول الحلقات'),
-            tr('حصص كل حلقة وأوقاتها'),
-            () => _push(context, GroupPickerScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewEnrollments(t))
-          _Tile(
-            Icons.how_to_reg_rounded,
-            AppColors.info,
-            tr('التسجيلات'),
-            tr('تسجيل الطلاب في الحلقات وإنهاؤها'),
-            () => _push(context, EnrollmentsScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewCourses(t))
-          _Tile(
-            Icons.menu_book_rounded,
-            AppColors.primary,
-            tr('الكورسات'),
-            tr('إنشاء الكورسات وإنهاؤها وإعادة تفعيلها'),
-            () => _push(context, CoursesScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewParents(t))
-          _Tile(
-            Icons.family_restroom_rounded,
-            AppColors.info,
-            tr('الأولياء'),
-            tr('ملفات أولياء الأمور وحساباتهم'),
-            () => _push(context, ParentsScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewTeachers(t))
-          _Tile(
-            Icons.school_rounded,
-            AppColors.primaryLight,
-            tr('المعلمون'),
-            tr('ملفات المعلمين وحساباتهم وكورساتهم'),
-            () => _push(context, TeachersScreen(token: t)),
-          ),
-      ]),
-      _Section(tr('الحضور والحفظ'), [
-        if (ModuleAccess.canViewStudentAttendance(t))
-          _Tile(
-            Icons.event_available_rounded,
-            AppColors.success,
-            tr('حضور الطلاب'),
-            tr('أيام الحضور، وأخذ حضور الحلقة'),
-            () => _push(context, StudentAttendanceScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewTeacherAttendance(t))
-          _Tile(
-            Icons.badge_rounded,
-            AppColors.info,
-            tr('حضور المعلمين'),
-            tr('تسجيل حضور المعلمين لكل يوم'),
-            () => _push(context, TeacherAttendanceScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewMemorization(t))
-          _Tile(
-            Icons.menu_book_outlined,
-            AppColors.primaryGlow,
-            tr('الحفظ'),
-            tr('سجل الحفظ والمراجعة وتسجيل الصفحات'),
-            () => _push(context, StaffMemorizationScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewQuranTests(t))
-          _Tile(
-            Icons.record_voice_over_rounded,
-            AppColors.primaryGlow,
-            tr('اختبارات القرآن'),
-            tr('الاختبارات الجزئية والنهائية لكل طالب'),
-            () => _push(
-              context,
-              StudentPickerScreen(
-                token: t,
-                title: tr('اختبارات القرآن'),
-                onPicked: (ctx, s) => _openQuranTests(ctx, s),
-              ),
-            ),
-          ),
-        if (ModuleAccess.canRecordPartialTests(t) || ModuleAccess.canViewQuranTests(t))
-          _Tile(
-            Icons.playlist_add_check_circle_rounded,
-            AppColors.primary,
-            tr('إدخال سبر'),
-            tr('تسجيل سبر الأرباع والأجزاء والطلاب'),
-            () => _push(context, SaberEntryScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewAwqafTests(t))
-          _Tile(
-            Icons.fact_check_rounded,
-            AppColors.gold,
-            tr('اختبارات الأوقاف'),
-            tr('تسجيل اختبارات الأوقاف وعرضها'),
-            () => _push(context, AwqafTestsScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewPoints(t))
-          _Tile(
-            Icons.star_rounded,
-            AppColors.gold,
-            tr('سجل النقاط'),
-            tr('النقاط، والنقاط اليدوية، وإلغاء القيود'),
-            () => _push(context, PointsLedgerScreen(token: t)),
-          ),
-      ]),
-      _Section(tr('التقييم والمناهج'), [
-        if (ModuleAccess.canViewAssessments(t))
-          _Tile(
-            Icons.assignment_rounded,
-            AppColors.warning,
-            tr('التقييمات'),
-            tr('نتائج التقييمات وتسجيلها'),
-            () => _push(context, AssessmentsScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewNotes(t))
-          _Tile(
-            Icons.sticky_note_2_outlined,
-            AppColors.gold,
-            tr('ملاحظات الطلاب'),
-            tr('ملاحظات الإدارة والمعلمين'),
-            () => _push(context, StudentNotesScreen(token: t)),
-          ),
-        if (ModuleAccess.canCurricula(t))
-          _Tile(
-            Icons.auto_stories_rounded,
-            AppColors.info,
-            tr('المناهج'),
-            tr('المواد والدروس وتقدّم الحلقات وملفات PDF'),
-            () => _push(context, CurriculaScreen(token: t)),
-          ),
-      ]),
-      _Section(tr('المالية'), [
-        if (ModuleAccess.canViewFinance(t))
-          _Tile(
-            Icons.account_balance_wallet_rounded,
-            AppColors.gold,
-            tr('المالية'),
-            tr('الصناديق والسجل والتحويلات والطلبات'),
-            () => _push(context, FinanceScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewActivities(t))
-          _Tile(
-            Icons.celebration_rounded,
-            AppColors.primaryLight,
-            tr('الأنشطة'),
-            tr('التسجيلات والمدفوعات والمصروفات'),
-            () => _push(context, ActivitiesScreen(token: t)),
-          ),
-        if (ModuleAccess.canViewInvoices(t))
-          _Tile(
-            Icons.receipt_long_rounded,
-            AppColors.info,
-            tr('الفواتير'),
-            tr('البنود والمدفوعات وإلغاء الدفعات'),
-            () => _push(context, InvoicesScreen(token: t)),
-          ),
-      ]),
-      _Section(tr('التقارير'), [
-        if (ModuleAccess.canViewReports(t))
-          _Tile(
-            Icons.bar_chart_rounded,
-            AppColors.primaryLight,
-            tr('التقارير'),
-            tr('نظرة عامة بالفلاتر وملخص المعلمين اليومي'),
-            () => _push(context, ReportsScreen(token: t)),
-          ),
-      ]),
-      _Section(tr('الحساب'), [
-        _Tile(
-          Icons.person_rounded,
-          AppColors.info,
-          tr('حسابي'),
-          tr('البيانات الشخصية وكلمة المرور والجلسات'),
-          () => _push(context, const AccountScreen()),
-        ),
-      ]),
-    ];
-
-    final visible = [
-      for (final s in sections)
-        if (s.tiles.isNotEmpty) s,
-    ];
-
-    final moduleCount = visible.fold<int>(0, (n, s) => n + s.tiles.length);
+    final visible = managementSections(token, _push);
+    final moduleCount = visible.fold<int>(0, (n, s) => n + s.entries.length);
 
     return ListView(
       padding: kAdminPagePadding,
@@ -304,44 +311,33 @@ class _ManagementHubTabState extends State<ManagementHubTab> {
               padding: const EdgeInsets.fromLTRB(4, 18, 4, 10),
               child: AdminSectionTitle(title: section.title),
             ),
-            ...section.tiles,
+            for (final entry in section.entries) _Tile(entry: entry),
           ],
       ],
     );
   }
 }
 
-class _Section {
-  final String title;
-  final List<Widget> tiles;
-
-  const _Section(this.title, this.tiles);
-}
-
 class _Tile extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-  final String title;
-  final String subtitle;
-  final VoidCallback onTap;
+  final ManagementEntry entry;
 
-  const _Tile(this.icon, this.color, this.title, this.subtitle, this.onTap);
+  const _Tile({required this.entry});
 
   @override
   Widget build(BuildContext context) {
     return ModuleCard(
-      accent: color,
-      onTap: onTap,
+      accent: entry.color,
+      onTap: () => entry.open(context),
       child: Row(
         children: [
-          AdminIconBubble(icon: icon, color: color, size: 46),
+          AdminIconBubble(icon: entry.icon, color: entry.color, size: 46),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  entry.title,
                   style: appTextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
@@ -350,9 +346,9 @@ class _Tile extends StatelessWidget {
                 ),
                 const SizedBox(height: 2),
                 Text(
-                  subtitle,
-                  style:
-                      appTextStyle(fontSize: 12, color: AdminTheme.muted(context)),
+                  entry.subtitle,
+                  style: appTextStyle(
+                      fontSize: 12, color: AdminTheme.muted(context)),
                 ),
               ],
             ),

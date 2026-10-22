@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alkheir_mosque/app/core/session/auth_session.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/brand_logo.dart';
 import 'package:alkheir_mosque/features/auth/presentation/screens/login_screen.dart';
 import 'package:alkheir_mosque/features/home/presentation/screens/main_shell.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -158,30 +159,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
               mainAxisSize: MainAxisSize.min,
               children: [
                 // شعار المسجد
-                Container(
-                  width: 130,
-                  height: 130,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    border: Border.all(
-                      color: AppColors.gold.withValues(alpha: 0.6),
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AppColors.primary.withValues(alpha: 0.5),
-                        blurRadius: 30,
-                        spreadRadius: 4,
-                      ),
-                    ],
-                  ),
-                  child: ClipOval(
-                    child: Image.asset(
-                      'assets/logo/لوغو.png',
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
+                const BrandLogo(size: 136)
                     .animate()
                     .scale(
                       begin: const Offset(0.4, 0.4),

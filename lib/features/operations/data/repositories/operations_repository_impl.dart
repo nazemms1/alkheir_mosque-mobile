@@ -141,29 +141,17 @@ class OperationsRepositoryImpl implements OperationsRepository {
   Future<void> recordTeacherAttendance({
     required String attendanceDate,
     required List<Map<String, dynamic>> records,
-    int? courseId,
+    required int courseId,
     String? notes,
   }) async {
     await _api.post('teacher-attendance', body: {
       'attendance_date': attendanceDate,
+      'course_id': courseId,
       'records': records,
-      if (courseId != null && courseId > 0) 'course_id': courseId,
       if (notes != null && notes.isNotEmpty) 'notes': notes,
     });
   }
 
-  @override
-  Future<void> deleteTeacherAttendanceDay(int id) async {
-    try {
-      await _api.delete('teacher-attendance/days/$id');
-    } on ApiException catch (e) {
-      if (e.statusCode == 404) {
-        await _api.delete('teacher-attendance/$id');
-        return;
-      }
-      rethrow;
-    }
-  }
 
 
   // ─── الحفظ (المحفوظات) ─────────────────────────────────────────────────────
