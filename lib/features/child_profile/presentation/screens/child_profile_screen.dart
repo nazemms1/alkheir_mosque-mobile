@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:alkheir_mosque/app/core/config/support_contact.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/features/students/data/repositories/student_repository_impl.dart';
@@ -224,10 +225,10 @@ class _ProfileHero extends StatelessWidget {
       decoration: const BoxDecoration(
         gradient: LinearGradient(
           colors: [
-            Color(0xFF060E08),
+            AppColors.surfaceBlackGreen,
             Color(0xFF0A2C10),
-            Color(0xFF0D5016),
-            Color(0xFF1A7A26)
+            AppColors.brandDeep,
+            AppColors.brandGreen
           ],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
@@ -331,7 +332,7 @@ class _ProfileAvatar extends StatelessWidget {
             decoration: BoxDecoration(
               gradient: AppColors.gradientPrimary,
               shape: BoxShape.circle,
-              border: Border.all(color: const Color(0xFF060E08), width: 2),
+              border: Border.all(color: AppColors.surfaceBlackGreen, width: 2),
             ),
             child: const Icon(Icons.verified_rounded,
                 color: Colors.white, size: 13),
@@ -505,7 +506,7 @@ class _ContactCard extends StatelessWidget {
       padding: const EdgeInsets.all(22),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF071A0A), Color(0xFF0D4515), Color(0xFF1A6622)],
+          colors: [AppColors.surfaceDeepGreen, AppColors.brandMid, Color(0xFF1A6622)],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
@@ -532,13 +533,13 @@ class _ContactCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.all(11),
                 decoration: BoxDecoration(
-                  color: const Color(0xFF25D366).withValues(alpha: 0.18),
+                  color: AppColors.whatsapp.withValues(alpha: 0.18),
                   borderRadius: BorderRadius.circular(14),
                   border: Border.all(
-                      color: const Color(0xFF25D366).withValues(alpha: 0.35)),
+                      color: AppColors.whatsapp.withValues(alpha: 0.35)),
                 ),
                 child: const Icon(Icons.chat_rounded,
-                    color: Color(0xFF25D366), size: 24),
+                    color: AppColors.whatsapp, size: 24),
               ),
               const SizedBox(width: 14),
               Expanded(
@@ -565,7 +566,7 @@ class _ContactCard extends StatelessWidget {
           ),
           const SizedBox(height: 18),
           GestureDetector(
-            onTap: () {},
+            onTap: () => openSupportWhatsApp(context),
             child: Container(
               width: double.infinity,
               padding: const EdgeInsets.symmetric(vertical: 15),
@@ -582,11 +583,11 @@ class _ContactCard extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Icon(Icons.chat_rounded, color: Color(0xFF25D366), size: 18),
+                  const Icon(Icons.chat_rounded, color: AppColors.whatsapp, size: 18),
                   const SizedBox(width: 8),
                   Text(tr('تواصل عبر واتساب'),
                       style: const TextStyle(
-                        color: Color(0xFF25D366),
+                        color: AppColors.whatsapp,
                         fontSize: 15,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai',

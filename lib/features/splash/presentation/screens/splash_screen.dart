@@ -96,9 +96,9 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    Color(0xFF060E08),
-                    Color(0xFF0D5016),
-                    Color(0xFF060E08),
+                    AppColors.surfaceBlackGreen,
+                    AppColors.brandDeep,
+                    AppColors.surfaceBlackGreen,
                   ],
                   stops: [0.0, 0.5, 1.0],
                 ),
@@ -276,7 +276,7 @@ class _IslamicRingPainter extends CustomPainter {
     canvas.drawCircle(center, maxR * 0.98, ringPaint);
 
     // حلقة وسطى خضراء
-    ringPaint.color = const Color(0xFF2EA043).withValues(alpha: 0.22);
+    ringPaint.color = AppColors.successGreen.withValues(alpha: 0.22);
     ringPaint.strokeWidth = 0.8;
     canvas.drawCircle(center, maxR * 0.80, ringPaint);
 
@@ -292,7 +292,7 @@ class _IslamicRingPainter extends CustomPainter {
       final dy = center.dy + r * math.sin(angle);
       dotPaint.color = isMain
           ? const Color(0xFFD4A843).withValues(alpha: 0.55)
-          : const Color(0xFF2EA043).withValues(alpha: 0.40);
+          : AppColors.successGreen.withValues(alpha: 0.40);
       canvas.drawCircle(Offset(dx, dy), dotSize, dotPaint);
     }
 

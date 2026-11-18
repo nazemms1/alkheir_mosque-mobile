@@ -158,7 +158,7 @@ class _SabrHero extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.bgDeep, Color(0xFF1A3A2A), Color(0xFF0D4515)],
+          colors: [AppColors.bgDeep, Color(0xFF1A3A2A), AppColors.brandMid],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),

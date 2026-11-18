@@ -12,6 +12,7 @@ import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/app/core/session/auth_session.dart';
 import 'package:alkheir_mosque/features/management/data/models/group_student_model.dart';
 import 'package:alkheir_mosque/features/students/presentation/screens/student_progress_screen.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 class AdminStudentsScreen extends ConsumerStatefulWidget {
   /// عند التمرير، تُقيَّد القائمة بطلاب هذه الحلقة فقط.
@@ -108,7 +109,7 @@ class _AdminStudentsScreenState extends ConsumerState<AdminStudentsScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }

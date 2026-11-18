@@ -444,9 +444,9 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: const Color(0xFF072714),
+              color: AppColors.bgCard,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: const Color(0xFF1B4931)),
+              border: Border.all(color: AppColors.darkCardGreen),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.25),
@@ -466,7 +466,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                     style: appTextStyle(
                       fontSize: 14,
                       fontWeight: FontWeight.w700,
-                      color: const Color(0xFFB5D7C3),
+                      color: AppColors.mintLight,
                     ),
                   ),
                 ),
@@ -489,7 +489,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                     height: 52,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     decoration: BoxDecoration(
-                      color: const Color(0xB30F0C09),
+                      color: AppColors.fieldDark,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(color: const Color(0x33445544)),
                     ),
@@ -509,14 +509,14 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                               child: Icon(
                                 Icons.close_rounded,
                                 size: 18,
-                                color: Color(0xFF88AB98),
+                                color: AppColors.textSoftSage,
                               ),
                             ),
                           )
                         else
                           const Icon(
                             Icons.keyboard_arrow_down_rounded,
-                            color: Color(0xFF88AB98),
+                            color: AppColors.textSoftSage,
                           ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -552,7 +552,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: const Color(0xB30F0C09),
+                      color: AppColors.fieldDark,
                       borderRadius: BorderRadius.circular(18),
                       border: Border.all(color: const Color(0x33445544)),
                     ),
@@ -607,7 +607,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                                 tr('تم تسميع جميع صفحات هذا الجزء'),
                                 style: appTextStyle(
                                   fontSize: 13,
-                                  color: const Color(0xFF88AB98),
+                                  color: AppColors.textSoftSage,
                                 ),
                               ),
                             ),
@@ -688,7 +688,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                         tr('يرجى اختيار طالب لعرض الأجزاء والصفحات للتسميع'),
                         style: appTextStyle(
                           fontSize: 13,
-                          color: const Color(0xFF88AB98),
+                          color: AppColors.textSoftSage,
                         ),
                       ),
                     ),
@@ -724,11 +724,11 @@ class _PageChipButton extends StatelessWidget {
         width: 58,
         height: 40,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF185537) : const Color(0xB30F0C09),
+          color: isSelected ? const Color(0xFF185537) : AppColors.fieldDark,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color:
-                isSelected ? const Color(0xFF00E676) : const Color(0xFF1B4E34),
+                isSelected ? AppColors.neonGreen : const Color(0xFF1B4E34),
             width: isSelected ? 2.0 : 1.2,
           ),
         ),
@@ -738,7 +738,7 @@ class _PageChipButton extends StatelessWidget {
             style: appTextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,
-              color: isSelected ? const Color(0xFF00E676) : Colors.white,
+              color: isSelected ? AppColors.neonGreen : Colors.white,
             ),
           ),
         ),

@@ -5,6 +5,7 @@ import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 class AdminAssessmentsScreen extends StatefulWidget {
   const AdminAssessmentsScreen({super.key});
@@ -66,7 +67,7 @@ class _AdminAssessmentsScreenState extends State<AdminAssessmentsScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }

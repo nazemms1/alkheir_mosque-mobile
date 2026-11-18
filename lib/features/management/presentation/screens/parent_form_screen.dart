@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
+import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
@@ -9,6 +10,9 @@ import '../widgets/module_form_fields.dart';
 import '../widgets/module_widgets.dart';
 
 /// نموذج إنشاء ولي أمر أو تعديله. الخادم يتحقق من التكرار ويطابق الهواتف.
+///
+/// عند التعديل يُجلب السجل الحالي من الخادم قبل عرض الحقول، فلا تُعدَّل بيانات
+/// قديمة من القائمة. وإن تعذّر الجلب لا يُعرض نموذج فارغ ولا يُسمح بالحفظ.
 class ParentFormScreen extends StatefulWidget {
   final AuthToken token;
   final ParentItem? parent;
@@ -38,29 +42,20 @@ class _ParentFormScreenState extends State<ParentFormScreen> {
   final _notes = TextEditingController();
   bool _isActive = true;
   bool _saving = false;
+  late bool _loading = widget.parent != null;
+  String? _loadError;
 
   bool get _isEdit => widget.parent != null;
 
   @override
   void initState() {
     super.initState();
-    final p = widget.parent;
-    if (p == null) {
-      if (widget.initialFatherName != null &&
-          widget.initialFatherName!.trim().isNotEmpty) {
-        _fatherName.text = widget.initialFatherName!.trim();
-      }
+    if (widget.parent == null) {
+      final initial = widget.initialFatherName?.trim();
+      if (initial != null && initial.isNotEmpty) _fatherName.text = initial;
       return;
     }
-    _fatherName.text = p.fatherName;
-    _fatherWork.text = p.fatherWork ?? '';
-    _fatherPhone.text = p.fatherPhone ?? '';
-    _motherName.text = p.motherName ?? '';
-    _motherPhone.text = p.motherPhone ?? '';
-    _homePhone.text = p.homePhone ?? '';
-    _address.text = p.address ?? '';
-    _notes.text = p.notes ?? '';
-    _isActive = p.isActive;
+    _fetchCurrent();
   }
 
   @override
@@ -80,7 +75,46 @@ class _ParentFormScreenState extends State<ParentFormScreen> {
     super.dispose();
   }
 
+  void _fill(ParentItem p) {
+    _fatherName.text = p.fatherName;
+    _fatherWork.text = p.fatherWork ?? '';
+    _fatherPhone.text = p.fatherPhone ?? '';
+    _motherName.text = p.motherName ?? '';
+    _motherPhone.text = p.motherPhone ?? '';
+    _homePhone.text = p.homePhone ?? '';
+    _address.text = p.address ?? '';
+    _notes.text = p.notes ?? '';
+    _isActive = p.isActive;
+  }
+
+  Future<void> _fetchCurrent() async {
+    try {
+      final current = await _service.parent(widget.parent!.id);
+      if (!mounted) return;
+      _fill(current);
+      setState(() {
+        _loading = false;
+        _loadError = null;
+      });
+    } catch (error) {
+      if (!mounted) return;
+      setState(() {
+        _loading = false;
+        _loadError = errorText(error);
+      });
+    }
+  }
+
+  void _retryLoad() {
+    setState(() {
+      _loading = true;
+      _loadError = null;
+    });
+    _fetchCurrent();
+  }
+
   Future<void> _save() async {
+    if (_loading || _loadError != null) return;
     if (!_formKey.currentState!.validate()) return;
     setState(() => _saving = true);
     try {
@@ -104,6 +138,88 @@ class _ParentFormScreenState extends State<ParentFormScreen> {
     }
   }
 
+  Widget _buildForm() {
+    return ModuleFormPage(
+      formKey: _formKey,
+      children: [
+        ModuleFormSection(
+          title: tr('بيانات الأب'),
+          icon: Icons.person_rounded,
+          children: [
+            moduleTextField(
+              controller: _fatherName,
+              label: tr('اسم الأب'),
+              required: true,
+            ),
+            moduleTextField(
+              controller: _fatherWork,
+              label: tr('جهة العمل'),
+            ),
+            moduleTextField(
+              controller: _fatherPhone,
+              label: tr('هاتف الأب'),
+              keyboard: TextInputType.phone,
+              validator: phoneValidator,
+            ),
+          ],
+        ),
+        ModuleFormSection(
+          title: tr('بيانات الأم'),
+          icon: Icons.face_3_rounded,
+          children: [
+            moduleTextField(
+              controller: _motherName,
+              label: tr('اسم الأم'),
+            ),
+            moduleTextField(
+              controller: _motherPhone,
+              label: tr('هاتف الأم'),
+              keyboard: TextInputType.phone,
+              validator: phoneValidator,
+            ),
+          ],
+        ),
+        ModuleFormSection(
+          title: tr('التواصل والعنوان'),
+          icon: Icons.location_on_rounded,
+          children: [
+            moduleTextField(
+              controller: _homePhone,
+              label: tr('هاتف المنزل'),
+              keyboard: TextInputType.phone,
+              validator: phoneValidator,
+            ),
+            moduleTextField(
+              controller: _address,
+              label: tr('العنوان'),
+            ),
+          ],
+        ),
+        ModuleFormSection(
+          title: tr('معلومات إضافية'),
+          icon: Icons.notes_rounded,
+          children: [
+            moduleTextField(
+              controller: _notes,
+              label: tr('ملاحظات'),
+              maxLines: 3,
+            ),
+            moduleSwitch(
+              label: tr('الحساب نشط'),
+              value: _isActive,
+              onChanged: (v) => setState(() => _isActive = v),
+            ),
+          ],
+        ),
+        ModuleSaveButton(
+          saving: _saving,
+          onPressed: _save,
+          label: tr('حفظ'),
+        ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final t = widget.token;
@@ -114,82 +230,16 @@ class _ParentFormScreenState extends State<ParentFormScreen> {
       title: _isEdit ? tr('تعديل ولي الأمر') : tr('ولي أمر جديد'),
       body: !allowed
           ? const ModuleAccessDenied()
-          : ModuleFormPage(
-              formKey: _formKey,
-              children: [
-                ModuleFormSection(
-                  title: tr('بيانات الأب'),
-                  icon: Icons.person_rounded,
-                  children: [
-                    moduleTextField(
-                      controller: _fatherName,
-                      label: tr('اسم الأب'),
-                      required: true,
-                    ),
-                    moduleTextField(
-                      controller: _fatherWork,
-                      label: tr('جهة العمل'),
-                    ),
-                    moduleTextField(
-                      controller: _fatherPhone,
-                      label: tr('هاتف الأب'),
-                      keyboard: TextInputType.phone,
-                    ),
-                  ],
-                ),
-                ModuleFormSection(
-                  title: tr('بيانات الأم'),
-                  icon: Icons.face_3_rounded,
-                  children: [
-                    moduleTextField(
-                      controller: _motherName,
-                      label: tr('اسم الأم'),
-                    ),
-                    moduleTextField(
-                      controller: _motherPhone,
-                      label: tr('هاتف الأم'),
-                      keyboard: TextInputType.phone,
-                    ),
-                  ],
-                ),
-                ModuleFormSection(
-                  title: tr('التواصل والعنوان'),
-                  icon: Icons.location_on_rounded,
-                  children: [
-                    moduleTextField(
-                      controller: _homePhone,
-                      label: tr('هاتف المنزل'),
-                      keyboard: TextInputType.phone,
-                    ),
-                    moduleTextField(
-                      controller: _address,
-                      label: tr('العنوان'),
-                    ),
-                  ],
-                ),
-                ModuleFormSection(
-                  title: tr('معلومات إضافية'),
-                  icon: Icons.notes_rounded,
-                  children: [
-                    moduleTextField(
-                      controller: _notes,
-                      label: tr('ملاحظات'),
-                      maxLines: 3,
-                    ),
-                    moduleSwitch(
-                      label: tr('الحساب نشط'),
-                      value: _isActive,
-                      onChanged: (v) => setState(() => _isActive = v),
-                    ),
-                  ],
-                ),
-                ModuleSaveButton(
-                  saving: _saving,
-                  onPressed: _save,
-                  label: tr('حفظ'),
-                ),
-              ],
-            ),
+          : _loading
+              ? const Center(child: CircularProgressIndicator())
+              : _loadError != null
+                  ? ModuleMessage(
+                      text: _loadError!,
+                      icon: Icons.error_outline_rounded,
+                      color: AppColors.error,
+                      onRetry: _retryLoad,
+                    )
+                  : _buildForm(),
     );
   }
 }

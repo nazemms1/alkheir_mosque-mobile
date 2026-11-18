@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/app/core/widgets/app_toast.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
+import 'package:alkheir_mosque/features/attendance/presentation/screens/take_attendance_screen.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.dart';
@@ -187,7 +189,7 @@ class _SupervisorHomeTabState extends State<SupervisorHomeTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -275,7 +277,7 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
+          colors: [AppColors.surfaceDeepGreen, AppColors.brandDeep, AppColors.brandGreen],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
@@ -691,7 +693,7 @@ class StudentsProgressTabState extends State<StudentsProgressTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -1051,7 +1053,7 @@ class RecitationTabState extends State<RecitationTab> {
       FocusScope.of(context).unfocus();
     } catch (e) {
       if (!mounted) return;
-      AppToast.error(context, e.toString());
+      AppToast.error(context, errorText(e));
       setState(() => _submitting = false);
     }
   }
@@ -1507,15 +1509,13 @@ class NotesTab extends StatelessWidget {
 
 // ─── Attendance Tab ───────────────────────────────────────────────────────────
 class SupervisorAttendanceTab extends StatelessWidget {
-  const SupervisorAttendanceTab({super.key});
+  final AuthToken token;
+
+  const SupervisorAttendanceTab({super.key, required this.token});
 
   @override
   Widget build(BuildContext context) {
-    return _ComingSoonTab(
-      icon: Icons.event_available_rounded,
-      title: tr('حضور الحلقة'),
-      subtitle: tr('سجل حضور الطلاب'),
-    );
+    return TakeAttendanceBody(token: token);
   }
 }
 
@@ -1588,7 +1588,7 @@ class SupervisorPointsTabState extends State<SupervisorPointsTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -1720,7 +1720,7 @@ class ActivitiesTabState extends State<ActivitiesTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -1847,7 +1847,7 @@ class SupervisorAssessmentsTabState extends State<SupervisorAssessmentsTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -2002,7 +2002,7 @@ class ReportsTabState extends State<ReportsTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }

@@ -9,6 +9,7 @@ import 'package:alkheir_mosque/features/students/data/models/student_model.dart'
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 class SupervisorStudentDetail extends StatefulWidget {
   final int studentId;
@@ -68,7 +69,7 @@ class _SupervisorStudentDetailState extends State<SupervisorStudentDetail> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -140,14 +141,14 @@ class _Body extends StatelessWidget {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
+          colors: [AppColors.surfaceDeepGreen, AppColors.brandDeep, AppColors.brandGreen],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0D5016).withValues(alpha: 0.25),
+            color: AppColors.brandDeep.withValues(alpha: 0.25),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -583,7 +584,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _saving = false;
       });
     }
@@ -636,7 +637,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
         builder: (_, scrollCtrl) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final borderColor =
-              isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+              isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
           final handleColor =
               isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
 
@@ -653,7 +654,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                   offset: const Offset(0, -8),
                 ),
                 BoxShadow(
-                  color: const Color(0xFF0D5016)
+                  color: AppColors.brandDeep
                       .withValues(alpha: isDark ? 0.25 : 0.08),
                   blurRadius: 18,
                   offset: const Offset(0, -2),

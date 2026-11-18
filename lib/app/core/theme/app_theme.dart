@@ -77,6 +77,23 @@ abstract final class AppColors {
   static const attExcusedEarlyDep = Color(0xFF8B5CF6); // بنفسجي
   static const attExcusedAbsence = Color(0xFF06B6D4); // سماوي
 
+  // ─── ألوان مشتركة كانت مكتوبة يدوياً في الشاشات (توحيد التصميم) ───────────
+  // الأسماء تقريبية حسب الاستخدام الغالب؛ القيم مطابقة للقيم السابقة تماماً.
+  static const brandDeep = Color(0xFF0D5016);
+  static const brandGreen = Color(0xFF1A7A26);
+  static const brandMid = Color(0xFF0D4515);
+  static const accentOrange = Color(0xFFE67E22);
+  static const successGreen = Color(0xFF2EA043);
+  static const whatsapp = Color(0xFF25D366);
+  static const neonGreen = Color(0xFF00E676);
+  static const dangerRed = Color(0xFFE53935);
+  static const mintLight = Color(0xFFB5D7C3);
+  static const textSoftSage = Color(0xFF88AB98);
+  static const surfaceDeepGreen = Color(0xFF071A0A);
+  static const surfaceBlackGreen = Color(0xFF060E08);
+  static const darkCardGreen = Color(0xFF1B4931);
+  static const darkBorderGreen = Color(0xFF1E3A24);
+
   // التدرجات
   static const gradientPrimary = LinearGradient(
     colors: [Color(0xFF006B2D), Color(0xFF0B8F43)],

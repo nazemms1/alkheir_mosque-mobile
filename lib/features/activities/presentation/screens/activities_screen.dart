@@ -7,6 +7,7 @@ import 'package:alkheir_mosque/features/students/data/repositories/student_repos
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/api/api_service.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 class ActivitiesScreen extends StatefulWidget {
   const ActivitiesScreen({super.key});
@@ -42,7 +43,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }

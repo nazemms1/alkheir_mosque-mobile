@@ -179,7 +179,7 @@ class _Hero extends StatelessWidget {
       width: double.infinity,
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [Color(0xFF071A0A), Color(0xFF0D5016), Color(0xFF1A7A26)],
+          colors: [AppColors.surfaceDeepGreen, AppColors.brandDeep, AppColors.brandGreen],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
@@ -306,7 +306,7 @@ class _Legend extends StatelessWidget {
     return Row(mainAxisSize: MainAxisSize.min, children: [
       _Dot(color: AppColors.primary, label: tr('مكتمل')),
       const SizedBox(width: 8),
-      _Dot(color: const Color(0xFFE67E22), label: tr('سبر')),
+      _Dot(color: AppColors.accentOrange, label: tr('سبر')),
       const SizedBox(width: 8),
       _Dot(color: AppColors.gold, label: tr('جارٍ')),
       const SizedBox(width: 8),
@@ -359,7 +359,7 @@ class _JuzCell extends StatelessWidget {
     switch (state) {
       case JuzState.done:
         gradient = const LinearGradient(
-            colors: [Color(0xFF0D5016), Color(0xFF2EA043)],
+            colors: [AppColors.brandDeep, AppColors.successGreen],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight);
         textColor = Colors.white;
@@ -369,14 +369,14 @@ class _JuzCell extends StatelessWidget {
             color: Colors.white, size: 13);
         break;
       case JuzState.practice:
-        bgColor = const Color(0xFFE67E22).withValues(alpha: isDark ? 0.2 : 0.12);
-        textColor = const Color(0xFFE67E22);
-        borderColor = const Color(0xFFE67E22).withValues(alpha: 0.5);
+        bgColor = AppColors.accentOrange.withValues(alpha: isDark ? 0.2 : 0.12);
+        textColor = AppColors.accentOrange;
+        borderColor = AppColors.accentOrange.withValues(alpha: 0.5);
         badge = Container(
             width: 8,
             height: 8,
             decoration: const BoxDecoration(
-                color: Color(0xFFE67E22), shape: BoxShape.circle));
+                color: AppColors.accentOrange, shape: BoxShape.circle));
         break;
       case JuzState.inProgress:
         bgColor = AppColors.gold.withValues(alpha: isDark ? 0.18 : 0.1);
@@ -473,7 +473,7 @@ class _JuzDetailSheet extends StatelessWidget {
       builder: (_, ctrl) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final borderColor =
-            isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+            isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
         final handleColor =
             isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
 
@@ -489,7 +489,7 @@ class _JuzDetailSheet extends StatelessWidget {
                 offset: const Offset(0, -8),
               ),
               BoxShadow(
-                color: const Color(0xFF0D5016)
+                color: AppColors.brandDeep
                     .withValues(alpha: isDark ? 0.25 : 0.08),
                 blurRadius: 18,
                 offset: const Offset(0, -2),
@@ -572,7 +572,7 @@ class _QuranTestsCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const orange = Color(0xFFE67E22);
+    const orange = AppColors.accentOrange;
     const purple = Color(0xFF7B1FA2);
     final isPartial = kind == 'partial';
     final color = isPartial ? orange : purple;
@@ -1034,7 +1034,7 @@ class _SheetHeader extends StatelessWidget {
         stateLabel = tr('مكتمل');
         break;
       case JuzState.practice:
-        stateColor = const Color(0xFFE67E22);
+        stateColor = AppColors.accentOrange;
         stateLabel = tr('في السبر التجريبي');
         break;
       case JuzState.inProgress:
@@ -1142,7 +1142,7 @@ class _RecitationCard extends StatelessWidget {
                 child: _MiniStat(
               label: tr('لم يُسمَع بعد'),
               value: trf('{0} صفحة', [pendingCount]),
-              color: const Color(0xFFE53935),
+              color: AppColors.dangerRed,
             )),
           ],
         ]),
@@ -1153,7 +1153,7 @@ class _RecitationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(4),
           child: LinearProgressIndicator(
             value: totalPages == 0 ? 0 : recitedPagesCount / totalPages,
-            backgroundColor: const Color(0xFFE53935).withValues(alpha: 0.15),
+            backgroundColor: AppColors.dangerRed.withValues(alpha: 0.15),
             valueColor: const AlwaysStoppedAnimation(AppColors.primaryLight),
             minHeight: 6,
           ),
@@ -1164,7 +1164,7 @@ class _RecitationCard extends StatelessWidget {
         if (pendingCount > 0) ...[
           _SubLabel(
             label: tr('الصفحات التي لم تُسمَع'),
-            color: const Color(0xFFE53935),
+            color: AppColors.dangerRed,
             count: pendingCount,
           ),
           const SizedBox(height: 8),
@@ -1173,7 +1173,7 @@ class _RecitationCard extends StatelessWidget {
             runSpacing: 6,
             children: section.pendingPages
                 .map((p) => _PageChip(
-                    label: trf('ص {0}', [p]), color: const Color(0xFFE53935)))
+                    label: trf('ص {0}', [p]), color: AppColors.dangerRed))
                 .toList(),
           ),
           const SizedBox(height: 16),
@@ -1280,7 +1280,7 @@ class _PracticeCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const orange = Color(0xFFE67E22);
+    const orange = AppColors.accentOrange;
     return _Card(
       headerIcon: Icons.fact_check_rounded,
       headerTitle: tr('السبر التجريبي'),
@@ -1308,7 +1308,7 @@ class _StageRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const orange = Color(0xFFE67E22);
+    const orange = AppColors.accentOrange;
     final dateStr = DateFormat('d MMM yyyy', AppLanguage.intlCode).format(stage.date);
     return Container(
       margin: const EdgeInsets.only(bottom: 9),
@@ -1324,7 +1324,7 @@ class _StageRow extends StatelessWidget {
           height: 34,
           decoration: BoxDecoration(
               gradient: const LinearGradient(
-                  colors: [Color(0xFFE67E22), Color(0xFFD35400)]),
+                  colors: [AppColors.accentOrange, Color(0xFFD35400)]),
               borderRadius: BorderRadius.circular(10)),
           child: Center(
               child: Text('${stage.stageNumber}',
@@ -1371,7 +1371,7 @@ class _StageRow extends StatelessWidget {
           ]),
         ])),
         if (stage.wasRetaken)
-          _StatusBadge(label: tr('أُعيد'), color: const Color(0xFFE53935))
+          _StatusBadge(label: tr('أُعيد'), color: AppColors.dangerRed)
         else
           _StatusBadge(label: tr('مقبول'), color: AppColors.primary),
       ]),
@@ -1398,7 +1398,7 @@ class _FinalCard extends StatelessWidget {
         ? AppColors.primary
         : exam.score >= 80
             ? AppColors.gold
-            : const Color(0xFFE67E22);
+            : AppColors.accentOrange;
     final dateStr = DateFormat('d MMMM yyyy', AppLanguage.intlCode).format(exam.date);
 
     return _Card(

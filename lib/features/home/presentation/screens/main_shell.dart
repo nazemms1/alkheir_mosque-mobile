@@ -16,6 +16,7 @@ import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/di/di_locator.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/home/presentation/widgets/app_drawer.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
@@ -84,7 +85,7 @@ class _MainShellState extends ConsumerState<MainShell>
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -435,16 +436,16 @@ class _MainShellState extends ConsumerState<MainShell>
           decoration: BoxDecoration(
             gradient: const LinearGradient(
               colors: [
-                Color(0xFF071A0A),
-                Color(0xFF0D5016),
-                Color(0xFF1A7A26),
+                AppColors.surfaceDeepGreen,
+                AppColors.brandDeep,
+                AppColors.brandGreen,
               ],
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
             ),
             boxShadow: [
               BoxShadow(
-                color: const Color(0xFF0D5016).withValues(alpha: 0.5),
+                color: AppColors.brandDeep.withValues(alpha: 0.5),
                 blurRadius: 28,
                 offset: const Offset(0, 6),
               ),
@@ -603,9 +604,9 @@ class _NotificationButton extends StatelessWidget {
                 height: 20,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                      colors: [Color(0xFFFF7070), Color(0xFFEF4444)]),
+                      colors: [Color(0xFFFF7070), AppColors.error]),
                   shape: BoxShape.circle,
-                  border: Border.all(color: const Color(0xFF0D5016), width: 2),
+                  border: Border.all(color: AppColors.brandDeep, width: 2),
                   boxShadow: [
                     BoxShadow(
                       color: AppColors.error.withValues(alpha: 0.5),
@@ -680,7 +681,7 @@ class _UserProfileSheet extends ConsumerWidget {
             0, (s, c) => s + c.memorizationProgress.totalPagesMemorized);
 
     final borderColor =
-        isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+        isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
     final handleColor =
         isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
 
@@ -696,7 +697,7 @@ class _UserProfileSheet extends ConsumerWidget {
             offset: const Offset(0, -8),
           ),
           BoxShadow(
-            color: const Color(0xFF0D5016)
+            color: AppColors.brandDeep
                 .withValues(alpha: isDark ? 0.25 : 0.08),
             blurRadius: 18,
             offset: const Offset(0, -2),
@@ -747,9 +748,9 @@ class _UserProfileSheet extends ConsumerWidget {
             decoration: BoxDecoration(
               gradient: const LinearGradient(
                 colors: [
-                  Color(0xFF071A0A),
-                  Color(0xFF0D5016),
-                  Color(0xFF1A7A26)
+                  AppColors.surfaceDeepGreen,
+                  AppColors.brandDeep,
+                  AppColors.brandGreen
                 ],
                 begin: Alignment.topRight,
                 end: Alignment.bottomLeft,
@@ -915,7 +916,7 @@ class _UserProfileSheet extends ConsumerWidget {
                 padding: const EdgeInsets.symmetric(vertical: 15),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFFEF4444), Color(0xFFDC2626)],
+                    colors: [AppColors.error, Color(0xFFDC2626)],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -1516,7 +1517,7 @@ class _PremiumNavBarState extends State<_PremiumNavBar> {
         borderRadius: BorderRadius.circular(30),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0D5016).withValues(alpha: 0.18),
+            color: AppColors.brandDeep.withValues(alpha: 0.18),
             blurRadius: 36,
             spreadRadius: -4,
             offset: const Offset(0, 12),
@@ -1604,14 +1605,14 @@ class _NavItemState extends State<_NavItem>
         decoration: widget.isActive
             ? BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF0D5016), Color(0xFF2EA043)],
+                  colors: [AppColors.brandDeep, AppColors.successGreen],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
                 borderRadius: BorderRadius.circular(22),
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFF0D5016).withValues(alpha: 0.35),
+                    color: AppColors.brandDeep.withValues(alpha: 0.35),
                     blurRadius: 16,
                     offset: const Offset(0, 4),
                   ),

@@ -9,6 +9,7 @@ import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/features/home/presentation/state_management/home_widget_registry.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 /// بيانات لوحة الإداري بعد جلبها — تُمرَّر لويدجتس [adminHomeWidgets].
 class AdminHomeData {
@@ -198,7 +199,7 @@ class _AdminHomeTabState extends State<AdminHomeTab> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -279,7 +280,7 @@ class _WelcomeBanner extends StatelessWidget {
       padding: const EdgeInsets.all(20),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), Color(0xFF0D4515)],
+          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), AppColors.brandMid],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

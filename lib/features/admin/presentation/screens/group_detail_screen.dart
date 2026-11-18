@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 import 'package:alkheir_mosque/features/admin/data/models/admin_dashboard_model.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
@@ -55,7 +56,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -105,9 +106,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() => _deleting = false);
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(e.toString(), style: appTextStyle())),
-      );
+      showAppSnack(context, errorText(e), error: true);
     }
   }
 

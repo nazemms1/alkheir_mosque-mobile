@@ -1,5 +1,10 @@
 import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+
+import 'package:alkheir_mosque/app/core/widgets/auto_save.dart';
+import 'package:alkheir_mosque/features/attendance/presentation/widgets/att_status_row.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
@@ -30,19 +35,20 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
   int _reloadToken = 0;
 
   Future<void> _record() async {
-    final saved = await Navigator.of(context).push<bool>(
+    // الحفظ تلقائي أثناء التعديل، فنُحدّث القائمة عند كل عودة بغض النظر عن النتيجة.
+    await Navigator.of(context).push<void>(
       MaterialPageRoute(
         builder: (_) => TeacherAttendanceFormScreen(token: widget.token),
       ),
     );
-    if (saved == true) setState(() => _reloadToken++);
+    if (mounted) setState(() => _reloadToken++);
   }
 
   Future<void> _editDay(TeacherAttendanceDay day) async {
     try {
       final detail = await _service.teacherAttendanceDay(day.id);
       if (!mounted) return;
-      final saved = await Navigator.of(context).push<bool>(
+      await Navigator.of(context).push<void>(
         MaterialPageRoute(
           builder: (_) => TeacherAttendanceFormScreen(
             token: widget.token,
@@ -50,9 +56,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
           ),
         ),
       );
-      if (saved == true && mounted) {
-        setState(() => _reloadToken++);
-      }
+      if (mounted) setState(() => _reloadToken++);
     } catch (error) {
       if (!mounted) return;
       showModuleSnack(context, errorText(error), error: true);
@@ -177,6 +181,8 @@ class TeacherAttendanceFormScreen extends StatefulWidget {
 class _TeacherAttendanceFormScreenState
     extends State<TeacherAttendanceFormScreen> {
   final _operations = OperationsRepositoryImpl();
+  late final AutoSaveController _autosave = AutoSaveController(_persist);
+  Timer? _notesDebounce;
   late final TextEditingController _notes;
   late final TextEditingController _date;
   PickerItem? _course;
@@ -184,7 +190,6 @@ class _TeacherAttendanceFormScreenState
   List<RefItem> _statuses = const [];
   final Map<int, int> _chosen = {};
   bool _loading = true;
-  bool _saving = false;
   String? _error;
 
   @override
@@ -194,11 +199,17 @@ class _TeacherAttendanceFormScreenState
     _date = TextEditingController(
       text: widget.initialDay?.attendanceDate ?? isoDate(DateTime.now()),
     );
+    _date.addListener(_onDateChanged);
+    _notes.addListener(_onNotesChanged);
     _load();
   }
 
   @override
   void dispose() {
+    _notesDebounce?.cancel();
+    _autosave.dispose();
+    _date.removeListener(_onDateChanged);
+    _notes.removeListener(_onNotesChanged);
     _notes.dispose();
     _date.dispose();
     super.dispose();
@@ -325,33 +336,46 @@ class _TeacherAttendanceFormScreenState
     }
   }
 
-  Future<void> _save() async {
-    if (_teachers.isEmpty) return;
-    if (_course == null) {
-      showModuleSnack(context, tr('اختر الدورة'), error: true);
-      return;
-    }
-    setState(() => _saving = true);
-    try {
-      await _operations.recordTeacherAttendance(
-        attendanceDate: _date.text,
-        courseId: _course!.id,
-        notes: nullIfBlank(_notes.text),
-        records: [
-          for (final t in _teachers)
-            {
-              'teacher_id': t.id,
-              'attendance_status_id': _chosen[t.id],
-            },
-        ],
-      );
-      if (!mounted) return;
-      Navigator.pop(context, true);
-    } catch (error) {
-      if (!mounted) return;
-      setState(() => _saving = false);
-      showModuleSnack(context, errorText(error), error: true);
-    }
+  /// يحفظ اليوم كاملاً (نفس دلالة الحفظ السابقة). يُستدعى عند كل تغيير.
+  Future<void> _persist() async {
+    final course = _course;
+    if (_loading || _teachers.isEmpty || course == null) return;
+    await _operations.recordTeacherAttendance(
+      attendanceDate: _date.text,
+      courseId: course.id,
+      notes: nullIfBlank(_notes.text),
+      records: [
+        for (final t in _teachers)
+          {
+            'teacher_id': t.id,
+            'attendance_status_id': _chosen[t.id],
+          },
+      ],
+    );
+  }
+
+  /// لا نحفظ قبل اختيار الدورة، حتى لا يظهر "تم الحفظ" دون حفظ فعلي.
+  void _saveIfReady() {
+    if (_loading || _course == null) return;
+    _autosave.request();
+  }
+
+  void _setStatus(int teacherId, int statusId) {
+    if (_loading) return;
+    setState(() => _chosen[teacherId] = statusId);
+    _saveIfReady();
+  }
+
+  void _setCourse(PickerItem? course) {
+    setState(() => _course = course);
+    _saveIfReady();
+  }
+
+  void _onDateChanged() => _saveIfReady();
+
+  void _onNotesChanged() {
+    _notesDebounce?.cancel();
+    _notesDebounce = Timer(const Duration(milliseconds: 800), _saveIfReady);
   }
 
   @override
@@ -367,30 +391,6 @@ class _TeacherAttendanceFormScreenState
     }
     return ModuleScaffold(
       title: screenTitle,
-      actions: [
-        if (!_loading && _error == null) ...[
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 8),
-            child: _saving
-                ? const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    tooltip: isEdit ? tr('حفظ التعديلات') : tr('حفظ الحضور'),
-                    icon: const Icon(Icons.check_circle_rounded,
-                        color: Colors.white, size: 26),
-                    onPressed: _save,
-                  ),
-          ),
-        ],
-      ],
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : _error != null
@@ -411,11 +411,9 @@ class _TeacherAttendanceFormScreenState
                           title: tr('اختر الدورة'),
                           load: activeCoursePickerItems,
                         );
-                        if (picked != null) {
-                          setState(() => _course = picked);
-                        }
+                        if (picked != null) _setCourse(picked);
                       },
-                      onClear: () => setState(() => _course = null),
+                      onClear: () => _setCourse(null),
                     ),
                     moduleDateField(
                       context: context,
@@ -428,64 +426,33 @@ class _TeacherAttendanceFormScreenState
                       label: tr('ملاحظات عامة'),
                       maxLines: 2,
                     ),
-                    const SizedBox(height: 10),
-                    // زر الحفظ بالأعلى لسهولة الوصول المباشر دون الحاجة لعمل سكرول
-                    ModuleSaveButton(
-                      saving: _saving,
-                      onPressed: _save,
-                      label: isEdit ? tr('حفظ التعديلات') : tr('حفظ الحضور'),
+                    const SizedBox(height: 4),
+                    AutoSaveIndicator(
+                      controller: _autosave,
+                      onRetry: _autosave.request,
                     ),
+                    if (_course == null)
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: ModuleMessage(
+                          text: tr('اختر الدورة أولاً ليبدأ الحفظ التلقائي'),
+                          icon: Icons.info_outline_rounded,
+                        ),
+                      ),
                     const SizedBox(height: 14),
                     if (_teachers.isEmpty)
                       ModuleMessage(text: tr('لا يوجد معلمون نشطون'))
                     else
                       for (final t in _teachers)
-                        ModuleCard(
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: Text(
-                                  t.fullName,
-                                  style: appTextStyle(
-                                      fontSize: 13,
-                                      fontWeight: FontWeight.w700),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 150,
-                                child: DropdownButtonFormField<int>(
-                                  initialValue: _statuses
-                                          .any((s) => s.id == _chosen[t.id])
-                                      ? _chosen[t.id]
-                                      : null,
-                                  isExpanded: true,
-                                  decoration:
-                                      const InputDecoration(isDense: true),
-                                  items: [
-                                    for (final s in _statuses)
-                                      DropdownMenuItem(
-                                        value: s.id,
-                                        child: Text(s.name,
-                                            style: appTextStyle(fontSize: 12)),
-                                      ),
-                                  ],
-                                  onChanged: (id) {
-                                    if (id != null) {
-                                      setState(() => _chosen[t.id] = id);
-                                    }
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                        AttendanceStatusRow(
+                          key: ValueKey('tch-row-${t.id}'),
+                          name: t.fullName,
+                          statuses: _statuses,
+                          value: _chosen[t.id],
+                          enabled: !_loading,
+                          onChanged: (id) => _setStatus(t.id, id),
                         ),
                     const SizedBox(height: 12),
-                    ModuleSaveButton(
-                      saving: _saving,
-                      onPressed: _save,
-                      label: isEdit ? tr('حفظ التعديلات') : tr('حفظ الحضور'),
-                    ),
                   ],
                 ),
     );

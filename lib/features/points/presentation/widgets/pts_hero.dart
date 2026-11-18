@@ -15,7 +15,7 @@ class _PointsHero extends StatelessWidget {
     return Container(
       decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), Color(0xFF0D4515)],
+          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), AppColors.brandMid],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

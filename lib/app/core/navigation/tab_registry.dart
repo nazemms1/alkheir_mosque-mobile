@@ -238,7 +238,7 @@ List<AppTab> get supervisorTabs => [
         label: tr('الحضور'),
         subtitle: tr('سجل حضور الطلاب'),
         anyOfPermissions: const [Permissions.attendanceStudentTake],
-        builder: (_) => const SupervisorAttendanceTab(),
+        builder: (ctx) => SupervisorAttendanceTab(token: ctx.token),
       ),
       AppTab(
         id: 'sup-trial-exam',

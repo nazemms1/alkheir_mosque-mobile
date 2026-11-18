@@ -6,6 +6,7 @@ import 'package:alkheir_mosque/app/core/session/service_providers.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 /// شاشة تقارير الإدارة — تعتمد endpoints بصلاحية `reports.view`:
 ///   - نظرة عامة (reports/overview) مع فلترة بالفترة الزمنية.
@@ -71,7 +72,7 @@ class _AdminReportsScreenState extends ConsumerState<AdminReportsScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }
@@ -273,7 +274,7 @@ class _ViewSwitcher extends StatelessWidget {
           decoration: BoxDecoration(
             gradient: selected
                 ? const LinearGradient(
-                    colors: [Color(0xFF0D5016), Color(0xFF2EA043)],
+                    colors: [AppColors.brandDeep, AppColors.successGreen],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   )
@@ -503,7 +504,7 @@ class _StatTilesGrid extends StatelessWidget {
     AppColors.gold,
     AppColors.info,
     Color(0xFF0D9488),
-    Color(0xFF8B5CF6),
+    AppColors.attExcusedEarlyDep,
     AppColors.warning,
   ];
 
@@ -901,12 +902,12 @@ Color _sectionColor(String key) {
       k.contains('invoice') ||
       k.contains('payment') ||
       k.contains('amount')) {
-    return const Color(0xFF8B5CF6); // Violet
+    return AppColors.attExcusedEarlyDep; // Violet
   }
   if (k.contains('student')) return AppColors.primaryLight;
   if (k.contains('teacher')) return AppColors.info;
   if (k.contains('test') || k.contains('exam')) {
-    return const Color(0xFFF59E0B); // Amber
+    return AppColors.warning; // Amber
   }
   return AppColors.primaryLight;
 }

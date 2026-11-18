@@ -2,11 +2,11 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alkheir_mosque/features/home/presentation/screens/main_shell.dart';
-import 'package:alkheir_mosque/app/core/config/server_config.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/session/auth_session.dart';
-import 'package:alkheir_mosque/app/core/session/theme_provider.dart';
+import 'package:alkheir_mosque/app/core/config/support_contact.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 import 'package:alkheir_mosque/app/core/widgets/brand_logo.dart';
 import 'package:alkheir_mosque/features/auth/domain/repositories/auth_repository.dart';
 import 'package:alkheir_mosque/features/auth/presentation/state_management/auth_state.dart';
@@ -107,90 +107,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
     }
   }
 
-  void _showError(String message) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Row(
-          children: [
-            const Icon(Icons.error_outline_rounded,
-                color: Colors.white, size: 20),
-            const SizedBox(width: 10),
-            Expanded(
-              child: Text(
-                message,
-                style: const TextStyle(
-                  fontFamily: 'Dubai',
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-          ],
-        ),
-        backgroundColor: AppColors.error,
-        behavior: SnackBarBehavior.floating,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-        margin: const EdgeInsets.all(16),
-        duration: const Duration(seconds: 4),
-      ),
-    );
-  }
+  void _showError(String message) =>
+      showAppSnack(context, message, error: true);
 
-  /// يفتح حواراً لتغيير عنوان الخادم (مثلاً عنوان جهاز الكمبيوتر على الشبكة).
-  Future<void> _editServerUrl() async {
-    final controller = TextEditingController(text: ServerConfig.baseUrl);
-    final prefs = ref.read(sharedPrefsProvider);
-    final value = await showDialog<String>(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        title: Text(tr('عنوان الخادم')),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            TextField(
-              controller: controller,
-              keyboardType: TextInputType.url,
-              textDirection: TextDirection.ltr,
-              decoration:
-                  InputDecoration(hintText: ServerConfig.defaultBaseUrl),
-            ),
-            const SizedBox(height: 8),
-            Text(
-              tr('مثال: http://10.0.2.2:8000'),
-              style: appTextStyle(fontSize: 12, color: AppColors.textMuted),
-            ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx, ServerConfig.defaultBaseUrl),
-            child: Text(tr('استعادة الافتراضي')),
-          ),
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: Text(tr('إلغاء')),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.pop(ctx, controller.text),
-            child: Text(tr('حفظ')),
-          ),
-        ],
-      ),
-    );
-    // نؤجّل التخلص من المتحكم حتى ينتهي تحريك إغلاق الحوار.
-    await Future<void>.delayed(const Duration(milliseconds: 300));
-    controller.dispose();
-    if (value == null || !mounted) return;
-
-    final saved = await ServerConfig.save(prefs, value);
-    if (!mounted) return;
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          saved ? tr('تم حفظ عنوان الخادم') : tr('عنوان الخادم غير صالح'),
-        ),
-      ),
-    );
+  /// عنوان الخادم ثابت على خادم المسجد الرسمي ولا يُغيَّر من داخل التطبيق.
+  /// (كان الحوار يعرض "تم الحفظ" دون أي تغيير فعلي، فاستُبدل بإشعار صريح.)
+  void _showServerInfo() {
+    showAppSnack(context, tr('عنوان الخادم ثابت على خادم المسجد الرسمي'));
   }
 
   @override
@@ -232,7 +155,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
           SafeArea(
             child: Align(
               alignment: AlignmentDirectional.topEnd,
-              child: _TopActions(onServerTap: _editServerUrl),
+              child: _TopActions(onServerTap: _showServerInfo),
             ),
           ),
         ],
@@ -518,7 +441,7 @@ class _FormPanel extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextButton(
-                    onPressed: () {},
+                    onPressed: () => _showForgotPasswordDialog(context),
                     style: TextButton.styleFrom(
                       foregroundColor: AppColors.primaryLight,
                       padding: const EdgeInsets.symmetric(horizontal: 4),
@@ -538,7 +461,10 @@ class _FormPanel extends StatelessWidget {
               _GradientButton(loading: loading, onTap: onLogin),
 
               const SizedBox(height: 20),
-              _SupportHint(),
+              GestureDetector(
+                onTap: () => openSupportWhatsApp(context),
+                child: const _SupportHint(),
+              ),
             ],
           ),
         ),
@@ -680,7 +606,43 @@ class _GradientButton extends StatelessWidget {
   }
 }
 
+/// حوار "نسيت كلمة المرور": لا توجد خدمة استعادة ذاتية، فيُوجَّه المستخدم لإدارة المسجد.
+void _showForgotPasswordDialog(BuildContext context) {
+  showDialog<void>(
+    context: context,
+    builder: (ctx) => AlertDialog(
+      title: Text(
+        tr('نسيت كلمة المرور؟'),
+        style: appTextStyle(fontWeight: FontWeight.w700),
+      ),
+      content: Text(
+        tr('لإعادة تعيين كلمة المرور، يرجى التواصل مع إدارة المسجد عبر واتساب.'),
+        style: appTextStyle(),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.pop(ctx),
+          child: Text(tr('إلغاء'), style: appTextStyle()),
+        ),
+        FilledButton.icon(
+          onPressed: () {
+            Navigator.pop(ctx);
+            openSupportWhatsApp(
+              context,
+              message: tr('السلام عليكم، نسيت كلمة المرور الخاصة بحسابي في البوابة التعليمية.'),
+            );
+          },
+          icon: const Icon(Icons.chat_rounded, size: 18),
+          label: Text(tr('تواصل عبر واتساب'), style: appTextStyle(color: Colors.white)),
+        ),
+      ],
+    ),
+  );
+}
+
 class _SupportHint extends StatelessWidget {
+  const _SupportHint();
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -695,11 +657,11 @@ class _SupportHint extends StatelessWidget {
           Container(
             padding: const EdgeInsets.all(8),
             decoration: BoxDecoration(
-              color: const Color(0xFF25D366).withValues(alpha: 0.15),
+              color: AppColors.whatsapp.withValues(alpha: 0.15),
               borderRadius: BorderRadius.circular(10),
             ),
             child: const Icon(Icons.chat_rounded,
-                color: Color(0xFF25D366), size: 20),
+                color: AppColors.whatsapp, size: 20),
           ),
           const SizedBox(width: 12),
           Expanded(

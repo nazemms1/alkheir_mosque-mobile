@@ -13,6 +13,16 @@ String? nullIfBlank(String text) {
   return value.isEmpty ? null : value;
 }
 
+/// تحقق من رقم هاتف: أرقام مع + اختيارية، بين 7 و15 رقماً بعد إزالة الفواصل والمسافات.
+/// الحقل الفارغ مقبول، والإلزام يُفرض بالحقل نفسه عند الحاجة.
+String? phoneValidator(String? value) {
+  final digits = (value ?? '').replaceAll(RegExp(r'[\s\-()]'), '');
+  if (digits.isEmpty) return null;
+  return RegExp(r'^\+?\d{7,15}$').hasMatch(digits)
+      ? null
+      : tr('رقم الهاتف غير صحيح');
+}
+
 Widget moduleTextField({
   required TextEditingController controller,
   required String label,
@@ -22,6 +32,7 @@ Widget moduleTextField({
   int? maxLength,
   String? helper,
   bool obscure = false,
+  String? Function(String?)? validator,
 }) {
   return Padding(
     padding: const EdgeInsets.only(bottom: 12),
@@ -33,11 +44,12 @@ Widget moduleTextField({
       obscureText: obscure,
       style: appTextStyle(),
       decoration: InputDecoration(labelText: label, helperText: helper),
-      validator: required
-          ? (value) => (value == null || value.trim().isEmpty)
-              ? tr('هذا الحقل مطلوب')
-              : null
-          : null,
+      validator: validator ??
+          (required
+              ? (value) => (value == null || value.trim().isEmpty)
+                  ? tr('هذا الحقل مطلوب')
+                  : null
+              : null),
     ),
   );
 }

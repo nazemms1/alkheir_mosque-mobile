@@ -1,8 +1,11 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/auto_save.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/models/management_model.dart';
 import 'package:alkheir_mosque/features/management/data/models/records_model.dart';
@@ -11,38 +14,74 @@ import 'package:alkheir_mosque/features/operations/data/repositories/operations_
 import 'package:alkheir_mosque/features/management/presentation/widgets/module_form_fields.dart';
 import 'package:alkheir_mosque/features/management/presentation/widgets/module_widgets.dart';
 import 'package:alkheir_mosque/features/management/presentation/widgets/pickers.dart';
+import 'package:alkheir_mosque/features/attendance/presentation/widgets/att_status_row.dart';
 
-/// أخذ حضور حلقة في يوم محدد: كل طالب نشط بحالته. الحالات تأتي من الخادم
-/// بنطاق `student`، والخادم يرفض الطلاب الذين لا يتبعون الحلقة.
-class TakeAttendanceScreen extends StatefulWidget {
+/// أخذ حضور حلقة في يوم محدد: كل طالب نشط بحالته.
+///
+/// - عند اختيار الحلقة والتاريخ يُحمَّل الحضور المسجّل سابقاً لذلك اليوم،
+///   فلا يُستبدل بالقيمة الافتراضية عند الحفظ.
+/// - كل تغيير في حالة طالب يُحفظ فوراً، والملاحظات بعد توقف الكتابة.
+/// - اليوم المغلق أو الكورس المنتهي للقراءة فقط.
+///
+/// هذا الجزء هو المحتوى فقط (بدون Scaffold) ليُعرض داخل تبويب الشاشة الرئيسية.
+class TakeAttendanceBody extends StatefulWidget {
   final AuthToken token;
 
-  const TakeAttendanceScreen({super.key, required this.token});
+  const TakeAttendanceBody({super.key, required this.token});
 
   @override
-  State<TakeAttendanceScreen> createState() => _TakeAttendanceScreenState();
+  State<TakeAttendanceBody> createState() => _TakeAttendanceBodyState();
 }
 
-class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
+/// الحضور المسجّل سابقاً لحلقة في يوم محدد.
+class _ExistingDay {
+  final Map<int, int> chosen; // enrollment id -> attendance status id
+  final bool locked;
+
+  const _ExistingDay({required this.chosen, required this.locked});
+}
+
+class _TakeAttendanceBodyState extends State<TakeAttendanceBody> {
   final _operations = OperationsRepositoryImpl();
   final _notes = TextEditingController();
   final _date = TextEditingController(text: isoDate(DateTime.now()));
+  late final AutoSaveController _autosave = AutoSaveController(_persist);
+  Timer? _notesDebounce;
+
   PickerItem? _group;
   List<RefItem> _statuses = const [];
   List<EnrollmentRecord> _enrollments = const [];
   final Map<int, int> _chosen = {};
   bool _loading = false;
-  bool _saving = false;
+  bool _locked = false;
+  bool _hasExisting = false;
   String? _error;
+
+  /// التاريخ الذي تمثله `_chosen` حالياً؛ لا نحفظ إلا إذا تطابق مع حقل التاريخ.
+  String _loadedDate = '';
+
+  /// يمنع تطبيق نتيجة تحميل قديمة بعد تغيير الحلقة أو التاريخ.
+  int _loadToken = 0;
+
+  @override
+  void initState() {
+    super.initState();
+    _date.addListener(_onDateChanged);
+    _notes.addListener(_onNotesChanged);
+  }
 
   @override
   void dispose() {
+    _notesDebounce?.cancel();
+    _date.removeListener(_onDateChanged);
+    _notes.removeListener(_onNotesChanged);
+    _autosave.dispose();
     _notes.dispose();
     _date.dispose();
     super.dispose();
   }
 
-  /// كل التسجيلات النشطة للحلقة عبر كل الصفحات.
+  /// كل الطلاب النشطين للحلقة عبر كل الصفحات.
   Future<List<EnrollmentRecord>> _activeEnrollments(int groupId) async {
     final all = <EnrollmentRecord>[];
     var page = 1;
@@ -59,38 +98,102 @@ class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
     return all;
   }
 
+  RefItem _defaultStatusOf(List<RefItem> statuses) {
+    for (final s in statuses) {
+      if (s.code == 'present') return s;
+    }
+    return statuses.isNotEmpty
+        ? statuses.first
+        : const RefItem(
+            id: 0, name: '', code: null, isActive: true, isCurrent: false);
+  }
+
+  /// يبحث عن يوم الحضور المسجّل للتاريخ، ثم عن سجل الحلقة داخله.
+  /// ملاحظة: معرّف سجل اليوم للحلقة ليس معرّف الحلقة، لذلك تُطابق الحلقة بالاسم.
+  Future<_ExistingDay?> _findExistingDay(
+    PickerItem group,
+    String date,
+    List<RefItem> statuses,
+  ) async {
+    final page =
+        await _operations.studentAttendanceDays(dateFrom: date, dateTo: date);
+    for (final summary in page.items) {
+      if (summary.attendanceDate != date) continue;
+      final detail = await _operations.studentAttendanceDay(summary.id);
+      for (final groupDay in detail.groups) {
+        if (groupDay.groupName != group.label) continue;
+        final chosen = <int, int>{};
+        for (final record in groupDay.records) {
+          for (final s in statuses) {
+            if (s.code == record.statusCode) {
+              chosen[record.enrollmentId] = s.id;
+              break;
+            }
+          }
+        }
+        return _ExistingDay(
+          chosen: chosen,
+          locked: detail.status == 'closed' ||
+              detail.courseFinished ||
+              groupDay.status == 'closed',
+        );
+      }
+    }
+    return null;
+  }
+
   Future<void> _loadGroup(PickerItem group) async {
     setState(() {
       _group = group;
+      _enrollments = const [];
+      _chosen.clear();
+      _hasExisting = false;
+      _locked = false;
+    });
+    await _reload();
+  }
+
+  /// يحمّل الطلاب والحضور المسجّل للحلقة والتاريخ الحاليين.
+  Future<void> _reload() async {
+    final group = _group;
+    if (group == null) return;
+    final token = ++_loadToken;
+    final date = _date.text;
+    setState(() {
       _loading = true;
       _error = null;
     });
     try {
-      final results = await Future.wait([
-        _activeEnrollments(group.id),
-        _operations.attendanceStatuses('student'),
-      ]);
-      if (!mounted) return;
-      final enrollments = results[0] as List<EnrollmentRecord>;
-      final statuses = results[1] as List<RefItem>;
-      final defaultStatus = statuses.firstWhere(
-        (s) => s.code == 'present',
-        orElse: () => statuses.isEmpty
-            ? const RefItem(
-                id: 0, name: '', code: null, isActive: true, isCurrent: false)
-            : statuses.first,
-      );
+      final enrollments = await _activeEnrollments(group.id);
+      final statuses = _statuses.isNotEmpty
+          ? _statuses
+          : await _operations.attendanceStatuses('student');
+      if (!mounted || token != _loadToken) return;
+      if (statuses.isEmpty) {
+        setState(() {
+          _loading = false;
+          _error = tr('لا توجد حالات حضور مُعرّفة');
+        });
+        return;
+      }
+      final existing = await _findExistingDay(group, date, statuses);
+      if (!mounted || token != _loadToken) return;
+      final fallback = _defaultStatusOf(statuses).id;
       setState(() {
-        _enrollments = enrollments;
         _statuses = statuses;
+        _enrollments = enrollments;
         _chosen
           ..clear()
-          ..addEntries(
-              enrollments.map((e) => MapEntry(e.id, defaultStatus.id)));
+          ..addEntries(enrollments.map(
+            (e) => MapEntry(e.id, existing?.chosen[e.id] ?? fallback),
+          ));
+        _loadedDate = date;
+        _hasExisting = existing != null;
+        _locked = existing?.locked ?? false;
         _loading = false;
       });
     } catch (error) {
-      if (!mounted) return;
+      if (!mounted || token != _loadToken) return;
       setState(() {
         _loading = false;
         _error = errorText(error);
@@ -115,74 +218,55 @@ class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
     if (picked != null) await _loadGroup(picked);
   }
 
-  Future<void> _save() async {
+  /// الحفظ الفعلي: يرسل كل سجلات الحلقة لليوم (نفس دلالة زر الحفظ السابق).
+  Future<void> _persist() async {
     final group = _group;
-    if (group == null) {
-      showModuleSnack(context, tr('اختر الحلقة أولاً'), error: true);
-      return;
-    }
-    if (_enrollments.isEmpty) {
-      showModuleSnack(context, tr('لا يوجد طلاب نشطون في هذه الحلقة'),
-          error: true);
-      return;
-    }
-    setState(() => _saving = true);
-    try {
-      await _operations.takeGroupAttendance(
-        groupId: group.id,
-        attendanceDate: _date.text,
-        notes: nullIfBlank(_notes.text),
-        records: [
-          for (final e in _enrollments)
-            {
-              'enrollment_id': e.id,
-              'attendance_status_id': _chosen[e.id],
-            },
-        ],
-      );
-      if (!mounted) return;
-      Navigator.pop(context, true);
-    } catch (error) {
-      if (!mounted) return;
-      setState(() => _saving = false);
-      showModuleSnack(context, errorText(error), error: true);
-    }
+    if (group == null || _loading || _locked || _enrollments.isEmpty) return;
+    // التاريخ تغيّر ولم تُحمَّل حالته بعد: لا نرسل بيانات يوم بتاريخ آخر.
+    if (_date.text != _loadedDate) return;
+    await _operations.takeGroupAttendance(
+      groupId: group.id,
+      attendanceDate: _loadedDate,
+      notes: nullIfBlank(_notes.text),
+      records: [
+        for (final e in _enrollments)
+          {
+            'enrollment_id': e.id,
+            'attendance_status_id': _chosen[e.id],
+          },
+      ],
+    );
+    if (mounted && !_hasExisting) setState(() => _hasExisting = true);
+  }
+
+  void _setStatus(int enrollmentId, int statusId) {
+    if (_locked || _loading) return;
+    setState(() => _chosen[enrollmentId] = statusId);
+    _autosave.request();
+  }
+
+  void _onDateChanged() {
+    final text = _date.text;
+    if (_group == null || text == _loadedDate) return;
+    if (DateTime.tryParse(text) == null) return;
+    _reload();
+  }
+
+  void _onNotesChanged() {
+    _notesDebounce?.cancel();
+    _notesDebounce = Timer(const Duration(milliseconds: 800), () {
+      if (!mounted || _group == null || _loading || _locked) return;
+      _autosave.request();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
     if (!ModuleAccess.canTakeStudentAttendance(widget.token)) {
-      return ModuleScaffold(
-        title: tr('أخذ الحضور'),
-        body: const ModuleAccessDenied(),
-      );
+      return const ModuleAccessDenied();
     }
-    return ModuleScaffold(
-      title: tr('أخذ الحضور'),
-      actions: [
-        if (!_loading && _error == null && _enrollments.isNotEmpty)
-          Padding(
-            padding: const EdgeInsetsDirectional.only(end: 8),
-            child: _saving
-                ? const Center(
-                    child: SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.white,
-                      ),
-                    ),
-                  )
-                : IconButton(
-                    tooltip: tr('حفظ الحضور'),
-                    icon: const Icon(Icons.check_circle_rounded,
-                        color: Colors.white, size: 26),
-                    onPressed: _save,
-                  ),
-          ),
-      ],
-      body: ListView(
+    final hasGroup = _group != null;
+    return ListView(
         padding: const EdgeInsets.fromLTRB(16, 12, 16, 32),
         children: [
           PickerField(
@@ -201,15 +285,32 @@ class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
             label: tr('ملاحظات عامة'),
             maxLines: 2,
           ),
-          if (_enrollments.isNotEmpty) ...[
-            const SizedBox(height: 10),
-            ModuleSaveButton(
-              saving: _saving,
-              onPressed: _save,
-              label: tr('حفظ الحضور'),
+          if (hasGroup) ...[
+            const SizedBox(height: 4),
+            AutoSaveIndicator(
+              controller: _autosave,
+              onRetry: _autosave.request,
             ),
-            const SizedBox(height: 14),
+            const SizedBox(height: 10),
           ],
+          if (hasGroup && !_loading && _error == null && !_hasExisting)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: ModuleMessage(
+                text: tr(
+                    'لم يُسجَّل حضور هذا اليوم بعد. أول تغيير يحفظ حضور الحلقة كاملاً.'),
+                icon: Icons.info_outline_rounded,
+              ),
+            ),
+          if (_locked)
+            Padding(
+              padding: const EdgeInsets.only(bottom: 10),
+              child: ModuleMessage(
+                text: tr('اليوم مغلق أو الكورس منتهٍ — السجل للقراءة فقط'),
+                icon: Icons.lock_outline_rounded,
+                color: AppColors.warning,
+              ),
+            ),
           if (_loading)
             const Padding(
               padding: EdgeInsets.all(24),
@@ -221,73 +322,19 @@ class _TakeAttendanceScreenState extends State<TakeAttendanceScreen> {
               icon: Icons.error_outline_rounded,
               color: AppColors.error,
             )
-          else if (_group != null && _enrollments.isEmpty)
+          else if (hasGroup && _enrollments.isEmpty)
             ModuleMessage(text: tr('لا يوجد طلاب نشطون في هذه الحلقة'))
           else
             for (final e in _enrollments)
-              _StudentRow(
+              AttendanceStatusRow(
+                key: ValueKey('att-row-${e.id}'),
                 name: e.studentName,
                 statuses: _statuses,
                 value: _chosen[e.id],
-                onChanged: (id) => setState(() => _chosen[e.id] = id),
+                enabled: !_locked,
+                onChanged: (id) => _setStatus(e.id, id),
               ),
-          const SizedBox(height: 12),
-          ModuleSaveButton(
-            saving: _saving,
-            onPressed: _save,
-            label: tr('حفظ الحضور'),
-          ),
         ],
-      ),
-    );
-  }
-}
-
-class _StudentRow extends StatelessWidget {
-  final String name;
-  final List<RefItem> statuses;
-  final int? value;
-  final ValueChanged<int> onChanged;
-
-  const _StudentRow({
-    required this.name,
-    required this.statuses,
-    required this.value,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ModuleCard(
-      child: Row(
-        children: [
-          Expanded(
-            child: Text(
-              name,
-              style: appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-              overflow: TextOverflow.ellipsis,
-            ),
-          ),
-          const SizedBox(width: 8),
-          SizedBox(
-            width: 150,
-            child: DropdownButtonFormField<int>(
-              initialValue: statuses.any((s) => s.id == value) ? value : null,
-              isExpanded: true,
-              decoration: const InputDecoration(isDense: true),
-              items: [
-                for (final s in statuses)
-                  DropdownMenuItem(
-                      value: s.id,
-                      child: Text(s.name, style: appTextStyle(fontSize: 12))),
-              ],
-              onChanged: (id) {
-                if (id != null) onChanged(id);
-              },
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

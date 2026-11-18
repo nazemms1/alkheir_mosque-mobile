@@ -16,10 +16,10 @@ class _HeroCard extends StatelessWidget {
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
-                Color(0xFF060E08),
+                AppColors.surfaceBlackGreen,
                 Color(0xFF0A2C10),
-                Color(0xFF0D5016),
-                Color(0xFF1A7A26),
+                AppColors.brandDeep,
+                AppColors.brandGreen,
               ],
               begin: Alignment.topRight,
               end: Alignment.bottomLeft,
@@ -220,7 +220,7 @@ class _FloatingStatsRow extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0D5016).withValues(alpha: 0.15),
+            color: AppColors.brandDeep.withValues(alpha: 0.15),
             blurRadius: 32,
             spreadRadius: -4,
             offset: const Offset(0, 10),

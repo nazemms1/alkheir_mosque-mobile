@@ -136,13 +136,13 @@ class _NotesHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 14, 16, 16),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF060E08), Color(0xFF0A2C10), Color(0xFF0D4515)],
+          colors: [AppColors.surfaceBlackGreen, Color(0xFF0A2C10), AppColors.brandMid],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0D5016).withValues(alpha: 0.4),
+            color: AppColors.brandDeep.withValues(alpha: 0.4),
             blurRadius: 16,
             offset: const Offset(0, 4),
           ),
@@ -158,7 +158,7 @@ class _NotesHeader extends StatelessWidget {
                 height: 48,
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [Color(0xFF2EA043), Color(0xFF1A7A26)],
+                    colors: [AppColors.successGreen, AppColors.brandGreen],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -185,7 +185,7 @@ class _NotesHeader extends StatelessWidget {
                     color: AppColors.success,
                     shape: BoxShape.circle,
                     border:
-                        Border.all(color: const Color(0xFF060E08), width: 2),
+                        Border.all(color: AppColors.surfaceBlackGreen, width: 2),
                     boxShadow: [
                       BoxShadow(
                           color: AppColors.success.withValues(alpha: 0.5),

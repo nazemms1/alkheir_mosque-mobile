@@ -691,9 +691,9 @@ class _SubjectLessonsTableCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: const Color(0xFF072714),
+        color: AppColors.bgCard,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: const Color(0xFF1B4931)),
+        border: Border.all(color: AppColors.darkCardGreen),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: 0.25),
@@ -743,7 +743,7 @@ class _SubjectLessonsTableCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, thickness: 1, color: Color(0xFF1B4931)),
+          const Divider(height: 1, thickness: 1, color: AppColors.darkCardGreen),
           // Table header: الأهمية on left, الدرس on right
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -755,7 +755,7 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                   style: appTextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF88AB98),
+                    color: AppColors.textSoftSage,
                   ),
                 ),
                 Text(
@@ -763,13 +763,13 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                   style: appTextStyle(
                     fontSize: 13,
                     fontWeight: FontWeight.w700,
-                    color: const Color(0xFF88AB98),
+                    color: AppColors.textSoftSage,
                   ),
                 ),
               ],
             ),
           ),
-          const Divider(height: 1, thickness: 1, color: Color(0xFF1B4931)),
+          const Divider(height: 1, thickness: 1, color: AppColors.darkCardGreen),
           // Lessons list
           for (int i = 0; i < lessons.length; i++) ...[
             _LessonRow(item: lessons[i]),
@@ -830,7 +830,7 @@ class _ImportanceBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const activeColor = Color(0xFF00E676);
+    const activeColor = AppColors.neonGreen;
     const inactiveColor = Color(0xFF1B4D35);
     return Row(
       mainAxisSize: MainAxisSize.min,
@@ -890,7 +890,7 @@ class _CurriculumCheckbox extends StatelessWidget {
           color: isChecked ? const Color(0xFF0B3A23) : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: isChecked ? const Color(0xFF00E676) : const Color(0xFF456D58),
+            color: isChecked ? AppColors.neonGreen : const Color(0xFF456D58),
             width: 1.5,
           ),
         ),
@@ -898,7 +898,7 @@ class _CurriculumCheckbox extends StatelessWidget {
             ? const Icon(
                 Icons.check_rounded,
                 size: 16,
-                color: Color(0xFF00E676),
+                color: AppColors.neonGreen,
               )
             : null,
       ),

@@ -11,6 +11,7 @@ import 'group_detail_screen.dart';
 import 'group_form_screen.dart';
 import 'qr_scanner_screen.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 
 class AdminGroupsScreen extends StatefulWidget {
   final AuthToken token;
@@ -49,7 +50,7 @@ class _AdminGroupsScreenState extends State<AdminGroupsScreen> {
     } catch (e) {
       if (!mounted) return;
       setState(() {
-        _error = e.toString();
+        _error = errorText(e);
         _loading = false;
       });
     }

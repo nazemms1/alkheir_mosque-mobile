@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/features/auth/presentation/screens/login_screen.dart';
 import 'package:alkheir_mosque/features/splash/presentation/screens/splash_screen.dart';
 
 class NavigationService {
@@ -88,19 +91,16 @@ abstract final class AppRoutes {
           name: 'splash',
           builder: (context, state) => const SplashScreen(),
         ),
+        // /home يمرّ عبر شاشة البداية لأنها التي تحدد الجلسة والدور والشاشة المناسبة.
         GoRoute(
           path: home,
           name: 'home',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('Home Screen')),
-          ),
+          builder: (context, state) => const SplashScreen(),
         ),
         GoRoute(
           path: login,
           name: 'login',
-          builder: (context, state) => const Scaffold(
-            body: Center(child: Text('Login Screen')),
-          ),
+          builder: (context, state) => const LoginScreen(),
         ),
       ],
       errorBuilder: (context, state) => Scaffold(
@@ -108,16 +108,17 @@ abstract final class AppRoutes {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.error_outline, size: 48, color: Colors.red),
+              const Icon(Icons.error_outline, size: 48, color: AppColors.error),
               const SizedBox(height: 16),
               Text(
-                'Route Not Found: ${state.uri}',
-                style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                '${tr('الصفحة غير موجودة')}: ${state.uri}',
+                textAlign: TextAlign.center,
+                style: appTextStyle(fontSize: 16, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
-              ElevatedButton(
+              FilledButton(
                 onPressed: () => context.go(splash),
-                child: const Text('Go to Home'),
+                child: Text(tr('العودة للرئيسية')),
               ),
             ],
           ),

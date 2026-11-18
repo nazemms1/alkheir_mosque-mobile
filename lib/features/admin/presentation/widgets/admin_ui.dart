@@ -88,16 +88,16 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [
-            Color(0xFF071A0A),
-            Color(0xFF0D5016),
-            Color(0xFF1A7A26),
+            AppColors.surfaceDeepGreen,
+            AppColors.brandDeep,
+            AppColors.brandGreen,
           ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF0D5016).withValues(alpha: 0.5),
+            color: AppColors.brandDeep.withValues(alpha: 0.5),
             blurRadius: 28,
             offset: const Offset(0, 6),
           ),
@@ -241,7 +241,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
           height: 42,
           decoration: BoxDecoration(
             gradient: const LinearGradient(
-              colors: [Color(0xFF2EA043), Color(0xFF1A7A26)],
+              colors: [AppColors.successGreen, AppColors.brandGreen],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -438,7 +438,7 @@ class AdminBottomSheetShell extends StatelessWidget {
     final isDark = AdminTheme.isDark(context);
     final bg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
     final borderColor =
-        isDark ? const Color(0xFF1E3A24) : const Color(0xFFD8E8DC);
+        isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
     final handleColor =
         isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
 
@@ -456,7 +456,7 @@ class AdminBottomSheetShell extends StatelessWidget {
             offset: const Offset(0, -8),
           ),
           BoxShadow(
-            color: const Color(0xFF0D5016).withValues(alpha: isDark ? 0.25 : 0.08),
+            color: AppColors.brandDeep.withValues(alpha: isDark ? 0.25 : 0.08),
             blurRadius: 18,
             offset: const Offset(0, -2),
           ),
@@ -689,7 +689,7 @@ class AdminHero extends StatelessWidget {
       padding: const EdgeInsets.all(18),
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), Color(0xFF0D4515)],
+          colors: [AppColors.bgDeep, Color(0xFF1A3D0A), AppColors.brandMid],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

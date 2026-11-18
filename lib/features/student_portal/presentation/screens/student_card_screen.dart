@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
@@ -58,15 +59,9 @@ class _StudentCardScreenState extends State<StudentCardScreen>
             tooltip: tr('حفظ كـ Pass'),
             onTap: () {
               HapticFeedback.lightImpact();
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(
-                    tr('يمكنك تصوير الشاشة لحفظ البطاقة كـ Pass'),
-                    style: const TextStyle(fontFamily: 'Dubai'),
-                  ),
-                  backgroundColor: AppColors.primary,
-                  duration: const Duration(seconds: 2),
-                ),
+              showAppSnack(
+                context,
+                tr('يمكنك تصوير الشاشة لحفظ البطاقة كـ Pass'),
               );
             },
           ),
@@ -182,7 +177,7 @@ class _IDCard extends StatelessWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF0D5016), Color(0xFF1A7A26), Color(0xFF2EA043)],
+          colors: [AppColors.brandDeep, AppColors.brandGreen, AppColors.successGreen],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),

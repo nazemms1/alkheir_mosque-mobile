@@ -15,7 +15,7 @@ class _MemorizationCard extends StatelessWidget {
         padding: const EdgeInsets.all(22),
         decoration: BoxDecoration(
           gradient: const LinearGradient(
-            colors: [Color(0xFF071A0A), Color(0xFF0D4515), Color(0xFF1A6622)],
+            colors: [AppColors.surfaceDeepGreen, AppColors.brandMid, Color(0xFF1A6622)],
             begin: Alignment.topRight,
             end: Alignment.bottomLeft,
           ),

@@ -6,10 +6,13 @@ import 'package:flutter/services.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
-import 'package:alkheir_mosque/app/core/api/api_service.dart';
-import 'package:alkheir_mosque/features/auth/domain/repositories/auth_repository.dart';
 import 'package:alkheir_mosque/app/core/services/url_launcher_service.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
+
+// إعادة التصدير: الشاشات القديمة تستورد errorText من هذا الملف.
+export 'package:alkheir_mosque/app/core/widgets/app_feedback.dart'
+    show errorText, showAppSnack;
 
 /// عناصر واجهة مشتركة لشاشات وحدات الإدارة (المالية، الأولياء، المعلمون...).
 /// تستخدم نفس عناصر شاشات الإدارة (admin_ui.dart) لتبقى الواجهتان متطابقتين.
@@ -275,7 +278,7 @@ class _RecordSheet extends StatelessWidget {
         ? Colors.white.withValues(alpha: 0.04)
         : const Color(0xFFF7FBF8);
     final cardBorder =
-        isDark ? const Color(0xFF1E3A24) : const Color(0xFFE2EDE4);
+        isDark ? AppColors.darkBorderGreen : const Color(0xFFE2EDE4);
 
     return AdminBottomSheetShell(
       title: title,
@@ -521,24 +524,11 @@ Future<String?> pickIsoDate(BuildContext context, {String? current}) async {
   return picked == null ? null : isoDate(picked);
 }
 
+/// يُبقى الاسم للتوافق مع الشاشات القائمة، والتنفيذ الفعلي في [showAppSnack].
 void showModuleSnack(BuildContext context, String message,
-    {bool error = false}) {
-  ScaffoldMessenger.of(context)
-    ..hideCurrentSnackBar()
-    ..showSnackBar(
-      SnackBar(
-        content: Text(message, style: appTextStyle(color: Colors.white)),
-        backgroundColor: error ? AppColors.error : AppColors.primary,
-        behavior: SnackBarBehavior.floating,
-      ),
-    );
-}
+    {bool error = false}) =>
+    showAppSnack(context, message, error: error);
 
-/// نص خطأ مفهوم للمستخدم: رسائل الخادم كما هي، وغيرها برسالة عامة.
-String errorText(Object error) {
-  if (error is ApiException || error is AuthException) return error.toString();
-  return tr('تعذّر إكمال الطلب. حاول مرة أخرى.');
-}
 
 /// تنسيق مبلغ بمنزلتين عشريتين.
 String formatAmount(double value) => value.toStringAsFixed(2);

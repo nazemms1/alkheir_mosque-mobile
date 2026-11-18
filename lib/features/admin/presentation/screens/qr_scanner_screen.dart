@@ -5,6 +5,7 @@ import 'package:mobile_scanner/mobile_scanner.dart';
 import 'package:alkheir_mosque/app/core/config/attendance_config.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
 import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -186,14 +187,14 @@ class _QrScannerScreenState extends State<QrScannerScreen>
         studentName: displayName,
         time: DateTime.now(),
         status: _RecordStatus.error,
-        error: e.toString(),
+        error: errorText(e),
       );
       setState(() {
         _sessionRecords.insert(0, record);
         _sending = false;
       });
       _showFeedback(
-          success: false, name: record.studentName, error: e.toString());
+          success: false, name: record.studentName, error: errorText(e));
     }
   }
 

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
+import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
 import 'package:alkheir_mosque/features/management/data/repositories/management_repository_impl.dart';
 import 'package:alkheir_mosque/features/operations/data/repositories/operations_repository_impl.dart';
@@ -38,6 +39,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
   bool _loading = true;
   bool _saving = false;
   String? _parentError;
+  String? _loadError;
 
   bool get _isEdit => widget.studentId != null;
 
@@ -89,14 +91,27 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
           ? null
           : PickerItem(
               id: s.quranCurrentJuzId!,
-              label: trf('الجزء {0}', [s.quranCurrentJuz ?? 0]),
+              label: s.quranCurrentJuz == null
+                  ? ''
+                  : trf('الجزء {0}', [s.quranCurrentJuz]),
             );
       setState(() => _loading = false);
     } catch (error) {
       if (!mounted) return;
-      setState(() => _loading = false);
-      showModuleSnack(context, errorText(error), error: true);
+      // لا نعرض نموذجاً فارغاً: حفظه كان سيمسح بيانات الطالب الحقيقية.
+      setState(() {
+        _loading = false;
+        _loadError = errorText(error);
+      });
     }
+  }
+
+  void _retryLoad() {
+    setState(() {
+      _loading = true;
+      _loadError = null;
+    });
+    _load();
   }
 
   Future<List<PickerItem>> _loadParents(String search) async {
@@ -108,6 +123,7 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
   }
 
   Future<void> _save() async {
+    if (_loading || _loadError != null) return;
     final valid = _formKey.currentState!.validate();
     setState(
         () => _parentError = _parent == null ? tr('اختر ولي الأمر') : null);
@@ -148,7 +164,14 @@ class _StudentFormScreenState extends State<StudentFormScreen> {
           ? const ModuleAccessDenied()
           : _loading
               ? const Center(child: CircularProgressIndicator())
-              : ModuleFormPage(
+              : _loadError != null
+                  ? ModuleMessage(
+                      text: _loadError!,
+                      icon: Icons.error_outline_rounded,
+                      color: AppColors.error,
+                      onRetry: _retryLoad,
+                    )
+                  : ModuleFormPage(
                   formKey: _formKey,
                   children: [
                     ModuleFormSection(
