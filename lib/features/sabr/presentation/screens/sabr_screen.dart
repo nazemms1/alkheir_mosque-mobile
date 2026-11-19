@@ -309,7 +309,7 @@ class _FilterStrip extends StatelessWidget {
             onTap: () => onSelect(item.$1),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              margin: const EdgeInsets.only(left: 8),
+              margin: const EdgeInsetsDirectional.only(end: 8),
               padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
               decoration: BoxDecoration(
                 color:
@@ -329,7 +329,7 @@ class _FilterStrip extends StatelessWidget {
               child: Text(
                 item.$2,
                 style: TextStyle(
-                  color: isActive ? Colors.white : AppColors.textSecondary,
+                  color: isActive ? Colors.white : context.appColors.textSecondary,
                   fontSize: 12,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai',
@@ -445,8 +445,8 @@ class _SabrCardState extends State<_SabrCard> {
                                 ),
                                 child: Text(
                                   tr('ناجح'),
-                                  style: const TextStyle(
-                                      color: AppColors.success,
+                                  style: TextStyle(
+                                      color: context.appColors.successText,
                                       fontSize: 12,
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Dubai'),
@@ -465,8 +465,8 @@ class _SabrCardState extends State<_SabrCard> {
                         const SizedBox(height: 2),
                         Text(
                           '${r.surahFrom}  ←  ${r.surahTo}',
-                          style: const TextStyle(
-                              color: AppColors.textSecondary,
+                          style: TextStyle(
+                              color: context.appColors.textSecondary,
                               fontSize: 12,
                               fontFamily: 'Dubai'),
                         ),
@@ -537,8 +537,8 @@ class _SabrCardState extends State<_SabrCard> {
                             const SizedBox(height: 12),
                             Text(
                               tr('الصفحات التي تم سبرها:'),
-                              style: const TextStyle(
-                                  color: AppColors.textSecondary,
+                              style: TextStyle(
+                                  color: context.appColors.textSecondary,
                                   fontSize: 12,
                                   fontFamily: 'Dubai',
                                   fontWeight: FontWeight.w600),
@@ -586,8 +586,8 @@ class _SabrCardState extends State<_SabrCard> {
                                   Expanded(
                                     child: Text(
                                       r.notes,
-                                      style: const TextStyle(
-                                        color: AppColors.textSecondary,
+                                      style: TextStyle(
+                                        color: context.appColors.textSecondary,
                                         fontSize: 12,
                                         fontFamily: 'Dubai',
                                         fontStyle: FontStyle.italic,
@@ -706,8 +706,8 @@ class _DetailStat extends StatelessWidget {
                           fontFamily: 'Dubai')),
                   Text(
                     value,
-                    style: const TextStyle(
-                        color: AppColors.textPrimary,
+                    style: TextStyle(
+                        color: context.appColors.textPrimary,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai'),

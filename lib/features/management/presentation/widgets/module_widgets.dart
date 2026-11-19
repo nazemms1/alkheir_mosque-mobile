@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -273,12 +274,9 @@ class _RecordSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = AdminTheme.isDark(context);
-    final cardBg = isDark
-        ? Colors.white.withValues(alpha: 0.04)
-        : const Color(0xFFF7FBF8);
+    final cardBg = context.appColors.background;
     final cardBorder =
-        isDark ? AppColors.darkBorderGreen : const Color(0xFFE2EDE4);
+        context.appColors.border;
 
     return AdminBottomSheetShell(
       title: title,

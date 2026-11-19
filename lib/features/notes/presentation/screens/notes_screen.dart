@@ -340,7 +340,7 @@ class _MessageBubble extends StatelessWidget {
               children: [
                 if (!_isParent)
                   Padding(
-                    padding: const EdgeInsets.only(bottom: 3, right: 4),
+                    padding: const EdgeInsetsDirectional.only(bottom: 3, start: 4),
                     child: Text(
                       message.authorName,
                       style: TextStyle(
@@ -391,7 +391,7 @@ class _MessageBubble extends StatelessWidget {
                     message.content,
                     style: TextStyle(
                       color:
-                          _isParent ? AppColors.primary : AppColors.textPrimary,
+                          _isParent ? AppColors.primary : context.appColors.textPrimary,
                       fontSize: 13,
                       fontFamily: 'Dubai',
                       height: 1.55,
@@ -473,10 +473,10 @@ class _InputBar extends StatelessWidget {
                 minLines: 1,
                 textInputAction: TextInputAction.send,
                 onSubmitted: (_) => onSend(),
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Dubai',
                     fontSize: 14,
-                    color: AppColors.textPrimary),
+                    color: context.appColors.textPrimary),
                 decoration: InputDecoration(
                   hintText: tr('اكتب رسالتك للمعلم أو الإدارة...'),
                   hintStyle: TextStyle(

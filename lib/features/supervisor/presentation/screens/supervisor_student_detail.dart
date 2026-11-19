@@ -638,9 +638,9 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
         builder: (_, scrollCtrl) {
           final isDark = Theme.of(context).brightness == Brightness.dark;
           final borderColor =
-              isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
+              context.appColors.border;
           final handleColor =
-              isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+              context.appColors.border;
 
           return Container(
             decoration: BoxDecoration(
@@ -862,10 +862,10 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(_error!,
-                                    style: const TextStyle(
+                                    style: TextStyle(
                                         fontFamily: 'Dubai',
                                         fontSize: 12,
-                                        color: AppColors.error)),
+                                        color: context.appColors.errorText)),
                               ),
                             ],
                           ),
@@ -1217,17 +1217,8 @@ class _Empty extends StatelessWidget {
   const _Empty({required this.icon, required this.message});
 
   @override
-  Widget build(BuildContext context) => Center(
-        child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: 48, color: context.appColors.textMuted),
-          const SizedBox(height: 12),
-          Text(message,
-              style: TextStyle(
-                  fontFamily: 'Dubai',
-                  fontSize: 14,
-                  color: context.appColors.textMuted)),
-        ]),
-      );
+  Widget build(BuildContext context) =>
+      AdminEmptyState(icon: icon, title: message);
 }
 
 class _ErrorView extends StatelessWidget {
@@ -1240,7 +1231,9 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _isForbidden ? AppColors.warning : AppColors.error;
+    final color = _isForbidden
+        ? context.appColors.warningText
+        : context.appColors.errorText;
     final icon =
         _isForbidden ? Icons.lock_outline_rounded : Icons.error_outline_rounded;
     return Center(
@@ -1274,12 +1267,6 @@ class _ErrorView extends StatelessWidget {
               icon: const Icon(Icons.refresh_rounded, size: 18),
               label: Text(tr('إعادة المحاولة'),
                   style: const TextStyle(fontFamily: 'Dubai')),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primaryLight,
-                foregroundColor: Colors.white,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-              ),
             ),
           ],
         ]),

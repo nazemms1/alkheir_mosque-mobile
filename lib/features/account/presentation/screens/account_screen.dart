@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -282,7 +283,7 @@ class _Header extends StatelessWidget {
                     style: appTextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.w800,
-                      color: AppColors.gold,
+                      color: context.appColors.goldText,
                     ),
                   )
                 : null,

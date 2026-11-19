@@ -163,7 +163,7 @@ class _TypeFilter extends StatelessWidget {
         children: [
           for (final entry in options.entries)
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
                 label: Text(entry.value, style: appTextStyle(fontSize: 12)),
                 selected: entry.key == selected,
@@ -460,7 +460,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
               children: [
                 // Label: الطالب
                 Align(
-                  alignment: Alignment.centerRight,
+                  alignment: AlignmentDirectional.centerStart,
                   child: Text(
                     tr('الطالب'),
                     style: appTextStyle(
@@ -522,7 +522,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                         Expanded(
                           child: Text(
                             _student?.label ?? tr('اسم الطالب'),
-                            textAlign: TextAlign.right,
+                            textAlign: TextAlign.start,
                             style: appTextStyle(
                               fontSize: 14,
                               fontWeight: _student != null

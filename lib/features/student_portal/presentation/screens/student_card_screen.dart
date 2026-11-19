@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -132,6 +133,7 @@ class _AnimatedBg extends StatelessWidget {
                 ),
               ),
             ),
+            const Positioned.fill(child: GeometricPattern(opacity: 0.04)),
             Positioned(
               top: -60 + t * 30,
               right: -80,
@@ -139,12 +141,6 @@ class _AnimatedBg extends StatelessWidget {
                   size: 280,
                   color: AppColors.primaryLight,
                   opacity: 0.12 + t * 0.06),
-            ),
-            Positioned(
-              bottom: 100 - t * 20,
-              left: -60,
-              child: _Orb(
-                  size: 220, color: AppColors.gold, opacity: 0.08 + t * 0.04),
             ),
           ],
         );

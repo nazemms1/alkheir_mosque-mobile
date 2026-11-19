@@ -527,7 +527,7 @@ class _FilterBar extends StatelessWidget {
         children: [
           for (final entry in options.entries)
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
                 label: Text(entry.value, style: appTextStyle(fontSize: 12)),
                 selected: entry.key == selected,

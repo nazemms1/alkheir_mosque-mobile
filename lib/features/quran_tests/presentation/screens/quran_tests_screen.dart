@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -287,7 +288,7 @@ class _CycleCard extends StatelessWidget {
             Text(
               trf('تاريخ النجاح: {0}',
                   [partial?.passedOn ?? finalTest?.passedOn ?? '']),
-              style: appTextStyle(fontSize: 12, color: AppColors.success),
+              style: appTextStyle(fontSize: 12, color: context.appColors.successText),
             ),
         ],
       ),
@@ -456,7 +457,7 @@ class _StartCycleFormState extends State<_StartCycleForm> {
         if (_error != null) ...[
           const SizedBox(height: 8),
           Text(_error!,
-              style: appTextStyle(fontSize: 13, color: AppColors.error)),
+              style: appTextStyle(fontSize: 13, color: context.appColors.errorText)),
         ],
         const SizedBox(height: 16),
         ModuleSaveButton(

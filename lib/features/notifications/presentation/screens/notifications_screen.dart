@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -114,8 +115,8 @@ class _NotificationsScreenState extends State<NotificationsScreen>
             const SizedBox(height: 12),
             Text(_error!,
                 textAlign: TextAlign.center,
-                style: const TextStyle(
-                    fontFamily: 'Dubai', color: AppColors.textSecondary)),
+                style: TextStyle(
+                    fontFamily: 'Dubai', color: context.appColors.textSecondary)),
             const SizedBox(height: 16),
             ElevatedButton(
               onPressed: () {
@@ -151,7 +152,7 @@ class _NotificationsScreenState extends State<NotificationsScreen>
                 n: _notes[i],
                 icon: _sourceIcons[_notes[i].author] ?? Icons.info_rounded,
                 color:
-                    _sourceColors[_notes[i].author] ?? AppColors.textSecondary,
+                    _sourceColors[_notes[i].author] ?? context.appColors.textSecondary,
                 label: _sourceLabels[_notes[i].author] ?? tr('عام'),
               )
                   .animate()
@@ -418,7 +419,7 @@ class _EmptyNotifications extends StatelessWidget {
           Text(
             tr('ستظهر هنا أي ملاحظات من المعلم أو الإدارة'),
             style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: AppColors.textSecondary,
+                  color: context.appColors.textSecondary,
                 ),
           ),
         ],

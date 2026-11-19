@@ -86,7 +86,7 @@ class AutoSaveIndicator extends StatelessWidget {
           AutoSaveStatus.saving => (
               null,
               tr('جارٍ الحفظ…'),
-              AppColors.textSecondary,
+              context.appColors.textSecondary,
               false,
             ),
           AutoSaveStatus.saved => (

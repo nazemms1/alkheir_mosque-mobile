@@ -196,8 +196,8 @@ class _ActivityCard extends StatelessWidget {
                       color: AppColors.gold.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20)),
                   child: Text('${activity.feeAmount.toInt()}',
-                      style: const TextStyle(
-                          color: AppColors.gold,
+                      style: TextStyle(
+                          color: context.appColors.goldText,
                           fontSize: 12,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai')),
@@ -208,10 +208,10 @@ class _ActivityCard extends StatelessWidget {
               activity.description!.trim().isNotEmpty) ...[
             const SizedBox(height: 10),
             Text(activity.description!,
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Dubai',
                     fontSize: 12,
-                    color: AppColors.textSecondary),
+                    color: context.appColors.textSecondary),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis),
           ],

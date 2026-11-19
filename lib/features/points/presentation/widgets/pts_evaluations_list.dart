@@ -125,7 +125,7 @@ class _EvalComment extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodyMedium
-                        ?.copyWith(color: AppColors.textPrimary, height: 1.5)),
+                        ?.copyWith(color: context.appColors.textPrimary, height: 1.5)),
               ],
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -275,10 +276,14 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
 
     return Container(
       margin: const EdgeInsets.fromLTRB(16, 12, 16, 0),
-      padding: const EdgeInsets.all(20),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
-          colors: [AppColors.surfaceDeepGreen, AppColors.brandDeep, AppColors.brandGreen],
+          colors: [
+            AppColors.surfaceDeepGreen,
+            AppColors.brandDeep,
+            AppColors.brandGreen
+          ],
           begin: Alignment.topRight,
           end: Alignment.bottomLeft,
         ),
@@ -290,72 +295,80 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
               offset: const Offset(0, 10)),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              Container(
-                width: 52,
-                height: 52,
-                decoration: BoxDecoration(
-                  gradient: AppColors.gradientGold,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                        color: AppColors.gold.withValues(alpha: 0.4),
-                        blurRadius: 14,
-                        spreadRadius: 1)
-                  ],
-                ),
-                child: const Icon(Icons.shield_rounded,
-                    color: Colors.white, size: 28),
-              ),
-              const SizedBox(width: 14),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      trf('مرحباً، {0}', [userName]),
-                      style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w800,
-                          fontFamily: 'Dubai'),
-                    ),
-                    Container(
-                      margin: const EdgeInsets.only(top: 4),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 10, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: Colors.white.withValues(alpha: 0.15),
-                        borderRadius: BorderRadius.circular(20),
-                        border: Border.all(
-                            color: Colors.white.withValues(alpha: 0.25)),
-                      ),
-                      child: Text(roleLabel,
-                          style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 12,
-                              fontFamily: 'Dubai')),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          if (pills.isNotEmpty) ...[
-            const SizedBox(height: 18),
-            Row(
+          const Positioned.fill(child: GeometricPattern(opacity: 0.05)),
+          Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (var i = 0; i < pills.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 8),
-                  pills[i],
+                Row(
+                  children: [
+                    Container(
+                      width: 52,
+                      height: 52,
+                      decoration: BoxDecoration(
+                        gradient: AppColors.gradientGold,
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                              color: AppColors.gold.withValues(alpha: 0.4),
+                              blurRadius: 14,
+                              spreadRadius: 1)
+                        ],
+                      ),
+                      child: const Icon(Icons.shield_rounded,
+                          color: Colors.white, size: 28),
+                    ),
+                    const SizedBox(width: 14),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            trf('مرحباً، {0}', [userName]),
+                            style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800,
+                                fontFamily: 'Dubai'),
+                          ),
+                          Container(
+                            margin: const EdgeInsets.only(top: 4),
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 3),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.15),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                  color: Colors.white.withValues(alpha: 0.25)),
+                            ),
+                            child: Text(roleLabel,
+                                style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 12,
+                                    fontFamily: 'Dubai')),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                if (pills.isNotEmpty) ...[
+                  const SizedBox(height: 18),
+                  Row(
+                    children: [
+                      for (var i = 0; i < pills.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 8),
+                        pills[i],
+                      ],
+                    ],
+                  ),
                 ],
               ],
             ),
-          ],
+          ),
         ],
       ),
     );
@@ -470,29 +483,8 @@ class _SectionHeader extends StatelessWidget {
       {required this.title, required this.icon, required this.color});
 
   @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Container(
-          width: 34,
-          height: 34,
-          decoration: BoxDecoration(
-              color: color.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(10)),
-          child: Icon(icon, color: color, size: 18),
-        ),
-        const SizedBox(width: 10),
-        Text(
-          title,
-          style: TextStyle(
-              fontFamily: 'Dubai',
-              fontSize: 15,
-              fontWeight: FontWeight.w800,
-              color: Theme.of(context).colorScheme.onSurface),
-        ),
-      ],
-    );
-  }
+  Widget build(BuildContext context) =>
+      AdminSectionTitle(title: title, icon: icon, color: color);
 }
 
 // ─── Mini group tile (home tab) ───────────────────────────────────────────────
@@ -636,11 +628,11 @@ class _MiniStudentTile extends StatelessWidget {
                 color: AppColors.gold.withValues(alpha: 0.1),
                 borderRadius: BorderRadius.circular(20)),
             child: Text(trf('ج {0}', [student.currentJuz]),
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Dubai',
                     fontSize: 12,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.gold)),
+                    color: context.appColors.goldText)),
           ),
         ],
       ),
@@ -840,7 +832,7 @@ class _GroupChip extends StatelessWidget {
             fontFamily: 'Dubai',
             fontSize: 12,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
-            color: isSelected ? Colors.white : AppColors.textSecondary,
+            color: isSelected ? Colors.white : context.appColors.textSecondary,
           ),
         ),
       ),
@@ -1476,7 +1468,8 @@ class _EntryTypeChip extends StatelessWidget {
         child: Column(
           children: [
             Icon(icon,
-                size: 22, color: selected ? Colors.white : context.appColors.textMuted),
+                size: 22,
+                color: selected ? Colors.white : context.appColors.textMuted),
             const SizedBox(height: 6),
             Text(label,
                 style: TextStyle(
@@ -1760,7 +1753,8 @@ class _ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = activity.isActive ? AppColors.info : context.appColors.textMuted;
+    final color =
+        activity.isActive ? AppColors.info : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -1887,7 +1881,8 @@ class _AssessmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = assessment.isActive ? AppColors.success : context.appColors.textMuted;
+    final color =
+        assessment.isActive ? AppColors.success : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -2042,7 +2037,8 @@ class _GroupReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = group.isActive ? AppColors.primaryLight : context.appColors.textMuted;
+    final color =
+        group.isActive ? AppColors.primaryLight : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -2180,11 +2176,11 @@ class _ComingSoonTab extends StatelessWidget {
           const SizedBox(height: 20),
           Text(
             title,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Dubai',
               fontSize: 18,
               fontWeight: FontWeight.w700,
-              color: AppColors.textPrimary,
+              color: context.appColors.textPrimary,
             ),
           ),
           const SizedBox(height: 8),
@@ -2212,10 +2208,10 @@ class _ComingSoonTab extends StatelessWidget {
                 const SizedBox(width: 6),
                 Text(
                   tr('قيد الإنشاء'),
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Dubai',
                     fontSize: 12,
-                    color: AppColors.gold,
+                    color: context.appColors.goldText,
                     fontWeight: FontWeight.w600,
                   ),
                 ),
@@ -2310,23 +2306,7 @@ class _EmptyState extends StatelessWidget {
   const _EmptyState({required this.icon, required this.message});
 
   @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Icon(icon, size: 48, color: context.appColors.textMuted),
-          const SizedBox(height: 12),
-          Text(
-            message,
-            style: TextStyle(
-              fontFamily: 'Dubai',
-              fontSize: 14,
-              color: context.appColors.textMuted,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  Widget build(BuildContext context) =>
+      AdminEmptyState(icon: icon, title: message);
 }
+

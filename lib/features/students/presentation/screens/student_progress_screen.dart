@@ -473,7 +473,7 @@ class _ProfileHeader extends StatelessWidget {
                           style: appTextStyle(
                             fontSize: 22,
                             fontWeight: FontWeight.w800,
-                            color: AppColors.gold,
+                            color: context.appColors.goldText,
                           ),
                         )
                       : null,

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:math' as math;
@@ -227,6 +228,7 @@ class _AnimatedBackground extends StatelessWidget {
                 ),
               ),
             ),
+            const Positioned.fill(child: GeometricPattern(opacity: 0.04)),
             Positioned(
               top: size.height * 0.05 + math.sin(t * math.pi) * 30,
               right: -size.width * 0.2,
@@ -234,22 +236,6 @@ class _AnimatedBackground extends StatelessWidget {
                   size: size.width * 0.7,
                   color: AppColors.primaryLight,
                   opacity: 0.18 + t * 0.07),
-            ),
-            Positioned(
-              bottom: size.height * 0.25 - math.cos(t * math.pi) * 20,
-              left: -size.width * 0.15,
-              child: _GlowOrb(
-                  size: size.width * 0.55,
-                  color: AppColors.primaryMid,
-                  opacity: 0.12 + t * 0.05),
-            ),
-            Positioned(
-              top: size.height * 0.38,
-              left: size.width * 0.5,
-              child: _GlowOrb(
-                  size: size.width * 0.3,
-                  color: AppColors.gold,
-                  opacity: 0.06 + t * 0.04),
             ),
           ],
         );
@@ -378,7 +364,7 @@ class _FormPanel extends StatelessWidget {
                 tr('تسجيل الدخول'),
                 style: Theme.of(context).textTheme.headlineLarge?.copyWith(
                       color:
-                          isDark ? AppColors.textOnDark : AppColors.textPrimary,
+                          isDark ? AppColors.textOnDark : context.appColors.textPrimary,
                       fontWeight: FontWeight.w700,
                     ),
               ),
@@ -386,7 +372,7 @@ class _FormPanel extends StatelessWidget {
               Text(
                 tr('أدخل بياناتك لمتابعة تقدم طفلك في الحلقة'),
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: AppColors.textSecondary,
+                      color: context.appColors.textSecondary,
                     ),
               ),
               const SizedBox(height: 28),
@@ -414,7 +400,7 @@ class _FormPanel extends StatelessWidget {
                     obscure
                         ? Icons.visibility_rounded
                         : Icons.visibility_off_rounded,
-                    color: AppColors.textSecondary,
+                    color: context.appColors.textSecondary,
                     size: 20,
                   ),
                   onPressed: onToggleObscure,
@@ -442,7 +428,7 @@ class _FormPanel extends StatelessWidget {
                     child: Text(
                       tr('تذكّرني'),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                            color: AppColors.textSecondary,
+                            color: context.appColors.textSecondary,
                             fontWeight: FontWeight.w600,
                           ),
                     ),
@@ -686,7 +672,7 @@ class _SupportHint extends StatelessWidget {
                 Text(
                   tr('تواصل مع إدارة المسجد عبر واتساب للحصول على بيانات الدخول'),
                   style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                        color: AppColors.textSecondary,
+                        color: context.appColors.textSecondary,
                       ),
                 ),
               ],

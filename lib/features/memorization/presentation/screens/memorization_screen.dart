@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -473,9 +474,9 @@ class _JuzDetailSheet extends StatelessWidget {
       builder: (_, ctrl) {
         final isDark = Theme.of(context).brightness == Brightness.dark;
         final borderColor =
-            isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
+            context.appColors.border;
         final handleColor =
-            isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+            context.appColors.border;
 
         return Container(
           decoration: BoxDecoration(

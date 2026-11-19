@@ -114,7 +114,7 @@ class ApiErrorWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: FontSize.s13,
                 fontWeight: FontWeight.w500,
-                color: isDark ? const Color(0xFFFCA5A5) : colors.error,
+                color: colors.errorText,
               ),
             ),
           ),
@@ -165,7 +165,7 @@ class ApiErrorWidget extends StatelessWidget {
               style: TextStyle(
                 fontSize: FontSize.s16,
                 fontWeight: FontWeight.w600,
-                color: isDark ? const Color(0xFFF1F5F9) : const Color(0xFF1E293B),
+                color: context.appColors.textPrimary,
                 height: 1.4,
               ),
             ),

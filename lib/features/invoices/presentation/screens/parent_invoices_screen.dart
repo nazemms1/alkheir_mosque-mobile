@@ -204,11 +204,11 @@ class _InvoiceTile extends StatelessWidget {
             Row(
               children: [
                 Text('${invoice.total.toInt()}',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
                         fontSize: 13,
                         fontWeight: FontWeight.w800,
-                        color: AppColors.info)),
+                        color: context.appColors.infoText)),
                 const SizedBox(width: 6),
                 Text(tr('الإجمالي'),
                     style: TextStyle(

@@ -308,11 +308,11 @@ class _ItemRow extends StatelessWidget {
                   color: context.appColors.textMuted)),
           const SizedBox(width: 10),
           Text('${item.lineTotal.toInt()}',
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
                   fontSize: 13,
                   fontWeight: FontWeight.w800,
-                  color: AppColors.info)),
+                  color: context.appColors.infoText)),
         ],
       ),
     );

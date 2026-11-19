@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -668,7 +669,7 @@ class _FeaturedStatTile extends StatelessWidget {
                         fontWeight: FontWeight.w900,
                         color: isDark
                             ? AppColors.textOnDark
-                            : AppColors.textPrimary,
+                            : context.appColors.textPrimary,
                         height: 1.1,
                       ),
                     ),
@@ -681,7 +682,7 @@ class _FeaturedStatTile extends StatelessWidget {
                         fontWeight: FontWeight.w700,
                         color: isDark
                             ? AppColors.textOnDarkSub
-                            : AppColors.textSecondary,
+                            : context.appColors.textSecondary,
                       ),
                     ),
                   ],
@@ -823,7 +824,7 @@ class _StatTile extends StatelessWidget {
                   fontFamily: 'Dubai',
                   fontSize: 22,
                   fontWeight: FontWeight.w900,
-                  color: isDark ? AppColors.textOnDark : AppColors.textPrimary,
+                  color: isDark ? AppColors.textOnDark : context.appColors.textPrimary,
                   height: 1.1,
                 ),
               ),
@@ -838,7 +839,7 @@ class _StatTile extends StatelessWidget {
                   fontWeight: FontWeight.w600,
                   color: isDark
                       ? AppColors.textOnDarkSub
-                      : AppColors.textSecondary,
+                      : context.appColors.textSecondary,
                   height: 1.25,
                 ),
               ),

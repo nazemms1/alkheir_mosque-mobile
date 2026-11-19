@@ -97,12 +97,12 @@ class _AttendanceTile extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(color: AppColors.textSecondary)),
+                        ?.copyWith(color: context.appColors.textSecondary)),
               ],
             ),
           ),
           Padding(
-            padding: const EdgeInsets.only(left: 14),
+            padding: const EdgeInsetsDirectional.only(end: 14),
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(

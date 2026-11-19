@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -132,7 +133,10 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                         _buildLeading(context, canPop, width),
                         const SizedBox(width: 10),
                         // Current page title (pill)
-                        if (showTitle && (title.trim().isNotEmpty || (subtitle != null && subtitle!.trim().isNotEmpty)))
+                        if (showTitle &&
+                            (title.trim().isNotEmpty ||
+                                (subtitle != null &&
+                                    subtitle!.trim().isNotEmpty)))
                           Expanded(
                             child: Container(
                               padding: const EdgeInsets.symmetric(
@@ -141,7 +145,8 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                                 color: Colors.white.withValues(alpha: 0.10),
                                 borderRadius: BorderRadius.circular(20),
                                 border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.15)),
+                                    color:
+                                        Colors.white.withValues(alpha: 0.15)),
                               ),
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
@@ -169,8 +174,8 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       maxLines: 1,
                                       overflow: TextOverflow.ellipsis,
                                       style: TextStyle(
-                                        color:
-                                            Colors.white.withValues(alpha: 0.65),
+                                        color: Colors.white
+                                            .withValues(alpha: 0.65),
                                         fontSize: 12,
                                         fontFamily: 'Dubai',
                                         height: 1.3,
@@ -431,11 +436,11 @@ class AdminBottomSheetShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isDark = AdminTheme.isDark(context);
-    final bg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
+    final bg = context.appColors.surface;
     final borderColor =
-        isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
+        context.appColors.border;
     final handleColor =
-        isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
+        context.appColors.border;
 
     final content = Container(
       decoration: BoxDecoration(
@@ -681,7 +686,7 @@ class AdminHero extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(18),
+      clipBehavior: Clip.antiAlias,
       decoration: BoxDecoration(
         gradient: const LinearGradient(
           colors: [AppColors.bgDeep, Color(0xFF1A3D0A), AppColors.brandMid],
@@ -691,62 +696,70 @@ class AdminHero extends StatelessWidget {
         borderRadius: BorderRadius.circular(24),
         boxShadow: AppColors.heroShadow,
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: Stack(
         children: [
-          Row(
-            children: [
-              Container(
-                width: 48,
-                height: 48,
-                decoration: BoxDecoration(
-                  gradient: AppColors.gradientGold,
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Icon(icon, color: Colors.white, size: 24),
-              ),
-              const SizedBox(width: 12),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+          const Positioned.fill(child: GeometricPattern(opacity: 0.05)),
+          Padding(
+            padding: const EdgeInsets.all(18),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
                   children: [
-                    Text(
-                      title,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: appTextStyle(
-                        fontSize: 17,
-                        fontWeight: FontWeight.w800,
-                        color: Colors.white,
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.15),
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                      child: Icon(icon, color: Colors.white, size: 24),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            title,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: appTextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: Colors.white,
+                            ),
+                          ),
+                          if (subtitle != null)
+                            Text(
+                              subtitle!,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: appTextStyle(
+                                fontSize: 12,
+                                color: Colors.white.withValues(alpha: 0.7),
+                              ),
+                            ),
+                        ],
                       ),
                     ),
-                    if (subtitle != null)
-                      Text(
-                        subtitle!,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: appTextStyle(
-                          fontSize: 12,
-                          color: Colors.white.withValues(alpha: 0.7),
-                        ),
-                      ),
+                    if (trailing != null) trailing!,
                   ],
                 ),
-              ),
-              if (trailing != null) trailing!,
-            ],
-          ),
-          if (metrics.isNotEmpty) ...[
-            const SizedBox(height: 16),
-            Row(
-              children: [
-                for (var i = 0; i < metrics.length; i++) ...[
-                  if (i > 0) const SizedBox(width: 8),
-                  Expanded(child: _HeroMetricPill(metric: metrics[i])),
+                if (metrics.isNotEmpty) ...[
+                  const SizedBox(height: 16),
+                  Row(
+                    children: [
+                      for (var i = 0; i < metrics.length; i++) ...[
+                        if (i > 0) const SizedBox(width: 8),
+                        Expanded(child: _HeroMetricPill(metric: metrics[i])),
+                      ],
+                    ],
+                  ),
                 ],
               ],
             ),
-          ],
+          ),
         ],
       ),
     );

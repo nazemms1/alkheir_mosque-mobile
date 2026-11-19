@@ -63,15 +63,10 @@ class CustomShimmer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isDark = context.isDarkTheme;
 
-    final defaultBaseColor = isDark
-        ? const Color(0xFF1E293B)
-        : const Color(0xFFE2E8F0);
+    final defaultBaseColor = context.appColors.border;
 
-    final defaultHighlightColor = isDark
-        ? const Color(0xFF334155)
-        : const Color(0xFFF8FAFC);
+    final defaultHighlightColor = context.appColors.surface;
 
     return Shimmer.fromColors(
       baseColor: baseColor ?? defaultBaseColor,

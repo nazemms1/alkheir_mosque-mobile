@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -515,7 +516,7 @@ class _AttemptFormState extends State<_AttemptForm> {
               padding: const EdgeInsets.only(bottom: 10),
               child: Text(
                 _error!,
-                style: appTextStyle(fontSize: 13, color: AppColors.error),
+                style: appTextStyle(fontSize: 13, color: context.appColors.errorText),
               ),
             ),
           ModuleSaveButton(

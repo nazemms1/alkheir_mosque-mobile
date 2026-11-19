@@ -38,15 +38,7 @@ class _SummaryHero extends StatelessWidget {
       ),
       child: Stack(
         children: [
-          const Positioned(
-              top: -40,
-              left: -40,
-              child: _Orb(
-                  size: 180, color: AppColors.primaryLight, opacity: 0.07)),
-          const Positioned(
-              bottom: -20,
-              right: -30,
-              child: _Orb(size: 160, color: AppColors.gold, opacity: 0.06)),
+          const Positioned.fill(child: GeometricPattern(opacity: 0.05)),
           Padding(
             padding: const EdgeInsets.fromLTRB(20, 28, 20, 28),
             child: Column(

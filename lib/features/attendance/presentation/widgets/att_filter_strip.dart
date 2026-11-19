@@ -20,7 +20,7 @@ class _FilterStrip extends StatelessWidget {
         children: filters.map((f) {
           final isActive = selected == f.$2;
           return Padding(
-            padding: const EdgeInsets.only(left: 8),
+            padding: const EdgeInsetsDirectional.only(end: 8),
             child: GestureDetector(
               onTap: () => onSelect(f.$2),
               child: AnimatedContainer(
@@ -56,7 +56,7 @@ class _FilterStrip extends StatelessWidget {
                 child: Text(
                   f.$1,
                   style: TextStyle(
-                    color: isActive ? Colors.white : AppColors.textSecondary,
+                    color: isActive ? Colors.white : context.appColors.textSecondary,
                     fontSize: 13,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                     fontFamily: 'Dubai',

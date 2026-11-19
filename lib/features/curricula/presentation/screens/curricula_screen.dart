@@ -801,7 +801,7 @@ class _LessonRow extends StatelessWidget {
             Expanded(
               child: Text(
                 item.name,
-                textAlign: TextAlign.right,
+                textAlign: TextAlign.start,
                 style: appTextStyle(
                   fontSize: 14,
                   fontWeight: FontWeight.w600,

@@ -21,7 +21,7 @@ class _NotifTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = _colors[n.type] ?? AppColors.textSecondary;
+    final color = _colors[n.type] ?? context.appColors.textSecondary;
     final icon = _icons[n.type] ?? Icons.info_rounded;
     final diff = DateTime.now().difference(n.dateTime);
     final ago = diff.inHours < 1

@@ -113,7 +113,7 @@ class _StudentAttendanceScreenState extends State<StudentAttendanceScreen> {
               if (day.courseFinished)
                 Text(
                   tr('الكورس منتهٍ — السجل للقراءة فقط'),
-                  style: appTextStyle(fontSize: 12, color: AppColors.warning),
+                  style: appTextStyle(fontSize: 12, color: context.appColors.warningText),
                 ),
             ],
           ),
@@ -144,7 +144,7 @@ class _DayStatusFilter extends StatelessWidget {
         children: [
           for (final entry in options.entries)
             Padding(
-              padding: const EdgeInsets.only(left: 8),
+              padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
                 label: Text(entry.value, style: appTextStyle(fontSize: 12)),
                 selected: entry.key == selected,

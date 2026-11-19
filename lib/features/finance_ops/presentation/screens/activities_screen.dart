@@ -604,7 +604,7 @@ class _ExpensesTab extends StatelessWidget {
                   style: appTextStyle(
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
-                    color: AppColors.error,
+                    color: context.appColors.errorText,
                   ),
                 ),
               ],

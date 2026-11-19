@@ -236,7 +236,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: AlignmentDirectional.centerStart,
                           child: Text(
                             tr('الطالب'),
                             style: appTextStyle(
@@ -297,7 +297,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                 Expanded(
                                   child: Text(
                                     _student?.label ?? tr('اسم الطالب'),
-                                    textAlign: TextAlign.right,
+                                    textAlign: TextAlign.start,
                                     style: appTextStyle(
                                       fontSize: 14,
                                       fontWeight: _student != null
@@ -321,7 +321,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: AlignmentDirectional.centerStart,
                           child: Text(
                             tr('الجزء'),
                             style: appTextStyle(
@@ -387,7 +387,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                   _loadingData
                                       ? tr('جاري التحميل...')
                                       : juzText,
-                                  textAlign: TextAlign.right,
+                                  textAlign: TextAlign.start,
                                   style: appTextStyle(
                                     fontSize: 13,
                                     fontWeight: hasEligibleJuz
@@ -410,7 +410,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: AlignmentDirectional.centerStart,
                           child: Text(
                             tr('الأرباع المتاحة'),
                             style: appTextStyle(
@@ -443,7 +443,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Align(
-                          alignment: Alignment.centerRight,
+                          alignment: AlignmentDirectional.centerStart,
                           child: Text(
                             tr('عدد الأخطاء'),
                             style: appTextStyle(
@@ -464,7 +464,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                           child: TextField(
                             controller: _mistakesCtrl,
                             keyboardType: TextInputType.number,
-                            textAlign: TextAlign.right,
+                            textAlign: TextAlign.start,
                             style: appTextStyle(
                               fontSize: 14,
                               fontWeight: FontWeight.w700,
