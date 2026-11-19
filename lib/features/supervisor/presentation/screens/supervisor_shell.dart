@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
@@ -330,7 +331,7 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
                             trf('مرحباً، {0}', [userName]),
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 16,
+                                fontSize: FontSize.title,
                                 fontWeight: FontWeight.w800,
                                 fontFamily: 'Dubai'),
                           ),
@@ -347,7 +348,7 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
                             child: Text(roleLabel,
                                 style: const TextStyle(
                                     color: Colors.white,
-                                    fontSize: 12,
+                                    fontSize: FontSize.caption,
                                     fontFamily: 'Dubai')),
                           ),
                         ],
@@ -398,13 +399,13 @@ class _HeroPill extends StatelessWidget {
             Text(value,
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
             Text(label,
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.65),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
           ],
         ),
@@ -528,7 +529,7 @@ class _MiniGroupTile extends StatelessWidget {
                 Text(group.name,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface),
                     maxLines: 1,
@@ -536,7 +537,7 @@ class _MiniGroupTile extends StatelessWidget {
                 Text(group.teacher.isEmpty ? group.course : group.teacher,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: context.appColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
@@ -551,7 +552,7 @@ class _MiniGroupTile extends StatelessWidget {
             child: Text(trf('{0} طالب', [group.enrollmentsCount]),
                 style: const TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primaryLight)),
           ),
@@ -594,7 +595,7 @@ class _MiniStudentTile extends StatelessWidget {
               child: Text(student.initials,
                   style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 13,
+                      fontSize: FontSize.label,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'Dubai')),
             ),
@@ -607,7 +608,7 @@ class _MiniStudentTile extends StatelessWidget {
                 Text(student.fullName,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface),
                     maxLines: 1,
@@ -615,7 +616,7 @@ class _MiniStudentTile extends StatelessWidget {
                 Text('${student.gradeLevel} · ${student.studentNumber}',
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: context.appColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
@@ -630,7 +631,7 @@ class _MiniStudentTile extends StatelessWidget {
             child: Text(trf('ج {0}', [student.currentJuz]),
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w700,
                     color: context.appColors.goldText)),
           ),
@@ -830,7 +831,7 @@ class _GroupChip extends StatelessWidget {
           label,
           style: TextStyle(
             fontFamily: 'Dubai',
-            fontSize: 12,
+            fontSize: FontSize.caption,
             fontWeight: isSelected ? FontWeight.w700 : FontWeight.w500,
             color: isSelected ? Colors.white : context.appColors.textSecondary,
           ),
@@ -881,7 +882,7 @@ class _StudentProgressCard extends StatelessWidget {
                       : tr('؟'),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: FontSize.headlineSmall,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai',
                   ),
@@ -897,7 +898,7 @@ class _StudentProgressCard extends StatelessWidget {
                     student.fullName,
                     style: TextStyle(
                       fontFamily: 'Dubai',
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),
@@ -913,7 +914,7 @@ class _StudentProgressCard extends StatelessWidget {
                           student.gradeLevel,
                           style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             color: context.appColors.textMuted,
                           ),
                         ),
@@ -931,7 +932,7 @@ class _StudentProgressCard extends StatelessWidget {
                           trf('ولي الأمر: {0}', [student.parent]),
                           style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             color: context.appColors.textMuted,
                           ),
                         ),
@@ -951,7 +952,7 @@ class _StudentProgressCard extends StatelessWidget {
                 student.isActive ? tr('نشط') : tr('غير نشط'),
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   color: statusColor,
                 ),
@@ -1075,7 +1076,7 @@ class RecitationTabState extends State<RecitationTab> {
           Text(tr('الطالب'),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context)
                       .colorScheme
@@ -1093,7 +1094,7 @@ class RecitationTabState extends State<RecitationTab> {
           Text(tr('نوع التسجيل'),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context)
                       .colorScheme
@@ -1125,7 +1126,7 @@ class RecitationTabState extends State<RecitationTab> {
           Text(tr('نطاق الصفحات'),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context)
                       .colorScheme
@@ -1138,11 +1139,11 @@ class RecitationTabState extends State<RecitationTab> {
                 child: TextFormField(
                   controller: _fromPageCtrl,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(fontFamily: 'Dubai', fontSize: 15),
+                  style: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.bodyLarge),
                   decoration: InputDecoration(
                     labelText: tr('من صفحة'),
                     labelStyle:
-                        const TextStyle(fontFamily: 'Dubai', fontSize: 13),
+                        const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.label),
                     prefixIcon: const Icon(Icons.first_page_rounded,
                         size: 20, color: AppColors.primaryLight),
                     filled: true,
@@ -1163,11 +1164,11 @@ class RecitationTabState extends State<RecitationTab> {
                 child: TextFormField(
                   controller: _toPageCtrl,
                   keyboardType: TextInputType.number,
-                  style: const TextStyle(fontFamily: 'Dubai', fontSize: 15),
+                  style: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.bodyLarge),
                   decoration: InputDecoration(
                     labelText: tr('إلى صفحة'),
                     labelStyle:
-                        const TextStyle(fontFamily: 'Dubai', fontSize: 13),
+                        const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.label),
                     prefixIcon: const Icon(Icons.last_page_rounded,
                         size: 20, color: AppColors.primaryLight),
                     filled: true,
@@ -1193,7 +1194,7 @@ class RecitationTabState extends State<RecitationTab> {
           Text(tr('التاريخ'),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: Theme.of(context)
                       .colorScheme
@@ -1211,7 +1212,7 @@ class RecitationTabState extends State<RecitationTab> {
                     size: 20, color: AppColors.primaryLight),
                 const SizedBox(width: 12),
                 Text(dateStr,
-                    style: const TextStyle(fontFamily: 'Dubai', fontSize: 15)),
+                    style: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.bodyLarge)),
                 const Spacer(),
                 Container(
                   padding:
@@ -1223,7 +1224,7 @@ class RecitationTabState extends State<RecitationTab> {
                   child: Text(tr('اليوم'),
                       style: const TextStyle(
                           fontFamily: 'Dubai',
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryLight)),
                 ),
@@ -1258,7 +1259,7 @@ class RecitationTabState extends State<RecitationTab> {
                             style: const TextStyle(
                                 fontFamily: 'Dubai',
                                 fontWeight: FontWeight.w800,
-                                fontSize: 15)),
+                                fontSize: FontSize.bodyLarge)),
                       ],
                     ),
             ),
@@ -1311,7 +1312,7 @@ class _StudentSelectField extends StatelessWidget {
                       : tr('؟'),
                   style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'Dubai'),
                 ),
@@ -1325,14 +1326,14 @@ class _StudentSelectField extends StatelessWidget {
                   Text(selected!.fullName,
                       style: TextStyle(
                           fontFamily: 'Dubai',
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface)),
                   if (selected!.gradeLevel.isNotEmpty)
                     Text(selected!.gradeLevel,
                         style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             color: context.appColors.textMuted)),
                 ],
               ),
@@ -1355,10 +1356,10 @@ class _StudentSelectField extends StatelessWidget {
         return TextField(
           controller: controller,
           focusNode: focusNode,
-          style: const TextStyle(fontFamily: 'Dubai', fontSize: 14),
+          style: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.body),
           decoration: InputDecoration(
             hintText: tr('اكتب اسم الطالب للبحث...'),
-            hintStyle: const TextStyle(fontFamily: 'Dubai', fontSize: 13),
+            hintStyle: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.label),
             prefixIcon: const Icon(Icons.search_rounded),
             suffixIcon: const Icon(Icons.arrow_drop_down_rounded),
             filled: true,
@@ -1399,7 +1400,7 @@ class _StudentSelectField extends StatelessWidget {
                                 : tr('؟'),
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 fontWeight: FontWeight.w800,
                                 fontFamily: 'Dubai')),
                       ),
@@ -1407,13 +1408,13 @@ class _StudentSelectField extends StatelessWidget {
                     title: Text(s.fullName,
                         style: const TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 13,
+                            fontSize: FontSize.label,
                             fontWeight: FontWeight.w600)),
                     subtitle: s.gradeLevel.isNotEmpty
                         ? Text(s.gradeLevel,
                             style: TextStyle(
                                 fontFamily: 'Dubai',
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 color: context.appColors.textMuted))
                         : null,
                     onTap: () => onSelect(s),
@@ -1474,7 +1475,7 @@ class _EntryTypeChip extends StatelessWidget {
             Text(label,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: selected
                       ? Colors.white
@@ -1645,7 +1646,7 @@ class _PointsCard extends StatelessWidget {
                   enrollment.studentName,
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -1655,7 +1656,7 @@ class _PointsCard extends StatelessWidget {
                   enrollment.groupName,
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: context.appColors.textMuted,
                   ),
                 ),
@@ -1776,7 +1777,7 @@ class _ActivityCard extends StatelessWidget {
             activity.title,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 14,
+              fontSize: FontSize.body,
               fontWeight: FontWeight.w700,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -1787,7 +1788,7 @@ class _ActivityCard extends StatelessWidget {
               activity.groupName!,
               style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 color: context.appColors.textMuted,
               ),
             ),
@@ -1907,7 +1908,7 @@ class _AssessmentCard extends StatelessWidget {
                   assessment.title,
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -1924,7 +1925,7 @@ class _AssessmentCard extends StatelessWidget {
                   assessment.isActive ? tr('نشط') : tr('غير نشط'),
                   style: TextStyle(
                       color: color,
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai'),
                 ),
@@ -1936,7 +1937,7 @@ class _AssessmentCard extends StatelessWidget {
             assessment.groupName,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 12,
+              fontSize: FontSize.caption,
               color: context.appColors.textMuted,
             ),
           ),
@@ -2072,7 +2073,7 @@ class _GroupReportCard extends StatelessWidget {
                   group.name,
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -2089,7 +2090,7 @@ class _GroupReportCard extends StatelessWidget {
                   group.isActive ? tr('نشطة') : tr('غير نشطة'),
                   style: TextStyle(
                       color: color,
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai'),
                 ),
@@ -2142,7 +2143,7 @@ class _InfoChip extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: color,
                   fontWeight: FontWeight.w600)),
         ],
@@ -2178,7 +2179,7 @@ class _ComingSoonTab extends StatelessWidget {
             title,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 18,
+              fontSize: FontSize.headlineSmall,
               fontWeight: FontWeight.w700,
               color: context.appColors.textPrimary,
             ),
@@ -2188,7 +2189,7 @@ class _ComingSoonTab extends StatelessWidget {
             subtitle,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 13,
+              fontSize: FontSize.label,
               color: context.appColors.textMuted,
             ),
           ),
@@ -2210,7 +2211,7 @@ class _ComingSoonTab extends StatelessWidget {
                   tr('قيد الإنشاء'),
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: context.appColors.goldText,
                     fontWeight: FontWeight.w600,
                   ),
@@ -2263,7 +2264,7 @@ class _PermissionAwareError extends StatelessWidget {
               title,
               style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 18,
+                fontSize: FontSize.headlineSmall,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),
@@ -2274,7 +2275,7 @@ class _PermissionAwareError extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 13,
+                fontSize: FontSize.label,
                 color: context.appColors.textMuted,
               ),
             ),

@@ -119,7 +119,7 @@ class _EvalComment extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(color: context.appColors.textMuted, fontSize: 12)),
+                        ?.copyWith(color: context.appColors.textMuted, fontSize: FontSize.caption)),
                 const SizedBox(height: 3),
                 Text(eval.teacherComment,
                     style: Theme.of(context)
@@ -156,7 +156,7 @@ class _EvalFooter extends StatelessWidget {
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
-                  ?.copyWith(color: context.appColors.textMuted, fontSize: 12)),
+                  ?.copyWith(color: context.appColors.textMuted, fontSize: FontSize.caption)),
         ],
       ),
     );

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -130,7 +131,7 @@ class _PointsLedgerScreenState extends State<PointsLedgerScreen> {
                       Text(
                         entry.student?.name ?? '—',
                         style: appTextStyle(
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w800,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
@@ -139,13 +140,13 @@ class _PointsLedgerScreenState extends State<PointsLedgerScreen> {
                       Text(
                         '${entry.pointTypeName ?? ''}  ·  ${entry.groupName ?? ''}',
                         style: appTextStyle(
-                            fontSize: 12, color: moduleMuted(context)),
+                            fontSize: FontSize.caption, color: moduleMuted(context)),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         entry.enteredAt,
                         style: appTextStyle(
-                            fontSize: 12, color: moduleMuted(context)),
+                            fontSize: FontSize.caption, color: moduleMuted(context)),
                       ),
                     ],
                   ),
@@ -156,7 +157,7 @@ class _PointsLedgerScreenState extends State<PointsLedgerScreen> {
                     Text(
                       entry.points > 0 ? '+${entry.points}' : '${entry.points}',
                       style: appTextStyle(
-                        fontSize: 16,
+                        fontSize: FontSize.title,
                         fontWeight: FontWeight.w800,
                         color: entry.isVoided ? context.appColors.textMuted : color,
                       ),
@@ -197,7 +198,7 @@ class _StateChips extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
-                label: Text(entry.value, style: appTextStyle(fontSize: 12)),
+                label: Text(entry.value, style: appTextStyle(fontSize: FontSize.caption)),
                 selected: entry.key == selected,
                 onSelected: (_) => onSelected(entry.key),
               ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:async';
 
@@ -164,7 +165,7 @@ class InfoRow extends StatelessWidget {
     final valueWidget = Text(
       value.isEmpty ? '—' : value,
       style: appTextStyle(
-        fontSize: 13,
+        fontSize: FontSize.label,
         fontWeight: FontWeight.w600,
         color: onTap != null
             ? AppColors.primaryLight
@@ -183,7 +184,7 @@ class InfoRow extends StatelessWidget {
             width: 116,
             child: Text(
               label,
-              style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+              style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
             ),
           ),
           Flexible(
@@ -346,7 +347,7 @@ class _RecordSheet extends StatelessWidget {
                                         tr('اتصال'),
                                         style: const TextStyle(
                                           fontFamily: 'Dubai',
-                                          fontSize: 12,
+                                          fontSize: FontSize.caption,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.primaryLight,
                                         ),
@@ -416,7 +417,7 @@ class _SheetActionButton extends StatelessWidget {
                 action.label,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 14,
+                  fontSize: FontSize.body,
                   fontWeight: FontWeight.w700,
                   color: color,
                 ),
@@ -480,7 +481,7 @@ Future<bool> confirmAction(
     context: context,
     builder: (ctx) => AlertDialog(
       title: Text(title, style: appTextStyle(fontWeight: FontWeight.w700)),
-      content: Text(message, style: appTextStyle(fontSize: 14)),
+      content: Text(message, style: appTextStyle(fontSize: FontSize.body)),
       actions: [
         TextButton(
           onPressed: () => Navigator.pop(ctx, false),

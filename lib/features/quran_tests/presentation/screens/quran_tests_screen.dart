@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -270,7 +271,7 @@ class _CycleCard extends StatelessWidget {
                 child: Text(
                   juz == null ? '—' : trf('الجزء {0}', [juz.juzNumber]),
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -282,13 +283,13 @@ class _CycleCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '${(partial?.group ?? finalTest?.group)?.name ?? ''}  ·  $detail',
-            style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+            style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
           ),
           if ((partial?.passedOn ?? finalTest?.passedOn) != null)
             Text(
               trf('تاريخ النجاح: {0}',
                   [partial?.passedOn ?? finalTest?.passedOn ?? '']),
-              style: appTextStyle(fontSize: 12, color: context.appColors.successText),
+              style: appTextStyle(fontSize: FontSize.caption, color: context.appColors.successText),
             ),
         ],
       ),
@@ -457,7 +458,7 @@ class _StartCycleFormState extends State<_StartCycleForm> {
         if (_error != null) ...[
           const SizedBox(height: 8),
           Text(_error!,
-              style: appTextStyle(fontSize: 13, color: context.appColors.errorText)),
+              style: appTextStyle(fontSize: FontSize.label, color: context.appColors.errorText)),
         ],
         const SizedBox(height: 16),
         ModuleSaveButton(

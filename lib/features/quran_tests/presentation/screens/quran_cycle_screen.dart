@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -161,7 +162,7 @@ class _QuranCycleScreenState extends State<QuranCycleScreen> {
                       child: Text(
                         juz == null ? '—' : trf('الجزء {0}', [juz.juzNumber]),
                         style: appTextStyle(
-                          fontSize: 16,
+                          fontSize: FontSize.title,
                           fontWeight: FontWeight.w800,
                           color: Theme.of(context).colorScheme.onSurface,
                         ),
@@ -234,13 +235,13 @@ class _QuranCycleScreenState extends State<QuranCycleScreen> {
                       child: Text(
                         trf('المحاولة {0}', [attempt.attemptNo]),
                         style: appTextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w800),
+                            fontSize: FontSize.body, fontWeight: FontWeight.w800),
                       ),
                     ),
                     Text(
                       formatAmount(attempt.score),
                       style: appTextStyle(
-                        fontSize: 15,
+                        fontSize: FontSize.bodyLarge,
                         fontWeight: FontWeight.w800,
                         color: AppColors.primaryLight,
                       ),
@@ -250,10 +251,10 @@ class _QuranCycleScreenState extends State<QuranCycleScreen> {
                 Text(
                   '${attempt.testedOn ?? ''}  ·  ${attempt.teacher?.name ?? ''}',
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 ),
                 if (attempt.notes != null)
-                  Text(attempt.notes!, style: appTextStyle(fontSize: 12)),
+                  Text(attempt.notes!, style: appTextStyle(fontSize: FontSize.caption)),
               ],
             ),
           ),
@@ -266,7 +267,7 @@ class _QuranCycleScreenState extends State<QuranCycleScreen> {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 14,
+          fontSize: FontSize.body,
           fontWeight: FontWeight.w800,
           color: Theme.of(context).colorScheme.onSurface,
         ),
@@ -300,7 +301,7 @@ class _PartCard extends StatelessWidget {
                 child: Text(
                   trf('المقطع {0}', [part.partNumber]),
                   style:
-                      appTextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+                      appTextStyle(fontSize: FontSize.body, fontWeight: FontWeight.w800),
                 ),
               ),
               StatusPill(label: quranStatusLabel(part.status), color: color),
@@ -311,7 +312,7 @@ class _PartCard extends StatelessWidget {
               padding: const EdgeInsets.only(top: 6),
               child: Text(
                 tr('لا توجد محاولات بعد'),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
             )
           else
@@ -324,7 +325,7 @@ class _PartCard extends StatelessWidget {
                     attempt.mistakeCount,
                     attempt.testedOn ?? '',
                   ]),
-                  style: appTextStyle(fontSize: 12),
+                  style: appTextStyle(fontSize: FontSize.caption),
                 ),
               ),
           if (canRecord) ...[
@@ -516,7 +517,7 @@ class _AttemptFormState extends State<_AttemptForm> {
               padding: const EdgeInsets.only(bottom: 10),
               child: Text(
                 _error!,
-                style: appTextStyle(fontSize: 13, color: context.appColors.errorText),
+                style: appTextStyle(fontSize: FontSize.label, color: context.appColors.errorText),
               ),
             ),
           ModuleSaveButton(

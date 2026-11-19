@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -205,7 +206,7 @@ class _GroupHeader extends StatelessWidget {
               '$count',
               style: const TextStyle(
                 color: AppColors.primaryLight,
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Dubai',
               ),
@@ -313,7 +314,7 @@ class _NoteCard extends StatelessWidget {
                           label,
                           style: TextStyle(
                             color: color,
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Dubai',
                           ),
@@ -351,7 +352,7 @@ class _NoteCard extends StatelessWidget {
                                   .colorScheme
                                   .onSurface
                                   .withValues(alpha: 0.4),
-                              fontSize: 12,
+                              fontSize: FontSize.caption,
                             ),
                       ),
                     ],

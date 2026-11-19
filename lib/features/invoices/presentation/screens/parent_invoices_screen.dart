@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -164,7 +165,7 @@ class _InvoiceTile extends StatelessWidget {
                   child: Text(invoice.invoiceNo,
                       style: TextStyle(
                           fontFamily: 'Dubai',
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w700,
                           color: Theme.of(context).colorScheme.onSurface)),
                 ),
@@ -177,7 +178,7 @@ class _InvoiceTile extends StatelessWidget {
                   child: Text(_statusLabel,
                       style: TextStyle(
                           color: color,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai')),
                 ),
@@ -206,20 +207,20 @@ class _InvoiceTile extends StatelessWidget {
                 Text('${invoice.total.toInt()}',
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w800,
                         color: context.appColors.infoText)),
                 const SizedBox(width: 6),
                 Text(tr('الإجمالي'),
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: context.appColors.textMuted)),
                 const Spacer(),
                 Text(invoice.issueDate,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: context.appColors.textMuted)),
               ],
             ),

@@ -15,6 +15,9 @@ class AppColors extends ThemeExtension<AppColors> {
   final Color textMuted;
   final Color border;
   final Color divider;
+
+  /// خلفية الحقول والقوائم داخل البطاقات.
+  final Color field;
   final Color error;
   final Color success;
   final Color warning;
@@ -39,6 +42,7 @@ class AppColors extends ThemeExtension<AppColors> {
     required this.textMuted,
     required this.border,
     required this.divider,
+    required this.field,
     required this.error,
     required this.success,
     required this.warning,
@@ -63,6 +67,7 @@ class AppColors extends ThemeExtension<AppColors> {
         textMuted: Color(0xFF56705E),
         border: Color(0xFFDCE4D8),
         divider: Color(0xFFE8EFE5),
+        field: Color(0xFFF1F5EF),
         error: Color(0xFFEF4444),
         success: Color(0xFF22C55E),
         warning: Color(0xFFF59E0B),
@@ -87,6 +92,7 @@ class AppColors extends ThemeExtension<AppColors> {
         textMuted: Color(0xFF7F9A87),
         border: Color(0xFF193222),
         divider: Color(0xFF193222),
+        field: Color(0xB30F0C09),
         error: Color(0xFFEF4444),
         success: Color(0xFF22C55E),
         warning: Color(0xFFF59E0B),
@@ -117,6 +123,7 @@ class AppColors extends ThemeExtension<AppColors> {
       textMuted: l(textMuted, other.textMuted),
       border: l(border, other.border),
       divider: l(divider, other.divider),
+      field: l(field, other.field),
       error: l(error, other.error),
       success: l(success, other.success),
       warning: l(warning, other.warning),

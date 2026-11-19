@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -174,7 +175,7 @@ class _ActivityCard extends StatelessWidget {
                     Text(activity.title,
                         style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 14,
+                            fontSize: FontSize.body,
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSurface),
                         maxLines: 2,
@@ -183,7 +184,7 @@ class _ActivityCard extends StatelessWidget {
                       Text(activity.groupName!,
                           style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 12,
+                              fontSize: FontSize.caption,
                               color: context.appColors.textMuted)),
                   ],
                 ),
@@ -198,7 +199,7 @@ class _ActivityCard extends StatelessWidget {
                   child: Text('${activity.feeAmount.toInt()}',
                       style: TextStyle(
                           color: context.appColors.goldText,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai')),
                 ),
@@ -210,7 +211,7 @@ class _ActivityCard extends StatelessWidget {
             Text(activity.description!,
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: context.appColors.textSecondary),
                 maxLines: 3,
                 overflow: TextOverflow.ellipsis),
@@ -258,7 +259,7 @@ class _ChildResponseRow extends StatelessWidget {
             child: Text(child.studentName,
                 style: const TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600)),
           ),
           if (registered)
@@ -294,7 +295,7 @@ class _StatusChip extends StatelessWidget {
       child: Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
     );
@@ -319,7 +320,7 @@ class _RespondButton extends StatelessWidget {
         child: Text(label,
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Dubai')),
       ),

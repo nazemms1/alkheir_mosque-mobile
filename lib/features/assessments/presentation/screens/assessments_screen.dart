@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -65,7 +66,7 @@ class AssessmentsScreen extends StatelessWidget {
                     child: Text(
                       item.title,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -82,12 +83,12 @@ class AssessmentsScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 '${item.typeName ?? ''}  ·  ${item.groupName ?? ''}  ·  ${(item.scheduledAt ?? '').split('T').first}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
                 trf('النتائج: {0}', [item.resultsCount]),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -235,7 +236,7 @@ class _AssessmentDetailScreenState extends State<AssessmentDetailScreen> {
                                     Text(
                                       r.studentName,
                                       style: appTextStyle(
-                                          fontSize: 13,
+                                          fontSize: FontSize.label,
                                           fontWeight: FontWeight.w800),
                                     ),
                                     Text(
@@ -243,7 +244,7 @@ class _AssessmentDetailScreenState extends State<AssessmentDetailScreen> {
                                             r.attemptNo
                                           ])}  ·  ${r.teacherName ?? ''}',
                                       style: appTextStyle(
-                                          fontSize: 12,
+                                          fontSize: FontSize.caption,
                                           color: moduleMuted(context)),
                                     ),
                                   ],
@@ -252,7 +253,7 @@ class _AssessmentDetailScreenState extends State<AssessmentDetailScreen> {
                               Text(
                                 r.score == null ? '—' : formatAmount(r.score!),
                                 style: appTextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w800),
+                                    fontSize: FontSize.body, fontWeight: FontWeight.w800),
                               ),
                               const SizedBox(width: 8),
                               StatusPill(

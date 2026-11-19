@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -256,7 +257,7 @@ class _CourseCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
-                          fontSize: 15,
+                          fontSize: FontSize.bodyLarge,
                           fontWeight: FontWeight.w800,
                           color: AdminTheme.text(context),
                         ),
@@ -266,7 +267,7 @@ class _CourseCard extends StatelessWidget {
                         course.academicYear ?? '—',
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
-                        style: appTextStyle(fontSize: 12, color: muted),
+                        style: appTextStyle(fontSize: FontSize.caption, color: muted),
                       ),
                     ],
                   ),
@@ -298,7 +299,7 @@ class _CourseCard extends StatelessWidget {
                     '${course.startsOn ?? ''} - ${course.endsOn ?? ''}',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: appTextStyle(fontSize: 12, color: muted),
+                    style: appTextStyle(fontSize: FontSize.caption, color: muted),
                   ),
                 ),
               ],

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
@@ -320,7 +321,7 @@ class _WelcomeBanner extends StatelessWidget {
                         Text(
                           greeting,
                           style: appTextStyle(
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             color: Colors.white.withValues(alpha: 0.7),
                           ),
                         ),
@@ -330,7 +331,7 @@ class _WelcomeBanner extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: appTextStyle(
-                            fontSize: 18,
+                            fontSize: FontSize.headlineSmall,
                             fontWeight: FontWeight.w800,
                             color: Colors.white,
                           ),
@@ -339,7 +340,7 @@ class _WelcomeBanner extends StatelessWidget {
                         Text(
                           tr('لوحة التحكم الإدارية'),
                           style: appTextStyle(
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             color: AppColors.goldLight,
                           ),
                         ),
@@ -398,7 +399,7 @@ class _BannerMetric extends StatelessWidget {
             child: Text(
               value,
               style: appTextStyle(
-                fontSize: 18,
+                fontSize: FontSize.headlineSmall,
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
               ),
@@ -410,7 +411,7 @@ class _BannerMetric extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: appTextStyle(
-              fontSize: 12,
+              fontSize: FontSize.caption,
               color: Colors.white.withValues(alpha: 0.65),
             ),
           ),
@@ -504,7 +505,7 @@ class _MiniGroupTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: appTextStyle(
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     color: AdminTheme.text(context),
                   ),
@@ -515,7 +516,7 @@ class _MiniGroupTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: appTextStyle(
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: AdminTheme.muted(context),
                   ),
                 ),
@@ -555,7 +556,7 @@ class _MiniStudentTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: appTextStyle(
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     color: AdminTheme.text(context),
                   ),
@@ -566,7 +567,7 @@ class _MiniStudentTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: appTextStyle(
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: AdminTheme.muted(context),
                   ),
                 ),

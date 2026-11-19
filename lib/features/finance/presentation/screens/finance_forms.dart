@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -154,7 +155,7 @@ class _CashFormBodyState extends State<_CashFormBody> {
             const SizedBox(height: 10),
             Text(
               _error!,
-              style: appTextStyle(fontSize: 13, color: context.appColors.errorText),
+              style: appTextStyle(fontSize: FontSize.label, color: context.appColors.errorText),
             ),
           ],
           const SizedBox(height: 16),

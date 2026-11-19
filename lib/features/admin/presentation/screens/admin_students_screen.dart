@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -313,7 +314,7 @@ class _GroupFilterChip extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: appTextStyle(
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: color,
                 ),
@@ -365,7 +366,7 @@ class _StudentCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w800,
                           color: AdminTheme.text(context),
                         ),
@@ -385,7 +386,7 @@ class _StudentCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       color: AdminTheme.muted(context),
                     ),
                   ),

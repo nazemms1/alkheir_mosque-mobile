@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';

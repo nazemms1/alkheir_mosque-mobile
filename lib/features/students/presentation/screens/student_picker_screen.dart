@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -83,7 +84,7 @@ class _StudentPickerScreenState extends State<StudentPickerScreen> {
                     Text(
                       student.fullName,
                       style: appTextStyle(
-                        fontSize: 15,
+                        fontSize: FontSize.bodyLarge,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -93,13 +94,13 @@ class _StudentPickerScreenState extends State<StudentPickerScreen> {
                     Text(
                       '${student.studentNumber ?? ''}  ·  ${student.gradeLevel ?? ''}',
                       style: appTextStyle(
-                          fontSize: 12, color: moduleMuted(context)),
+                          fontSize: FontSize.caption, color: moduleMuted(context)),
                     ),
                     if (student.parentName != null)
                       Text(
                         trf('ولي الأمر: {0}', [student.parentName]),
                         style: appTextStyle(
-                            fontSize: 12, color: moduleMuted(context)),
+                            fontSize: FontSize.caption, color: moduleMuted(context)),
                       ),
                   ],
                 ),

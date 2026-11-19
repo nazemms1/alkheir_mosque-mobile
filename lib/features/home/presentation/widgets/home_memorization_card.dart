@@ -76,7 +76,7 @@ class _MemCardHeader extends StatelessWidget {
                     Text(tr('تقدم الحفظ'),
                         style: const TextStyle(
                           color: AppColors.goldLight,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai',
                         )),
@@ -87,7 +87,7 @@ class _MemCardHeader extends StatelessWidget {
               Text(p.currentSurah,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 19,
+                    fontSize: FontSize.headline,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai',
                   )),
@@ -97,7 +97,7 @@ class _MemCardHeader extends StatelessWidget {
                     [p.currentJuz, p.totalPagesMemorized, p.totalQuranPages]),
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.65),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai'),
               ),
               const SizedBox(height: 18),
@@ -108,7 +108,7 @@ class _MemCardHeader extends StatelessWidget {
                       [(pct * 100).toStringAsFixed(1)]),
                   style: const TextStyle(
                     color: AppColors.goldLight,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Dubai',
                   )),
@@ -173,14 +173,14 @@ class _MemCircularIndicator extends StatelessWidget {
           Text('${(pct * 100).toStringAsFixed(0)}%',
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 15,
+                fontSize: FontSize.bodyLarge,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'Dubai',
               )),
           Text(tr('مكتمل'),
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai',
               )),
         ],
@@ -218,7 +218,7 @@ class _MemCardLastSection extends StatelessWidget {
             Text(tr('آخر تلاوة: '),
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.55),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
             Expanded(
               child: Text(
@@ -231,7 +231,7 @@ class _MemCardLastSection extends StatelessWidget {
                     : active.juzName,
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Dubai',
                 ),

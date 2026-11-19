@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -89,7 +90,7 @@ class _StudentAttendanceScreenState extends State<StudentAttendanceScreen> {
                     child: Text(
                       day.attendanceDate,
                       style: appTextStyle(
-                        fontSize: 15,
+                        fontSize: FontSize.bodyLarge,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -108,12 +109,12 @@ class _StudentAttendanceScreenState extends State<StudentAttendanceScreen> {
                 '${day.courseName ?? ''}  ·  ${trf('الحلقات: {0}', [
                       day.groupsCount
                     ])}  ·  ${trf('السجلات: {0}', [day.recordsCount])}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
               if (day.courseFinished)
                 Text(
                   tr('الكورس منتهٍ — السجل للقراءة فقط'),
-                  style: appTextStyle(fontSize: 12, color: context.appColors.warningText),
+                  style: appTextStyle(fontSize: FontSize.caption, color: context.appColors.warningText),
                 ),
             ],
           ),
@@ -146,7 +147,7 @@ class _DayStatusFilter extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
-                label: Text(entry.value, style: appTextStyle(fontSize: 12)),
+                label: Text(entry.value, style: appTextStyle(fontSize: FontSize.caption)),
                 selected: entry.key == selected,
                 onSelected: (_) => onSelected(entry.key),
               ),
@@ -305,7 +306,7 @@ class _GroupDayCard extends StatelessWidget {
           Text(
             group.groupName,
             style: appTextStyle(
-              fontSize: 14,
+              fontSize: FontSize.body,
               fontWeight: FontWeight.w800,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -313,7 +314,7 @@ class _GroupDayCard extends StatelessWidget {
           const SizedBox(height: 8),
           if (group.records.isEmpty)
             Text(tr('لا توجد سجلات'),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)))
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)))
           else
             for (final record in group.records)
               Padding(
@@ -323,7 +324,7 @@ class _GroupDayCard extends StatelessWidget {
                     Expanded(
                       child: Text(
                         record.studentName,
-                        style: appTextStyle(fontSize: 13),
+                        style: appTextStyle(fontSize: FontSize.label),
                         overflow: TextOverflow.ellipsis,
                       ),
                     ),

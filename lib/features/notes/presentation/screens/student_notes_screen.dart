@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -151,7 +152,7 @@ class _StudentNotesScreenState extends State<StudentNotesScreen> {
               Text(
                 note.body,
                 style: appTextStyle(
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
                 maxLines: 3,
@@ -160,7 +161,7 @@ class _StudentNotesScreenState extends State<StudentNotesScreen> {
               const SizedBox(height: 6),
               Text(
                 '${note.student?.name ?? ''}  ·  ${note.notedAt.split('T').first}  ·  ${noteSourceLabel(note.source)}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ],

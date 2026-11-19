@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -227,7 +228,7 @@ class _MainShellState extends ConsumerState<MainShell>
                 Text(
                   tr('تسجيل الخروج'),
                   style: appTextStyle(
-                    fontSize: 18,
+                    fontSize: FontSize.headlineSmall,
                     fontWeight: FontWeight.w800,
                     color: scheme.onSurface,
                   ),
@@ -237,7 +238,7 @@ class _MainShellState extends ConsumerState<MainShell>
                   tr('هل تريد تسجيل الخروج من الحساب؟'),
                   textAlign: TextAlign.center,
                   style: appTextStyle(
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     color: scheme.onSurface.withValues(alpha: 0.7),
                   ),
                 ),
@@ -255,7 +256,7 @@ class _MainShellState extends ConsumerState<MainShell>
                         child: Text(
                           tr('إلغاء'),
                           style: appTextStyle(
-                              fontSize: 14, fontWeight: FontWeight.w700),
+                              fontSize: FontSize.body, fontWeight: FontWeight.w700),
                         ),
                       ),
                     ),
@@ -283,7 +284,7 @@ class _MainShellState extends ConsumerState<MainShell>
                         child: Text(
                           tr('تسجيل الخروج'),
                           style: appTextStyle(
-                            fontSize: 14,
+                            fontSize: FontSize.body,
                             fontWeight: FontWeight.w700,
                             color: Colors.white,
                           ),
@@ -484,7 +485,7 @@ class _MainShellState extends ConsumerState<MainShell>
                             textAlign: TextAlign.center,
                             style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Dubai',
                             ),
@@ -622,7 +623,7 @@ class _UserProfileSheet extends ConsumerWidget {
                     tr('الملف الشخصي'),
                     style: TextStyle(
                       color: c.textPrimary,
-                      fontSize: 16,
+                      fontSize: FontSize.title,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'Dubai',
                     ),
@@ -667,7 +668,7 @@ class _UserProfileSheet extends ConsumerWidget {
                       displayInitials,
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 22,
+                        fontSize: FontSize.headlineLarge,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'Dubai',
                       ),
@@ -683,7 +684,7 @@ class _UserProfileSheet extends ConsumerWidget {
                         displayName,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 15,
+                          fontSize: FontSize.bodyLarge,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai',
                         ),
@@ -702,7 +703,7 @@ class _UserProfileSheet extends ConsumerWidget {
                           displayGroup,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontFamily: 'Dubai',
                           ),
                         ),
@@ -718,7 +719,7 @@ class _UserProfileSheet extends ConsumerWidget {
                             displayId,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.65),
-                              fontSize: 12,
+                              fontSize: FontSize.caption,
                               fontFamily: 'Dubai',
                               letterSpacing: 0.5,
                             ),
@@ -821,7 +822,7 @@ class _SheetStat extends StatelessWidget {
             Text(value,
                 style: TextStyle(
                     color: color,
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
             Text(label,
@@ -883,7 +884,7 @@ class _SheetMenuItem extends StatelessWidget {
                     Text(label,
                         style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 14,
+                            fontSize: FontSize.body,
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSurface)),
                     Text(subtitle,
@@ -944,7 +945,7 @@ class _LanguageToggleItem extends ConsumerWidget {
                 child: Text(
                   label,
                   style: appTextStyle(
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     color: c.textPrimary,
                   ),
@@ -1007,7 +1008,7 @@ class _ThemeToggleItem extends ConsumerWidget {
                       activeDark ? tr('الوضع النهاري') : tr('الوضع الليلي'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w700,
                         color: c.textPrimary,
                       ),
@@ -1018,7 +1019,7 @@ class _ThemeToggleItem extends ConsumerWidget {
                           : tr('التبديل إلى المظهر الداكن'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: c.textMuted,
                       ),
                     ),
@@ -1137,7 +1138,7 @@ class _StaffProfileSheet extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: appTextStyle(
-                            fontSize: 17,
+                            fontSize: FontSize.headlineSmall,
                             fontWeight: FontWeight.w800,
                             color: scheme.onSurface,
                           ),
@@ -1146,7 +1147,7 @@ class _StaffProfileSheet extends StatelessWidget {
                         Text(
                           token.displayRole,
                           style: appTextStyle(
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontWeight: FontWeight.w700,
                             color: scheme.primary,
                           ),
@@ -1156,7 +1157,7 @@ class _StaffProfileSheet extends StatelessWidget {
                           Text(
                             user!.username,
                             style: appTextStyle(
-                              fontSize: 12,
+                              fontSize: FontSize.caption,
                               color: context.appColors.textMuted,
                             ),
                           ),
@@ -1214,7 +1215,7 @@ class _LogoutButton extends StatelessWidget {
               Text(
                 tr('تسجيل الخروج'),
                 style: appTextStyle(
-                  fontSize: 15,
+                  fontSize: FontSize.bodyLarge,
                   fontWeight: FontWeight.w700,
                   color: context.appColors.errorText,
                 ),
@@ -1308,13 +1309,13 @@ class _RoleComingSoon extends StatelessWidget {
           Text(
             trf('مرحباً — {0}', [role]),
             style: const TextStyle(
-                fontFamily: 'Dubai', fontSize: 16, fontWeight: FontWeight.w700),
+                fontFamily: 'Dubai', fontSize: FontSize.title, fontWeight: FontWeight.w700),
           ),
           const SizedBox(height: 8),
           Text(
             tr('شاشات هذا الدور قيد الإنشاء'),
             style: TextStyle(
-                fontFamily: 'Dubai', fontSize: 13, color: context.appColors.textMuted),
+                fontFamily: 'Dubai', fontSize: FontSize.label, color: context.appColors.textMuted),
           ),
         ],
       ),

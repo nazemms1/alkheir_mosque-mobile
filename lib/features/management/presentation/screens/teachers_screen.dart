@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -164,7 +165,7 @@ class _TeacherCard extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: appTextStyle(
-                            fontSize: 14,
+                            fontSize: FontSize.body,
                             fontWeight: FontWeight.w800,
                             color: AdminTheme.text(context),
                           ),

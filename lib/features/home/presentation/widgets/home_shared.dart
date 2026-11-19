@@ -40,7 +40,7 @@ class _SectionLabel extends StatelessWidget {
               child: Text(tr('عرض الكل'),
                   style: const TextStyle(
                     color: AppColors.primaryGlow,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai',
                   )),

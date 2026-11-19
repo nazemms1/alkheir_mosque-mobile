@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -31,7 +32,7 @@ class AttendanceStatusRow extends StatelessWidget {
           Expanded(
             child: Text(
               name,
-              style: appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              style: appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w700),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -48,7 +49,7 @@ class AttendanceStatusRow extends StatelessWidget {
                 for (final s in statuses)
                   DropdownMenuItem(
                     value: s.id,
-                    child: Text(s.name, style: appTextStyle(fontSize: 12)),
+                    child: Text(s.name, style: appTextStyle(fontSize: FontSize.caption)),
                   ),
               ],
               onChanged: enabled

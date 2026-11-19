@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -350,7 +351,7 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 14,
+          fontSize: FontSize.body,
           fontWeight: FontWeight.w800,
           color: Theme.of(context).colorScheme.onSurface,
         ),
@@ -385,7 +386,7 @@ class _BalanceLine extends StatelessWidget {
             child: Text(
               label,
               style: appTextStyle(
-                fontSize: 13,
+                fontSize: FontSize.label,
                 fontWeight: FontWeight.w600,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
@@ -394,7 +395,7 @@ class _BalanceLine extends StatelessWidget {
           Text(
             code.isEmpty ? value : '$value $code',
             style: appTextStyle(
-              fontSize: 15,
+              fontSize: FontSize.bodyLarge,
               fontWeight: FontWeight.w800,
               color: color,
             ),
@@ -423,7 +424,7 @@ class _CashBoxCard extends StatelessWidget {
                 child: Text(
                   box.name,
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -436,7 +437,7 @@ class _CashBoxCard extends StatelessWidget {
             ],
           ),
           Text(box.code,
-              style: appTextStyle(fontSize: 12, color: moduleMuted(context))),
+              style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context))),
           const SizedBox(height: 8),
           for (final row in box.currencies)
             _BalanceLine(
@@ -450,11 +451,11 @@ class _CashBoxCard extends StatelessWidget {
             children: [
               Text(tr('المعادل المحلي'),
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context))),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context))),
               const Spacer(),
               Text(
                 formatAmount(box.localTotal),
-                style: appTextStyle(fontSize: 13, fontWeight: FontWeight.w800),
+                style: appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w800),
               ),
             ],
           ),
@@ -529,7 +530,7 @@ class _FilterBar extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
-                label: Text(entry.value, style: appTextStyle(fontSize: 12)),
+                label: Text(entry.value, style: appTextStyle(fontSize: FontSize.caption)),
                 selected: entry.key == selected,
                 onSelected: (_) => onSelected(entry.key),
               ),
@@ -575,7 +576,7 @@ class _LedgerCard extends StatelessWidget {
                 child: Text(
                   ledgerTypeLabel(entry.type),
                   style: appTextStyle(
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w800,
                       color: Theme.of(context).colorScheme.onSurface),
                 ),
@@ -593,20 +594,20 @@ class _LedgerCard extends StatelessWidget {
                 child: Text(
                   entry.cashBox?.name ?? '—',
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ),
               Text(
                 '$sign${formatAmount(entry.amount)} ${entry.currency?.label ?? ''}',
                 style: appTextStyle(
-                    fontSize: 14, fontWeight: FontWeight.w800, color: color),
+                    fontSize: FontSize.body, fontWeight: FontWeight.w800, color: color),
               ),
             ],
           ),
           const SizedBox(height: 4),
           Text(entry.transactionDate,
-              style: appTextStyle(fontSize: 12, color: moduleMuted(context))),
+              style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context))),
         ],
       ),
     );
@@ -800,7 +801,7 @@ class _TwoLineRow extends StatelessWidget {
               child: Text(
                 title,
                 style: appTextStyle(
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w800,
                     color: onSurface),
                 overflow: TextOverflow.ellipsis,
@@ -809,7 +810,7 @@ class _TwoLineRow extends StatelessWidget {
             Text(
               trailing,
               style: appTextStyle(
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w800,
                   color: trailingColor ?? onSurface),
             ),
@@ -818,12 +819,12 @@ class _TwoLineRow extends StatelessWidget {
         const SizedBox(height: 4),
         Text(
           subtitle,
-          style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+          style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
           overflow: TextOverflow.ellipsis,
         ),
         const SizedBox(height: 2),
         Text(date,
-            style: appTextStyle(fontSize: 12, color: moduleMuted(context))),
+            style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context))),
       ],
     );
   }

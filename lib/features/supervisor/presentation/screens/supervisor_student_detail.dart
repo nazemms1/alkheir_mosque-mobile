@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -177,7 +178,7 @@ class _Body extends StatelessWidget {
                 studentName.isNotEmpty ? studentName[0] : '؟',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 22,
+                  fontSize: FontSize.headlineLarge,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai',
                 ),
@@ -193,7 +194,7 @@ class _Body extends StatelessWidget {
                   studentName,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai',
                   ),
@@ -370,14 +371,14 @@ class _SummaryStat extends StatelessWidget {
           Text(value,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 16,
+                  fontSize: FontSize.title,
                   fontWeight: FontWeight.w800,
                   color: color)),
           const SizedBox(height: 2),
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: context.appColors.textMuted)),
         ]),
       );
@@ -399,14 +400,14 @@ class _InfoRow extends StatelessWidget {
               child: Text(label,
                   style: TextStyle(
                       fontFamily: 'Dubai',
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       color: context.appColors.textMuted)),
             ),
             Expanded(
               child: Text(value,
                   style: TextStyle(
                       fontFamily: 'Dubai',
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontWeight: FontWeight.w700,
                       color: Theme.of(context).colorScheme.onSurface)),
             ),
@@ -465,7 +466,7 @@ class _EnrollmentRow extends StatelessWidget {
                 child: Text(enrollment.groupName,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w700,
                         color: Theme.of(context).colorScheme.onSurface)),
               ),
@@ -478,7 +479,7 @@ class _EnrollmentRow extends StatelessWidget {
                     enrollment.status == 'active' ? tr('نشط') : tr('غير نشط'),
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w700,
                         color: statusColor)),
               ),
@@ -488,7 +489,7 @@ class _EnrollmentRow extends StatelessWidget {
           Text(enrollment.courseName,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: context.appColors.textMuted)),
           const SizedBox(height: 8),
           Row(
@@ -508,7 +509,7 @@ class _EnrollmentRow extends StatelessWidget {
                   onPressed: () => _openRecordDialog(context),
                   icon: const Icon(Icons.add_circle_outline_rounded, size: 16),
                   label: Text(tr('تسجيل حفظ'),
-                      style: const TextStyle(fontFamily: 'Dubai', fontSize: 12)),
+                      style: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.caption)),
                   style: TextButton.styleFrom(
                     foregroundColor: AppColors.primaryLight,
                     padding: const EdgeInsets.symmetric(horizontal: 8),
@@ -596,7 +597,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
   InputDecoration _decoration({required String label, required IconData icon}) {
     return InputDecoration(
       labelText: label,
-      labelStyle: const TextStyle(fontFamily: 'Dubai', fontSize: 13),
+      labelStyle: const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.label),
       prefixIcon: Icon(icon, size: 20, color: AppColors.primaryLight),
       filled: true,
       contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
@@ -693,7 +694,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                       Text(tr('نوع التسجيل'),
                           style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 13,
+                              fontSize: FontSize.label,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context)
                                   .colorScheme
@@ -726,7 +727,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                       Text(tr('نطاق الصفحات'),
                           style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 13,
+                              fontSize: FontSize.label,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context)
                                   .colorScheme
@@ -740,7 +741,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                               controller: _fromPageCtrl,
                               keyboardType: TextInputType.number,
                               style: const TextStyle(
-                                  fontFamily: 'Dubai', fontSize: 15),
+                                  fontFamily: 'Dubai', fontSize: FontSize.bodyLarge),
                               decoration: _decoration(
                                       label: tr('من صفحة'),
                                       icon: Icons.first_page_rounded)
@@ -757,7 +758,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                               controller: _toPageCtrl,
                               keyboardType: TextInputType.number,
                               style: const TextStyle(
-                                  fontFamily: 'Dubai', fontSize: 15),
+                                  fontFamily: 'Dubai', fontSize: FontSize.bodyLarge),
                               decoration: _decoration(
                                       label: tr('إلى صفحة'),
                                       icon: Icons.last_page_rounded)
@@ -779,7 +780,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                       Text(tr('التاريخ'),
                           style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 13,
+                              fontSize: FontSize.label,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context)
                                   .colorScheme
@@ -801,7 +802,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                             const SizedBox(width: 12),
                             Text(dateStr,
                                 style: const TextStyle(
-                                    fontFamily: 'Dubai', fontSize: 15)),
+                                    fontFamily: 'Dubai', fontSize: FontSize.bodyLarge)),
                             const Spacer(),
                             Container(
                               padding: const EdgeInsets.symmetric(
@@ -813,7 +814,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                               child: Text(tr('اليوم'),
                                   style: const TextStyle(
                                       fontFamily: 'Dubai',
-                                      fontSize: 12,
+                                      fontSize: FontSize.caption,
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.primaryLight)),
                             ),
@@ -824,7 +825,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                       Text(tr('ملاحظات'),
                           style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 13,
+                              fontSize: FontSize.label,
                               fontWeight: FontWeight.w700,
                               color: Theme.of(context)
                                   .colorScheme
@@ -835,7 +836,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                         controller: _notesCtrl,
                         maxLines: 3,
                         style:
-                            const TextStyle(fontFamily: 'Dubai', fontSize: 14),
+                            const TextStyle(fontFamily: 'Dubai', fontSize: FontSize.body),
                         decoration: _decoration(
                                 label: tr('اكتب ملاحظة عن الجلسة'),
                                 icon: Icons.edit_note_rounded)
@@ -864,7 +865,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                                 child: Text(_error!,
                                     style: TextStyle(
                                         fontFamily: 'Dubai',
-                                        fontSize: 12,
+                                        fontSize: FontSize.caption,
                                         color: context.appColors.errorText)),
                               ),
                             ],
@@ -979,7 +980,7 @@ class _SheetHeaderRow extends StatelessWidget {
                 Text('$studentName · $groupName',
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: context.appColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
@@ -1039,7 +1040,7 @@ class _EntryTypeChip extends StatelessWidget {
             Text(label,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w700,
                   color: selected
                       ? Colors.white
@@ -1072,14 +1073,14 @@ class _AssessmentRow extends StatelessWidget {
             child: Text(assessment.title,
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context).colorScheme.onSurface)),
           ),
           Text(trf('{0} نتيجة', [assessment.resultsCount]),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: context.appColors.textMuted)),
         ],
       ),
@@ -1106,7 +1107,7 @@ class _MiniStat extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   color: color)),
         ]),
@@ -1155,7 +1156,7 @@ class _Card extends StatelessWidget {
             Text(title,
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.onSurface)),
           ]),
@@ -1180,7 +1181,7 @@ class _EmptyRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(message,
             style: TextStyle(
-                fontFamily: 'Dubai', fontSize: 12, color: context.appColors.textMuted)),
+                fontFamily: 'Dubai', fontSize: FontSize.caption, color: context.appColors.textMuted)),
       );
 }
 
@@ -1204,7 +1205,7 @@ class _Chip extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   color: color)),
         ]),
@@ -1250,7 +1251,7 @@ class _ErrorView extends StatelessWidget {
           Text(_isForbidden ? tr('ليس لديك صلاحية') : tr('حدث خطأ'),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 18,
+                  fontSize: FontSize.headlineSmall,
                   fontWeight: FontWeight.w700,
                   color: color)),
           const SizedBox(height: 8),
@@ -1258,7 +1259,7 @@ class _ErrorView extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   color: context.appColors.textMuted)),
           if (!_isForbidden) ...[
             const SizedBox(height: 20),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:flutter/material.dart';
@@ -234,7 +235,7 @@ class _IDCard extends StatelessWidget {
                       tr('مسجد الخير'),
                       style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 13,
+                          fontSize: FontSize.label,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai'),
                     ),
@@ -250,7 +251,7 @@ class _IDCard extends StatelessWidget {
                         tr('بطاقة الطالب'),
                         style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontFamily: 'Dubai'),
                       ),
                     ),
@@ -277,7 +278,7 @@ class _IDCard extends StatelessWidget {
                           student.avatarInitials,
                           style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 22,
+                              fontSize: FontSize.headlineLarge,
                               fontWeight: FontWeight.w900,
                               fontFamily: 'Dubai'),
                         ),
@@ -292,7 +293,7 @@ class _IDCard extends StatelessWidget {
                             student.name,
                             style: const TextStyle(
                                 color: Colors.white,
-                                fontSize: 17,
+                                fontSize: FontSize.headlineSmall,
                                 fontWeight: FontWeight.w800,
                                 fontFamily: 'Dubai'),
                           ),
@@ -301,7 +302,7 @@ class _IDCard extends StatelessWidget {
                             student.id,
                             style: TextStyle(
                                 color: Colors.white.withValues(alpha: 0.6),
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 fontFamily: 'Dubai'),
                           ),
                           const SizedBox(height: 6),
@@ -318,7 +319,7 @@ class _IDCard extends StatelessWidget {
                               student.groupName,
                               style: const TextStyle(
                                   color: AppColors.goldLight,
-                                  fontSize: 12,
+                                  fontSize: FontSize.caption,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Dubai'),
                             ),
@@ -377,12 +378,12 @@ class _CardInfoItem extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.5),
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontFamily: 'Dubai')),
           Text(value,
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai')),
         ],
@@ -485,13 +486,13 @@ class _StatTile extends StatelessWidget {
           Text(value,
               style: TextStyle(
                   color: color,
-                  fontSize: 18,
+                  fontSize: FontSize.headlineSmall,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Dubai')),
           Text(label,
               style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.55),
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontFamily: 'Dubai'),
               textAlign: TextAlign.center),
         ],
@@ -528,7 +529,7 @@ class _ProgressSection extends StatelessWidget {
                 tr('تقدم الحفظ'),
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai'),
               ),
@@ -537,7 +538,7 @@ class _ProgressSection extends StatelessWidget {
                 '${(pct * 100).toStringAsFixed(1)}%',
                 style: const TextStyle(
                     color: AppColors.goldLight,
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai'),
               ),
@@ -559,7 +560,7 @@ class _ProgressSection extends StatelessWidget {
                 [p.totalPagesMemorized, p.totalQuranPages, p.currentSurah]),
             style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai'),
           ),
         ],
@@ -596,7 +597,7 @@ class _RecentSabr extends StatelessWidget {
                 tr('آخر نتائج السبر'),
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai'),
               ),
@@ -629,7 +630,7 @@ class _RecentSabr extends StatelessWidget {
                     child: Text(typeLabel,
                         style: TextStyle(
                             color: color,
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Dubai')),
                   ),
@@ -639,7 +640,7 @@ class _RecentSabr extends StatelessWidget {
                       r.title,
                       style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.8),
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontFamily: 'Dubai'),
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -649,7 +650,7 @@ class _RecentSabr extends StatelessWidget {
                     '${r.score.toStringAsFixed(0)}%',
                     style: TextStyle(
                         color: color,
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'Dubai'),
                   ),
@@ -684,7 +685,7 @@ class _SavePassHint extends StatelessWidget {
               tr('يمكنك تصوير الشاشة لحفظ بطاقتك كـ Pass لاستخدامها في الحلقة.'),
               style: const TextStyle(
                   color: AppColors.goldLight,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontFamily: 'Dubai',
                   height: 1.4),
             ),

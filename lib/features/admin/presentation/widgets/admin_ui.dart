@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
@@ -159,7 +160,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                                     overflow: TextOverflow.ellipsis,
                                     style: const TextStyle(
                                       color: Colors.white,
-                                      fontSize: 14,
+                                      fontSize: FontSize.body,
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Dubai',
                                       height: 1.3,
@@ -176,7 +177,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       style: TextStyle(
                                         color: Colors.white
                                             .withValues(alpha: 0.65),
-                                        fontSize: 12,
+                                        fontSize: FontSize.caption,
                                         fontFamily: 'Dubai',
                                         height: 1.3,
                                       ),
@@ -266,7 +267,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
             tr('مسجد الخير'),
             style: const TextStyle(
               color: Colors.white,
-              fontSize: 14,
+              fontSize: FontSize.body,
               fontWeight: FontWeight.w800,
               fontFamily: 'Dubai',
               letterSpacing: 0.3,
@@ -347,7 +348,7 @@ class AdminActionItem extends StatelessWidget {
                 '$badge',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai',
                 ),
@@ -525,7 +526,7 @@ class AdminBottomSheetShell extends StatelessWidget {
                             Text(
                               title!,
                               style: appTextStyle(
-                                fontSize: 17,
+                                fontSize: FontSize.headlineSmall,
                                 fontWeight: FontWeight.w800,
                                 color: AdminTheme.text(context),
                               ),
@@ -537,7 +538,7 @@ class AdminBottomSheetShell extends StatelessWidget {
                             Text(
                               subtitle!,
                               style: appTextStyle(
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 color: AdminTheme.muted(context),
                               ),
                               maxLines: 1,
@@ -725,7 +726,7 @@ class AdminHero extends StatelessWidget {
                             maxLines: 1,
                             overflow: TextOverflow.ellipsis,
                             style: appTextStyle(
-                              fontSize: 17,
+                              fontSize: FontSize.headlineSmall,
                               fontWeight: FontWeight.w800,
                               color: Colors.white,
                             ),
@@ -736,7 +737,7 @@ class AdminHero extends StatelessWidget {
                               maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               style: appTextStyle(
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 color: Colors.white.withValues(alpha: 0.7),
                               ),
                             ),
@@ -802,7 +803,7 @@ class _HeroMetricPill extends StatelessWidget {
             child: Text(
               metric.value,
               style: appTextStyle(
-                fontSize: 17,
+                fontSize: FontSize.headlineSmall,
                 fontWeight: FontWeight.w900,
                 color: Colors.white,
               ),
@@ -813,7 +814,7 @@ class _HeroMetricPill extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: appTextStyle(
-              fontSize: 12,
+              fontSize: FontSize.caption,
               color: Colors.white.withValues(alpha: 0.65),
             ),
           ),
@@ -868,7 +869,7 @@ class AdminStatTile extends StatelessWidget {
             child: Text(
               value,
               style: appTextStyle(
-                fontSize: 22,
+                fontSize: FontSize.headlineLarge,
                 fontWeight: FontWeight.w800,
                 color: AdminTheme.text(context),
               ),
@@ -880,7 +881,7 @@ class AdminStatTile extends StatelessWidget {
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
             style: appTextStyle(
-              fontSize: 12,
+              fontSize: FontSize.caption,
               color: AdminTheme.muted(context),
             ),
           ),
@@ -968,7 +969,7 @@ class AdminSectionTitle extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: appTextStyle(
-              fontSize: 15,
+              fontSize: FontSize.bodyLarge,
               fontWeight: FontWeight.w800,
               color: AdminTheme.text(context),
             ),
@@ -983,7 +984,7 @@ class AdminSectionTitle extends StatelessWidget {
             ),
             child: Text(
               actionLabel!,
-              style: appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              style: appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w700),
             ),
           ),
       ],
@@ -1068,7 +1069,7 @@ class AdminBadge extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: appTextStyle(
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),
@@ -1111,13 +1112,13 @@ class AdminSearchField extends StatelessWidget {
         autofocus: autofocus,
         textInputAction: TextInputAction.search,
         style: appTextStyle(
-          fontSize: 14,
+          fontSize: FontSize.body,
           color: AdminTheme.text(context),
         ),
         decoration: InputDecoration(
           hintText: hint,
           hintStyle: appTextStyle(
-            fontSize: 14,
+            fontSize: FontSize.body,
             color: AdminTheme.muted(context),
           ),
           prefixIcon: const Icon(Icons.search_rounded),
@@ -1212,7 +1213,7 @@ class AdminChoiceBar<T> extends StatelessWidget {
                     Text(
                       labelOf(option),
                       style: appTextStyle(
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w700,
                         color: foreground,
                       ),
@@ -1264,7 +1265,7 @@ class AdminEmptyState extends StatelessWidget {
               title,
               textAlign: TextAlign.center,
               style: appTextStyle(
-                fontSize: 16,
+                fontSize: FontSize.title,
                 fontWeight: FontWeight.w800,
                 color: AdminTheme.text(context),
               ),
@@ -1275,7 +1276,7 @@ class AdminEmptyState extends StatelessWidget {
                 subtitle!,
                 textAlign: TextAlign.center,
                 style: appTextStyle(
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   color: AdminTheme.muted(context),
                 ),
               ),
@@ -1315,7 +1316,7 @@ class AdminErrorState extends StatelessWidget {
               message,
               textAlign: TextAlign.center,
               style: appTextStyle(
-                fontSize: 14,
+                fontSize: FontSize.body,
                 color: AdminTheme.text(context),
               ),
             ),
@@ -1327,7 +1328,7 @@ class AdminErrorState extends StatelessWidget {
                 foregroundColor: Colors.white,
                 minimumSize: const Size(120, 44),
               ),
-              child: Text(retryLabel, style: appTextStyle(fontSize: 14)),
+              child: Text(retryLabel, style: appTextStyle(fontSize: FontSize.body)),
             ),
           ],
         ),
@@ -1360,7 +1361,7 @@ class AdminInfoRow extends StatelessWidget {
           Text(
             label,
             style: appTextStyle(
-              fontSize: 12,
+              fontSize: FontSize.caption,
               color: AdminTheme.muted(context),
             ),
           ),
@@ -1372,7 +1373,7 @@ class AdminInfoRow extends StatelessWidget {
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: appTextStyle(
-                fontSize: 13,
+                fontSize: FontSize.label,
                 fontWeight: FontWeight.w700,
                 color: AdminTheme.text(context),
               ),

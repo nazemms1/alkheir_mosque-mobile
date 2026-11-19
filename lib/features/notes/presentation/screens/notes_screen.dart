@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -206,7 +207,7 @@ class _NotesHeader extends StatelessWidget {
                   tr('المعلم والإدارة'),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai',
                   ),
@@ -215,7 +216,7 @@ class _NotesHeader extends StatelessWidget {
                   trf('بخصوص: {0}', [studentName]),
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.6),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai',
                   ),
                 ),
@@ -237,7 +238,7 @@ class _NotesHeader extends StatelessWidget {
                 trf('{0} جديد', [unread]),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai',
                 ),
@@ -268,7 +269,7 @@ class _DateDivider extends StatelessWidget {
               label,
               style: TextStyle(
                 color: context.appColors.textMuted,
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai',
               ),
             ),
@@ -345,7 +346,7 @@ class _MessageBubble extends StatelessWidget {
                       message.authorName,
                       style: TextStyle(
                         color: _authorColor,
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai',
                       ),
@@ -392,7 +393,7 @@ class _MessageBubble extends StatelessWidget {
                     style: TextStyle(
                       color:
                           _isParent ? AppColors.primary : context.appColors.textPrimary,
-                      fontSize: 13,
+                      fontSize: FontSize.label,
                       fontFamily: 'Dubai',
                       height: 1.55,
                       fontWeight: _isParent ? FontWeight.w500 : FontWeight.w400,
@@ -407,7 +408,7 @@ class _MessageBubble extends StatelessWidget {
                       timeStr,
                       style: TextStyle(
                         color: context.appColors.textMuted,
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontFamily: 'Dubai',
                       ),
                     ),
@@ -475,13 +476,13 @@ class _InputBar extends StatelessWidget {
                 onSubmitted: (_) => onSend(),
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     color: context.appColors.textPrimary),
                 decoration: InputDecoration(
                   hintText: tr('اكتب رسالتك للمعلم أو الإدارة...'),
                   hintStyle: TextStyle(
                       fontFamily: 'Dubai',
-                      fontSize: 13,
+                      fontSize: FontSize.label,
                       color: context.appColors.textMuted),
                   filled: true,
                   fillColor:

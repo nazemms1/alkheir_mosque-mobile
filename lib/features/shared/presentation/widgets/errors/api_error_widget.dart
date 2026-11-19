@@ -112,7 +112,7 @@ class ApiErrorWidget extends StatelessWidget {
             child: Text(
               effectiveMessage,
               style: TextStyle(
-                fontSize: FontSize.s13,
+                fontSize: FontSize.label,
                 fontWeight: FontWeight.w500,
                 color: colors.errorText,
               ),
@@ -163,7 +163,7 @@ class ApiErrorWidget extends StatelessWidget {
               effectiveMessage,
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: FontSize.s16,
+                fontSize: FontSize.title,
                 fontWeight: FontWeight.w600,
                 color: context.appColors.textPrimary,
                 height: 1.4,

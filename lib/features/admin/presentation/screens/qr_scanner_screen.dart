@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -227,14 +228,14 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                     style: appTextStyle(
                       fontWeight: FontWeight.w800,
                       color: Colors.white,
-                      fontSize: 13,
+                      fontSize: FontSize.label,
                     ),
                   ),
                   Text(
                     success ? name : (error ?? name),
                     style: appTextStyle(
                       color: Colors.white.withValues(alpha: 0.9),
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                     ),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
@@ -278,7 +279,7 @@ class _QrScannerScreenState extends State<QrScannerScreen>
                   tr('ليس لديك صلاحية لتسجيل الحضور'),
                   textAlign: TextAlign.center,
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -430,7 +431,7 @@ class _AttendanceKindPicker extends StatelessWidget {
                             tr('اختر نوع الحضور قبل بدء المسح'),
                             textAlign: TextAlign.center,
                             style: appTextStyle(
-                              fontSize: 16,
+                              fontSize: FontSize.title,
                               fontWeight: FontWeight.w800,
                               color: Colors.white,
                             ),
@@ -493,7 +494,7 @@ class _KindButton extends StatelessWidget {
                 child: Text(
                   kind.label,
                   style: appTextStyle(
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
                   ),
@@ -566,7 +567,7 @@ class _ScanOverlay extends StatelessWidget {
                     Text(
                       trf('تسجيل: {0}', [kind.label]),
                       style: appTextStyle(
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w800,
                         color: kind.color,
                       ),
@@ -601,7 +602,7 @@ class _ScanOverlay extends StatelessWidget {
                     : tr('وجّه الكاميرا نحو رمز QR الطالب'),
             textAlign: TextAlign.center,
             style: appTextStyle(
-              fontSize: 14,
+              fontSize: FontSize.body,
               fontWeight: FontWeight.w700,
               color: sending
                   ? AppColors.goldGlow
@@ -644,7 +645,7 @@ class _ScanOverlay extends StatelessWidget {
                     Text(
                       paused ? tr('استئناف المسح') : tr('إيقاف مؤقت'),
                       style: appTextStyle(
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w800,
                         color: Colors.white,
                       ),
@@ -949,7 +950,7 @@ class _SessionPanelState extends State<_SessionPanel> {
                   Text(
                     tr('سجل الجلسة'),
                     style: appTextStyle(
-                      fontSize: 13,
+                      fontSize: FontSize.label,
                       fontWeight: FontWeight.w800,
                       color: Colors.white,
                     ),
@@ -965,7 +966,7 @@ class _SessionPanelState extends State<_SessionPanel> {
                     child: Text(
                       '${widget.records.length}',
                       style: appTextStyle(
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w800,
                         color: AppColors.goldGlow,
                       ),
@@ -1043,7 +1044,7 @@ class _RecordTile extends StatelessWidget {
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: appTextStyle(
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: FontWeight.w700,
                     color: Colors.white,
                   ),
@@ -1054,7 +1055,7 @@ class _RecordTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       color: Colors.white70,
                     ),
                   ),
@@ -1064,7 +1065,7 @@ class _RecordTile extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             timeStr,
-            style: appTextStyle(fontSize: 12, color: Colors.white60),
+            style: appTextStyle(fontSize: FontSize.caption, color: Colors.white60),
           ),
         ],
       ),

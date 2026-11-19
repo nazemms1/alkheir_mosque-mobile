@@ -1,3 +1,5 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -104,7 +106,7 @@ class _StaffMemorizationScreenState extends State<StaffMemorizationScreen> {
                     child: Text(
                       entry.student?.name ?? '—',
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -126,11 +128,11 @@ class _StaffMemorizationScreenState extends State<StaffMemorizationScreen> {
                   entry.toPage,
                   entry.pagesCount,
                 ]),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
               Text(
                 '${entry.groupName ?? ''}  ·  ${entry.recordedOn}  ·  ${entry.teacher?.name ?? ''}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -165,7 +167,7 @@ class _TypeFilter extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
-                label: Text(entry.value, style: appTextStyle(fontSize: 12)),
+                label: Text(entry.value, style: appTextStyle(fontSize: FontSize.caption)),
                 selected: entry.key == selected,
                 onSelected: (_) => onSelected(entry.key),
               ),
@@ -444,12 +446,12 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.bgCard,
+              color: context.appColors.card,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: AppColors.darkCardGreen),
+              border: Border.all(color: context.appColors.border),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -464,9 +466,9 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                   child: Text(
                     tr('الطالب'),
                     style: appTextStyle(
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w700,
-                      color: AppColors.mintLight,
+                      color: context.appColors.textSecondary,
                     ),
                   ),
                 ),
@@ -489,9 +491,9 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                     height: 52,
                     padding: const EdgeInsets.symmetric(horizontal: 14),
                     decoration: BoxDecoration(
-                      color: AppColors.fieldDark,
+                      color: context.appColors.field,
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0x33445544)),
+                      border: Border.all(color: context.appColors.border),
                     ),
                     child: Row(
                       children: [
@@ -504,19 +506,19 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                               _recitedPages.clear();
                             }),
                             borderRadius: BorderRadius.circular(16),
-                            child: const Padding(
+                            child: Padding(
                               padding: EdgeInsets.all(4),
                               child: Icon(
                                 Icons.close_rounded,
                                 size: 18,
-                                color: AppColors.textSoftSage,
+                                color: context.appColors.textMuted,
                               ),
                             ),
                           )
                         else
-                          const Icon(
+                          Icon(
                             Icons.keyboard_arrow_down_rounded,
-                            color: AppColors.textSoftSage,
+                            color: context.appColors.textMuted,
                           ),
                         const SizedBox(width: 8),
                         Expanded(
@@ -524,13 +526,13 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                             _student?.label ?? tr('اسم الطالب'),
                             textAlign: TextAlign.start,
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: _student != null
                                   ? FontWeight.w700
                                   : FontWeight.w500,
                               color: _student != null
-                                  ? Colors.white
-                                  : const Color(0xFF759785),
+                                  ? context.appColors.textPrimary
+                                  : context.appColors.textMuted,
                             ),
                             overflow: TextOverflow.ellipsis,
                           ),
@@ -552,9 +554,9 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                   Container(
                     padding: const EdgeInsets.all(16),
                     decoration: BoxDecoration(
-                      color: AppColors.fieldDark,
+                      color: context.appColors.field,
                       borderRadius: BorderRadius.circular(18),
-                      border: Border.all(color: const Color(0x33445544)),
+                      border: Border.all(color: context.appColors.border),
                     ),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -564,9 +566,9 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.chevron_left_rounded,
-                                color: Colors.white,
+                                color: context.appColors.textPrimary,
                                 size: 28,
                               ),
                               onPressed: isRtl ? _nextJuz : _prevJuz,
@@ -577,15 +579,15 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                             Text(
                               trf('الجزء {0}', [_selectedJuz]),
                               style: appTextStyle(
-                                fontSize: 18,
+                                fontSize: FontSize.headlineSmall,
                                 fontWeight: FontWeight.w800,
-                                color: Colors.white,
+                                color: context.appColors.textPrimary,
                               ),
                             ),
                             IconButton(
-                              icon: const Icon(
+                              icon: Icon(
                                 Icons.chevron_right_rounded,
-                                color: Colors.white,
+                                color: context.appColors.textPrimary,
                                 size: 28,
                               ),
                               onPressed: isRtl ? _prevJuz : _nextJuz,
@@ -606,8 +608,8 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                               child: Text(
                                 tr('تم تسميع جميع صفحات هذا الجزء'),
                                 style: appTextStyle(
-                                  fontSize: 13,
-                                  color: AppColors.textSoftSage,
+                                  fontSize: FontSize.label,
+                                  color: context.appColors.textMuted,
                                 ),
                               ),
                             ),
@@ -636,7 +638,7 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
 
                         // Bottom right Floppy Save Icon Button
                         Align(
-                          alignment: Alignment.bottomRight,
+                          alignment: AlignmentDirectional.bottomStart,
                           child: InkWell(
                             onTap: _saving ? null : _save,
                             borderRadius: BorderRadius.circular(12),
@@ -644,34 +646,34 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                               width: 46,
                               height: 46,
                               decoration: BoxDecoration(
-                                color: const Color(0xFF14472F),
+                                color: context.appColors.primary,
                                 borderRadius: BorderRadius.circular(12),
                                 border: Border.all(
-                                  color: const Color(0xFF266E47),
+                                  color: context.appColors.primary,
                                   width: 1.5,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.2),
+                                    color: Colors.black.withValues(alpha: 0.06),
                                     blurRadius: 6,
                                     offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
                               child: _saving
-                                  ? const Center(
+                                  ? Center(
                                       child: SizedBox(
                                         width: 20,
                                         height: 20,
                                         child: CircularProgressIndicator(
                                           strokeWidth: 2,
-                                          color: Colors.white,
+                                          color: context.appColors.onPrimary,
                                         ),
                                       ),
                                     )
-                                  : const Icon(
+                                  : Icon(
                                       Icons.save_rounded,
-                                      color: Colors.white,
+                                      color: context.appColors.onPrimary,
                                       size: 24,
                                     ),
                             ),
@@ -687,8 +689,8 @@ class _RecordMemorizationScreenState extends State<RecordMemorizationScreen> {
                       child: Text(
                         tr('يرجى اختيار طالب لعرض الأجزاء والصفحات للتسميع'),
                         style: appTextStyle(
-                          fontSize: 13,
-                          color: AppColors.textSoftSage,
+                          fontSize: FontSize.label,
+                          color: context.appColors.textMuted,
                         ),
                       ),
                     ),
@@ -724,11 +726,11 @@ class _PageChipButton extends StatelessWidget {
         width: 58,
         height: 40,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF185537) : AppColors.fieldDark,
+          color: isSelected ? context.appColors.primary.withValues(alpha: 0.14) : context.appColors.field,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color:
-                isSelected ? AppColors.neonGreen : const Color(0xFF1B4E34),
+                isSelected ? context.appColors.primary : context.appColors.border,
             width: isSelected ? 2.0 : 1.2,
           ),
         ),
@@ -736,9 +738,9 @@ class _PageChipButton extends StatelessWidget {
           child: Text(
             '$page',
             style: appTextStyle(
-              fontSize: 14,
+              fontSize: FontSize.body,
               fontWeight: FontWeight.w800,
-              color: isSelected ? AppColors.neonGreen : Colors.white,
+              color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
             ),
           ),
         ),

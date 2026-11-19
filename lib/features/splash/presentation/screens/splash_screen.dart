@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -183,7 +184,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 Text(
                   tr('مسجد الخير'),
                   style: appTextStyle(
-                    fontSize: 32,
+                    fontSize: FontSize.displayLarge,
                     fontWeight: FontWeight.w900,
                     color: Colors.white,
                     letterSpacing: 1.2,
@@ -206,7 +207,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                   child: Text(
                     tr('البوابة التعليمية'),
                     style: appTextStyle(
-                      fontSize: 15,
+                      fontSize: FontSize.bodyLarge,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
                       letterSpacing: 0.8,
@@ -254,7 +255,7 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
                 Text(
                   tr('جارٍ التحميل...'),
                   style: appTextStyle(
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: AppColors.textOnDarkMute,
                     fontWeight: FontWeight.w400,
                   ),

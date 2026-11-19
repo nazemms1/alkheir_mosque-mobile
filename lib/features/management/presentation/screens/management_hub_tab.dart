@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -339,7 +340,7 @@ class _Tile extends StatelessWidget {
                 Text(
                   entry.title,
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w800,
                     color: AdminTheme.text(context),
                   ),
@@ -348,7 +349,7 @@ class _Tile extends StatelessWidget {
                 Text(
                   entry.subtitle,
                   style: appTextStyle(
-                      fontSize: 12, color: AdminTheme.muted(context)),
+                      fontSize: FontSize.caption, color: AdminTheme.muted(context)),
                 ),
               ],
             ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -60,7 +61,7 @@ class InvoicesScreen extends StatelessWidget {
                     child: Text(
                       item.invoiceNo,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -69,14 +70,14 @@ class InvoicesScreen extends StatelessWidget {
                   Text(
                     formatAmount(item.total),
                     style:
-                        appTextStyle(fontSize: 14, fontWeight: FontWeight.w800),
+                        appTextStyle(fontSize: FontSize.body, fontWeight: FontWeight.w800),
                   ),
                 ],
               ),
               const SizedBox(height: 4),
               Text(
                 '${item.parentName ?? ''}  ·  ${item.issueDate}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
               Text(
@@ -84,7 +85,7 @@ class InvoicesScreen extends StatelessWidget {
                   formatAmount(item.paidTotal),
                   formatAmount(item.balance),
                 ]),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -287,13 +288,13 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     Text(
                                       item.description,
                                       style: appTextStyle(
-                                          fontSize: 13,
+                                          fontSize: FontSize.label,
                                           fontWeight: FontWeight.w800),
                                     ),
                                     Text(
                                       '${formatAmount(item.quantity)} × ${formatAmount(item.unitPrice)}${item.studentName == null ? '' : '  ·  ${item.studentName}'}',
                                       style: appTextStyle(
-                                          fontSize: 12,
+                                          fontSize: FontSize.caption,
                                           color: moduleMuted(context)),
                                     ),
                                   ],
@@ -302,7 +303,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                               Text(
                                 formatAmount(item.amount),
                                 style: appTextStyle(
-                                    fontSize: 14, fontWeight: FontWeight.w800),
+                                    fontSize: FontSize.body, fontWeight: FontWeight.w800),
                               ),
                             ],
                           ),
@@ -370,12 +371,12 @@ class _PaymentCard extends StatelessWidget {
                 Text(
                   payment.paidAt,
                   style:
-                      appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+                      appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w700),
                 ),
                 Text(
                   '${payment.paymentMethodName ?? ''}  ·  ${payment.referenceNo ?? ''}',
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 ),
               ],
             ),
@@ -383,7 +384,7 @@ class _PaymentCard extends StatelessWidget {
           Text(
             formatAmount(payment.amount),
             style: appTextStyle(
-              fontSize: 14,
+              fontSize: FontSize.body,
               fontWeight: FontWeight.w800,
               color: payment.isVoided ? context.appColors.textMuted : AppColors.success,
             ),
@@ -410,7 +411,7 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 14,
+          fontSize: FontSize.body,
           fontWeight: FontWeight.w800,
           color: Theme.of(context).colorScheme.onSurface,
         ),
@@ -462,7 +463,7 @@ class _PaymentsScreenState extends State<PaymentsScreen> {
                 Padding(
                   padding: const EdgeInsetsDirectional.only(end: 8),
                   child: ChoiceChip(
-                    label: Text(entry.value, style: appTextStyle(fontSize: 12)),
+                    label: Text(entry.value, style: appTextStyle(fontSize: FontSize.caption)),
                     selected: entry.key == _state,
                     onSelected: (_) => setState(() {
                       _state = entry.key;

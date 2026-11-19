@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -192,7 +193,7 @@ class _SabrHero extends StatelessWidget {
                       tr('سجل السبر'),
                       style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 22,
+                        fontSize: FontSize.headlineLarge,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'Dubai',
                       ),
@@ -201,7 +202,7 @@ class _SabrHero extends StatelessWidget {
                       tr('السبر التجريبي • النهائي • الأوقاف'),
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontFamily: 'Dubai',
                       ),
                     ),
@@ -259,7 +260,7 @@ class _HeroStat extends StatelessWidget {
             value,
             style: TextStyle(
               color: valueColor ?? Colors.white,
-              fontSize: 20,
+              fontSize: FontSize.headline,
               fontWeight: FontWeight.w900,
               fontFamily: 'Dubai',
             ),
@@ -268,7 +269,7 @@ class _HeroStat extends StatelessWidget {
             label,
             style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai'),
             textAlign: TextAlign.center,
           ),
@@ -330,7 +331,7 @@ class _FilterStrip extends StatelessWidget {
                 item.$2,
                 style: TextStyle(
                   color: isActive ? Colors.white : context.appColors.textSecondary,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai',
                 ),
@@ -447,7 +448,7 @@ class _SabrCardState extends State<_SabrCard> {
                                   tr('ناجح'),
                                   style: TextStyle(
                                       color: context.appColors.successText,
-                                      fontSize: 12,
+                                      fontSize: FontSize.caption,
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Dubai'),
                                 ),
@@ -467,7 +468,7 @@ class _SabrCardState extends State<_SabrCard> {
                           '${r.surahFrom}  ←  ${r.surahTo}',
                           style: TextStyle(
                               color: context.appColors.textSecondary,
-                              fontSize: 12,
+                              fontSize: FontSize.caption,
                               fontFamily: 'Dubai'),
                         ),
                       ],
@@ -539,7 +540,7 @@ class _SabrCardState extends State<_SabrCard> {
                               tr('الصفحات التي تم سبرها:'),
                               style: TextStyle(
                                   color: context.appColors.textSecondary,
-                                  fontSize: 12,
+                                  fontSize: FontSize.caption,
                                   fontFamily: 'Dubai',
                                   fontWeight: FontWeight.w600),
                             ),
@@ -561,7 +562,7 @@ class _SabrCardState extends State<_SabrCard> {
                                     ]),
                                     style: TextStyle(
                                         color: _typeColor,
-                                        fontSize: 12,
+                                        fontSize: FontSize.caption,
                                         fontFamily: 'Dubai',
                                         fontWeight: FontWeight.w700),
                                   ),
@@ -588,7 +589,7 @@ class _SabrCardState extends State<_SabrCard> {
                                       r.notes,
                                       style: TextStyle(
                                         color: context.appColors.textSecondary,
-                                        fontSize: 12,
+                                        fontSize: FontSize.caption,
                                         fontFamily: 'Dubai',
                                         fontStyle: FontStyle.italic,
                                         height: 1.5,
@@ -629,7 +630,7 @@ class _TypeBadge extends StatelessWidget {
         trf('سبر {0}', [label]),
         style: TextStyle(
             color: color,
-            fontSize: 12,
+            fontSize: FontSize.caption,
             fontWeight: FontWeight.w700,
             fontFamily: 'Dubai'),
       ),
@@ -660,14 +661,14 @@ class _ScoreCircle extends StatelessWidget {
               score.toStringAsFixed(0),
               style: TextStyle(
                   color: color,
-                  fontSize: 15,
+                  fontSize: FontSize.bodyLarge,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Dubai'),
             ),
             Text('%',
                 style: TextStyle(
                     color: color.withValues(alpha: 0.7),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
           ],
         ),
@@ -702,13 +703,13 @@ class _DetailStat extends StatelessWidget {
                   Text(label,
                       style: TextStyle(
                           color: context.appColors.textMuted,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontFamily: 'Dubai')),
                   Text(
                     value,
                     style: TextStyle(
                         color: context.appColors.textPrimary,
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai'),
                     overflow: TextOverflow.ellipsis,
@@ -741,7 +742,7 @@ class _PagePill extends StatelessWidget {
         '$page',
         style: TextStyle(
             color: color,
-            fontSize: 12,
+            fontSize: FontSize.caption,
             fontWeight: FontWeight.w700,
             fontFamily: 'Dubai'),
       ),

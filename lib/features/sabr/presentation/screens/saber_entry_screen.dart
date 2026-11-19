@@ -1,3 +1,5 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -214,12 +216,12 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
           Container(
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
-              color: AppColors.bgCard,
+              color: context.appColors.card,
               borderRadius: BorderRadius.circular(22),
-              border: Border.all(color: AppColors.darkCardGreen),
+              border: Border.all(color: context.appColors.border),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.25),
+                  color: Colors.black.withValues(alpha: 0.06),
                   blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
@@ -240,9 +242,9 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                           child: Text(
                             tr('الطالب'),
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.mintLight,
+                              color: context.appColors.textSecondary,
                             ),
                           ),
                         ),
@@ -263,10 +265,10 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                             height: 52,
                             padding: const EdgeInsets.symmetric(horizontal: 14),
                             decoration: BoxDecoration(
-                              color: AppColors.fieldDark,
+                              color: context.appColors.field,
                               borderRadius: BorderRadius.circular(12),
                               border:
-                                  Border.all(color: const Color(0x33445544)),
+                                  Border.all(color: context.appColors.border),
                             ),
                             child: Row(
                               children: [
@@ -279,19 +281,19 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                       _selectedJuzIndex = null;
                                     }),
                                     borderRadius: BorderRadius.circular(16),
-                                    child: const Padding(
+                                    child: Padding(
                                       padding: EdgeInsets.all(4),
                                       child: Icon(
                                         Icons.close_rounded,
                                         size: 18,
-                                        color: AppColors.textSoftSage,
+                                        color: context.appColors.textMuted,
                                       ),
                                     ),
                                   )
                                 else
-                                  const Icon(
+                                  Icon(
                                     Icons.keyboard_arrow_down_rounded,
-                                    color: AppColors.textSoftSage,
+                                    color: context.appColors.textMuted,
                                   ),
                                 const SizedBox(width: 8),
                                 Expanded(
@@ -299,13 +301,13 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                     _student?.label ?? tr('اسم الطالب'),
                                     textAlign: TextAlign.start,
                                     style: appTextStyle(
-                                      fontSize: 14,
+                                      fontSize: FontSize.body,
                                       fontWeight: _student != null
                                           ? FontWeight.w700
                                           : FontWeight.w500,
                                       color: _student != null
-                                          ? Colors.white
-                                          : const Color(0xFF759785),
+                                          ? context.appColors.textPrimary
+                                          : context.appColors.textMuted,
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),
@@ -325,9 +327,9 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                           child: Text(
                             tr('الجزء'),
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.mintLight,
+                              color: context.appColors.textSecondary,
                             ),
                           ),
                         ),
@@ -336,9 +338,9 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                           height: 52,
                           padding: const EdgeInsets.symmetric(horizontal: 14),
                           decoration: BoxDecoration(
-                            color: AppColors.fieldDark,
+                            color: context.appColors.field,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0x33445544)),
+                            border: Border.all(color: context.appColors.border),
                           ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -351,7 +353,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                       icon: Icon(
                                         moduleChevronBack(context),
                                         size: 20,
-                                        color: Colors.white70,
+                                        color: context.appColors.textSecondary,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -366,7 +368,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                       icon: Icon(
                                         moduleChevronForward(context),
                                         size: 20,
-                                        color: Colors.white70,
+                                        color: context.appColors.textSecondary,
                                       ),
                                       onPressed: () {
                                         setState(() {
@@ -389,13 +391,13 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                                       : juzText,
                                   textAlign: TextAlign.start,
                                   style: appTextStyle(
-                                    fontSize: 13,
+                                    fontSize: FontSize.label,
                                     fontWeight: hasEligibleJuz
                                         ? FontWeight.w800
                                         : FontWeight.w500,
                                     color: hasEligibleJuz
-                                        ? Colors.white
-                                        : const Color(0xFF759785),
+                                        ? context.appColors.textPrimary
+                                        : context.appColors.textMuted,
                                   ),
                                   overflow: TextOverflow.ellipsis,
                                 ),
@@ -414,9 +416,9 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                           child: Text(
                             tr('الأرباع المتاحة'),
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.mintLight,
+                              color: context.appColors.textSecondary,
                             ),
                           ),
                         ),
@@ -447,9 +449,9 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                           child: Text(
                             tr('عدد الأخطاء'),
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
-                              color: AppColors.mintLight,
+                              color: context.appColors.textSecondary,
                             ),
                           ),
                         ),
@@ -457,26 +459,29 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                         Container(
                           height: 52,
                           decoration: BoxDecoration(
-                            color: AppColors.fieldDark,
+                            color: context.appColors.field,
                             borderRadius: BorderRadius.circular(12),
-                            border: Border.all(color: const Color(0x33445544)),
+                            border: Border.all(color: context.appColors.border),
                           ),
                           child: TextField(
                             controller: _mistakesCtrl,
                             keyboardType: TextInputType.number,
                             textAlign: TextAlign.start,
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
-                              color: Colors.white,
+                              color: context.appColors.textPrimary,
                             ),
                             decoration: InputDecoration(
                               hintText: tr('أخطاء'),
                               hintStyle: appTextStyle(
-                                fontSize: 13,
-                                color: const Color(0xFF759785),
+                                fontSize: FontSize.label,
+                                color: context.appColors.textMuted,
                               ),
                               border: InputBorder.none,
+                              enabledBorder: InputBorder.none,
+                              focusedBorder: InputBorder.none,
+                              filled: false,
                               contentPadding: const EdgeInsets.symmetric(
                                 horizontal: 16,
                                 vertical: 14,
@@ -529,7 +534,7 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
 
                 // Bottom Right Floppy Disk Save Button
                 Align(
-                  alignment: Alignment.bottomRight,
+                  alignment: AlignmentDirectional.bottomStart,
                   child: InkWell(
                     onTap: _saving ? null : _save,
                     borderRadius: BorderRadius.circular(12),
@@ -537,34 +542,34 @@ class _SaberEntryScreenState extends State<SaberEntryScreen> {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: const Color(0xFF14472F),
+                        color: context.appColors.primary,
                         borderRadius: BorderRadius.circular(12),
                         border: Border.all(
-                          color: const Color(0xFF266E47),
+                          color: context.appColors.primary,
                           width: 1.5,
                         ),
                         boxShadow: [
                           BoxShadow(
-                            color: Colors.black.withValues(alpha: 0.25),
+                            color: Colors.black.withValues(alpha: 0.06),
                             blurRadius: 6,
                             offset: const Offset(0, 2),
                           ),
                         ],
                       ),
                       child: _saving
-                          ? const Center(
+                          ? Center(
                               child: SizedBox(
                                 width: 22,
                                 height: 22,
                                 child: CircularProgressIndicator(
                                   strokeWidth: 2,
-                                  color: Colors.white,
+                                  color: context.appColors.onPrimary,
                                 ),
                               ),
                             )
-                          : const Icon(
+                          : Icon(
                               Icons.save_rounded,
-                              color: Colors.white,
+                              color: context.appColors.onPrimary,
                               size: 24,
                             ),
                     ),
@@ -600,11 +605,11 @@ class _QuarterButton extends StatelessWidget {
         duration: const Duration(milliseconds: 180),
         height: 52,
         decoration: BoxDecoration(
-          color: isSelected ? const Color(0xFF185537) : AppColors.fieldDark,
+          color: isSelected ? context.appColors.primary.withValues(alpha: 0.14) : context.appColors.field,
           borderRadius: BorderRadius.circular(10),
           border: Border.all(
             color:
-                isSelected ? AppColors.neonGreen : const Color(0xFF1B4E34),
+                isSelected ? context.appColors.primary : context.appColors.border,
             width: isSelected ? 2.0 : 1.2,
           ),
         ),
@@ -612,9 +617,9 @@ class _QuarterButton extends StatelessWidget {
           child: Text(
             trf('الربع {0}', [quarter]),
             style: appTextStyle(
-              fontSize: 13,
+              fontSize: FontSize.label,
               fontWeight: FontWeight.w800,
-              color: isSelected ? AppColors.neonGreen : Colors.white,
+              color: isSelected ? context.appColors.primary : context.appColors.textPrimary,
             ),
           ),
         ),

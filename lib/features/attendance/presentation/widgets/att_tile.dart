@@ -119,7 +119,7 @@ class _AttendanceTile extends StatelessWidget {
                 cfg.label,
                 style: TextStyle(
                   color: cfg.color,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai',
                 ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
 import 'dart:async';
@@ -132,7 +133,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                     Text(
                       day.attendanceDate,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -142,7 +143,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
                             day.recordsCount
                           ])}',
                       style: appTextStyle(
-                          fontSize: 12, color: moduleMuted(context)),
+                          fontSize: FontSize.caption, color: moduleMuted(context)),
                     ),
                   ],
                 ),

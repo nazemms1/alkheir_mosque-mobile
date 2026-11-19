@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -196,7 +197,7 @@ class _SectionHeader extends StatelessWidget {
           Text(label,
               style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 13,
+                fontSize: FontSize.label,
                 fontWeight: FontWeight.w700,
                 color: Theme.of(context).colorScheme.onSurface,
               )),

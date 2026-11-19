@@ -102,7 +102,7 @@ class _ScoreRow extends StatelessWidget {
                 '$total',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 52,
+                  fontSize: FontSize.hero,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Dubai',
                   height: 1,
@@ -113,7 +113,7 @@ class _ScoreRow extends StatelessWidget {
               tr('إجمالي النقاط'),
               style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.6),
-                  fontSize: 14,
+                  fontSize: FontSize.body,
                   fontFamily: 'Dubai'),
             ),
           ],
@@ -150,13 +150,13 @@ class _MiniStatCard extends StatelessWidget {
             Text(value,
                 style: TextStyle(
                     color: color,
-                    fontSize: 18,
+                    fontSize: FontSize.headlineSmall,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'Dubai')),
             Text(label,
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.6),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai'),
                 textAlign: TextAlign.center),
           ],

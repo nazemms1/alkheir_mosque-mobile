@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -227,7 +228,7 @@ class _AssessmentCard extends StatelessWidget {
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w800,
                           color: AdminTheme.text(context),
                         ),
@@ -238,7 +239,7 @@ class _AssessmentCard extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w600,
                           color: color,
                         ),
@@ -309,7 +310,7 @@ class _AssessmentCard extends StatelessWidget {
                               : '${assessment.groupName} · ${assessment.courseName}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: appTextStyle(fontSize: 12, color: muted),
+                          style: appTextStyle(fontSize: FontSize.caption, color: muted),
                         ),
                       ),
                       if (assessment.scheduledAt != null) ...[
@@ -319,7 +320,7 @@ class _AssessmentCard extends StatelessWidget {
                         const SizedBox(width: 4),
                         Text(
                           assessment.formattedDate,
-                          style: appTextStyle(fontSize: 12, color: muted),
+                          style: appTextStyle(fontSize: FontSize.caption, color: muted),
                         ),
                       ],
                     ],
@@ -363,7 +364,7 @@ class _StatBox extends StatelessWidget {
               value,
               textAlign: TextAlign.center,
               style: appTextStyle(
-                fontSize: 13,
+                fontSize: FontSize.label,
                 fontWeight: FontWeight.w800,
                 color: color,
               ),
@@ -376,7 +377,7 @@ class _StatBox extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: appTextStyle(
-              fontSize: 12,
+              fontSize: FontSize.caption,
               color: AdminTheme.muted(context),
             ),
           ),

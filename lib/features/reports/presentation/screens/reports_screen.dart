@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -385,7 +386,7 @@ class _TeacherDailyReportState extends State<_TeacherDailyReport> {
                       Text(
                         jsonString(jsonMap(row['teacher'])?['name']),
                         style: appTextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w800),
+                            fontSize: FontSize.body, fontWeight: FontWeight.w800),
                       ),
                       const SizedBox(height: 6),
                       InfoRow(
@@ -436,14 +437,14 @@ class _MetricGrid extends StatelessWidget {
                       ? formatAmount(value.toDouble())
                       : '${value ?? 0}',
                   style: appTextStyle(
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     color: AppColors.primaryLight,
                   ),
                 ),
                 Text(label,
                     style: appTextStyle(
-                        fontSize: 12, color: moduleMuted(context))),
+                        fontSize: FontSize.caption, color: moduleMuted(context))),
               ],
             ),
           ),
@@ -464,7 +465,7 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 14,
+          fontSize: FontSize.body,
           fontWeight: FontWeight.w800,
           color: Theme.of(context).colorScheme.onSurface,
         ),

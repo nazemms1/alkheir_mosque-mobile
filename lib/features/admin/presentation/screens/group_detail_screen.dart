@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -82,7 +83,7 @@ class _GroupDetailScreenState extends State<GroupDetailScreen> {
         content: Text(
             trf('هل أنت متأكد من حذف "{0}"؟ لا يمكن التراجع عن هذا الإجراء.',
                 [widget.group.name]),
-            style: appTextStyle(fontSize: 14)),
+            style: appTextStyle(fontSize: FontSize.body)),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(ctx, false),
@@ -290,7 +291,7 @@ class _EnrollmentRow extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w700,
                       color: AdminTheme.text(context),
                     )),
@@ -308,7 +309,7 @@ class _EnrollmentRow extends StatelessWidget {
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: appTextStyle(
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: AdminTheme.muted(context),
                 )),
           ],
@@ -361,7 +362,7 @@ class _Card extends StatelessWidget {
             Expanded(
               child: Text(title,
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w800,
                     color: AdminTheme.text(context),
                   )),
@@ -387,6 +388,6 @@ class _EmptyRow extends StatelessWidget {
         child: Text(message,
             textAlign: TextAlign.center,
             style:
-                appTextStyle(fontSize: 13, color: AdminTheme.muted(context))),
+                appTextStyle(fontSize: FontSize.label, color: AdminTheme.muted(context))),
       );
 }

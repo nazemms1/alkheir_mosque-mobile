@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -95,7 +96,7 @@ class _GroupPickCard extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 15,
+                      fontSize: FontSize.bodyLarge,
                       fontWeight: FontWeight.w800,
                       color: AdminTheme.text(context),
                     ),
@@ -106,7 +107,7 @@ class _GroupPickCard extends StatelessWidget {
                       group.courseName!,
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: appTextStyle(fontSize: 12, color: muted),
+                      style: appTextStyle(fontSize: FontSize.caption, color: muted),
                     ),
                   ],
                 ],
@@ -305,7 +306,7 @@ class _SlotCard extends StatelessWidget {
               child: Text(
                 day.isEmpty ? '?' : day.substring(0, 1),
                 style: appTextStyle(
-                  fontSize: 16,
+                  fontSize: FontSize.title,
                   fontWeight: FontWeight.w800,
                   color: AppColors.primaryLight,
                 ),
@@ -319,7 +320,7 @@ class _SlotCard extends StatelessWidget {
                   Text(
                     day,
                     style: appTextStyle(
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w800,
                       color: AdminTheme.text(context),
                     ),
@@ -334,7 +335,7 @@ class _SlotCard extends StatelessWidget {
                           '${slot.timeSlotLabel}  ·  ${slot.startsAt} - ${slot.endsAt}',
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
-                          style: appTextStyle(fontSize: 12, color: muted),
+                          style: appTextStyle(fontSize: FontSize.caption, color: muted),
                         ),
                       ),
                     ],

@@ -76,7 +76,7 @@ class _HeroContent extends StatelessWidget {
               Text(tr('أهلاً بك'),
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai',
                   )),
@@ -89,7 +89,7 @@ class _HeroContent extends StatelessWidget {
               [child.student.name.split(' ').take(2).join(' ')]),
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 22,
+            fontSize: FontSize.headlineLarge,
             fontWeight: FontWeight.w800,
             fontFamily: 'Dubai',
             height: 1.2,
@@ -139,7 +139,7 @@ class _HeroAvatar extends StatelessWidget {
           initials,
           style: const TextStyle(
             color: Colors.white,
-            fontSize: 20,
+            fontSize: FontSize.headline,
             fontWeight: FontWeight.w800,
             fontFamily: 'Dubai',
           ),
@@ -171,7 +171,7 @@ class _HeroBadge extends StatelessWidget {
           Text(label,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai',
                 fontWeight: FontWeight.w600,
               ),
@@ -268,7 +268,7 @@ class _MiniStat extends StatelessWidget {
           Text(value,
               style: TextStyle(
                   color: color,
-                  fontSize: 15,
+                  fontSize: FontSize.bodyLarge,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai')),
           Text(label,
@@ -277,7 +277,7 @@ class _MiniStat extends StatelessWidget {
                       .colorScheme
                       .onSurface
                       .withValues(alpha: 0.5),
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontFamily: 'Dubai')),
         ],
       ),

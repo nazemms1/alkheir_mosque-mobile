@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -293,7 +294,7 @@ class _ViewSwitcher extends StatelessWidget {
                 label,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12.5,
+                  fontSize: FontSize.label,
                   fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
                   color: selected ? Colors.white : AdminTheme.muted(context),
                 ),
@@ -349,7 +350,7 @@ class _FilterChipButton extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12.5,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w600,
                   color: color,
                 ),
@@ -665,7 +666,7 @@ class _FeaturedStatTile extends StatelessWidget {
                       value,
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 26,
+                        fontSize: FontSize.display,
                         fontWeight: FontWeight.w900,
                         color: isDark
                             ? AppColors.textOnDark
@@ -678,7 +679,7 @@ class _FeaturedStatTile extends StatelessWidget {
                       label,
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 13,
+                        fontSize: FontSize.label,
                         fontWeight: FontWeight.w700,
                         color: isDark
                             ? AppColors.textOnDarkSub
@@ -708,7 +709,7 @@ class _FeaturedStatTile extends StatelessWidget {
                       tr('مؤشر'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w700,
                         color: color,
                       ),
@@ -822,7 +823,7 @@ class _StatTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 22,
+                  fontSize: FontSize.headlineLarge,
                   fontWeight: FontWeight.w900,
                   color: isDark ? AppColors.textOnDark : context.appColors.textPrimary,
                   height: 1.1,
@@ -835,7 +836,7 @@ class _StatTile extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w600,
                   color: isDark
                       ? AppColors.textOnDarkSub
@@ -1088,7 +1089,7 @@ class _SectionCard extends StatelessWidget {
                           title,
                           style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 15.5,
+                            fontSize: FontSize.title,
                             fontWeight: FontWeight.w800,
                             color: Theme.of(context).colorScheme.onSurface,
                           ),
@@ -1111,7 +1112,7 @@ class _SectionCard extends StatelessWidget {
                           trf('{0} مؤشرات', [items.length]),
                           style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontWeight: FontWeight.w700,
                             color: accentColor,
                           ),
@@ -1182,7 +1183,7 @@ class _SectionCard extends StatelessWidget {
                   item.label,
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: FontWeight.w600,
                     color: Theme.of(context)
                         .colorScheme
@@ -1207,7 +1208,7 @@ class _SectionCard extends StatelessWidget {
                   displayValue,
                   style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: FontWeight.w800,
                     color: rowColor,
                   ),
@@ -1275,7 +1276,7 @@ class _ListHeader extends StatelessWidget {
             title,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 15,
+              fontSize: FontSize.bodyLarge,
               fontWeight: FontWeight.w800,
               color: Theme.of(context).colorScheme.onSurface,
             ),
@@ -1295,7 +1296,7 @@ class _ListHeader extends StatelessWidget {
               '$count ${tr('عنصر')}',
               style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),
@@ -1451,7 +1452,7 @@ class _ItemCard extends StatelessWidget {
                             title!,
                             style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 14.5,
+                              fontSize: FontSize.bodyLarge,
                               fontWeight: FontWeight.w800,
                               color: Theme.of(context).colorScheme.onSurface,
                             ),
@@ -1490,7 +1491,7 @@ class _ItemCard extends StatelessWidget {
                                   '${row.key}: ',
                                   style: TextStyle(
                                     fontFamily: 'Dubai',
-                                    fontSize: 12.5,
+                                    fontSize: FontSize.label,
                                     fontWeight: FontWeight.w600,
                                     color: Theme.of(context)
                                         .colorScheme
@@ -1502,7 +1503,7 @@ class _ItemCard extends StatelessWidget {
                                   _formatValue(row.value),
                                   style: TextStyle(
                                     fontFamily: 'Dubai',
-                                    fontSize: 12,
+                                    fontSize: FontSize.caption,
                                     fontWeight: FontWeight.w800,
                                     color: _metricColor(row.key, accentColor),
                                   ),
@@ -1551,7 +1552,7 @@ class _ItemCard extends StatelessWidget {
             status,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontWeight: FontWeight.w700,
               color: color,
             ),

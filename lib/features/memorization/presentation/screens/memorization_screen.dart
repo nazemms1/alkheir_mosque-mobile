@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -209,12 +210,12 @@ class _Hero extends StatelessWidget {
                 Text(tr('يحفظ حالياً'),
                     style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontFamily: 'Dubai')),
                 Text(p.currentSurah,
                     style: const TextStyle(
                         color: Colors.white,
-                        fontSize: 18,
+                        fontSize: FontSize.headlineSmall,
                         fontWeight: FontWeight.w800,
                         fontFamily: 'Dubai')),
               ])),
@@ -222,13 +223,13 @@ class _Hero extends StatelessWidget {
             Text('${p.totalPagesMemorized}',
                 style: const TextStyle(
                     color: AppColors.goldLight,
-                    fontSize: 30,
+                    fontSize: FontSize.display,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'Dubai')),
             Text(trf('من {0} صفحة', [p.totalQuranPages]),
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
           ]),
         ]),
@@ -286,13 +287,13 @@ class _StatChip extends StatelessWidget {
         Text(label,
             style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.6),
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai')),
         const SizedBox(width: 6),
         Text(value,
             style: const TextStyle(
                 color: AppColors.goldLight,
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Dubai')),
       ]),
@@ -331,7 +332,7 @@ class _Dot extends StatelessWidget {
       const SizedBox(width: 3),
       Text(label,
           style: TextStyle(
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontFamily: 'Dubai',
               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
     ]);
@@ -419,7 +420,7 @@ class _JuzCell extends StatelessWidget {
             '${section.juzNumber}',
             style: TextStyle(
               color: textColor,
-              fontSize: 22,
+              fontSize: FontSize.headlineLarge,
               fontWeight: FontWeight.w900,
               fontFamily: 'Dubai',
             ),
@@ -429,7 +430,7 @@ class _JuzCell extends StatelessWidget {
           Text(tr('جزء'),
               style: TextStyle(
                   color: textColor.withValues(alpha: 0.7),
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontFamily: 'Dubai')),
           const SizedBox(height: 5),
           // State badge
@@ -630,7 +631,7 @@ class _TestEntry extends StatelessWidget {
                   isPartial ? tr('تجريبي') : tr('نهائي'),
                   style: TextStyle(
                       color: color,
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai'),
                 ),
@@ -641,7 +642,7 @@ class _TestEntry extends StatelessWidget {
               const SizedBox(width: 4),
               Text(dateStr,
                   style: TextStyle(
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontFamily: 'Dubai',
                       color: color.withValues(alpha: 0.7))),
               const Spacer(),
@@ -658,7 +659,7 @@ class _TestEntry extends StatelessWidget {
                   test.isPassed ? tr('ناجح') : tr('راسب'),
                   style: TextStyle(
                     color: test.isPassed ? AppColors.success : Colors.red,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai',
                   ),
@@ -679,7 +680,7 @@ class _TestEntry extends StatelessWidget {
                       score.toStringAsFixed(0),
                       style: TextStyle(
                           color: color,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w900,
                           fontFamily: 'Dubai'),
                     ),
@@ -699,7 +700,7 @@ class _TestEntry extends StatelessWidget {
                   Text(tr('الأجزاء الفرعية'),
                       style: TextStyle(
                           color: color,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai')),
                   const SizedBox(height: 8),
@@ -773,7 +774,7 @@ class _PartTileState extends State<_PartTile> {
                       '${part.partNumber}',
                       style: TextStyle(
                           color: color,
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w900,
                           fontFamily: 'Dubai'),
                     ),
@@ -787,7 +788,7 @@ class _PartTileState extends State<_PartTile> {
                         Text(
                           trf('الجزء الفرعي {0}', [part.partNumber]),
                           style: const TextStyle(
-                              fontSize: 13,
+                              fontSize: FontSize.label,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Dubai'),
                         ),
@@ -796,7 +797,7 @@ class _PartTileState extends State<_PartTile> {
                             trf('{0} محاولات • {1} إعادة',
                                 [part.attempts.length, retakes]),
                             style: TextStyle(
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 fontFamily: 'Dubai',
                                 color: color.withValues(alpha: 0.7)),
                           )
@@ -804,7 +805,7 @@ class _PartTileState extends State<_PartTile> {
                           Text(
                             tr('محاولة واحدة'),
                             style: TextStyle(
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 fontFamily: 'Dubai',
                                 color: Theme.of(context)
                                     .colorScheme
@@ -824,7 +825,7 @@ class _PartTileState extends State<_PartTile> {
                     passed ? tr('ناجح') : tr('راسب'),
                     style: TextStyle(
                         color: statusColor,
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai'),
                   ),
@@ -892,7 +893,7 @@ class _PartAttemptRow extends StatelessWidget {
               '${attempt.attemptNo}',
               style: TextStyle(
                   color: color,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai'),
             ),
@@ -913,7 +914,7 @@ class _PartAttemptRow extends StatelessWidget {
                       ? attempt.teacherName
                       : tr('غير محدد'),
                   style: const TextStyle(
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Dubai'),
                   overflow: TextOverflow.ellipsis,
@@ -929,7 +930,7 @@ class _PartAttemptRow extends StatelessWidget {
               const SizedBox(width: 4),
               Text(dateStr,
                   style: TextStyle(
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontFamily: 'Dubai',
                       color: Theme.of(context)
                           .colorScheme
@@ -978,7 +979,7 @@ class _AttemptRow extends StatelessWidget {
             child: Text('${attempt.attemptNo}',
                 style: TextStyle(
                     color: color,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
           ),
@@ -989,13 +990,13 @@ class _AttemptRow extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(attempt.teacherName,
                 style: const TextStyle(
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Dubai'),
                 overflow: TextOverflow.ellipsis),
             Text(dateStr,
                 style: TextStyle(
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai',
                     color: Theme.of(context)
                         .colorScheme
@@ -1007,7 +1008,7 @@ class _AttemptRow extends StatelessWidget {
           Text('${attempt.score!.toStringAsFixed(0)}%',
               style: TextStyle(
                   color: color,
-                  fontSize: 14,
+                  fontSize: FontSize.body,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Dubai')),
         const SizedBox(width: 8),
@@ -1066,7 +1067,7 @@ class _SheetHeader extends StatelessWidget {
             child: Text('${section.juzNumber}',
                 style: TextStyle(
                     color: section.isCompleted ? Colors.white : stateColor,
-                    fontSize: 22,
+                    fontSize: FontSize.headlineLarge,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'Dubai')),
           ),
@@ -1088,7 +1089,7 @@ class _SheetHeader extends StatelessWidget {
                         .colorScheme
                         .onSurface
                         .withValues(alpha: 0.5),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
             const SizedBox(width: 10),
             Container(
@@ -1100,7 +1101,7 @@ class _SheetHeader extends StatelessWidget {
               child: Text(stateLabel,
                   style: TextStyle(
                       color: stateColor,
-                      fontSize: 12,
+                      fontSize: FontSize.caption,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai')),
             ),
@@ -1193,7 +1194,7 @@ class _RecitationCard extends StatelessWidget {
                         .colorScheme
                         .onSurface
                         .withValues(alpha: 0.4),
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontFamily: 'Dubai')),
           ))
         else ...[
@@ -1235,7 +1236,7 @@ class _SessionTile extends StatelessWidget {
           child: Text(trf('ص {0} – {1}', [session.fromPage, session.toPage]),
               style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai')),
         ),
@@ -1245,7 +1246,7 @@ class _SessionTile extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(session.teacherName,
               style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w600,
                   fontFamily: 'Dubai'),
               overflow: TextOverflow.ellipsis),
@@ -1254,7 +1255,7 @@ class _SessionTile extends StatelessWidget {
               style: TextStyle(
                   color:
                       Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontFamily: 'Dubai')),
         ])),
         Container(
@@ -1265,7 +1266,7 @@ class _SessionTile extends StatelessWidget {
           child: Text(trf('{0} ص', [session.pageCount]),
               style: const TextStyle(
                   color: AppColors.primary,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai')),
         ),
@@ -1296,7 +1297,7 @@ class _PracticeCard extends StatelessWidget {
                               .colorScheme
                               .onSurface
                               .withValues(alpha: 0.4),
-                          fontSize: 13,
+                          fontSize: FontSize.label,
                           fontFamily: 'Dubai'))))
           : Column(children: stages.map((s) => _StageRow(stage: s)).toList()),
     );
@@ -1331,7 +1332,7 @@ class _StageRow extends StatelessWidget {
               child: Text('${stage.stageNumber}',
                   style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'Dubai'))),
         ),
@@ -1341,7 +1342,7 @@ class _StageRow extends StatelessWidget {
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
           Text(trf('المرحلة {0}', [stage.stageNumber]),
               style: const TextStyle(
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai')),
           const SizedBox(height: 2),
@@ -1357,7 +1358,7 @@ class _StageRow extends StatelessWidget {
                         .colorScheme
                         .onSurface
                         .withValues(alpha: 0.5),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
             const SizedBox(width: 10),
             Icon(Icons.error_outline_rounded,
@@ -1366,7 +1367,7 @@ class _StageRow extends StatelessWidget {
             Text(trf('{0} أخطاء', [stage.errorCount]),
                 style: const TextStyle(
                     color: orange,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Dubai')),
           ]),
@@ -1426,13 +1427,13 @@ class _FinalCard extends StatelessWidget {
             Text(exam.score.toStringAsFixed(0),
                 style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 22,
+                    fontSize: FontSize.headlineLarge,
                     fontWeight: FontWeight.w900,
                     fontFamily: 'Dubai')),
             Text('/ 100',
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.75),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
           ]),
         ),
@@ -1449,7 +1450,7 @@ class _FinalCard extends StatelessWidget {
             child: Text(grade,
                 style: TextStyle(
                     color: gradeColor,
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
           ),
@@ -1466,7 +1467,7 @@ class _FinalCard extends StatelessWidget {
                         .colorScheme
                         .onSurface
                         .withValues(alpha: 0.6),
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
           ]),
           const SizedBox(height: 6),
@@ -1477,7 +1478,7 @@ class _FinalCard extends StatelessWidget {
             Text(tr('اجتاز السبر بنجاح'),
                 style: const TextStyle(
                     color: AppColors.primaryLight,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Dubai')),
           ]),
@@ -1528,7 +1529,7 @@ class _Card extends StatelessWidget {
           Text(headerTitle,
               style: TextStyle(
                   color: headerColor,
-                  fontSize: 15,
+                  fontSize: FontSize.bodyLarge,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai')),
         ]),
@@ -1557,13 +1558,13 @@ class _MiniStat extends StatelessWidget {
         Text(value,
             style: TextStyle(
                 color: color,
-                fontSize: 16,
+                fontSize: FontSize.title,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'Dubai')),
         Text(label,
             style: TextStyle(
                 color: color.withValues(alpha: 0.7),
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontFamily: 'Dubai')),
       ]),
     );
@@ -1589,7 +1590,7 @@ class _SubLabel extends StatelessWidget {
       Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
       const SizedBox(width: 6),
@@ -1601,7 +1602,7 @@ class _SubLabel extends StatelessWidget {
         child: Text('$count',
             style: TextStyle(
                 color: color,
-                fontSize: 12,
+                fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Dubai')),
       ),
@@ -1625,7 +1626,7 @@ class _PageChip extends StatelessWidget {
       child: Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
     );
@@ -1648,7 +1649,7 @@ class _StatusBadge extends StatelessWidget {
       child: Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
     );

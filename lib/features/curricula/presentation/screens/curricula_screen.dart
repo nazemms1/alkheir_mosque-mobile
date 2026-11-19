@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -87,7 +88,7 @@ class _CurriculaScreenState extends State<CurriculaScreen> {
               Text(
                 item.name,
                 style: appTextStyle(
-                  fontSize: 14,
+                  fontSize: FontSize.body,
                   fontWeight: FontWeight.w800,
                   color: Theme.of(context).colorScheme.onSurface,
                 ),
@@ -97,7 +98,7 @@ class _CurriculaScreenState extends State<CurriculaScreen> {
                 '${item.courseName ?? ''}  ·  ${item.gradeLevelName ?? ''}  ·  ${trf('المواد: {0}', [
                       item.subjectsCount
                     ])}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -367,7 +368,7 @@ class _ResourceTile extends StatelessWidget {
           Expanded(
             child: Text(
               resource.bookName,
-              style: appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
+              style: appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w700),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -561,7 +562,7 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 16,
+          fontSize: FontSize.title,
           fontWeight: FontWeight.w800,
           color: Theme.of(context).colorScheme.onSurface,
         ),
@@ -621,7 +622,7 @@ class _CurriculumBanner extends StatelessWidget {
             label: Text(
               tr('تحميل الكتب'),
               style: appTextStyle(
-                fontSize: 13,
+                fontSize: FontSize.label,
                 fontWeight: FontWeight.w700,
                 color: Colors.white,
               ),
@@ -634,7 +635,7 @@ class _CurriculumBanner extends StatelessWidget {
                 Text(
                   title,
                   style: appTextStyle(
-                    fontSize: 26,
+                    fontSize: FontSize.display,
                     fontWeight: FontWeight.w900,
                     color: Colors.white,
                   ),
@@ -643,7 +644,7 @@ class _CurriculumBanner extends StatelessWidget {
                 Text(
                   subtitle,
                   style: appTextStyle(
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     color: const Color(0xFFB0D0C0),
                   ),
                   overflow: TextOverflow.ellipsis,
@@ -692,12 +693,12 @@ class _SubjectLessonsTableCard extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
-        color: AppColors.bgCard,
+        color: context.appColors.card,
         borderRadius: BorderRadius.circular(20),
-        border: Border.all(color: AppColors.darkCardGreen),
+        border: Border.all(color: context.appColors.border),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.25),
+            color: Colors.black.withValues(alpha: 0.06),
             blurRadius: 12,
             offset: const Offset(0, 4),
           ),
@@ -718,14 +719,14 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                   child: Container(
                     padding: const EdgeInsets.all(8),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF133624),
+                      color: context.appColors.primary.withValues(alpha: 0.10),
                       borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: const Color(0xFF23553A)),
+                      border: Border.all(color: context.appColors.border),
                     ),
-                    child: const Icon(
+                    child: Icon(
                       Icons.remove_red_eye_outlined,
                       size: 20,
-                      color: Color(0xFF78B594),
+                      color: context.appColors.primary,
                     ),
                   ),
                 ),
@@ -734,9 +735,9 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                     bookTitle,
                     textAlign: TextAlign.end,
                     style: appTextStyle(
-                      fontSize: 16,
+                      fontSize: FontSize.title,
                       fontWeight: FontWeight.w800,
-                      color: Colors.white,
+                      color: context.appColors.textPrimary,
                     ),
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -744,7 +745,7 @@ class _SubjectLessonsTableCard extends StatelessWidget {
               ],
             ),
           ),
-          const Divider(height: 1, thickness: 1, color: AppColors.darkCardGreen),
+          Divider(height: 1, thickness: 1, color: context.appColors.divider),
           // Table header: الأهمية on left, الدرس on right
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
@@ -754,28 +755,28 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                 Text(
                   tr('الأهمية'),
                   style: appTextStyle(
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textSoftSage,
+                    color: context.appColors.textMuted,
                   ),
                 ),
                 Text(
                   tr('الدرس'),
                   style: appTextStyle(
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: FontWeight.w700,
-                    color: AppColors.textSoftSage,
+                    color: context.appColors.textMuted,
                   ),
                 ),
               ],
             ),
           ),
-          const Divider(height: 1, thickness: 1, color: AppColors.darkCardGreen),
+          Divider(height: 1, thickness: 1, color: context.appColors.divider),
           // Lessons list
           for (int i = 0; i < lessons.length; i++) ...[
             _LessonRow(item: lessons[i]),
             if (i < lessons.length - 1)
-              const Divider(height: 1, thickness: 1, color: Color(0xFF163E2B)),
+              Divider(height: 1, thickness: 1, color: context.appColors.divider),
           ],
         ],
       ),
@@ -803,11 +804,11 @@ class _LessonRow extends StatelessWidget {
                 item.name,
                 textAlign: TextAlign.start,
                 style: appTextStyle(
-                  fontSize: 14,
+                  fontSize: FontSize.body,
                   fontWeight: FontWeight.w600,
                   color: item.isTaught
-                      ? const Color(0xFF90D8B2)
-                      : Colors.white,
+                      ? context.appColors.successText
+                      : context.appColors.textPrimary,
                 ),
               ),
             ),
@@ -831,8 +832,8 @@ class _ImportanceBars extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    const activeColor = AppColors.neonGreen;
-    const inactiveColor = Color(0xFF1B4D35);
+    final activeColor = context.appColors.primary;
+    final inactiveColor = context.appColors.border;
     return Row(
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -888,18 +889,18 @@ class _CurriculumCheckbox extends StatelessWidget {
         width: 22,
         height: 22,
         decoration: BoxDecoration(
-          color: isChecked ? const Color(0xFF0B3A23) : Colors.transparent,
+          color: isChecked ? context.appColors.primary.withValues(alpha: 0.12) : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: isChecked ? AppColors.neonGreen : const Color(0xFF456D58),
+            color: isChecked ? context.appColors.primary : context.appColors.textMuted,
             width: 1.5,
           ),
         ),
         child: isChecked
-            ? const Icon(
+            ? Icon(
                 Icons.check_rounded,
                 size: 16,
-                color: AppColors.neonGreen,
+                color: context.appColors.primary,
               )
             : null,
       ),

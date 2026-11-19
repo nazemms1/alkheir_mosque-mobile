@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -135,7 +136,7 @@ class AutoSaveIndicator extends StatelessWidget {
                 child: Text(
                   text,
                   style: appTextStyle(
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w700,
                     color: color,
                   ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -87,7 +88,7 @@ class AppDrawer extends StatelessWidget {
                           title: Text(
                             section.title,
                             style: appTextStyle(
-                              fontSize: 14,
+                              fontSize: FontSize.body,
                               fontWeight: FontWeight.w700,
                               color: AdminTheme.text(context),
                             ),
@@ -190,7 +191,7 @@ class _DrawerHeader extends StatelessWidget {
                 Text(
                   tr('مسجد الخير'),
                   style: appTextStyle(
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     color: Colors.white,
                   ),
@@ -202,7 +203,7 @@ class _DrawerHeader extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 13,
+                      fontSize: FontSize.label,
                       color: Colors.white.withValues(alpha: 0.85),
                     ),
                   ),
@@ -218,7 +219,7 @@ class _DrawerHeader extends StatelessWidget {
                     ),
                     child: Text(
                       roleLabel,
-                      style: appTextStyle(fontSize: 12, color: Colors.white),
+                      style: appTextStyle(fontSize: FontSize.caption, color: Colors.white),
                     ),
                   ),
                 ],
@@ -243,7 +244,7 @@ class _GroupTitle extends StatelessWidget {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 12,
+          fontSize: FontSize.caption,
           fontWeight: FontWeight.w700,
           color: AdminTheme.muted(context),
         ),
@@ -309,7 +310,7 @@ class _DrawerTile extends StatelessWidget {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
-                          fontSize: 14,
+                          fontSize: FontSize.body,
                           fontWeight: FontWeight.w700,
                           color:
                               danger
@@ -323,7 +324,7 @@ class _DrawerTile extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: appTextStyle(
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             color: AdminTheme.muted(context),
                           ),
                         ),

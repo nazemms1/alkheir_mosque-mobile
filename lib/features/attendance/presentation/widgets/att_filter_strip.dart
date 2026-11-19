@@ -57,7 +57,7 @@ class _FilterStrip extends StatelessWidget {
                   f.$1,
                   style: TextStyle(
                     color: isActive ? Colors.white : context.appColors.textSecondary,
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: isActive ? FontWeight.w700 : FontWeight.w500,
                     fontFamily: 'Dubai',
                   ),

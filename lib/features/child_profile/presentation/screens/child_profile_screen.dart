@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/config/support_contact.dart';
@@ -248,7 +249,7 @@ class _ProfileHero extends StatelessWidget {
                   student.name,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontSize: 18,
+                    fontSize: FontSize.headlineSmall,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai',
                     height: 1.3,
@@ -266,7 +267,7 @@ class _ProfileHero extends StatelessWidget {
                       student.id,
                       style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontFamily: 'Dubai',
                       ),
                     ),
@@ -317,7 +318,7 @@ class _ProfileAvatar extends StatelessWidget {
               student.avatarInitials,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 26,
+                fontSize: FontSize.display,
                 fontWeight: FontWeight.w800,
                 fontFamily: 'Dubai',
               ),
@@ -359,7 +360,7 @@ class _InfoRow extends StatelessWidget {
             label,
             style: TextStyle(
               color: Colors.white.withValues(alpha: 0.85),
-              fontSize: 12,
+              fontSize: FontSize.caption,
               fontFamily: 'Dubai',
               fontWeight: FontWeight.w600,
             ),
@@ -439,7 +440,7 @@ class _InfoCard extends StatelessWidget {
                 Text(title,
                     style: const TextStyle(
                       color: Colors.white,
-                      fontSize: 15,
+                      fontSize: FontSize.bodyLarge,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai',
                     )),
@@ -549,14 +550,14 @@ class _ContactCard extends StatelessWidget {
                     Text(tr('التواصل مع الإدارة'),
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 16,
+                          fontSize: FontSize.title,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai',
                         )),
                     Text(tr('عبر واتساب للاستفسار عن الطالب'),
                         style: TextStyle(
                           color: Colors.white.withValues(alpha: 0.65),
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontFamily: 'Dubai',
                         )),
                   ],
@@ -588,7 +589,7 @@ class _ContactCard extends StatelessWidget {
                   Text(tr('تواصل عبر واتساب'),
                       style: const TextStyle(
                         color: AppColors.whatsapp,
-                        fontSize: 15,
+                        fontSize: FontSize.bodyLarge,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai',
                       )),

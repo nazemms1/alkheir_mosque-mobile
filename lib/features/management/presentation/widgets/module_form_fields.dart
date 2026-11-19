@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -94,10 +95,10 @@ Widget moduleSwitch({
       contentPadding: const EdgeInsetsDirectional.only(start: 4, end: 4),
       activeTrackColor: AppColors.primaryLight,
       title: Text(label,
-          style: appTextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
+          style: appTextStyle(fontSize: FontSize.body, fontWeight: FontWeight.w600)),
       subtitle: subtitle == null
           ? null
-          : Text(subtitle, style: appTextStyle(fontSize: 12)),
+          : Text(subtitle, style: appTextStyle(fontSize: FontSize.caption)),
       value: value,
       onChanged: onChanged,
     ),
@@ -136,7 +137,7 @@ class ModuleSaveButton extends StatelessWidget {
             )
           : Text(label,
               style: appTextStyle(
-                  fontSize: 15,
+                  fontSize: FontSize.bodyLarge,
                   fontWeight: FontWeight.w700,
                   color: Colors.white)),
     );
@@ -179,7 +180,7 @@ class ModuleFormSection extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 15,
+                      fontSize: FontSize.bodyLarge,
                       fontWeight: FontWeight.w800,
                       color: AdminTheme.text(context),
                     ),
@@ -224,13 +225,13 @@ class ModuleFormPage extends StatelessWidget {
         fillColor: AdminTheme.card(context),
         contentPadding:
             const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-        labelStyle: appTextStyle(fontSize: 14, color: muted),
+        labelStyle: appTextStyle(fontSize: FontSize.body, color: muted),
         floatingLabelStyle: appTextStyle(
-          fontSize: 13,
+          fontSize: FontSize.label,
           fontWeight: FontWeight.w700,
           color: accent,
         ),
-        helperStyle: appTextStyle(fontSize: 12, color: muted),
+        helperStyle: appTextStyle(fontSize: FontSize.caption, color: muted),
         prefixIconColor: muted,
         suffixIconColor: muted,
         border: outline(border),

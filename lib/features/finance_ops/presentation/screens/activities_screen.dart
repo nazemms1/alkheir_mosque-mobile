@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
@@ -59,7 +60,7 @@ class ActivitiesScreen extends StatelessWidget {
                     child: Text(
                       item.title,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -76,14 +77,14 @@ class ActivitiesScreen extends StatelessWidget {
               const SizedBox(height: 4),
               Text(
                 '${item.activityDate ?? ''}  ·  ${item.groupName ?? ''}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
               Text(
                 trf('المحصّل: {0}  ·  المصروفات: {1}', [
                   formatAmount(item.collectedRevenue),
                   formatAmount(item.expenseTotal),
                 ]),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -331,7 +332,7 @@ class _RegistrationsTab extends StatelessWidget {
                       child: Text(
                         item.studentName,
                         style: appTextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w800),
+                            fontSize: FontSize.body, fontWeight: FontWeight.w800),
                       ),
                     ),
                     StatusPill(
@@ -347,7 +348,7 @@ class _RegistrationsTab extends StatelessWidget {
                     formatAmount(item.balance),
                   ]),
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 ),
               ],
             ),
@@ -432,12 +433,12 @@ class _PaymentsTab extends StatelessWidget {
                       Text(
                         item.studentName,
                         style: appTextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w800),
+                            fontSize: FontSize.body, fontWeight: FontWeight.w800),
                       ),
                       Text(
                         '${item.paidAt}  ·  ${item.paymentMethodName ?? ''}  ·  ${item.referenceNo ?? ''}',
                         style: appTextStyle(
-                            fontSize: 12, color: moduleMuted(context)),
+                            fontSize: FontSize.caption, color: moduleMuted(context)),
                       ),
                     ],
                   ),
@@ -445,7 +446,7 @@ class _PaymentsTab extends StatelessWidget {
                 Text(
                   formatAmount(item.amount),
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w800,
                     color:
                         item.isVoided ? context.appColors.textMuted : AppColors.success,
@@ -589,12 +590,12 @@ class _ExpensesTab extends StatelessWidget {
                       Text(
                         item.description,
                         style: appTextStyle(
-                            fontSize: 14, fontWeight: FontWeight.w800),
+                            fontSize: FontSize.body, fontWeight: FontWeight.w800),
                       ),
                       Text(
                         '${item.categoryName ?? ''}  ·  ${item.spentOn}',
                         style: appTextStyle(
-                            fontSize: 12, color: moduleMuted(context)),
+                            fontSize: FontSize.caption, color: moduleMuted(context)),
                       ),
                     ],
                   ),
@@ -602,7 +603,7 @@ class _ExpensesTab extends StatelessWidget {
                 Text(
                   formatAmount(item.amount),
                   style: appTextStyle(
-                    fontSize: 15,
+                    fontSize: FontSize.bodyLarge,
                     fontWeight: FontWeight.w800,
                     color: context.appColors.errorText,
                   ),

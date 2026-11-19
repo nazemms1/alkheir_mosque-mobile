@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -144,7 +145,7 @@ class _SummaryCard extends StatelessWidget {
                 child: Text(invoice.invoiceNo,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 15,
+                        fontSize: FontSize.bodyLarge,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface)),
               ),
@@ -157,7 +158,7 @@ class _SummaryCard extends StatelessWidget {
                 child: Text(invoice.isPaid ? tr('مدفوعة') : tr('غير مكتملة'),
                     style: TextStyle(
                         color: color,
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai')),
               ),
@@ -167,13 +168,13 @@ class _SummaryCard extends StatelessWidget {
           Text(trf('تاريخ الإصدار: {0}', [invoice.issueDate]),
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: context.appColors.textMuted)),
           if (invoice.dueDate != null)
             Text(trf('تاريخ الاستحقاق: {0}', [invoice.dueDate]),
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: context.appColors.textMuted)),
           const SizedBox(height: 14),
           ClipRRect(
@@ -209,7 +210,7 @@ class _SummaryCard extends StatelessWidget {
             Text(trf('الخصم: {0}', [invoice.discount.toInt()]),
                 style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     color: context.appColors.textMuted)),
           ],
         ],
@@ -239,13 +240,13 @@ class _AmountBox extends StatelessWidget {
             Text('${value.toInt()}',
                 style: TextStyle(
                     color: color,
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
             Text(label,
                 style: TextStyle(
                     color: context.appColors.textMuted,
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontFamily: 'Dubai')),
           ],
         ),
@@ -271,7 +272,7 @@ class _SectionTitle extends StatelessWidget {
         const SizedBox(width: 8),
         Text(title,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                fontSize: 14, color: Theme.of(context).colorScheme.onSurface)),
+                fontSize: FontSize.body, color: Theme.of(context).colorScheme.onSurface)),
       ],
     );
   }
@@ -297,20 +298,20 @@ class _ItemRow extends StatelessWidget {
             child: Text(item.description,
                 style: const TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 12,
+                    fontSize: FontSize.caption,
                     fontWeight: FontWeight.w600)),
           ),
           Text(
               '${item.quantity.toStringAsFixed(item.quantity.truncateToDouble() == item.quantity ? 0 : 1)} × ${item.unitPrice.toInt()}',
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   color: context.appColors.textMuted)),
           const SizedBox(width: 10),
           Text('${item.lineTotal.toInt()}',
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w800,
                   color: context.appColors.infoText)),
         ],
@@ -350,13 +351,13 @@ class _PaymentRow extends StatelessWidget {
                 Text(payment.paidAt,
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 12,
+                        fontSize: FontSize.caption,
                         color: context.appColors.textMuted)),
                 if (payment.methodName != null)
                   Text(payment.methodName!,
                       style: const TextStyle(
                           fontFamily: 'Dubai',
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w600)),
               ],
             ),
@@ -364,7 +365,7 @@ class _PaymentRow extends StatelessWidget {
           Text('${payment.amount.toInt()}',
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 13,
+                  fontSize: FontSize.label,
                   fontWeight: FontWeight.w800,
                   color: color,
                   decoration:

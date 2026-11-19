@@ -58,7 +58,7 @@ class _EmptyPoints extends StatelessWidget {
         Text(tr('لا توجد نقاط بعد'),
             style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 14,
+                fontSize: FontSize.body,
                 color:
                     Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.4))),
       ],
@@ -143,7 +143,7 @@ class _PointTile extends StatelessWidget {
                         record.isBonus ? tr('مكافأة') : tr('حفظ'),
                         style: TextStyle(
                             color: color,
-                            fontSize: 12,
+                            fontSize: FontSize.caption,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Dubai'),
                       ),
@@ -164,7 +164,7 @@ class _PointTile extends StatelessWidget {
                 '+${record.points}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: FontSize.headline,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Dubai',
                 ),
@@ -283,7 +283,7 @@ class _PointEntryTile extends StatelessWidget {
                           label,
                           style: TextStyle(
                               color: color,
-                              fontSize: 12,
+                              fontSize: FontSize.caption,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Dubai'),
                         ),
@@ -294,7 +294,7 @@ class _PointEntryTile extends StatelessWidget {
                           child: Text(
                             entry.policyName!,
                             style: TextStyle(
-                                fontSize: 12,
+                                fontSize: FontSize.caption,
                                 fontFamily: 'Dubai',
                                 color: Theme.of(context)
                                     .colorScheme
@@ -319,7 +319,7 @@ class _PointEntryTile extends StatelessWidget {
                 '+${entry.points}',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 20,
+                  fontSize: FontSize.headline,
                   fontWeight: FontWeight.w900,
                   fontFamily: 'Dubai',
                 ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:io';
 import 'dart:typed_data';
@@ -281,7 +282,7 @@ class _Header extends StatelessWidget {
                 ? Text(
                     initial,
                     style: appTextStyle(
-                      fontSize: 22,
+                      fontSize: FontSize.headlineLarge,
                       fontWeight: FontWeight.w800,
                       color: context.appColors.goldText,
                     ),
@@ -296,7 +297,7 @@ class _Header extends StatelessWidget {
                 Text(
                   user.name,
                   style: appTextStyle(
-                    fontSize: 16,
+                    fontSize: FontSize.title,
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -305,7 +306,7 @@ class _Header extends StatelessWidget {
                 Text(
                   '@${user.username}',
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                 ),
               ],
             ),
@@ -352,7 +353,7 @@ class _ActionTile extends StatelessWidget {
                   Text(
                     label,
                     style: appTextStyle(
-                      fontSize: 14,
+                      fontSize: FontSize.body,
                       fontWeight: FontWeight.w700,
                       color: destructive
                           ? AppColors.error
@@ -363,7 +364,7 @@ class _ActionTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: appTextStyle(
-                          fontSize: 12, color: moduleMuted(context)),
+                          fontSize: FontSize.caption, color: moduleMuted(context)),
                     ),
                 ],
               ),

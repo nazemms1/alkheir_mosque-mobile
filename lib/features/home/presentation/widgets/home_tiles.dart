@@ -120,7 +120,7 @@ class _NotifTile extends StatelessWidget {
                               .colorScheme
                               .onSurface
                               .withValues(alpha: 0.4),
-                          fontSize: 12)),
+                          fontSize: FontSize.caption)),
                 ],
               ),
             ),

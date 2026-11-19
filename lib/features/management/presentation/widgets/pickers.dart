@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -141,7 +142,7 @@ class _ItemPickerSheetState extends State<_ItemPickerSheet> {
                 tr('بلا اختيار'),
                 style: const TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                   fontWeight: FontWeight.w700,
                 ),
               ),
@@ -240,7 +241,7 @@ class _ItemPickerSheetState extends State<_ItemPickerSheet> {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w700,
                         color: AdminTheme.text(context),
                       ),
@@ -251,7 +252,7 @@ class _ItemPickerSheetState extends State<_ItemPickerSheet> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                         style: appTextStyle(
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           color: AdminTheme.muted(context),
                         ),
                       ),

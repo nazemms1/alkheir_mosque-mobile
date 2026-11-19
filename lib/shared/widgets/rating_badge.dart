@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import '../../app/core/theme/app_theme.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
@@ -91,7 +92,7 @@ class RatingBadge extends StatelessWidget {
             style: Theme.of(context).textTheme.bodySmall?.copyWith(
                   color: textColor,
                   fontWeight: FontWeight.w700,
-                  fontSize: 12,
+                  fontSize: FontSize.caption,
                 ),
           ),
         ],

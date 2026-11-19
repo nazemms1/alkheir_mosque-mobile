@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:io';
 import 'dart:typed_data';
@@ -471,7 +472,7 @@ class _ProfileHeader extends StatelessWidget {
                       ? Text(
                           initials,
                           style: appTextStyle(
-                            fontSize: 22,
+                            fontSize: FontSize.headlineLarge,
                             fontWeight: FontWeight.w800,
                             color: context.appColors.goldText,
                           ),
@@ -487,7 +488,7 @@ class _ProfileHeader extends StatelessWidget {
                     Text(
                       profile.name,
                       style: appTextStyle(
-                        fontSize: 16,
+                        fontSize: FontSize.title,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -496,7 +497,7 @@ class _ProfileHeader extends StatelessWidget {
                     Text(
                       '${profile.studentNumber ?? ''}  ·  ${profile.gradeLevel?.name ?? ''}',
                       style: appTextStyle(
-                          fontSize: 12, color: moduleMuted(context)),
+                          fontSize: FontSize.caption, color: moduleMuted(context)),
                     ),
                     const SizedBox(height: 6),
                     StatusPill(
@@ -621,7 +622,7 @@ class _StatsGrid extends StatelessWidget {
                   Text(
                     item.value,
                     style: appTextStyle(
-                      fontSize: 18,
+                      fontSize: FontSize.headlineSmall,
                       fontWeight: FontWeight.w800,
                       color: AppColors.primaryLight,
                     ),
@@ -629,7 +630,7 @@ class _StatsGrid extends StatelessWidget {
                   Text(
                     item.key,
                     style:
-                        appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                        appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                   ),
                 ],
               ),
@@ -659,7 +660,7 @@ class _EnrollmentCard extends StatelessWidget {
                 child: Text(
                   enrollment.group?.name ?? '—',
                   style: appTextStyle(
-                    fontSize: 14,
+                    fontSize: FontSize.body,
                     fontWeight: FontWeight.w800,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -671,11 +672,11 @@ class _EnrollmentCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             '${enrollment.course?.name ?? ''}  ·  ${enrollment.teacher?.name ?? ''}',
-            style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+            style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
           ),
           Text(
             enrollment.enrolledAt ?? '',
-            style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+            style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
           ),
         ],
       ),
@@ -704,7 +705,7 @@ class _FilesHeader extends StatelessWidget {
             child: Text(
               tr('المرفقات'),
               style: appTextStyle(
-                fontSize: 14,
+                fontSize: FontSize.body,
                 fontWeight: FontWeight.w800,
                 color: Theme.of(context).colorScheme.onSurface,
               ),
@@ -752,7 +753,7 @@ class _FileCard extends StatelessWidget {
                 Text(
                   file.originalName,
                   style: appTextStyle(
-                    fontSize: 13,
+                    fontSize: FontSize.label,
                     fontWeight: FontWeight.w700,
                     color: Theme.of(context).colorScheme.onSurface,
                   ),
@@ -761,7 +762,7 @@ class _FileCard extends StatelessWidget {
                 Text(
                   '${file.fileType}  ·  ${file.uploadedByName ?? ''}  ·  ${file.uploadedAt ?? ''}',
                   style:
-                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                      appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
@@ -797,7 +798,7 @@ class _SectionTitle extends StatelessWidget {
       child: Text(
         text,
         style: appTextStyle(
-          fontSize: 14,
+          fontSize: FontSize.body,
           fontWeight: FontWeight.w800,
           color: Theme.of(context).colorScheme.onSurface,
         ),

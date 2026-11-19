@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -113,7 +114,7 @@ abstract final class AppRoutes {
               Text(
                 '${tr('الصفحة غير موجودة')}: ${state.uri}',
                 textAlign: TextAlign.center,
-                style: appTextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+                style: appTextStyle(fontSize: FontSize.title, fontWeight: FontWeight.bold),
               ),
               const SizedBox(height: 16),
               FilledButton(

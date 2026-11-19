@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -90,7 +91,7 @@ class _AwqafTestsScreenState extends State<AwqafTestsScreen> {
                     child: Text(
                       test.student?.name ?? '—',
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: Theme.of(context).colorScheme.onSurface,
                       ),
@@ -106,11 +107,11 @@ class _AwqafTestsScreenState extends State<AwqafTestsScreen> {
               const SizedBox(height: 4),
               Text(
                 '${test.juz?.name ?? ''}  ·  ${test.typeName ?? ''}  ·  ${test.testedOn}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
               Text(
                 '${test.groupName ?? ''}${test.score == null ? '' : '  ·  ${formatAmount(test.score!)}'}',
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -144,7 +145,7 @@ class _StatusChips extends StatelessWidget {
             Padding(
               padding: const EdgeInsetsDirectional.only(end: 8),
               child: ChoiceChip(
-                label: Text(entry.value, style: appTextStyle(fontSize: 12)),
+                label: Text(entry.value, style: appTextStyle(fontSize: FontSize.caption)),
                 selected: entry.key == selected,
                 onSelected: (_) => onSelected(entry.key),
               ),
@@ -334,7 +335,7 @@ class _RecordAwqafScreenState extends State<RecordAwqafScreen> {
               padding: const EdgeInsets.only(bottom: 12),
               child: Text(
                 tr('يُسجَّل الاختبار باسم معلمك المرتبط بالحساب'),
-                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
               ),
             )
           else

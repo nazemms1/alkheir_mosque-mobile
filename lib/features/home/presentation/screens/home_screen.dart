@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
@@ -235,7 +236,7 @@ class _ChildSelectorStrip extends StatelessWidget {
                         child.student.avatarInitials,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontWeight: FontWeight.w800,
                           fontFamily: 'Dubai',
                         ),
@@ -253,7 +254,7 @@ class _ChildSelectorStrip extends StatelessWidget {
                           color: isSelected
                               ? Colors.white
                               : Theme.of(context).colorScheme.onSurface,
-                          fontSize: 13,
+                          fontSize: FontSize.label,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai',
                         ),
@@ -267,7 +268,7 @@ class _ChildSelectorStrip extends StatelessWidget {
                                   .colorScheme
                                   .onSurface
                                   .withValues(alpha: 0.5),
-                          fontSize: 12,
+                          fontSize: FontSize.caption,
                           fontFamily: 'Dubai',
                         ),
                       ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/rbac/module_access.dart';
@@ -161,8 +162,8 @@ class _AdminFinanceScreenState extends State<AdminFinanceScreen>
                 labelColor: Colors.white,
                 unselectedLabelColor: AdminTheme.muted(context),
                 labelStyle:
-                    appTextStyle(fontSize: 13, fontWeight: FontWeight.w700),
-                unselectedLabelStyle: appTextStyle(fontSize: 13),
+                    appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w700),
+                unselectedLabelStyle: appTextStyle(fontSize: FontSize.label),
                 tabs: [
                   Tab(height: 40, text: tr('الفواتير')),
                   Tab(height: 40, text: tr('الأنشطة')),
@@ -266,7 +267,7 @@ class _InvoiceCard extends StatelessWidget {
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: AdminTheme.text(context),
                       ),
@@ -276,7 +277,7 @@ class _InvoiceCard extends StatelessWidget {
                       invoice.parentName ?? tr('— ولي أمر غير محدد'),
                       maxLines: 1,
                       overflow: TextOverflow.ellipsis,
-                      style: appTextStyle(fontSize: 12, color: muted),
+                      style: appTextStyle(fontSize: FontSize.caption, color: muted),
                     ),
                   ],
                 ),
@@ -318,7 +319,7 @@ class _InvoiceCard extends StatelessWidget {
               ),
               Text(
                 invoice.issueDate,
-                style: appTextStyle(fontSize: 12, color: muted),
+                style: appTextStyle(fontSize: FontSize.caption, color: muted),
               ),
             ],
           ),
@@ -343,7 +344,7 @@ class _AmountChip extends StatelessWidget {
         Text(
           value,
           style: appTextStyle(
-            fontSize: 14,
+            fontSize: FontSize.body,
             fontWeight: FontWeight.w800,
             color: color,
           ),
@@ -351,7 +352,7 @@ class _AmountChip extends StatelessWidget {
         Text(
           label,
           style: appTextStyle(
-            fontSize: 12,
+            fontSize: FontSize.caption,
             color: AdminTheme.muted(context),
           ),
         ),
@@ -425,7 +426,7 @@ class _ActivityCard extends StatelessWidget {
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
                       style: appTextStyle(
-                        fontSize: 14,
+                        fontSize: FontSize.body,
                         fontWeight: FontWeight.w800,
                         color: AdminTheme.text(context),
                       ),
@@ -433,7 +434,7 @@ class _ActivityCard extends StatelessWidget {
                     if (activity.activityDate != null)
                       Text(
                         activity.activityDate!,
-                        style: appTextStyle(fontSize: 12, color: muted),
+                        style: appTextStyle(fontSize: FontSize.caption, color: muted),
                       ),
                   ],
                 ),
@@ -456,7 +457,7 @@ class _ActivityCard extends StatelessWidget {
                     activity.groupName!,
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
-                    style: appTextStyle(fontSize: 12, color: muted),
+                    style: appTextStyle(fontSize: FontSize.caption, color: muted),
                   ),
                 ),
               ],

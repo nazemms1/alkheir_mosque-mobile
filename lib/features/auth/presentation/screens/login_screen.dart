@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
@@ -498,7 +499,7 @@ class _PremiumField extends StatelessWidget {
       style: TextStyle(
         fontFamily: 'Dubai',
         fontWeight: FontWeight.w600,
-        fontSize: 15,
+        fontSize: FontSize.bodyLarge,
         color: Theme.of(context).colorScheme.onSurface,
       ),
       decoration: InputDecoration(
@@ -588,7 +589,7 @@ class _GradientButton extends StatelessWidget {
                     Text(
                       tr('تسجيل الدخول'),
                       style: Theme.of(context).textTheme.labelLarge?.copyWith(
-                            fontSize: 16,
+                            fontSize: FontSize.title,
                             letterSpacing: 0.5,
                           ),
                     ),
