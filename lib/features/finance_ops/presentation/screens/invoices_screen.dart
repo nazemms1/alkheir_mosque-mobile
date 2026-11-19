@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -83,7 +84,7 @@ class InvoicesScreen extends StatelessWidget {
                   formatAmount(item.paidTotal),
                   formatAmount(item.balance),
                 ]),
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -292,7 +293,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
                                     Text(
                                       '${formatAmount(item.quantity)} × ${formatAmount(item.unitPrice)}${item.studentName == null ? '' : '  ·  ${item.studentName}'}',
                                       style: appTextStyle(
-                                          fontSize: 11,
+                                          fontSize: 12,
                                           color: moduleMuted(context)),
                                     ),
                                   ],
@@ -358,7 +359,7 @@ class _PaymentCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModuleCard(
-      accent: payment.isVoided ? AppColors.textMuted : AppColors.success,
+      accent: payment.isVoided ? context.appColors.textMuted : AppColors.success,
       onTap: canVoid ? onVoid : null,
       child: Row(
         children: [
@@ -374,7 +375,7 @@ class _PaymentCard extends StatelessWidget {
                 Text(
                   '${payment.paymentMethodName ?? ''}  ·  ${payment.referenceNo ?? ''}',
                   style:
-                      appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
                 ),
               ],
             ),
@@ -384,12 +385,12 @@ class _PaymentCard extends StatelessWidget {
             style: appTextStyle(
               fontSize: 14,
               fontWeight: FontWeight.w800,
-              color: payment.isVoided ? AppColors.textMuted : AppColors.success,
+              color: payment.isVoided ? context.appColors.textMuted : AppColors.success,
             ),
           ),
           if (payment.isVoided) ...[
             const SizedBox(width: 8),
-            StatusPill(label: tr('ملغاة'), color: AppColors.textMuted),
+            StatusPill(label: tr('ملغاة'), color: context.appColors.textMuted),
           ],
         ],
       ),

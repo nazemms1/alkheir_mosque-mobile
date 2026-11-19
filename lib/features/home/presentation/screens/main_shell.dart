@@ -1,6 +1,6 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:alkheir_mosque/app/core/navigation/app_tab.dart';
 import 'package:alkheir_mosque/app/core/navigation/tab_registry.dart';
@@ -17,6 +17,8 @@ import 'package:alkheir_mosque/di/di_locator.dart';
 import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/features/home/presentation/widgets/app_drawer.dart';
 import 'package:alkheir_mosque/app/core/widgets/app_feedback.dart';
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
+import 'package:alkheir_mosque/app/core/config/support_contact.dart';
 
 class MainShell extends ConsumerStatefulWidget {
   final AuthToken token;
@@ -38,9 +40,7 @@ class _MainShellState extends ConsumerState<MainShell>
   bool _loading = true;
   String? _error;
   late final AnimationController _appBarCtrl;
-  late final AnimationController _pulseCtrl;
   late final Animation<double> _appBarAnim;
-  late final Animation<double> _pulseAnim;
 
   final _studentService = StudentRepositoryImpl();
 
@@ -51,13 +51,8 @@ class _MainShellState extends ConsumerState<MainShell>
       vsync: this,
       duration: const Duration(milliseconds: 600),
     );
-    _pulseCtrl = AnimationController(
-      vsync: this,
-      duration: const Duration(milliseconds: 1800),
-    )..repeat(reverse: true);
     _appBarAnim =
         CurvedAnimation(parent: _appBarCtrl, curve: Curves.easeOutCubic);
-    _pulseAnim = CurvedAnimation(parent: _pulseCtrl, curve: Curves.easeInOut);
     _appBarCtrl.forward();
     _loadData();
   }
@@ -121,7 +116,6 @@ class _MainShellState extends ConsumerState<MainShell>
   @override
   void dispose() {
     _appBarCtrl.dispose();
-    _pulseCtrl.dispose();
     super.dispose();
   }
 
@@ -416,12 +410,15 @@ class _MainShellState extends ConsumerState<MainShell>
           key: ValueKey(_selectedChildIndex),
           index: safeIndex,
           children: tabs.map((t) => t.builder(ctx)).toList()),
-      bottomNavigationBar: _PremiumNavBar(
-        items: navItems,
-        currentIndex: navIndex,
-        onTap: (i) =>
-            overflow && i == directCount ? _openDrawer() : _changeTab(i),
-      ),
+      // تبويب واحد لا يحتاج شريط تنقل (NavigationBar يتطلب عنصرين على الأقل).
+      bottomNavigationBar: navItems.length < 2
+          ? null
+          : _PremiumNavBar(
+              items: navItems,
+              currentIndex: navIndex,
+              onTap: (i) =>
+                  overflow && i == directCount ? _openDrawer() : _changeTab(i),
+            ),
     );
   }
 
@@ -459,16 +456,7 @@ class _MainShellState extends ConsumerState<MainShell>
           child: SafeArea(
             child: Stack(
               children: [
-                // Decorative arc in top-right
-                Positioned(
-                  top: -30,
-                  left: -20,
-                  child: _GlowOrb(
-                      size: 100,
-                      color: AppColors.primaryLight,
-                      opacity: 0.08,
-                      pulseAnim: _pulseAnim),
-                ),
+                const Positioned.fill(child: GeometricPattern(opacity: 0.05)),
                 Padding(
                   padding:
                       const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
@@ -534,35 +522,6 @@ void _openAccount(BuildContext sheetContext) {
   navigator.push(MaterialPageRoute(builder: (_) => const AccountScreen()));
 }
 
-// ─── Glow Orb decoration ──────────────────────────────────────────────────────
-class _GlowOrb extends StatelessWidget {
-  final double size, opacity;
-  final Color color;
-  final Animation<double> pulseAnim;
-
-  const _GlowOrb({
-    required this.size,
-    required this.color,
-    required this.opacity,
-    required this.pulseAnim,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return AnimatedBuilder(
-      animation: pulseAnim,
-      builder: (_, __) => Container(
-        width: size + 10 * pulseAnim.value,
-        height: size + 10 * pulseAnim.value,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: color.withValues(alpha: opacity + 0.03 * pulseAnim.value),
-        ),
-      ),
-    );
-  }
-}
-
 // ─── Notification Button ──────────────────────────────────────────────────────
 class _NotificationButton extends StatelessWidget {
   final int count;
@@ -571,68 +530,23 @@ class _NotificationButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Stack(
-        clipBehavior: Clip.none,
-        children: [
-          Container(
-            width: 44,
-            height: 44,
-            decoration: BoxDecoration(
-              color: Colors.white.withValues(alpha: 0.12),
-              borderRadius: BorderRadius.circular(14),
-              border: Border.all(
-                  color: Colors.white.withValues(alpha: 0.2), width: 1.5),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.15),
-                  blurRadius: 8,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: const Icon(Icons.notifications_rounded,
-                color: Colors.white, size: 22),
-          ),
-          if (count > 0)
-            Positioned(
-              top: -5,
-              left: -5,
-              child: Container(
-                width: 20,
-                height: 20,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                      colors: [Color(0xFFFF7070), AppColors.error]),
-                  shape: BoxShape.circle,
-                  border: Border.all(color: AppColors.brandDeep, width: 2),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.error.withValues(alpha: 0.5),
-                      blurRadius: 8,
-                      spreadRadius: 1,
-                    ),
-                  ],
-                ),
-                child: Center(
-                  child: Text(
-                    '$count',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 10,
-                      fontWeight: FontWeight.w800,
-                    ),
-                  ),
-                ),
-              ).animate().scale(
-                    begin: const Offset(0.5, 0.5),
-                    end: const Offset(1, 1),
-                    curve: Curves.elasticOut,
-                    duration: 600.ms,
-                  ),
-            ),
-        ],
+    final label = count > 0
+        ? '${tr('الإشعارات')} ($count)'
+        : tr('الإشعارات');
+    return Semantics(
+      button: true,
+      label: label,
+      excludeSemantics: true,
+      child: Badge(
+        isLabelVisible: count > 0,
+        label: Text(count > 99 ? '99+' : '$count'),
+        backgroundColor: AppColors.error,
+        offset: const Offset(4, -4),
+        child: _HeaderButton(
+          icon: Icons.notifications_rounded,
+          tooltip: label,
+          onTap: onTap,
+        ),
       ),
     );
   }
@@ -659,9 +573,7 @@ class _UserProfileSheet extends ConsumerWidget {
     final isDark = themeMode == ThemeMode.dark ||
         (themeMode == ThemeMode.system &&
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
-    final sheetBg = isDark ? const Color(0xFF0A1A0D) : Colors.white;
-    final dividerColor =
-        isDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4);
+    final c = context.appColors;
 
     // بيانات الوالد من الـ API أو fallback للبيانات القديمة
     final displayName = parentProfile != null
@@ -680,29 +592,11 @@ class _UserProfileSheet extends ConsumerWidget {
         data.children.fold<int>(
             0, (s, c) => s + c.memorizationProgress.totalPagesMemorized);
 
-    final borderColor =
-        isDark ? AppColors.darkBorderGreen : const Color(0xFFD8E8DC);
-    final handleColor =
-        isDark ? const Color(0xFF2A4A32) : const Color(0xFFCAD8CE);
-
     return Container(
       decoration: BoxDecoration(
-        color: sheetBg,
+        color: c.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(32)),
-        border: Border(top: BorderSide(color: borderColor, width: 1.5)),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.5 : 0.16),
-            blurRadius: 36,
-            offset: const Offset(0, -8),
-          ),
-          BoxShadow(
-            color: AppColors.brandDeep
-                .withValues(alpha: isDark ? 0.25 : 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, -2),
-          ),
-        ],
+        border: Border(top: BorderSide(color: c.border, width: 1.5)),
       ),
       child: SafeArea(
         top: false,
@@ -715,7 +609,7 @@ class _UserProfileSheet extends ConsumerWidget {
                 width: 48,
                 height: 5,
                 decoration: BoxDecoration(
-                  color: handleColor,
+                  color: c.border,
                   borderRadius: BorderRadius.circular(2.5),
                 ),
               ),
@@ -727,7 +621,7 @@ class _UserProfileSheet extends ConsumerWidget {
                   Text(
                     tr('الملف الشخصي'),
                     style: TextStyle(
-                      color: isDark ? Colors.white : AppColors.textPrimary,
+                      color: c.textPrimary,
                       fontSize: 16,
                       fontWeight: FontWeight.w800,
                       fontFamily: 'Dubai',
@@ -756,13 +650,6 @@ class _UserProfileSheet extends ConsumerWidget {
                 end: Alignment.bottomLeft,
               ),
               borderRadius: BorderRadius.circular(24),
-              boxShadow: [
-                BoxShadow(
-                  color: AppColors.primary.withValues(alpha: 0.35),
-                  blurRadius: 24,
-                  offset: const Offset(0, 8),
-                ),
-              ],
             ),
             child: Row(
               children: [
@@ -771,13 +658,9 @@ class _UserProfileSheet extends ConsumerWidget {
                   height: 64,
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    gradient: AppColors.gradientGold,
-                    boxShadow: [
-                      BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.45),
-                          blurRadius: 18,
-                          spreadRadius: 2),
-                    ],
+                    color: Colors.white.withValues(alpha: 0.15),
+                    border: Border.all(
+                        color: Colors.white.withValues(alpha: 0.3)),
                   ),
                   child: Center(
                     child: Text(
@@ -819,7 +702,7 @@ class _UserProfileSheet extends ConsumerWidget {
                           displayGroup,
                           style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 11,
+                            fontSize: 12,
                             fontFamily: 'Dubai',
                           ),
                         ),
@@ -835,7 +718,7 @@ class _UserProfileSheet extends ConsumerWidget {
                             displayId,
                             style: TextStyle(
                               color: Colors.white.withValues(alpha: 0.65),
-                              fontSize: 11,
+                              fontSize: 12,
                               fontFamily: 'Dubai',
                               letterSpacing: 0.5,
                             ),
@@ -858,19 +741,19 @@ class _UserProfileSheet extends ConsumerWidget {
                     label: tr('إجمالي النقاط'),
                     value: '$totalPoints',
                     icon: Icons.star_rounded,
-                    color: AppColors.gold),
+                    color: c.goldText),
                 const SizedBox(width: 10),
                 _SheetStat(
                     label: tr('عدد الأبناء'),
                     value: '$childrenCount',
                     icon: Icons.group_rounded,
-                    color: AppColors.success),
+                    color: c.primary),
                 const SizedBox(width: 10),
                 _SheetStat(
                     label: tr('إجمالي صفحات'),
                     value: '$totalMemorized',
                     icon: Icons.menu_book_rounded,
-                    color: AppColors.primaryLight),
+                    color: c.goldText),
               ],
             ),
           ),
@@ -880,22 +763,15 @@ class _UserProfileSheet extends ConsumerWidget {
             icon: Icons.person_rounded,
             label: tr('بيانات الحساب'),
             subtitle: tr('معلومات ولي الأمر والطالب'),
-            color: AppColors.info,
+            color: c.primary,
             onTap: () => _openAccount(context),
-          ),
-          _SheetMenuItem(
-            icon: Icons.notifications_rounded,
-            label: tr('إعدادات الإشعارات'),
-            subtitle: tr('تخصيص التنبيهات والإشعارات'),
-            color: AppColors.warning,
-            onTap: () => Navigator.pop(context),
           ),
           _SheetMenuItem(
             icon: Icons.help_rounded,
             label: tr('المساعدة والدعم'),
             subtitle: tr('تواصل مع إدارة المسجد'),
-            color: AppColors.primaryLight,
-            onTap: () => Navigator.pop(context),
+            color: c.primary,
+            onTap: () => openSupportWhatsApp(context),
           ),
           _ThemeToggleItem(isDark: isDark),
           const _LanguageToggleItem(),
@@ -903,51 +779,13 @@ class _UserProfileSheet extends ConsumerWidget {
           // Divider
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Divider(color: dividerColor, height: 1),
+            child: Divider(color: c.divider, height: 1),
           ),
           const SizedBox(height: 8),
           // Logout
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-            child: GestureDetector(
-              onTap: onLogout,
-              child: Container(
-                width: double.infinity,
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [AppColors.error, Color(0xFFDC2626)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppColors.error.withValues(alpha: 0.35),
-                      blurRadius: 16,
-                      offset: const Offset(0, 6),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const Icon(Icons.logout_rounded,
-                        color: Colors.white, size: 20),
-                    const SizedBox(width: 10),
-                    Text(
-                      tr('تسجيل الخروج'),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 15,
-                        fontWeight: FontWeight.w700,
-                        fontFamily: 'Dubai',
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
+            child: _LogoutButton(onTap: onLogout),
           ),
         ],
       ),
@@ -987,13 +825,8 @@ class _SheetStat extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
             Text(label,
-                style: TextStyle(
-                    color: Theme.of(context)
-                        .colorScheme
-                        .onSurface
-                        .withValues(alpha: 0.5),
-                    fontSize: 10,
-                    fontFamily: 'Dubai')),
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.bodySmall),
           ],
         ),
       ),
@@ -1017,24 +850,20 @@ class _SheetMenuItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final c = context.appColors;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: GestureDetector(
+      child: Material(
+        color: c.surface,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: BorderSide(color: c.border),
+        ),
+        clipBehavior: Clip.antiAlias,
+        child: InkWell(
         onTap: onTap,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.surface,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Theme.of(context).dividerColor),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.06),
-                blurRadius: 12,
-                offset: const Offset(0, 3),
-              ),
-            ],
-          ),
           child: Row(
             children: [
               Container(
@@ -1058,25 +887,16 @@ class _SheetMenuItem extends StatelessWidget {
                             fontWeight: FontWeight.w700,
                             color: Theme.of(context).colorScheme.onSurface)),
                     Text(subtitle,
-                        style: TextStyle(
-                            fontFamily: 'Dubai',
-                            fontSize: 11,
-                            color: Theme.of(context)
-                                .colorScheme
-                                .onSurface
-                                .withValues(alpha: 0.5))),
+                        style: Theme.of(context).textTheme.bodySmall),
                   ],
                 ),
               ),
               Icon(AppIcons.chevronForward(context),
-                  color: Theme.of(context)
-                      .colorScheme
-                      .onSurface
-                      .withValues(alpha: 0.4),
-                  size: 20),
+                  color: c.textMuted, size: 20),
             ],
           ),
         ),
+      ),
       ),
     );
   }
@@ -1089,14 +909,13 @@ class _LanguageToggleItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
     final locale = ref.watch(languageProvider);
     final isArabic = locale.languageCode == 'ar';
     final label = isArabic
         ? tr('التبديل إلى الإنجليزية')
         : tr('التبديل إلى العربية');
-    final color = isDark ? AppColors.primaryGlow : AppColors.primaryMid;
+    final c = context.appColors;
+    final color = c.primary;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
       child: InkWell(
@@ -1105,9 +924,9 @@ class _LanguageToggleItem extends ConsumerWidget {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           decoration: BoxDecoration(
-            color: isDark ? AppColors.bgCard : AppColors.bgWhiteCard,
+            color: c.surface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: theme.dividerColor),
+            border: Border.all(color: c.border),
           ),
           child: Row(
             children: [
@@ -1127,8 +946,7 @@ class _LanguageToggleItem extends ConsumerWidget {
                   style: appTextStyle(
                     fontSize: 14,
                     fontWeight: FontWeight.w700,
-                    color:
-                        isDark ? AppColors.textOnDark : AppColors.textPrimary,
+                    color: c.textPrimary,
                   ),
                 ),
               ),
@@ -1151,27 +969,19 @@ class _ThemeToggleItem extends ConsumerWidget {
         (themeMode == ThemeMode.system &&
             MediaQuery.platformBrightnessOf(context) == Brightness.dark);
     Future<void> toggle() => ref.read(themeProvider.notifier).toggleTheme();
-    final color = activeDark ? AppColors.goldLight : AppColors.gold;
+    final c = context.appColors;
+    final color = c.primary;
     return Padding(
       padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-      child: GestureDetector(
-        behavior: HitTestBehavior.opaque,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(16),
         onTap: toggle,
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 13),
           decoration: BoxDecoration(
-            color: activeDark ? const Color(0xFF111F14) : Colors.white,
+            color: c.surface,
             borderRadius: BorderRadius.circular(16),
-            border: Border.all(
-              color: activeDark ? const Color(0xFF1E3320) : const Color(0xFFE2EDE4),
-            ),
-            boxShadow: [
-              BoxShadow(
-                color: color.withValues(alpha: 0.06),
-                blurRadius: 12,
-                offset: const Offset(0, 3),
-              ),
-            ],
+            border: Border.all(color: c.border),
           ),
           child: Row(
             children: [
@@ -1199,9 +1009,7 @@ class _ThemeToggleItem extends ConsumerWidget {
                         fontFamily: 'Dubai',
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
-                        color: activeDark
-                            ? AppColors.textOnDark
-                            : AppColors.textPrimary,
+                        color: c.textPrimary,
                       ),
                     ),
                     Text(
@@ -1210,10 +1018,8 @@ class _ThemeToggleItem extends ConsumerWidget {
                           : tr('التبديل إلى المظهر الداكن'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 11,
-                        color: activeDark
-                            ? AppColors.textOnDarkMute
-                            : AppColors.textMuted,
+                        fontSize: 12,
+                        color: c.textMuted,
                       ),
                     ),
                   ],
@@ -1223,8 +1029,7 @@ class _ThemeToggleItem extends ConsumerWidget {
                 child: Switch.adaptive(
                   value: activeDark,
                   onChanged: (_) {},
-                  activeThumbColor: AppColors.primaryGlow,
-                  activeTrackColor: AppColors.primaryLight.withValues(alpha: 0.4),
+                  activeTrackColor: c.primary,
                 ),
               ),
             ],
@@ -1258,8 +1063,8 @@ class _HeaderButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(14),
           onTap: onTap,
           child: SizedBox(
-            width: 42,
-            height: 42,
+            width: 48,
+            height: 48,
             child: Icon(icon, color: Colors.white, size: 22),
           ),
         ),
@@ -1317,16 +1122,10 @@ class _StaffProfileSheet extends StatelessWidget {
                     height: 64,
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
-                      gradient: AppColors.gradientGold,
-                      boxShadow: [
-                        BoxShadow(
-                          color: AppColors.gold.withValues(alpha: 0.35),
-                          blurRadius: 18,
-                        ),
-                      ],
+                      color: scheme.primary.withValues(alpha: 0.12),
                     ),
-                    child: const Icon(Icons.admin_panel_settings_rounded,
-                        color: Colors.white, size: 30),
+                    child: Icon(Icons.admin_panel_settings_rounded,
+                        color: scheme.primary, size: 30),
                   ),
                   const SizedBox(width: 14),
                   Expanded(
@@ -1349,7 +1148,7 @@ class _StaffProfileSheet extends StatelessWidget {
                           style: appTextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.w700,
-                            color: AppColors.primaryLight,
+                            color: scheme.primary,
                           ),
                         ),
                         if (user?.username.isNotEmpty == true) ...[
@@ -1358,7 +1157,7 @@ class _StaffProfileSheet extends StatelessWidget {
                             user!.username,
                             style: appTextStyle(
                               fontSize: 12,
-                              color: scheme.onSurface.withValues(alpha: 0.6),
+                              color: context.appColors.textMuted,
                             ),
                           ),
                         ],
@@ -1372,7 +1171,7 @@ class _StaffProfileSheet extends StatelessWidget {
                 icon: Icons.person_rounded,
                 label: tr('حسابي'),
                 subtitle: tr('البيانات الشخصية وكلمة المرور والصورة'),
-                color: AppColors.info,
+                color: scheme.primary,
                 onTap: onOpenAccount,
               ),
               _ThemeToggleItem(isDark: isDark),
@@ -1409,14 +1208,15 @@ class _LogoutButton extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Icon(Icons.logout_rounded, color: AppColors.error, size: 20),
+              Icon(Icons.logout_rounded,
+                  color: context.appColors.errorText, size: 20),
               const SizedBox(width: 10),
               Text(
                 tr('تسجيل الخروج'),
                 style: appTextStyle(
                   fontSize: 15,
                   fontWeight: FontWeight.w700,
-                  color: AppColors.error,
+                  color: context.appColors.errorText,
                 ),
               ),
             ],
@@ -1436,7 +1236,9 @@ class _NavConfig {
 }
 
 // ─── Premium Nav Bar ──────────────────────────────────────────────────────────
-class _PremiumNavBar extends StatefulWidget {
+/// شريط التنقل السفلي: NavigationBar من Material 3 (تسميات ظاهرة دائماً ودلالات
+/// قارئ الشاشة مدمجة) داخل حاوية عائمة بهوية التطبيق.
+class _PremiumNavBar extends StatelessWidget {
   final List<_NavConfig> items;
   final int currentIndex;
   final void Function(int) onTap;
@@ -1448,201 +1250,41 @@ class _PremiumNavBar extends StatefulWidget {
   });
 
   @override
-  State<_PremiumNavBar> createState() => _PremiumNavBarState();
-}
-
-class _PremiumNavBarState extends State<_PremiumNavBar> {
-  final ScrollController _scrollController = ScrollController();
-  final List<GlobalKey> _itemKeys = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _updateKeys();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _scrollToActive();
-    });
-  }
-
-  @override
-  void didUpdateWidget(covariant _PremiumNavBar oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.items.length != widget.items.length) {
-      _updateKeys();
-    }
-    if (oldWidget.currentIndex != widget.currentIndex) {
-      _scrollToActive();
-    }
-  }
-
-  void _updateKeys() {
-    _itemKeys.clear();
-    for (int i = 0; i < widget.items.length; i++) {
-      _itemKeys.add(GlobalKey());
-    }
-  }
-
-  void _scrollToActive() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) return;
-      if (widget.currentIndex >= 0 && widget.currentIndex < _itemKeys.length) {
-        final key = _itemKeys[widget.currentIndex];
-        final ctx = key.currentContext;
-        if (ctx != null) {
-          Scrollable.ensureVisible(
-            ctx,
-            alignment: 0.5,
-            duration: const Duration(milliseconds: 280),
-            curve: Curves.easeOutCubic,
-          );
-        }
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _scrollController.dispose();
-    super.dispose();
-  }
-
-  @override
   Widget build(BuildContext context) {
-    final isMany = widget.items.length > 5;
-    return Container(
-      margin: const EdgeInsets.fromLTRB(16, 0, 16, 22),
-      padding: EdgeInsets.symmetric(horizontal: isMany ? 6 : 8, vertical: 8),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.surface,
-        borderRadius: BorderRadius.circular(30),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.brandDeep.withValues(alpha: 0.18),
-            blurRadius: 36,
-            spreadRadius: -4,
-            offset: const Offset(0, 12),
-          ),
-          BoxShadow(
-            color: Colors.black.withValues(alpha: 0.06),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-        border: Border.all(color: Theme.of(context).dividerColor, width: 1.5),
-      ),
-      child: LayoutBuilder(
-        builder: (context, constraints) {
-          return SingleChildScrollView(
-            controller: _scrollController,
-            scrollDirection: Axis.horizontal,
-            physics: const BouncingScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minWidth: constraints.maxWidth),
-              child: Row(
-                mainAxisAlignment: isMany
-                    ? MainAxisAlignment.start
-                    : MainAxisAlignment.spaceAround,
-                mainAxisSize: isMany ? MainAxisSize.min : MainAxisSize.max,
-                children: List.generate(widget.items.length, (i) {
-                  final item = widget.items[i];
-                  final isActive = i == widget.currentIndex;
-                  return Padding(
-                    key: i < _itemKeys.length ? _itemKeys[i] : null,
-                    padding: EdgeInsets.symmetric(horizontal: isMany ? 3 : 0),
-                    child: GestureDetector(
-                      onTap: () {
-                        widget.onTap(i);
-                        _scrollToActive();
-                      },
-                      behavior: HitTestBehavior.opaque,
-                      child: _NavItem(
-                        item: item,
-                        isActive: isActive,
-                        isCompact: isMany,
-                      ),
-                    ),
-                  );
-                }),
-              ),
+    final c = context.appColors;
+    final radius = BorderRadius.circular(28);
+    return SafeArea(
+      minimum: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      child: DecoratedBox(
+        decoration: BoxDecoration(
+          borderRadius: radius,
+          border: Border.all(color: c.border),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.08),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
             ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-// ─── Nav Item ─────────────────────────────────────────────────────────────────
-// Uses AnimatedSize to grow/shrink safely without lerping BoxDecoration.
-class _NavItem extends StatefulWidget {
-  final _NavConfig item;
-  final bool isActive;
-  final bool isCompact;
-  const _NavItem({
-    required this.item,
-    required this.isActive,
-    this.isCompact = false,
-  });
-
-  @override
-  State<_NavItem> createState() => _NavItemState();
-}
-
-class _NavItemState extends State<_NavItem>
-    with SingleTickerProviderStateMixin {
-  @override
-  Widget build(BuildContext context) {
-    final hPad = widget.isCompact
-        ? (widget.isActive ? 12.0 : 8.0)
-        : (widget.isActive ? 14.0 : 10.0);
-    final vPad = widget.isCompact ? 8.0 : 9.0;
-
-    return AnimatedSize(
-      duration: const Duration(milliseconds: 280),
-      curve: Curves.easeOutCubic,
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: hPad, vertical: vPad),
-        decoration: widget.isActive
-            ? BoxDecoration(
-                gradient: const LinearGradient(
-                  colors: [AppColors.brandDeep, AppColors.successGreen],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
-                borderRadius: BorderRadius.circular(22),
-                boxShadow: [
-                  BoxShadow(
-                    color: AppColors.brandDeep.withValues(alpha: 0.35),
-                    blurRadius: 16,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              )
-            : const BoxDecoration(
-                color: Colors.transparent,
-                borderRadius: BorderRadius.all(Radius.circular(22)),
-              ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Icon(
-              widget.isActive ? widget.item.activeIcon : widget.item.icon,
-              color: widget.isActive ? Colors.white : AppColors.textMuted,
-              size: widget.isCompact ? 20 : 22,
-            ),
-            if (widget.isActive) ...[
-              SizedBox(width: widget.isCompact ? 6 : 7),
-              Text(
-                widget.item.label,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: widget.isCompact ? 11 : 12,
-                  fontWeight: FontWeight.w700,
-                  fontFamily: 'Dubai',
-                ),
-              ),
-            ],
           ],
+        ),
+        child: ClipRRect(
+          borderRadius: radius,
+          child: MediaQuery.removePadding(
+            context: context,
+            removeBottom: true,
+            child: NavigationBar(
+              selectedIndex: currentIndex,
+              onDestinationSelected: onTap,
+              destinations: [
+                for (final item in items)
+                  NavigationDestination(
+                    icon: Icon(item.icon),
+                    selectedIcon: Icon(item.activeIcon),
+                    label: item.label,
+                  ),
+              ],
+            ),
+          ),
         ),
       ),
     );
@@ -1671,8 +1313,8 @@ class _RoleComingSoon extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             tr('شاشات هذا الدور قيد الإنشاء'),
-            style: const TextStyle(
-                fontFamily: 'Dubai', fontSize: 13, color: AppColors.textMuted),
+            style: TextStyle(
+                fontFamily: 'Dubai', fontSize: 13, color: context.appColors.textMuted),
           ),
         ],
       ),

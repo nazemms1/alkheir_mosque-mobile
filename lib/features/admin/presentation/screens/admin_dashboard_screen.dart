@@ -410,7 +410,7 @@ class _BannerMetric extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: appTextStyle(
-              fontSize: 11,
+              fontSize: 12,
               color: Colors.white.withValues(alpha: 0.65),
             ),
           ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -61,7 +62,7 @@ class AppDrawer extends StatelessWidget {
                     for (final page in pages)
                       _DrawerTile(
                         icon: page.value.icon,
-                        iconColor: AppColors.primaryLight,
+                        iconColor: AdminTheme.accent(context),
                         title: page.value.label,
                         subtitle: page.value.subtitle,
                         selected: page.key == activeIndex,
@@ -117,7 +118,7 @@ class AppDrawer extends StatelessWidget {
                 children: [
                   _DrawerTile(
                     icon: Icons.person_rounded,
-                    iconColor: AppColors.info,
+                    iconColor: AdminTheme.accent(context),
                     title: tr('حسابي'),
                     subtitle: tr('البيانات الشخصية وكلمة المرور والجلسات'),
                     onTap: () {
@@ -217,7 +218,7 @@ class _DrawerHeader extends StatelessWidget {
                     ),
                     child: Text(
                       roleLabel,
-                      style: appTextStyle(fontSize: 11, color: Colors.white),
+                      style: appTextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ),
                 ],
@@ -272,7 +273,9 @@ class _DrawerTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = danger ? AppColors.error : (iconColor ?? AppColors.primary);
+    final color = danger
+        ? context.appColors.errorText
+        : (iconColor ?? AdminTheme.accent(context));
 
     return Padding(
       padding: const EdgeInsets.only(bottom: 4),
@@ -309,7 +312,9 @@ class _DrawerTile extends StatelessWidget {
                           fontSize: 14,
                           fontWeight: FontWeight.w700,
                           color:
-                              danger ? AppColors.error : AdminTheme.text(context),
+                              danger
+                              ? context.appColors.errorText
+                              : AdminTheme.text(context),
                         ),
                       ),
                       if (subtitle != null)
@@ -318,7 +323,7 @@ class _DrawerTile extends StatelessWidget {
                           maxLines: 1,
                           overflow: TextOverflow.ellipsis,
                           style: appTextStyle(
-                            fontSize: 11,
+                            fontSize: 12,
                             color: AdminTheme.muted(context),
                           ),
                         ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -677,6 +678,12 @@ class _ViewfinderState extends State<_Viewfinder>
   late final Animation<double> _scan;
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _ctrl.respectReducedMotion(context);
+  }
+
+  @override
   void initState() {
     super.initState();
     _ctrl = AnimationController(
@@ -1047,7 +1054,7 @@ class _RecordTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: appTextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       color: Colors.white70,
                     ),
                   ),
@@ -1057,7 +1064,7 @@ class _RecordTile extends StatelessWidget {
           const SizedBox(width: 8),
           Text(
             timeStr,
-            style: appTextStyle(fontSize: 11, color: Colors.white60),
+            style: appTextStyle(fontSize: 12, color: Colors.white60),
           ),
         ],
       ),

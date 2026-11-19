@@ -22,31 +22,16 @@ class _MemorizationCard extends StatelessWidget {
           borderRadius: BorderRadius.circular(26),
           boxShadow: [
             BoxShadow(
-              color: AppColors.primary.withValues(alpha: 0.4),
-              blurRadius: 30,
-              spreadRadius: -4,
-              offset: const Offset(0, 10),
-            ),
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 10,
-              offset: const Offset(0, 4),
+              color: AppColors.primary.withValues(alpha: 0.25),
+              blurRadius: 24,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
         child: Stack(
-          clipBehavior: Clip.none,
           children: [
-            const Positioned(
-                bottom: -30,
-                left: -30,
-                child: _DecorCircle(
-                    size: 140, color: AppColors.gold, opacity: 0.07)),
-            const Positioned(
-                top: -20,
-                right: -20,
-                child: _DecorCircle(
-                    size: 80, color: AppColors.primaryLight, opacity: 0.06)),
+            const Positioned.fill(
+                child: GeometricPattern(color: AppColors.gold, opacity: 0.08)),
             Column(
               children: [
                 _MemCardHeader(p: p, pct: pct),
@@ -91,7 +76,7 @@ class _MemCardHeader extends StatelessWidget {
                     Text(tr('تقدم الحفظ'),
                         style: const TextStyle(
                           color: AppColors.goldLight,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai',
                         )),
@@ -195,7 +180,7 @@ class _MemCircularIndicator extends StatelessWidget {
           Text(tr('مكتمل'),
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 9,
+                fontSize: 12,
                 fontFamily: 'Dubai',
               )),
         ],

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -86,7 +87,7 @@ class _ParentInvoicesScreenState extends State<ParentInvoicesScreen> {
       return Center(
           child: Text(tr('لا توجد فواتير'),
               style:
-                  const TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)));
+                  TextStyle(fontFamily: 'Dubai', color: context.appColors.textMuted)));
     }
     return RefreshIndicator(
       onRefresh: _load,
@@ -176,7 +177,7 @@ class _InvoiceTile extends StatelessWidget {
                   child: Text(_statusLabel,
                       style: TextStyle(
                           color: color,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai')),
                 ),
@@ -210,16 +211,16 @@ class _InvoiceTile extends StatelessWidget {
                         color: AppColors.info)),
                 const SizedBox(width: 6),
                 Text(tr('الإجمالي'),
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 9,
-                        color: AppColors.textMuted)),
+                        fontSize: 12,
+                        color: context.appColors.textMuted)),
                 const Spacer(),
                 Text(invoice.issueDate,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 10,
-                        color: AppColors.textMuted)),
+                        fontSize: 12,
+                        color: context.appColors.textMuted)),
               ],
             ),
           ],

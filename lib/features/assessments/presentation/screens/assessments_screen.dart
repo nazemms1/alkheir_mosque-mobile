@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -46,7 +47,7 @@ class AssessmentsScreen extends StatelessWidget {
         emptyText: tr('لا توجد تقييمات'),
         fetch: (page) => service.assessments(page: page),
         itemBuilder: (context, item, _) => ModuleCard(
-          accent: item.isActive ? AppColors.primaryLight : AppColors.textMuted,
+          accent: item.isActive ? AppColors.primaryLight : context.appColors.textMuted,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => AssessmentDetailScreen(
@@ -74,7 +75,7 @@ class AssessmentsScreen extends StatelessWidget {
                   StatusPill(
                     label: item.isActive ? tr('نشط') : tr('غير نشط'),
                     color:
-                        item.isActive ? AppColors.success : AppColors.textMuted,
+                        item.isActive ? AppColors.success : context.appColors.textMuted,
                   ),
                 ],
               ),
@@ -86,7 +87,7 @@ class AssessmentsScreen extends StatelessWidget {
               ),
               Text(
                 trf('النتائج: {0}', [item.resultsCount]),
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -242,7 +243,7 @@ class _AssessmentDetailScreenState extends State<AssessmentDetailScreen> {
                                             r.attemptNo
                                           ])}  ·  ${r.teacherName ?? ''}',
                                       style: appTextStyle(
-                                          fontSize: 11,
+                                          fontSize: 12,
                                           color: moduleMuted(context)),
                                     ),
                                   ],

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -17,26 +18,18 @@ const EdgeInsets kAdminPagePadding =
 
 /// ألوان مشتقة من الوضع الحالي. النصوص لا تستخدم ألواناً ثابتة حتى تبقى قابلة للقراءة.
 abstract final class AdminTheme {
-  static const _lightBorder = Color(0xFFD5DECF);
-  static const _darkBorder = Color(0xFF193222);
-
   static bool isDark(BuildContext context) =>
       Theme.of(context).brightness == Brightness.dark;
 
-  static Color card(BuildContext context) =>
-      isDark(context) ? AppColors.bgCard : AppColors.bgWhiteCard;
+  static Color card(BuildContext context) => context.appColors.card;
 
-  static Color border(BuildContext context) =>
-      isDark(context) ? _darkBorder : _lightBorder;
+  static Color border(BuildContext context) => context.appColors.border;
 
-  static Color text(BuildContext context) =>
-      isDark(context) ? AppColors.textOnDark : AppColors.textPrimary;
+  static Color text(BuildContext context) => context.appColors.textPrimary;
 
-  static Color muted(BuildContext context) =>
-      isDark(context) ? AppColors.textOnDarkSub : AppColors.textSecondary;
+  static Color muted(BuildContext context) => context.appColors.textSecondary;
 
-  static Color accent(BuildContext context) =>
-      isDark(context) ? AppColors.primaryGlow : AppColors.primary;
+  static Color accent(BuildContext context) => context.appColors.primary;
 
   /// سهم "التالي" يتجه حسب اتجاه الصفحة (يسار في العربية، يمين في الإنجليزية).
   static IconData chevron(BuildContext context) =>
@@ -164,6 +157,7 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       fontSize: 14,
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Dubai',
+                                      height: 1.3,
                                     ),
                                   ),
                                   if (subtitle != null &&
@@ -177,8 +171,9 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
                                       style: TextStyle(
                                         color:
                                             Colors.white.withValues(alpha: 0.65),
-                                        fontSize: 10,
+                                        fontSize: 12,
                                         fontFamily: 'Dubai',
+                                        height: 1.3,
                                       ),
                                     ),
                                   ],
@@ -347,7 +342,7 @@ class AdminActionItem extends StatelessWidget {
                 '$badge',
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai',
                 ),
@@ -805,7 +800,7 @@ class _HeroMetricPill extends StatelessWidget {
             maxLines: 1,
             overflow: TextOverflow.ellipsis,
             style: appTextStyle(
-              fontSize: 11,
+              fontSize: 12,
               color: Colors.white.withValues(alpha: 0.65),
             ),
           ),
@@ -1060,7 +1055,7 @@ class AdminBadge extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: appTextStyle(
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -77,7 +78,7 @@ class _StudentAttendanceScreenState extends State<StudentAttendanceScreen> {
             _service.studentAttendanceDays(page: page, status: _status),
         itemBuilder: (context, day, _) => ModuleCard(
           accent:
-              day.status == 'open' ? AppColors.success : AppColors.textMuted,
+              day.status == 'open' ? AppColors.success : context.appColors.textMuted,
           onTap: () => _openDay(day),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -98,7 +99,7 @@ class _StudentAttendanceScreenState extends State<StudentAttendanceScreen> {
                     label: day.status == 'open' ? tr('مفتوح') : tr('مغلق'),
                     color: day.status == 'open'
                         ? AppColors.success
-                        : AppColors.textMuted,
+                        : context.appColors.textMuted,
                   ),
                 ],
               ),
@@ -112,7 +113,7 @@ class _StudentAttendanceScreenState extends State<StudentAttendanceScreen> {
               if (day.courseFinished)
                 Text(
                   tr('الكورس منتهٍ — السجل للقراءة فقط'),
-                  style: appTextStyle(fontSize: 11, color: AppColors.warning),
+                  style: appTextStyle(fontSize: 12, color: AppColors.warning),
                 ),
             ],
           ),

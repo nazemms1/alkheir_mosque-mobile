@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -21,6 +22,13 @@ class _SplashScreenState extends ConsumerState<SplashScreen>
   late AnimationController _rotationController;
   late AnimationController _pulseController;
   late AnimationController _progressController;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _rotationController.respectReducedMotion(context);
+    _pulseController.respectReducedMotion(context);
+  }
 
   @override
   void initState() {

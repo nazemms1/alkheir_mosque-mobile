@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -107,7 +108,7 @@ class _ActivitiesScreenState extends State<ActivitiesScreen> {
     if (_activities.isEmpty) {
       return Center(
         child: Text(tr('لا توجد أنشطة متاحة حالياً'),
-            style: const TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted)),
+            style: TextStyle(fontFamily: 'Dubai', color: context.appColors.textMuted)),
       );
     }
     return RefreshIndicator(
@@ -138,7 +139,7 @@ class _ActivityCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final color =
-        activity.isActive ? AppColors.primaryLight : AppColors.textMuted;
+        activity.isActive ? AppColors.primaryLight : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       padding: const EdgeInsets.all(16),
@@ -180,10 +181,10 @@ class _ActivityCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis),
                     if (activity.groupName != null)
                       Text(activity.groupName!,
-                          style: const TextStyle(
+                          style: TextStyle(
                               fontFamily: 'Dubai',
-                              fontSize: 11,
-                              color: AppColors.textMuted)),
+                              fontSize: 12,
+                              color: context.appColors.textMuted)),
                   ],
                 ),
               ),
@@ -263,7 +264,7 @@ class _ChildResponseRow extends StatelessWidget {
           if (registered)
             _StatusChip(label: tr('مسجَّل'), color: AppColors.success)
           else if (declined)
-            _StatusChip(label: tr('معتذر'), color: AppColors.textMuted)
+            _StatusChip(label: tr('معتذر'), color: context.appColors.textMuted)
           else if (child.canRespond && activityActive) ...[
             _RespondButton(
                 label: tr('تسجيل'),
@@ -271,7 +272,7 @@ class _ChildResponseRow extends StatelessWidget {
                 onTap: () => onRespond('registered')),
             const SizedBox(width: 8),
           ] else
-            _StatusChip(label: tr('غير متاح'), color: AppColors.textMuted),
+            _StatusChip(label: tr('غير متاح'), color: context.appColors.textMuted),
         ],
       ),
     );
@@ -293,7 +294,7 @@ class _StatusChip extends StatelessWidget {
       child: Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
     );
@@ -318,7 +319,7 @@ class _RespondButton extends StatelessWidget {
         child: Text(label,
             style: const TextStyle(
                 color: Colors.white,
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Dubai')),
       ),

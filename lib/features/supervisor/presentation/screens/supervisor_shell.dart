@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -336,7 +337,7 @@ class _SupervisorWelcomeBanner extends StatelessWidget {
                       child: Text(roleLabel,
                           style: const TextStyle(
                               color: Colors.white,
-                              fontSize: 11,
+                              fontSize: 12,
                               fontFamily: 'Dubai')),
                     ),
                   ],
@@ -390,7 +391,7 @@ class _HeroPill extends StatelessWidget {
             Text(label,
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.65),
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: 'Dubai')),
           ],
         ),
@@ -541,10 +542,10 @@ class _MiniGroupTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
                 Text(group.teacher.isEmpty ? group.course : group.teacher,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 11,
-                        color: AppColors.textMuted),
+                        fontSize: 12,
+                        color: context.appColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
               ],
@@ -558,7 +559,7 @@ class _MiniGroupTile extends StatelessWidget {
             child: Text(trf('{0} طالب', [group.enrollmentsCount]),
                 style: const TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: AppColors.primaryLight)),
           ),
@@ -620,10 +621,10 @@ class _MiniStudentTile extends StatelessWidget {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
                 Text('${student.gradeLevel} · ${student.studentNumber}',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 11,
-                        color: AppColors.textMuted),
+                        fontSize: 12,
+                        color: context.appColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
               ],
@@ -637,7 +638,7 @@ class _MiniStudentTile extends StatelessWidget {
             child: Text(trf('ج {0}', [student.currentJuz]),
                 style: const TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     color: AppColors.gold)),
           ),
@@ -855,7 +856,7 @@ class _StudentProgressCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusColor =
-        student.isActive ? AppColors.success : AppColors.textMuted;
+        student.isActive ? AppColors.success : context.appColors.textMuted;
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -913,15 +914,15 @@ class _StudentProgressCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        const Icon(Icons.school_rounded,
-                            size: 12, color: AppColors.textMuted),
+                        Icon(Icons.school_rounded,
+                            size: 12, color: context.appColors.textMuted),
                         const SizedBox(width: 4),
                         Text(
                           student.gradeLevel,
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 11,
-                            color: AppColors.textMuted,
+                            fontSize: 12,
+                            color: context.appColors.textMuted,
                           ),
                         ),
                       ],
@@ -931,15 +932,15 @@ class _StudentProgressCard extends StatelessWidget {
                     const SizedBox(height: 2),
                     Row(
                       children: [
-                        const Icon(Icons.person_outline_rounded,
-                            size: 12, color: AppColors.textMuted),
+                        Icon(Icons.person_outline_rounded,
+                            size: 12, color: context.appColors.textMuted),
                         const SizedBox(width: 4),
                         Text(
                           trf('ولي الأمر: {0}', [student.parent]),
-                          style: const TextStyle(
+                          style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 11,
-                            color: AppColors.textMuted,
+                            fontSize: 12,
+                            color: context.appColors.textMuted,
                           ),
                         ),
                       ],
@@ -958,7 +959,7 @@ class _StudentProgressCard extends StatelessWidget {
                 student.isActive ? tr('نشط') : tr('غير نشط'),
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: statusColor,
                 ),
@@ -1230,7 +1231,7 @@ class RecitationTabState extends State<RecitationTab> {
                   child: Text(tr('اليوم'),
                       style: const TextStyle(
                           fontFamily: 'Dubai',
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
                           color: AppColors.primaryLight)),
                 ),
@@ -1337,17 +1338,17 @@ class _StudentSelectField extends StatelessWidget {
                           color: Theme.of(context).colorScheme.onSurface)),
                   if (selected!.gradeLevel.isNotEmpty)
                     Text(selected!.gradeLevel,
-                        style: const TextStyle(
+                        style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 11,
-                            color: AppColors.textMuted)),
+                            fontSize: 12,
+                            color: context.appColors.textMuted)),
                 ],
               ),
             ),
             IconButton(
               icon: const Icon(Icons.close_rounded, size: 20),
               onPressed: onCleared,
-              color: AppColors.textMuted,
+              color: context.appColors.textMuted,
             ),
           ],
         ),
@@ -1418,10 +1419,10 @@ class _StudentSelectField extends StatelessWidget {
                             fontWeight: FontWeight.w600)),
                     subtitle: s.gradeLevel.isNotEmpty
                         ? Text(s.gradeLevel,
-                            style: const TextStyle(
+                            style: TextStyle(
                                 fontFamily: 'Dubai',
-                                fontSize: 11,
-                                color: AppColors.textMuted))
+                                fontSize: 12,
+                                color: context.appColors.textMuted))
                         : null,
                     onTap: () => onSelect(s),
                   );
@@ -1475,7 +1476,7 @@ class _EntryTypeChip extends StatelessWidget {
         child: Column(
           children: [
             Icon(icon,
-                size: 22, color: selected ? Colors.white : AppColors.textMuted),
+                size: 22, color: selected ? Colors.white : context.appColors.textMuted),
             const SizedBox(height: 6),
             Text(label,
                 style: TextStyle(
@@ -1659,10 +1660,10 @@ class _PointsCard extends StatelessWidget {
                 const SizedBox(height: 4),
                 Text(
                   enrollment.groupName,
-                  style: const TextStyle(
+                  style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 11,
-                    color: AppColors.textMuted,
+                    fontSize: 12,
+                    color: context.appColors.textMuted,
                   ),
                 ),
               ],
@@ -1759,7 +1760,7 @@ class _ActivityCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = activity.isActive ? AppColors.info : AppColors.textMuted;
+    final color = activity.isActive ? AppColors.info : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -1790,10 +1791,10 @@ class _ActivityCard extends StatelessWidget {
             const SizedBox(height: 4),
             Text(
               activity.groupName!,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 11,
-                color: AppColors.textMuted,
+                fontSize: 12,
+                color: context.appColors.textMuted,
               ),
             ),
           ],
@@ -1886,7 +1887,7 @@ class _AssessmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = assessment.isActive ? AppColors.success : AppColors.textMuted;
+    final color = assessment.isActive ? AppColors.success : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
@@ -1928,7 +1929,7 @@ class _AssessmentCard extends StatelessWidget {
                   assessment.isActive ? tr('نشط') : tr('غير نشط'),
                   style: TextStyle(
                       color: color,
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai'),
                 ),
@@ -1938,10 +1939,10 @@ class _AssessmentCard extends StatelessWidget {
           const SizedBox(height: 4),
           Text(
             assessment.groupName,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 11,
-              color: AppColors.textMuted,
+              fontSize: 12,
+              color: context.appColors.textMuted,
             ),
           ),
           const SizedBox(height: 8),
@@ -2041,7 +2042,7 @@ class _GroupReportCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = group.isActive ? AppColors.primaryLight : AppColors.textMuted;
+    final color = group.isActive ? AppColors.primaryLight : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(16),
@@ -2092,7 +2093,7 @@ class _GroupReportCard extends StatelessWidget {
                   group.isActive ? tr('نشطة') : tr('غير نشطة'),
                   style: TextStyle(
                       color: color,
-                      fontSize: 10,
+                      fontSize: 12,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai'),
                 ),
@@ -2145,7 +2146,7 @@ class _InfoChip extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
+                  fontSize: 12,
                   color: color,
                   fontWeight: FontWeight.w600)),
         ],
@@ -2189,10 +2190,10 @@ class _ComingSoonTab extends StatelessWidget {
           const SizedBox(height: 8),
           Text(
             subtitle,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Dubai',
               fontSize: 13,
-              color: AppColors.textMuted,
+              color: context.appColors.textMuted,
             ),
           ),
           const SizedBox(height: 16),
@@ -2275,10 +2276,10 @@ class _PermissionAwareError extends StatelessWidget {
             Text(
               message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                 fontFamily: 'Dubai',
                 fontSize: 13,
-                color: AppColors.textMuted,
+                color: context.appColors.textMuted,
               ),
             ),
             if (!_isForbidden) ...[
@@ -2314,14 +2315,14 @@ class _EmptyState extends StatelessWidget {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(icon, size: 48, color: AppColors.textMuted),
+          Icon(icon, size: 48, color: context.appColors.textMuted),
           const SizedBox(height: 12),
           Text(
             message,
-            style: const TextStyle(
+            style: TextStyle(
               fontFamily: 'Dubai',
               fontSize: 14,
-              color: AppColors.textMuted,
+              color: context.appColors.textMuted,
             ),
           ),
         ],

@@ -4,6 +4,7 @@ import 'package:flutter_animate/flutter_animate.dart';
 import 'package:percent_indicator/percent_indicator.dart';
 import 'package:alkheir_mosque/app/core/navigation/app_tab.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
 import 'package:alkheir_mosque/shared/widgets/rating_badge.dart';
 import 'package:alkheir_mosque/features/activities/presentation/screens/activities_screen.dart';
@@ -233,7 +234,7 @@ class _ChildSelectorStrip extends StatelessWidget {
                         child.student.avatarInitials,
                         style: const TextStyle(
                           color: Colors.white,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w800,
                           fontFamily: 'Dubai',
                         ),
@@ -265,7 +266,7 @@ class _ChildSelectorStrip extends StatelessWidget {
                                   .colorScheme
                                   .onSurface
                                   .withValues(alpha: 0.5),
-                          fontSize: 10,
+                          fontSize: 12,
                           fontFamily: 'Dubai',
                         ),
                       ),

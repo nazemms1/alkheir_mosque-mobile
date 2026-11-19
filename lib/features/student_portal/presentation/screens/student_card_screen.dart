@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -20,6 +21,12 @@ class _StudentCardScreenState extends State<StudentCardScreen>
   late final AnimationController _cardCtrl;
   late final Animation<double> _cardFade;
   late final Animation<Offset> _cardSlide;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bgCtrl.respectReducedMotion(context);
+  }
 
   @override
   void initState() {
@@ -247,7 +254,7 @@ class _IDCard extends StatelessWidget {
                         tr('بطاقة الطالب'),
                         style: const TextStyle(
                             color: Colors.white,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontFamily: 'Dubai'),
                       ),
                     ),
@@ -315,7 +322,7 @@ class _IDCard extends StatelessWidget {
                               student.groupName,
                               style: const TextStyle(
                                   color: AppColors.goldLight,
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Dubai'),
                             ),
@@ -374,7 +381,7 @@ class _CardInfoItem extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.5),
-                  fontSize: 10,
+                  fontSize: 12,
                   fontFamily: 'Dubai')),
           Text(value,
               style: const TextStyle(
@@ -488,7 +495,7 @@ class _StatTile extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.55),
-                  fontSize: 10,
+                  fontSize: 12,
                   fontFamily: 'Dubai'),
               textAlign: TextAlign.center),
         ],
@@ -556,7 +563,7 @@ class _ProgressSection extends StatelessWidget {
                 [p.totalPagesMemorized, p.totalQuranPages, p.currentSurah]),
             style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 11,
+                fontSize: 12,
                 fontFamily: 'Dubai'),
           ),
         ],
@@ -626,7 +633,7 @@ class _RecentSabr extends StatelessWidget {
                     child: Text(typeLabel,
                         style: TextStyle(
                             color: color,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Dubai')),
                   ),

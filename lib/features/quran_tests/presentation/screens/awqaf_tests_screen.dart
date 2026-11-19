@@ -110,7 +110,7 @@ class _AwqafTestsScreenState extends State<AwqafTestsScreen> {
               ),
               Text(
                 '${test.groupName ?? ''}${test.score == null ? '' : '  ·  ${formatAmount(test.score!)}'}',
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
               ),
             ],
           ),

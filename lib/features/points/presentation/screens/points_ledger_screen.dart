@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -118,7 +119,7 @@ class _PointsLedgerScreenState extends State<PointsLedgerScreen> {
         itemBuilder: (context, entry, _) {
           final color = entry.points >= 0 ? AppColors.success : AppColors.error;
           return ModuleCard(
-            accent: entry.isVoided ? AppColors.textMuted : color,
+            accent: entry.isVoided ? context.appColors.textMuted : color,
             onTap: () => _openEntry(entry),
             child: Row(
               children: [
@@ -138,13 +139,13 @@ class _PointsLedgerScreenState extends State<PointsLedgerScreen> {
                       Text(
                         '${entry.pointTypeName ?? ''}  ·  ${entry.groupName ?? ''}',
                         style: appTextStyle(
-                            fontSize: 11, color: moduleMuted(context)),
+                            fontSize: 12, color: moduleMuted(context)),
                         overflow: TextOverflow.ellipsis,
                       ),
                       Text(
                         entry.enteredAt,
                         style: appTextStyle(
-                            fontSize: 11, color: moduleMuted(context)),
+                            fontSize: 12, color: moduleMuted(context)),
                       ),
                     ],
                   ),
@@ -157,11 +158,11 @@ class _PointsLedgerScreenState extends State<PointsLedgerScreen> {
                       style: appTextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800,
-                        color: entry.isVoided ? AppColors.textMuted : color,
+                        color: entry.isVoided ? context.appColors.textMuted : color,
                       ),
                     ),
                     if (entry.isVoided)
-                      StatusPill(label: tr('ملغى'), color: AppColors.textMuted),
+                      StatusPill(label: tr('ملغى'), color: context.appColors.textMuted),
                   ],
                 ),
               ],

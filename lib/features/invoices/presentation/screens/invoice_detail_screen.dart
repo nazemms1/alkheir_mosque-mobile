@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -95,7 +96,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
         const SizedBox(height: 8),
         if (invoice.items.isEmpty)
           Text(tr('لا توجد بنود'),
-              style: const TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted))
+              style: TextStyle(fontFamily: 'Dubai', color: context.appColors.textMuted))
         else
           ...invoice.items.map((item) => _ItemRow(item: item)),
         const SizedBox(height: 20),
@@ -103,7 +104,7 @@ class _InvoiceDetailScreenState extends State<InvoiceDetailScreen> {
         const SizedBox(height: 8),
         if (invoice.payments.isEmpty)
           Text(tr('لا توجد دفعات مسجّلة'),
-              style: const TextStyle(fontFamily: 'Dubai', color: AppColors.textMuted))
+              style: TextStyle(fontFamily: 'Dubai', color: context.appColors.textMuted))
         else
           ...invoice.payments.map((p) => _PaymentRow(payment: p)),
       ],
@@ -156,7 +157,7 @@ class _SummaryCard extends StatelessWidget {
                 child: Text(invoice.isPaid ? tr('مدفوعة') : tr('غير مكتملة'),
                     style: TextStyle(
                         color: color,
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai')),
               ),
@@ -164,16 +165,16 @@ class _SummaryCard extends StatelessWidget {
           ),
           const SizedBox(height: 6),
           Text(trf('تاريخ الإصدار: {0}', [invoice.issueDate]),
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
-                  color: AppColors.textMuted)),
+                  fontSize: 12,
+                  color: context.appColors.textMuted)),
           if (invoice.dueDate != null)
             Text(trf('تاريخ الاستحقاق: {0}', [invoice.dueDate]),
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 11,
-                    color: AppColors.textMuted)),
+                    fontSize: 12,
+                    color: context.appColors.textMuted)),
           const SizedBox(height: 14),
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
@@ -206,10 +207,10 @@ class _SummaryCard extends StatelessWidget {
           if (invoice.discount > 0) ...[
             const SizedBox(height: 10),
             Text(trf('الخصم: {0}', [invoice.discount.toInt()]),
-                style: const TextStyle(
+                style: TextStyle(
                     fontFamily: 'Dubai',
-                    fontSize: 11,
-                    color: AppColors.textMuted)),
+                    fontSize: 12,
+                    color: context.appColors.textMuted)),
           ],
         ],
       ),
@@ -242,9 +243,9 @@ class _AmountBox extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
             Text(label,
-                style: const TextStyle(
-                    color: AppColors.textMuted,
-                    fontSize: 9,
+                style: TextStyle(
+                    color: context.appColors.textMuted,
+                    fontSize: 12,
                     fontFamily: 'Dubai')),
           ],
         ),
@@ -301,10 +302,10 @@ class _ItemRow extends StatelessWidget {
           ),
           Text(
               '${item.quantity.toStringAsFixed(item.quantity.truncateToDouble() == item.quantity ? 0 : 1)} × ${item.unitPrice.toInt()}',
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
-                  color: AppColors.textMuted)),
+                  fontSize: 12,
+                  color: context.appColors.textMuted)),
           const SizedBox(width: 10),
           Text('${item.lineTotal.toInt()}',
               style: const TextStyle(
@@ -324,7 +325,7 @@ class _PaymentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = payment.isVoided ? AppColors.textMuted : AppColors.success;
+    final color = payment.isVoided ? context.appColors.textMuted : AppColors.success;
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -347,15 +348,15 @@ class _PaymentRow extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(payment.paidAt,
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 11,
-                        color: AppColors.textMuted)),
+                        fontSize: 12,
+                        color: context.appColors.textMuted)),
                 if (payment.methodName != null)
                   Text(payment.methodName!,
                       style: const TextStyle(
                           fontFamily: 'Dubai',
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w600)),
               ],
             ),

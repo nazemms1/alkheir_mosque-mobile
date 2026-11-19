@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/files/file_saver.dart';
@@ -70,7 +71,7 @@ class _CurriculaScreenState extends State<CurriculaScreen> {
         ),
         fetch: (page) => _service.curricula(page: page, search: _search),
         itemBuilder: (context, item, _) => ModuleCard(
-          accent: item.isActive ? AppColors.primaryLight : AppColors.textMuted,
+          accent: item.isActive ? AppColors.primaryLight : context.appColors.textMuted,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => CurriculumDetailScreen(

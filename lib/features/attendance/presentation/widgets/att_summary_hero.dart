@@ -133,7 +133,7 @@ class _HeroStats extends StatelessWidget {
           child: Text(tr('سجل الحضور'),
               style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.8),
-                fontSize: 11,
+                fontSize: 12,
                 fontFamily: 'Dubai',
                 fontWeight: FontWeight.w600,
               )),
@@ -228,7 +228,7 @@ class _ArcProgress extends StatelessWidget {
               Text(tr('الحضور'),
                   style: TextStyle(
                       color: Colors.white.withValues(alpha: 0.6),
-                      fontSize: 10,
+                      fontSize: 12,
                       fontFamily: 'Dubai')),
             ],
           ),
@@ -313,7 +313,7 @@ class _StatPill extends StatelessWidget {
             Text(label,
                 style: TextStyle(
                   color: Colors.white.withValues(alpha: 0.7),
-                  fontSize: 10,
+                  fontSize: 12,
                   fontFamily: 'Dubai',
                 ),
                 maxLines: 1,

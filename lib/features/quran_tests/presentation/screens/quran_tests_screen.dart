@@ -287,7 +287,7 @@ class _CycleCard extends StatelessWidget {
             Text(
               trf('تاريخ النجاح: {0}',
                   [partial?.passedOn ?? finalTest?.passedOn ?? '']),
-              style: appTextStyle(fontSize: 11, color: AppColors.success),
+              style: appTextStyle(fontSize: 12, color: AppColors.success),
             ),
         ],
       ),

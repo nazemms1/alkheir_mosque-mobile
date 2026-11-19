@@ -362,7 +362,7 @@ class _ActionTile extends StatelessWidget {
                     Text(
                       subtitle!,
                       style: appTextStyle(
-                          fontSize: 11, color: moduleMuted(context)),
+                          fontSize: 12, color: moduleMuted(context)),
                     ),
                 ],
               ),

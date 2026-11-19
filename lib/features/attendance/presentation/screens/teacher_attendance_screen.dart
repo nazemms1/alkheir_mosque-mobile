@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
 import 'dart:async';
 
@@ -120,7 +121,7 @@ class _TeacherAttendanceScreenState extends State<TeacherAttendanceScreen> {
         fetch: (page) => _service.teacherAttendanceDays(page: page),
         itemBuilder: (context, day, _) => ModuleCard(
           accent:
-              day.status == 'open' ? AppColors.success : AppColors.textMuted,
+              day.status == 'open' ? AppColors.success : context.appColors.textMuted,
           onTap: () => _openDay(day),
           child: Row(
             children: [

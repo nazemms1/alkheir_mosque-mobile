@@ -312,7 +312,7 @@ class _NoteCard extends StatelessWidget {
                           label,
                           style: TextStyle(
                             color: color,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Dubai',
                           ),
@@ -350,7 +350,7 @@ class _NoteCard extends StatelessWidget {
                                   .colorScheme
                                   .onSurface
                                   .withValues(alpha: 0.4),
-                              fontSize: 11,
+                              fontSize: 12,
                             ),
                       ),
                     ],

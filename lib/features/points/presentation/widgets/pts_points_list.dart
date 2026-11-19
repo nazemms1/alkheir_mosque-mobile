@@ -143,7 +143,7 @@ class _PointTile extends StatelessWidget {
                         record.isBonus ? tr('مكافأة') : tr('حفظ'),
                         style: TextStyle(
                             color: color,
-                            fontSize: 10,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                             fontFamily: 'Dubai'),
                       ),
@@ -283,7 +283,7 @@ class _PointEntryTile extends StatelessWidget {
                           label,
                           style: TextStyle(
                               color: color,
-                              fontSize: 10,
+                              fontSize: 12,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Dubai'),
                         ),
@@ -294,7 +294,7 @@ class _PointEntryTile extends StatelessWidget {
                           child: Text(
                             entry.policyName!,
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontFamily: 'Dubai',
                                 color: Theme.of(context)
                                     .colorScheme

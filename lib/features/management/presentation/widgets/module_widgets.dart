@@ -348,7 +348,7 @@ class _RecordSheet extends StatelessWidget {
                                         tr('اتصال'),
                                         style: const TextStyle(
                                           fontFamily: 'Dubai',
-                                          fontSize: 11,
+                                          fontSize: 12,
                                           fontWeight: FontWeight.w700,
                                           color: AppColors.primaryLight,
                                         ),

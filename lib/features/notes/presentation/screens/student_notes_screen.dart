@@ -160,7 +160,7 @@ class _StudentNotesScreenState extends State<StudentNotesScreen> {
               const SizedBox(height: 6),
               Text(
                 '${note.student?.name ?? ''}  ·  ${note.notedAt.split('T').first}  ·  ${noteSourceLabel(note.source)}',
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ],

@@ -156,7 +156,7 @@ class _MiniStatCard extends StatelessWidget {
             Text(label,
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.6),
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: 'Dubai'),
                 textAlign: TextAlign.center),
           ],

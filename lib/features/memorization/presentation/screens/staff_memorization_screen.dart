@@ -130,7 +130,7 @@ class _StaffMemorizationScreenState extends State<StaffMemorizationScreen> {
               ),
               Text(
                 '${entry.groupName ?? ''}  ·  ${entry.recordedOn}  ·  ${entry.teacher?.name ?? ''}',
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ],

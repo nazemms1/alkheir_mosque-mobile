@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:io';
 import 'dart:typed_data';
 
@@ -502,7 +503,7 @@ class _ProfileHeader extends StatelessWidget {
                       label: profile.status,
                       color: profile.status == 'active'
                           ? AppColors.success
-                          : AppColors.textMuted,
+                          : context.appColors.textMuted,
                     ),
                   ],
                 ),
@@ -628,7 +629,7 @@ class _StatsGrid extends StatelessWidget {
                   Text(
                     item.key,
                     style:
-                        appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                        appTextStyle(fontSize: 12, color: moduleMuted(context)),
                   ),
                 ],
               ),
@@ -646,7 +647,7 @@ class _EnrollmentCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = enrollment.isActive ? AppColors.success : AppColors.textMuted;
+    final color = enrollment.isActive ? AppColors.success : context.appColors.textMuted;
     return ModuleCard(
       accent: color,
       child: Column(
@@ -674,7 +675,7 @@ class _EnrollmentCard extends StatelessWidget {
           ),
           Text(
             enrollment.enrolledAt ?? '',
-            style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+            style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
           ),
         ],
       ),
@@ -760,7 +761,7 @@ class _FileCard extends StatelessWidget {
                 Text(
                   '${file.fileType}  ·  ${file.uploadedByName ?? ''}  ·  ${file.uploadedAt ?? ''}',
                   style:
-                      appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
                   overflow: TextOverflow.ellipsis,
                 ),
               ],

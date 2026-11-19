@@ -376,7 +376,7 @@ class _StatBox extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             textAlign: TextAlign.center,
             style: appTextStyle(
-              fontSize: 10,
+              fontSize: 12,
               color: AdminTheme.muted(context),
             ),
           ),

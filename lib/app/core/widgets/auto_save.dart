@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import '../i18n/app_language.dart';
@@ -103,7 +104,7 @@ class AutoSaveIndicator extends StatelessWidget {
           AutoSaveStatus.idle => (
               Icons.info_outline_rounded,
               tr('تُحفظ التغييرات فور تعديلها'),
-              AppColors.textMuted,
+              context.appColors.textMuted,
               false,
             ),
         };

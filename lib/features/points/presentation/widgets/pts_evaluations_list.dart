@@ -119,7 +119,7 @@ class _EvalComment extends StatelessWidget {
                     style: Theme.of(context)
                         .textTheme
                         .bodySmall
-                        ?.copyWith(color: AppColors.textMuted, fontSize: 11)),
+                        ?.copyWith(color: context.appColors.textMuted, fontSize: 12)),
                 const SizedBox(height: 3),
                 Text(eval.teacherComment,
                     style: Theme.of(context)
@@ -149,14 +149,14 @@ class _EvalFooter extends StatelessWidget {
       ),
       child: Row(
         children: [
-          const Icon(Icons.calendar_today_rounded,
-              size: 12, color: AppColors.textMuted),
+          Icon(Icons.calendar_today_rounded,
+              size: 12, color: context.appColors.textMuted),
           const SizedBox(width: 5),
           Text(dateStr,
               style: Theme.of(context)
                   .textTheme
                   .bodySmall
-                  ?.copyWith(color: AppColors.textMuted, fontSize: 11)),
+                  ?.copyWith(color: context.appColors.textMuted, fontSize: 12)),
         ],
       ),
     );

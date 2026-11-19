@@ -348,7 +348,7 @@ class _FilterChipButton extends StatelessWidget {
                 overflow: TextOverflow.ellipsis,
                 style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11.5,
+                  fontSize: 12.5,
                   fontWeight: FontWeight.w600,
                   color: color,
                 ),
@@ -707,7 +707,7 @@ class _FeaturedStatTile extends StatelessWidget {
                       tr('مؤشر'),
                       style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: color,
                       ),
@@ -1110,7 +1110,7 @@ class _SectionCard extends StatelessWidget {
                           trf('{0} مؤشرات', [items.length]),
                           style: TextStyle(
                             fontFamily: 'Dubai',
-                            fontSize: 11,
+                            fontSize: 12,
                             fontWeight: FontWeight.w700,
                             color: accentColor,
                           ),
@@ -1294,7 +1294,7 @@ class _ListHeader extends StatelessWidget {
               '$count ${tr('عنصر')}',
               style: TextStyle(
                 fontFamily: 'Dubai',
-                fontSize: 11,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
                 color: color,
               ),
@@ -1489,7 +1489,7 @@ class _ItemCard extends StatelessWidget {
                                   '${row.key}: ',
                                   style: TextStyle(
                                     fontFamily: 'Dubai',
-                                    fontSize: 11.5,
+                                    fontSize: 12.5,
                                     fontWeight: FontWeight.w600,
                                     color: Theme.of(context)
                                         .colorScheme
@@ -1550,7 +1550,7 @@ class _ItemCard extends StatelessWidget {
             status,
             style: TextStyle(
               fontFamily: 'Dubai',
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
               color: color,
             ),

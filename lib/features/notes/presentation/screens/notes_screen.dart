@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
@@ -87,8 +88,8 @@ class _NotesScreenState extends State<NotesScreen>
                 ? Center(
                     child: Text(
                       tr('لا توجد رسائل بعد'),
-                      style: const TextStyle(
-                          fontFamily: 'Dubai', color: AppColors.textMuted),
+                      style: TextStyle(
+                          fontFamily: 'Dubai', color: context.appColors.textMuted),
                     ),
                   )
                 : ListView.builder(
@@ -214,7 +215,7 @@ class _NotesHeader extends StatelessWidget {
                   trf('بخصوص: {0}', [studentName]),
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.6),
-                    fontSize: 11,
+                    fontSize: 12,
                     fontFamily: 'Dubai',
                   ),
                 ),
@@ -236,7 +237,7 @@ class _NotesHeader extends StatelessWidget {
                 trf('{0} جديد', [unread]),
                 style: const TextStyle(
                   color: Colors.white,
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai',
                 ),
@@ -265,9 +266,9 @@ class _DateDivider extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10),
             child: Text(
               label,
-              style: const TextStyle(
-                color: AppColors.textMuted,
-                fontSize: 11,
+              style: TextStyle(
+                color: context.appColors.textMuted,
+                fontSize: 12,
                 fontFamily: 'Dubai',
               ),
             ),
@@ -344,7 +345,7 @@ class _MessageBubble extends StatelessWidget {
                       message.authorName,
                       style: TextStyle(
                         color: _authorColor,
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai',
                       ),
@@ -404,9 +405,9 @@ class _MessageBubble extends StatelessWidget {
                   children: [
                     Text(
                       timeStr,
-                      style: const TextStyle(
-                        color: AppColors.textMuted,
-                        fontSize: 10,
+                      style: TextStyle(
+                        color: context.appColors.textMuted,
+                        fontSize: 12,
                         fontFamily: 'Dubai',
                       ),
                     ),
@@ -478,10 +479,10 @@ class _InputBar extends StatelessWidget {
                     color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   hintText: tr('اكتب رسالتك للمعلم أو الإدارة...'),
-                  hintStyle: const TextStyle(
+                  hintStyle: TextStyle(
                       fontFamily: 'Dubai',
                       fontSize: 13,
-                      color: AppColors.textMuted),
+                      color: context.appColors.textMuted),
                   filled: true,
                   fillColor:
                       Theme.of(context).colorScheme.surfaceContainerHighest,
@@ -514,7 +515,7 @@ class _InputBar extends StatelessWidget {
                 height: 46,
                 decoration: BoxDecoration(
                   gradient: sending ? null : AppColors.gradientPrimary,
-                  color: sending ? AppColors.textMuted.withValues(alpha: 0.2) : null,
+                  color: sending ? context.appColors.textMuted.withValues(alpha: 0.2) : null,
                   shape: BoxShape.circle,
                   boxShadow: sending
                       ? null

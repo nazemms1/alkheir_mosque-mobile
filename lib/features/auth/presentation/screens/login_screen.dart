@@ -1,3 +1,5 @@
+import 'package:alkheir_mosque/app/core/utils/reduced_motion.dart';
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -34,6 +36,12 @@ class _LoginScreenState extends ConsumerState<LoginScreen>
   late final Animation<Offset> _slideAnim;
 
   AuthRepository get _authService => ref.read(authRepositoryProvider);
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _bgCtrl.respectReducedMotion(context);
+  }
 
   @override
   void initState() {
@@ -361,7 +369,7 @@ class _FormPanel extends StatelessWidget {
                   height: 4,
                   margin: const EdgeInsets.only(bottom: 24),
                   decoration: BoxDecoration(
-                    color: AppColors.textMuted.withValues(alpha: 0.4),
+                    color: context.appColors.textMuted.withValues(alpha: 0.4),
                     borderRadius: BorderRadius.circular(2),
                   ),
                 ),

@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -71,7 +72,7 @@ class _StudentPickerScreenState extends State<StudentPickerScreen> {
         itemBuilder: (context, student, _) => ModuleCard(
           accent: student.status == 'active'
               ? AppColors.primaryLight
-              : AppColors.textMuted,
+              : context.appColors.textMuted,
           onTap: () => widget.onPicked(context, student),
           child: Row(
             children: [
@@ -98,7 +99,7 @@ class _StudentPickerScreenState extends State<StudentPickerScreen> {
                       Text(
                         trf('ولي الأمر: {0}', [student.parentName]),
                         style: appTextStyle(
-                            fontSize: 11, color: moduleMuted(context)),
+                            fontSize: 12, color: moduleMuted(context)),
                       ),
                   ],
                 ),

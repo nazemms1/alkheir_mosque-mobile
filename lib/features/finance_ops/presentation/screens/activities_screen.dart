@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -39,7 +40,7 @@ class ActivitiesScreen extends StatelessWidget {
         emptyText: tr('لا توجد أنشطة'),
         fetch: (page) => service.activities(page: page),
         itemBuilder: (context, item, _) => ModuleCard(
-          accent: item.isActive ? AppColors.primaryLight : AppColors.textMuted,
+          accent: item.isActive ? AppColors.primaryLight : context.appColors.textMuted,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => ActivityDetailScreen(
@@ -68,7 +69,7 @@ class ActivitiesScreen extends StatelessWidget {
                   StatusPill(
                     label: item.isActive ? tr('نشط') : tr('منتهٍ'),
                     color:
-                        item.isActive ? AppColors.success : AppColors.textMuted,
+                        item.isActive ? AppColors.success : context.appColors.textMuted,
                   ),
                 ],
               ),
@@ -82,7 +83,7 @@ class ActivitiesScreen extends StatelessWidget {
                   formatAmount(item.collectedRevenue),
                   formatAmount(item.expenseTotal),
                 ]),
-                style: appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                style: appTextStyle(fontSize: 12, color: moduleMuted(context)),
               ),
             ],
           ),
@@ -346,7 +347,7 @@ class _RegistrationsTab extends StatelessWidget {
                     formatAmount(item.balance),
                   ]),
                   style:
-                      appTextStyle(fontSize: 11, color: moduleMuted(context)),
+                      appTextStyle(fontSize: 12, color: moduleMuted(context)),
                 ),
               ],
             ),
@@ -419,7 +420,7 @@ class _PaymentsTab extends StatelessWidget {
           emptyText: tr('لا توجد مدفوعات'),
           fetch: (page) => service.activityPayments(activityId, page: page),
           itemBuilder: (context, item, _) => ModuleCard(
-            accent: item.isVoided ? AppColors.textMuted : AppColors.success,
+            accent: item.isVoided ? context.appColors.textMuted : AppColors.success,
             onTap:
                 canManage && !item.isVoided ? () => _void(context, item) : null,
             child: Row(
@@ -436,7 +437,7 @@ class _PaymentsTab extends StatelessWidget {
                       Text(
                         '${item.paidAt}  ·  ${item.paymentMethodName ?? ''}  ·  ${item.referenceNo ?? ''}',
                         style: appTextStyle(
-                            fontSize: 11, color: moduleMuted(context)),
+                            fontSize: 12, color: moduleMuted(context)),
                       ),
                     ],
                   ),
@@ -447,12 +448,12 @@ class _PaymentsTab extends StatelessWidget {
                     fontSize: 15,
                     fontWeight: FontWeight.w800,
                     color:
-                        item.isVoided ? AppColors.textMuted : AppColors.success,
+                        item.isVoided ? context.appColors.textMuted : AppColors.success,
                   ),
                 ),
                 if (item.isVoided) ...[
                   const SizedBox(width: 8),
-                  StatusPill(label: tr('ملغاة'), color: AppColors.textMuted),
+                  StatusPill(label: tr('ملغاة'), color: context.appColors.textMuted),
                 ],
               ],
             ),
@@ -593,7 +594,7 @@ class _ExpensesTab extends StatelessWidget {
                       Text(
                         '${item.categoryName ?? ''}  ·  ${item.spentOn}',
                         style: appTextStyle(
-                            fontSize: 11, color: moduleMuted(context)),
+                            fontSize: 12, color: moduleMuted(context)),
                       ),
                     ],
                   ),

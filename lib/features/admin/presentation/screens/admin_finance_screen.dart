@@ -318,7 +318,7 @@ class _InvoiceCard extends StatelessWidget {
               ),
               Text(
                 invoice.issueDate,
-                style: appTextStyle(fontSize: 11, color: muted),
+                style: appTextStyle(fontSize: 12, color: muted),
               ),
             ],
           ),
@@ -351,7 +351,7 @@ class _AmountChip extends StatelessWidget {
         Text(
           label,
           style: appTextStyle(
-            fontSize: 11,
+            fontSize: 12,
             color: AdminTheme.muted(context),
           ),
         ),

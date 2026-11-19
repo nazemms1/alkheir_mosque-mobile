@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -374,10 +375,10 @@ class _SummaryStat extends StatelessWidget {
                   color: color)),
           const SizedBox(height: 2),
           Text(label,
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 10,
-                  color: AppColors.textMuted)),
+                  fontSize: 12,
+                  color: context.appColors.textMuted)),
         ]),
       );
 }
@@ -396,10 +397,10 @@ class _InfoRow extends StatelessWidget {
             SizedBox(
               width: 80,
               child: Text(label,
-                  style: const TextStyle(
+                  style: TextStyle(
                       fontFamily: 'Dubai',
                       fontSize: 12,
-                      color: AppColors.textMuted)),
+                      color: context.appColors.textMuted)),
             ),
             Expanded(
               child: Text(value,
@@ -446,7 +447,7 @@ class _EnrollmentRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final statusColor =
-        enrollment.status == 'active' ? AppColors.success : AppColors.textMuted;
+        enrollment.status == 'active' ? AppColors.success : context.appColors.textMuted;
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       padding: const EdgeInsets.all(12),
@@ -477,7 +478,7 @@ class _EnrollmentRow extends StatelessWidget {
                     enrollment.status == 'active' ? tr('نشط') : tr('غير نشط'),
                     style: TextStyle(
                         fontFamily: 'Dubai',
-                        fontSize: 10,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         color: statusColor)),
               ),
@@ -485,10 +486,10 @@ class _EnrollmentRow extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(enrollment.courseName,
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
-                  color: AppColors.textMuted)),
+                  fontSize: 12,
+                  color: context.appColors.textMuted)),
           const SizedBox(height: 8),
           Row(
             children: [
@@ -812,7 +813,7 @@ class _RecordMemorizationDialogState extends State<RecordMemorizationDialog> {
                               child: Text(tr('اليوم'),
                                   style: const TextStyle(
                                       fontFamily: 'Dubai',
-                                      fontSize: 11,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w700,
                                       color: AppColors.primaryLight)),
                             ),
@@ -976,10 +977,10 @@ class _SheetHeaderRow extends StatelessWidget {
                         ?.copyWith(fontWeight: FontWeight.w800)),
                 const SizedBox(height: 2),
                 Text('$studentName · $groupName',
-                    style: const TextStyle(
+                    style: TextStyle(
                         fontFamily: 'Dubai',
                         fontSize: 12,
-                        color: AppColors.textMuted),
+                        color: context.appColors.textMuted),
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis),
               ],
@@ -1033,7 +1034,7 @@ class _EntryTypeChip extends StatelessWidget {
         child: Column(
           children: [
             Icon(icon,
-                size: 22, color: selected ? Colors.white : AppColors.textMuted),
+                size: 22, color: selected ? Colors.white : context.appColors.textMuted),
             const SizedBox(height: 6),
             Text(label,
                 style: TextStyle(
@@ -1057,7 +1058,7 @@ class _AssessmentRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = assessment.isActive ? AppColors.success : AppColors.textMuted;
+    final color = assessment.isActive ? AppColors.success : context.appColors.textMuted;
     return Padding(
       padding: const EdgeInsets.only(bottom: 8),
       child: Row(
@@ -1076,10 +1077,10 @@ class _AssessmentRow extends StatelessWidget {
                     color: Theme.of(context).colorScheme.onSurface)),
           ),
           Text(trf('{0} نتيجة', [assessment.resultsCount]),
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
-                  color: AppColors.textMuted)),
+                  fontSize: 12,
+                  color: context.appColors.textMuted)),
         ],
       ),
     );
@@ -1105,7 +1106,7 @@ class _MiniStat extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: color)),
         ]),
@@ -1178,8 +1179,8 @@ class _EmptyRow extends StatelessWidget {
   Widget build(BuildContext context) => Padding(
         padding: const EdgeInsets.symmetric(vertical: 8),
         child: Text(message,
-            style: const TextStyle(
-                fontFamily: 'Dubai', fontSize: 12, color: AppColors.textMuted)),
+            style: TextStyle(
+                fontFamily: 'Dubai', fontSize: 12, color: context.appColors.textMuted)),
       );
 }
 
@@ -1203,7 +1204,7 @@ class _Chip extends StatelessWidget {
           Text(label,
               style: TextStyle(
                   fontFamily: 'Dubai',
-                  fontSize: 11,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   color: color)),
         ]),
@@ -1218,13 +1219,13 @@ class _Empty extends StatelessWidget {
   @override
   Widget build(BuildContext context) => Center(
         child: Column(mainAxisSize: MainAxisSize.min, children: [
-          Icon(icon, size: 48, color: AppColors.textMuted),
+          Icon(icon, size: 48, color: context.appColors.textMuted),
           const SizedBox(height: 12),
           Text(message,
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
                   fontSize: 14,
-                  color: AppColors.textMuted)),
+                  color: context.appColors.textMuted)),
         ]),
       );
 }
@@ -1262,10 +1263,10 @@ class _ErrorView extends StatelessWidget {
           const SizedBox(height: 8),
           Text(message,
               textAlign: TextAlign.center,
-              style: const TextStyle(
+              style: TextStyle(
                   fontFamily: 'Dubai',
                   fontSize: 13,
-                  color: AppColors.textMuted)),
+                  color: context.appColors.textMuted)),
           if (!_isForbidden) ...[
             const SizedBox(height: 20),
             ElevatedButton.icon(

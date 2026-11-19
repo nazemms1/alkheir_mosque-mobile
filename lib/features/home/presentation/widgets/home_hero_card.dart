@@ -6,13 +6,12 @@ class _HeroCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Stack(
       clipBehavior: Clip.none,
       children: [
         Container(
           width: double.infinity,
-          height: 230,
+          constraints: const BoxConstraints(minHeight: 230),
           decoration: const BoxDecoration(
             gradient: LinearGradient(
               colors: [
@@ -27,30 +26,7 @@ class _HeroCard extends StatelessWidget {
           ),
           child: Stack(
             children: [
-              const Positioned(
-                top: -50,
-                left: -50,
-                child: _DecorCircle(
-                    size: 200, color: AppColors.primaryLight, opacity: 0.07),
-              ),
-              const Positioned(
-                bottom: -30,
-                right: -40,
-                child: _DecorCircle(
-                    size: 170, color: AppColors.gold, opacity: 0.06),
-              ),
-              Positioned(
-                top: 30,
-                right: size.width * 0.3,
-                child: const _DecorCircle(
-                    size: 90, color: Colors.white, opacity: 0.03),
-              ),
-              Positioned(
-                bottom: 20,
-                left: size.width * 0.4,
-                child: const _DecorCircle(
-                    size: 60, color: AppColors.goldLight, opacity: 0.05),
-              ),
+              const Positioned.fill(child: GeometricPattern(opacity: 0.05)),
               Padding(
                 padding: const EdgeInsets.fromLTRB(20, 24, 20, 70),
                 child: Row(
@@ -70,7 +46,6 @@ class _HeroCard extends StatelessWidget {
           right: 16,
           child: _FloatingStatsRow(child: child),
         ),
-        const SizedBox(height: 230),
       ],
     );
   }
@@ -88,20 +63,20 @@ class _HeroContent extends StatelessWidget {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
           decoration: BoxDecoration(
-            color: AppColors.gold.withValues(alpha: 0.18),
+            color: Colors.white.withValues(alpha: 0.12),
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: AppColors.gold.withValues(alpha: 0.35)),
+            border: Border.all(color: Colors.white.withValues(alpha: 0.25)),
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               const Icon(Icons.waving_hand_rounded,
-                  color: AppColors.gold, size: 12),
+                  color: Colors.white, size: 14),
               const SizedBox(width: 5),
               Text(tr('أهلاً بك'),
                   style: const TextStyle(
-                    color: AppColors.goldLight,
-                    fontSize: 11,
+                    color: Colors.white,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai',
                   )),
@@ -130,7 +105,9 @@ class _HeroContent extends StatelessWidget {
             const SizedBox(width: 8),
             _HeroBadge(
                 icon: Icons.calendar_today_rounded,
-                label: tr('السنة ٢٠٢٥-٢٠٢٦')),
+                label: child.student.academicYear.isNotEmpty
+                    ? child.student.academicYear
+                    : tr('السنة ٢٠٢٥-٢٠٢٦')),
           ],
         ),
       ],
@@ -194,7 +171,7 @@ class _HeroBadge extends StatelessWidget {
           Text(label,
               style: const TextStyle(
                 color: Colors.white,
-                fontSize: 10,
+                fontSize: 12,
                 fontFamily: 'Dubai',
                 fontWeight: FontWeight.w600,
               ),
@@ -300,7 +277,7 @@ class _MiniStat extends StatelessWidget {
                       .colorScheme
                       .onSurface
                       .withValues(alpha: 0.5),
-                  fontSize: 10,
+                  fontSize: 12,
                   fontFamily: 'Dubai')),
         ],
       ),

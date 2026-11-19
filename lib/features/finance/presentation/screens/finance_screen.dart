@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
@@ -412,7 +413,7 @@ class _CashBoxCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ModuleCard(
-      accent: box.isActive ? AppColors.primaryLight : AppColors.textMuted,
+      accent: box.isActive ? AppColors.primaryLight : context.appColors.textMuted,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -430,12 +431,12 @@ class _CashBoxCard extends StatelessWidget {
               ),
               StatusPill(
                 label: box.isActive ? tr('نشط') : tr('غير نشط'),
-                color: box.isActive ? AppColors.success : AppColors.textMuted,
+                color: box.isActive ? AppColors.success : context.appColors.textMuted,
               ),
             ],
           ),
           Text(box.code,
-              style: appTextStyle(fontSize: 11, color: moduleMuted(context))),
+              style: appTextStyle(fontSize: 12, color: moduleMuted(context))),
           const SizedBox(height: 8),
           for (final row in box.currencies)
             _BalanceLine(
@@ -605,7 +606,7 @@ class _LedgerCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(entry.transactionDate,
-              style: appTextStyle(fontSize: 11, color: moduleMuted(context))),
+              style: appTextStyle(fontSize: 12, color: moduleMuted(context))),
         ],
       ),
     );
@@ -822,7 +823,7 @@ class _TwoLineRow extends StatelessWidget {
         ),
         const SizedBox(height: 2),
         Text(date,
-            style: appTextStyle(fontSize: 11, color: moduleMuted(context))),
+            style: appTextStyle(fontSize: 12, color: moduleMuted(context))),
       ],
     );
   }

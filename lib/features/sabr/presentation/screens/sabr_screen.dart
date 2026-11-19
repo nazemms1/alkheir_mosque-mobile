@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/ui/themes/theme_extension.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:intl/intl.dart';
@@ -119,8 +120,8 @@ class _SabrScreenState extends State<SabrScreen>
             SliverFillRemaining(
               child: Center(
                 child: Text(tr('لا توجد سجلات سبر'),
-                    style: const TextStyle(
-                        fontFamily: 'Dubai', color: AppColors.textMuted)),
+                    style: TextStyle(
+                        fontFamily: 'Dubai', color: context.appColors.textMuted)),
               ),
             )
           else
@@ -267,7 +268,7 @@ class _HeroStat extends StatelessWidget {
             label,
             style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.55),
-                fontSize: 11,
+                fontSize: 12,
                 fontFamily: 'Dubai'),
             textAlign: TextAlign.center,
           ),
@@ -446,7 +447,7 @@ class _SabrCardState extends State<_SabrCard> {
                                   tr('ناجح'),
                                   style: const TextStyle(
                                       color: AppColors.success,
-                                      fontSize: 10,
+                                      fontSize: 12,
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Dubai'),
                                 ),
@@ -466,7 +467,7 @@ class _SabrCardState extends State<_SabrCard> {
                           '${r.surahFrom}  ←  ${r.surahTo}',
                           style: const TextStyle(
                               color: AppColors.textSecondary,
-                              fontSize: 11,
+                              fontSize: 12,
                               fontFamily: 'Dubai'),
                         ),
                       ],
@@ -481,7 +482,7 @@ class _SabrCardState extends State<_SabrCard> {
                         _expanded
                             ? Icons.keyboard_arrow_up_rounded
                             : Icons.keyboard_arrow_down_rounded,
-                        color: AppColors.textMuted,
+                        color: context.appColors.textMuted,
                         size: 20,
                       ),
                     ],
@@ -538,7 +539,7 @@ class _SabrCardState extends State<_SabrCard> {
                               tr('الصفحات التي تم سبرها:'),
                               style: const TextStyle(
                                   color: AppColors.textSecondary,
-                                  fontSize: 11,
+                                  fontSize: 12,
                                   fontFamily: 'Dubai',
                                   fontWeight: FontWeight.w600),
                             ),
@@ -628,7 +629,7 @@ class _TypeBadge extends StatelessWidget {
         trf('سبر {0}', [label]),
         style: TextStyle(
             color: color,
-            fontSize: 10,
+            fontSize: 12,
             fontWeight: FontWeight.w700,
             fontFamily: 'Dubai'),
       ),
@@ -666,7 +667,7 @@ class _ScoreCircle extends StatelessWidget {
             Text('%',
                 style: TextStyle(
                     color: color.withValues(alpha: 0.7),
-                    fontSize: 9,
+                    fontSize: 12,
                     fontFamily: 'Dubai')),
           ],
         ),
@@ -692,22 +693,22 @@ class _DetailStat extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, size: 14, color: AppColors.textMuted),
+            Icon(icon, size: 14, color: context.appColors.textMuted),
             const SizedBox(width: 6),
             Expanded(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(label,
-                      style: const TextStyle(
-                          color: AppColors.textMuted,
-                          fontSize: 10,
+                      style: TextStyle(
+                          color: context.appColors.textMuted,
+                          fontSize: 12,
                           fontFamily: 'Dubai')),
                   Text(
                     value,
                     style: const TextStyle(
                         color: AppColors.textPrimary,
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai'),
                     overflow: TextOverflow.ellipsis,
@@ -740,7 +741,7 @@ class _PagePill extends StatelessWidget {
         '$page',
         style: TextStyle(
             color: color,
-            fontSize: 10,
+            fontSize: 12,
             fontWeight: FontWeight.w700,
             fontFamily: 'Dubai'),
       ),

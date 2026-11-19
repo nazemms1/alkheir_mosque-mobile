@@ -443,7 +443,7 @@ class _MetricGrid extends StatelessWidget {
                 ),
                 Text(label,
                     style: appTextStyle(
-                        fontSize: 11, color: moduleMuted(context))),
+                        fontSize: 12, color: moduleMuted(context))),
               ],
             ),
           ),

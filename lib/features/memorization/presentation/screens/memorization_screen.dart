@@ -208,7 +208,7 @@ class _Hero extends StatelessWidget {
                 Text(tr('يحفظ حالياً'),
                     style: TextStyle(
                         color: Colors.white.withValues(alpha: 0.6),
-                        fontSize: 11,
+                        fontSize: 12,
                         fontFamily: 'Dubai')),
                 Text(p.currentSurah,
                     style: const TextStyle(
@@ -227,7 +227,7 @@ class _Hero extends StatelessWidget {
             Text(trf('من {0} صفحة', [p.totalQuranPages]),
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.5),
-                    fontSize: 11,
+                    fontSize: 12,
                     fontFamily: 'Dubai')),
           ]),
         ]),
@@ -285,7 +285,7 @@ class _StatChip extends StatelessWidget {
         Text(label,
             style: TextStyle(
                 color: Colors.white.withValues(alpha: 0.6),
-                fontSize: 11,
+                fontSize: 12,
                 fontFamily: 'Dubai')),
         const SizedBox(width: 6),
         Text(value,
@@ -330,7 +330,7 @@ class _Dot extends StatelessWidget {
       const SizedBox(width: 3),
       Text(label,
           style: TextStyle(
-              fontSize: 9,
+              fontSize: 12,
               fontFamily: 'Dubai',
               color: Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.6))),
     ]);
@@ -428,7 +428,7 @@ class _JuzCell extends StatelessWidget {
           Text(tr('جزء'),
               style: TextStyle(
                   color: textColor.withValues(alpha: 0.7),
-                  fontSize: 9,
+                  fontSize: 12,
                   fontFamily: 'Dubai')),
           const SizedBox(height: 5),
           // State badge
@@ -629,7 +629,7 @@ class _TestEntry extends StatelessWidget {
                   isPartial ? tr('تجريبي') : tr('نهائي'),
                   style: TextStyle(
                       color: color,
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai'),
                 ),
@@ -640,7 +640,7 @@ class _TestEntry extends StatelessWidget {
               const SizedBox(width: 4),
               Text(dateStr,
                   style: TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       fontFamily: 'Dubai',
                       color: color.withValues(alpha: 0.7))),
               const Spacer(),
@@ -657,7 +657,7 @@ class _TestEntry extends StatelessWidget {
                   test.isPassed ? tr('ناجح') : tr('راسب'),
                   style: TextStyle(
                     color: test.isPassed ? AppColors.success : Colors.red,
-                    fontSize: 10,
+                    fontSize: 12,
                     fontWeight: FontWeight.w700,
                     fontFamily: 'Dubai',
                   ),
@@ -698,7 +698,7 @@ class _TestEntry extends StatelessWidget {
                   Text(tr('الأجزاء الفرعية'),
                       style: TextStyle(
                           color: color,
-                          fontSize: 11,
+                          fontSize: 12,
                           fontWeight: FontWeight.w700,
                           fontFamily: 'Dubai')),
                   const SizedBox(height: 8),
@@ -795,7 +795,7 @@ class _PartTileState extends State<_PartTile> {
                             trf('{0} محاولات • {1} إعادة',
                                 [part.attempts.length, retakes]),
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontFamily: 'Dubai',
                                 color: color.withValues(alpha: 0.7)),
                           )
@@ -803,7 +803,7 @@ class _PartTileState extends State<_PartTile> {
                           Text(
                             tr('محاولة واحدة'),
                             style: TextStyle(
-                                fontSize: 10,
+                                fontSize: 12,
                                 fontFamily: 'Dubai',
                                 color: Theme.of(context)
                                     .colorScheme
@@ -823,7 +823,7 @@ class _PartTileState extends State<_PartTile> {
                     passed ? tr('ناجح') : tr('راسب'),
                     style: TextStyle(
                         color: statusColor,
-                        fontSize: 11,
+                        fontSize: 12,
                         fontWeight: FontWeight.w700,
                         fontFamily: 'Dubai'),
                   ),
@@ -891,7 +891,7 @@ class _PartAttemptRow extends StatelessWidget {
               '${attempt.attemptNo}',
               style: TextStyle(
                   color: color,
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w800,
                   fontFamily: 'Dubai'),
             ),
@@ -912,7 +912,7 @@ class _PartAttemptRow extends StatelessWidget {
                       ? attempt.teacherName
                       : tr('غير محدد'),
                   style: const TextStyle(
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Dubai'),
                   overflow: TextOverflow.ellipsis,
@@ -928,7 +928,7 @@ class _PartAttemptRow extends StatelessWidget {
               const SizedBox(width: 4),
               Text(dateStr,
                   style: TextStyle(
-                      fontSize: 10,
+                      fontSize: 12,
                       fontFamily: 'Dubai',
                       color: Theme.of(context)
                           .colorScheme
@@ -977,7 +977,7 @@ class _AttemptRow extends StatelessWidget {
             child: Text('${attempt.attemptNo}',
                 style: TextStyle(
                     color: color,
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.w800,
                     fontFamily: 'Dubai')),
           ),
@@ -988,13 +988,13 @@ class _AttemptRow extends StatelessWidget {
               Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(attempt.teacherName,
                 style: const TextStyle(
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Dubai'),
                 overflow: TextOverflow.ellipsis),
             Text(dateStr,
                 style: TextStyle(
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: 'Dubai',
                     color: Theme.of(context)
                         .colorScheme
@@ -1099,7 +1099,7 @@ class _SheetHeader extends StatelessWidget {
               child: Text(stateLabel,
                   style: TextStyle(
                       color: stateColor,
-                      fontSize: 11,
+                      fontSize: 12,
                       fontWeight: FontWeight.w700,
                       fontFamily: 'Dubai')),
             ),
@@ -1253,7 +1253,7 @@ class _SessionTile extends StatelessWidget {
               style: TextStyle(
                   color:
                       Theme.of(context).colorScheme.onSurface.withValues(alpha: 0.5),
-                  fontSize: 11,
+                  fontSize: 12,
                   fontFamily: 'Dubai')),
         ])),
         Container(
@@ -1264,7 +1264,7 @@ class _SessionTile extends StatelessWidget {
           child: Text(trf('{0} ص', [session.pageCount]),
               style: const TextStyle(
                   color: AppColors.primary,
-                  fontSize: 10,
+                  fontSize: 12,
                   fontWeight: FontWeight.w700,
                   fontFamily: 'Dubai')),
         ),
@@ -1356,7 +1356,7 @@ class _StageRow extends StatelessWidget {
                         .colorScheme
                         .onSurface
                         .withValues(alpha: 0.5),
-                    fontSize: 11,
+                    fontSize: 12,
                     fontFamily: 'Dubai')),
             const SizedBox(width: 10),
             Icon(Icons.error_outline_rounded,
@@ -1365,7 +1365,7 @@ class _StageRow extends StatelessWidget {
             Text(trf('{0} أخطاء', [stage.errorCount]),
                 style: const TextStyle(
                     color: orange,
-                    fontSize: 11,
+                    fontSize: 12,
                     fontWeight: FontWeight.w600,
                     fontFamily: 'Dubai')),
           ]),
@@ -1431,7 +1431,7 @@ class _FinalCard extends StatelessWidget {
             Text('/ 100',
                 style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.75),
-                    fontSize: 10,
+                    fontSize: 12,
                     fontFamily: 'Dubai')),
           ]),
         ),
@@ -1562,7 +1562,7 @@ class _MiniStat extends StatelessWidget {
         Text(label,
             style: TextStyle(
                 color: color.withValues(alpha: 0.7),
-                fontSize: 10,
+                fontSize: 12,
                 fontFamily: 'Dubai')),
       ]),
     );
@@ -1600,7 +1600,7 @@ class _SubLabel extends StatelessWidget {
         child: Text('$count',
             style: TextStyle(
                 color: color,
-                fontSize: 10,
+                fontSize: 12,
                 fontWeight: FontWeight.w700,
                 fontFamily: 'Dubai')),
       ),
@@ -1624,7 +1624,7 @@ class _PageChip extends StatelessWidget {
       child: Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 11,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
     );
@@ -1647,7 +1647,7 @@ class _StatusBadge extends StatelessWidget {
       child: Text(label,
           style: TextStyle(
               color: color,
-              fontSize: 10,
+              fontSize: 12,
               fontWeight: FontWeight.w700,
               fontFamily: 'Dubai')),
     );
