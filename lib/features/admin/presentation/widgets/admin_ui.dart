@@ -280,9 +280,21 @@ class AdminAppBar extends StatelessWidget implements PreferredSizeWidget {
 
   Widget _buildTrailing(bool canPop) {
     if (actions.isNotEmpty) {
-      return Row(
-        mainAxisSize: MainAxisSize.min,
-        children: actions,
+      // Plain IconButtons default to grey onSurfaceVariant; the bar is green.
+      return IconButtonTheme(
+        data: IconButtonThemeData(
+          style: IconButton.styleFrom(
+            foregroundColor: Colors.white,
+            minimumSize: const Size(48, 48),
+          ),
+        ),
+        child: IconTheme(
+          data: const IconThemeData(color: Colors.white),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: actions,
+          ),
+        ),
       );
     }
     return const SizedBox(width: 42);
@@ -1050,6 +1062,7 @@ class AdminBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final fg = context.onTint(color);
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
       decoration: BoxDecoration(
@@ -1060,7 +1073,7 @@ class AdminBadge extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         children: [
           if (icon != null) ...[
-            Icon(icon, size: 12, color: color),
+            Icon(icon, size: 12, color: fg),
             const SizedBox(width: 4),
           ],
           Flexible(
@@ -1071,7 +1084,7 @@ class AdminBadge extends StatelessWidget {
               style: appTextStyle(
                 fontSize: FontSize.caption,
                 fontWeight: FontWeight.w700,
-                color: color,
+                color: fg,
               ),
             ),
           ),

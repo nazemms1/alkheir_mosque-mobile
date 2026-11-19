@@ -1178,7 +1178,11 @@ class _StaffProfileSheet extends StatelessWidget {
               _ThemeToggleItem(isDark: isDark),
               const _LanguageToggleItem(),
               const SizedBox(height: 12),
-              _LogoutButton(onTap: onLogout),
+              // Same 16pt inset as the menu rows above.
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: _LogoutButton(onTap: onLogout),
+              ),
             ],
           ),
         ),

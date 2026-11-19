@@ -172,6 +172,17 @@ ThemeData buildAppTheme(AppColors c, Brightness brightness) {
             selected ? c.primary : c.textMuted);
       }),
     ),
+    // Off state needs ≥3:1 against the surface (default outline is ~1.2:1).
+    switchTheme: SwitchThemeData(
+      thumbColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.selected) ? c.onPrimary : c.textMuted),
+      trackColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.selected) ? c.primary : c.field),
+      trackOutlineColor: WidgetStateProperty.resolveWith((states) =>
+          states.contains(WidgetState.selected)
+              ? Colors.transparent
+              : c.textMuted),
+    ),
     snackBarTheme: SnackBarThemeData(
       behavior: SnackBarBehavior.floating,
       shape: RoundedRectangleBorder(borderRadius: radius12),

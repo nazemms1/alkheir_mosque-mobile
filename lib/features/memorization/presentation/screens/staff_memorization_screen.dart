@@ -726,7 +726,7 @@ class _PageChipButton extends StatelessWidget {
         width: 58,
         height: 40,
         decoration: BoxDecoration(
-          color: isSelected ? context.appColors.primary.withValues(alpha: 0.14) : context.appColors.field,
+          color: isSelected ? context.appColors.primary.withValues(alpha: 0.14) : context.appColors.card,
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
             color:

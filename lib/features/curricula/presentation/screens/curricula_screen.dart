@@ -72,7 +72,9 @@ class _CurriculaScreenState extends State<CurriculaScreen> {
         ),
         fetch: (page) => _service.curricula(page: page, search: _search),
         itemBuilder: (context, item, _) => ModuleCard(
-          accent: item.isActive ? AppColors.primaryLight : context.appColors.textMuted,
+          accent: item.isActive
+              ? AppColors.primaryLight
+              : context.appColors.textMuted,
           onTap: () => Navigator.of(context).push(
             MaterialPageRoute(
               builder: (_) => CurriculumDetailScreen(
@@ -98,7 +100,8 @@ class _CurriculaScreenState extends State<CurriculaScreen> {
                 '${item.courseName ?? ''}  ·  ${item.gradeLevelName ?? ''}  ·  ${trf('المواد: {0}', [
                       item.subjectsCount
                     ])}',
-                style: appTextStyle(fontSize: FontSize.caption, color: moduleMuted(context)),
+                style: appTextStyle(
+                    fontSize: FontSize.caption, color: moduleMuted(context)),
                 overflow: TextOverflow.ellipsis,
               ),
             ],
@@ -304,7 +307,8 @@ class _CurriculumDetailScreenState extends State<CurriculumDetailScreen> {
                           onPreview: () => showRecordSheet(
                             context,
                             title: subject.name,
-                            subtitle: trf('الدروس: {0}', [subject.lessons.length]),
+                            subtitle:
+                                trf('الدروس: {0}', [subject.lessons.length]),
                             rows: [
                               for (final l in subject.lessons)
                                 MapEntry(
@@ -324,14 +328,16 @@ class _CurriculumDetailScreenState extends State<CurriculumDetailScreen> {
                                 id: subject.lessons[i].id,
                                 name: subject.lessons[i].name,
                                 importanceLevel: (i % 3) + 1,
-                                isTaught:
-                                    _taughtLessonIds.contains(subject.lessons[i].id),
+                                isTaught: _taughtLessonIds
+                                    .contains(subject.lessons[i].id),
                                 onToggled: (val) {
                                   setState(() {
                                     if (val) {
-                                      _taughtLessonIds.add(subject.lessons[i].id);
+                                      _taughtLessonIds
+                                          .add(subject.lessons[i].id);
                                     } else {
-                                      _taughtLessonIds.remove(subject.lessons[i].id);
+                                      _taughtLessonIds
+                                          .remove(subject.lessons[i].id);
                                     }
                                   });
                                   showModuleSnack(
@@ -368,7 +374,8 @@ class _ResourceTile extends StatelessWidget {
           Expanded(
             child: Text(
               resource.bookName,
-              style: appTextStyle(fontSize: FontSize.label, fontWeight: FontWeight.w700),
+              style: appTextStyle(
+                  fontSize: FontSize.label, fontWeight: FontWeight.w700),
               overflow: TextOverflow.ellipsis,
             ),
           ),
@@ -486,7 +493,8 @@ class _GroupCurriculumScreenState extends State<GroupCurriculumScreen> {
                   children: [
                     _CurriculumBanner(
                       title: tr('منهاجي'),
-                      subtitle: '${widget.groupName} - ${progress.curriculumName ?? ''}',
+                      subtitle:
+                          '${widget.groupName} - ${progress.curriculumName ?? ''}',
                       onDownload: () => showModuleSnack(
                         context,
                         tr('جاري تجهيز كتب المنهج للتحميل...'),
@@ -519,7 +527,8 @@ class _GroupCurriculumScreenState extends State<GroupCurriculumScreen> {
                         onPreview: () => showRecordSheet(
                           context,
                           title: subject.name,
-                          subtitle: trf('الدروس: {0}', [subject.lessons.length]),
+                          subtitle:
+                              trf('الدروس: {0}', [subject.lessons.length]),
                           rows: [
                             for (final l in subject.lessons)
                               MapEntry(
@@ -536,8 +545,8 @@ class _GroupCurriculumScreenState extends State<GroupCurriculumScreen> {
                               id: subject.lessons[i].id,
                               name: subject.lessons[i].name,
                               importanceLevel: (i % 3) + 1,
-                              isTaught:
-                                  _taughtLessonIds.contains(subject.lessons[i].id),
+                              isTaught: _taughtLessonIds
+                                  .contains(subject.lessons[i].id),
                               onToggled: (val) =>
                                   _toggleLesson(subject.lessons[i].id, val),
                             ),
@@ -607,30 +616,9 @@ class _CurriculumBanner extends StatelessWidget {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          OutlinedButton.icon(
-            style: OutlinedButton.styleFrom(
-              foregroundColor: Colors.white,
-              backgroundColor: const Color(0xFF14472F),
-              side: const BorderSide(color: Color(0xFF266E47), width: 1.2),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(22),
-              ),
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-            ),
-            onPressed: onDownload,
-            icon: const Icon(Icons.download_rounded, size: 18, color: Colors.white),
-            label: Text(
-              tr('تحميل الكتب'),
-              style: appTextStyle(
-                fontSize: FontSize.label,
-                fontWeight: FontWeight.w700,
-                color: Colors.white,
-              ),
-            ),
-          ),
           Expanded(
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   title,
@@ -650,6 +638,29 @@ class _CurriculumBanner extends StatelessWidget {
                   overflow: TextOverflow.ellipsis,
                 ),
               ],
+            ),
+          ),
+          const SizedBox(width: 12),
+          OutlinedButton.icon(
+            style: OutlinedButton.styleFrom(
+              foregroundColor: Colors.white,
+              backgroundColor: const Color(0xFF14472F),
+              side: const BorderSide(color: Color(0xFF266E47), width: 1.2),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(22),
+              ),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+            ),
+            onPressed: onDownload,
+            icon: const Icon(Icons.download_rounded,
+                size: 18, color: Colors.white),
+            label: Text(
+              tr('تحميل الكتب'),
+              style: appTextStyle(
+                fontSize: FontSize.label,
+                fontWeight: FontWeight.w700,
+                color: Colors.white,
+              ),
             ),
           ),
         ],
@@ -707,12 +718,25 @@ class _SubjectLessonsTableCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          // Header: Book title on right, eye icon on left
+          // Header: book title at start, preview at end
           Padding(
             padding: const EdgeInsets.fromLTRB(16, 16, 16, 14),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Expanded(
+                  child: Text(
+                    bookTitle,
+                    textAlign: TextAlign.start,
+                    style: appTextStyle(
+                      fontSize: FontSize.title,
+                      fontWeight: FontWeight.w800,
+                      color: context.appColors.textPrimary,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                const SizedBox(width: 12),
                 InkWell(
                   onTap: onPreview,
                   borderRadius: BorderRadius.circular(10),
@@ -730,30 +754,18 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                     ),
                   ),
                 ),
-                Expanded(
-                  child: Text(
-                    bookTitle,
-                    textAlign: TextAlign.end,
-                    style: appTextStyle(
-                      fontSize: FontSize.title,
-                      fontWeight: FontWeight.w800,
-                      color: context.appColors.textPrimary,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
               ],
             ),
           ),
           Divider(height: 1, thickness: 1, color: context.appColors.divider),
-          // Table header: الأهمية on left, الدرس on right
+          // Table header: lesson at start, importance at end
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  tr('الأهمية'),
+                  tr('الدرس'),
                   style: appTextStyle(
                     fontSize: FontSize.label,
                     fontWeight: FontWeight.w700,
@@ -761,7 +773,7 @@ class _SubjectLessonsTableCard extends StatelessWidget {
                   ),
                 ),
                 Text(
-                  tr('الدرس'),
+                  tr('الأهمية'),
                   style: appTextStyle(
                     fontSize: FontSize.label,
                     fontWeight: FontWeight.w700,
@@ -776,7 +788,8 @@ class _SubjectLessonsTableCard extends StatelessWidget {
           for (int i = 0; i < lessons.length; i++) ...[
             _LessonRow(item: lessons[i]),
             if (i < lessons.length - 1)
-              Divider(height: 1, thickness: 1, color: context.appColors.divider),
+              Divider(
+                  height: 1, thickness: 1, color: context.appColors.divider),
           ],
         ],
       ),
@@ -797,7 +810,10 @@ class _LessonRow extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         child: Row(
           children: [
-            _ImportanceBars(level: item.importanceLevel),
+            _CurriculumCheckbox(
+              isChecked: item.isTaught,
+              onChanged: item.onToggled,
+            ),
             const SizedBox(width: 14),
             Expanded(
               child: Text(
@@ -813,10 +829,7 @@ class _LessonRow extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 14),
-            _CurriculumCheckbox(
-              isChecked: item.isTaught,
-              onChanged: item.onToggled,
-            ),
+            _ImportanceBars(level: item.importanceLevel),
           ],
         ),
       ),
@@ -889,10 +902,14 @@ class _CurriculumCheckbox extends StatelessWidget {
         width: 22,
         height: 22,
         decoration: BoxDecoration(
-          color: isChecked ? context.appColors.primary.withValues(alpha: 0.12) : Colors.transparent,
+          color: isChecked
+              ? context.appColors.primary.withValues(alpha: 0.12)
+              : Colors.transparent,
           borderRadius: BorderRadius.circular(6),
           border: Border.all(
-            color: isChecked ? context.appColors.primary : context.appColors.textMuted,
+            color: isChecked
+                ? context.appColors.primary
+                : context.appColors.textMuted,
             width: 1.5,
           ),
         ),

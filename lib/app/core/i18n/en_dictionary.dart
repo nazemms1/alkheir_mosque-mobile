@@ -1123,4 +1123,10 @@ const Map<String, String> enDictionary = {
   'مسح رمز QR للطالب': 'Scan the student QR code',
   'الفلاش': 'Flash',
   'ليس لديك صلاحية لتسجيل الحضور': 'You do not have permission to record attendance',
+  'المزيد': 'More',
+  'صباح الخير': 'Good morning',
+  'مساء الخير': 'Good evening',
+  'الأهمية': 'Importance',
+  'الدرس': 'Lesson',
+  'تحميل الكتب': 'Download books',
 };

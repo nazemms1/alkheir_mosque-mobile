@@ -1,3 +1,4 @@
+import 'package:alkheir_mosque/app/core/widgets/geometric_pattern.dart';
 import 'package:alkheir_mosque/ui/themes/font_size.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -288,24 +289,17 @@ class _WelcomeBanner extends StatelessWidget {
         borderRadius: BorderRadius.circular(26),
         boxShadow: AppColors.heroShadow,
       ),
+      clipBehavior: Clip.antiAlias,
       child: Stack(
+        clipBehavior: Clip.none,
         children: [
-          PositionedDirectional(
-            top: -50,
-            end: -40,
-            child: Container(
-              width: 160,
-              height: 160,
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                gradient: RadialGradient(
-                  colors: [
-                    AppColors.gold.withValues(alpha: 0.22),
-                    Colors.transparent,
-                  ],
-                ),
-              ),
-            ),
+          // Pattern spans the whole banner, past the container padding.
+          const Positioned(
+            top: -20,
+            left: -20,
+            right: -20,
+            bottom: -20,
+            child: GeometricPattern(opacity: 0.05),
           ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
