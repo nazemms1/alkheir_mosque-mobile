@@ -20,7 +20,7 @@ Future<void> main() async {
   FlavorConfig.initialize(
     flavor: AppFlavor.dev,
     appName: 'مسجد الخير',
-    baseUrl: 'https://www.alkheir-mosque.com',
+    baseUrl: 'https://alkheir.saas.alkheir-platform.com',
     apiPrefix: '/api/v1',
   );
 

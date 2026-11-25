@@ -2,17 +2,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 /// عنوان خادم الـ API.
 ///
-/// خادم الإنتاج الثابت والوحيد لمسجد الخير: `https://www.alkheir-mosque.com`.
+/// خادم الإنتاج الثابت والوحيد لمسجد الخير: `https://alkheir.saas.alkheir-platform.com`.
 abstract final class ServerConfig {
-  static const _productionBaseUrl = 'https://www.alkheir-mosque.com';
+  static const _productionBaseUrl = 'https://alkheir.saas.alkheir-platform.com';
 
   /// العنوان الأساسي للخادم بدون `/api/v1`.
   static String get baseUrl => _productionBaseUrl;
 
-  /// عنوان الـ API الكامل: `https://www.alkheir-mosque.com/api/v1`.
+  /// عنوان الـ API الكامل: `https://alkheir.saas.alkheir-platform.com/api/v1`.
   static String get apiBaseUrl => '$_productionBaseUrl/api/v1';
 
-  /// الافتراضي الثابت: `https://www.alkheir-mosque.com`.
+  /// الافتراضي الثابت: `https://alkheir.saas.alkheir-platform.com`.
   static String get defaultBaseUrl => _productionBaseUrl;
 
   /// يُستدعى مرة واحدة في `main()`.

@@ -17,7 +17,7 @@ php artisan serve --host=0.0.0.0 --port=8000
 الافتراضي هو خادم الإنتاج للموقع:
 
 ```
-https://www.alkheir-mosque.com/api/v1
+https://alkheir.saas.alkheir-platform.com/api/v1
 ```
 
 يمكن تغيير العنوان في أي وقت من شاشة الدخول (زر الخادم أعلى الشاشة)، ويُقبل
@@ -35,7 +35,7 @@ https://www.alkheir-mosque.com/api/v1
 flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
 ```
 
-> **ملاحظة مهمة:** اختبار الإنتاج أظهر أن `https://www.alkheir-mosque.com/api/v1/...`
+> **ملاحظة مهمة:** اختبار الإنتاج أظهر أن `https://alkheir.saas.alkheir-platform.com/api/v1/...`
 > يرد حالياً بـ 404، أي أن واجهة الجوال من فرع `feature/mobile-api-v1` لم تُنشر بعد على
 > الخادم. يجب نشر الفرع على الإنتاج حتى يعمل تسجيل الدخول؛ حتى ذلك الحين يعرض
 > التطبيق رسالة توضح ذلك بدل خطأ عام.
@@ -160,7 +160,7 @@ lib/
 ## التحقق من نشر الواجهة
 
 ```bash
-curl -i https://www.alkheir-mosque.com/api/v1/bootstrap
+curl -i https://alkheir.saas.alkheir-platform.com/api/v1/bootstrap
 ```
 
 الاستجابة الصحيحة بعد النشر هي `401` (غير مسجّل الدخول). الاستجابة `404` تعني أن الفرع
