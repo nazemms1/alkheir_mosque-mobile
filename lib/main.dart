@@ -1,67 +1,54 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'core/session/theme_provider.dart';
-import 'core/theme/app_theme.dart';
-import 'features/splash/screens/splash_screen.dart';
 
-void main() async {
+import 'package:alkheir_mosque/app/app.dart';
+import 'package:alkheir_mosque/app/core/config/flavor_config.dart';
+import 'package:alkheir_mosque/app/core/config/server_config.dart';
+import 'package:alkheir_mosque/app/core/session/theme_provider.dart';
+import 'package:alkheir_mosque/di/di_locator.dart';
+
+/// يهيّئ التطبيق ويشغّله. تُستدعى من `main_dev.dart` / `main_prod.dart`
+/// بعد تهيئة [FlavorConfig].
+Future<void> bootstrap() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('ar', null);
 
+  // Initialize SharedPreferences
   final prefs = await SharedPreferences.getInstance();
+  ServerConfig.load(prefs);
 
-  SystemChrome.setPreferredOrientations([
+  await SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-  SystemChrome.setSystemUIOverlayStyle(
-    const SystemUiOverlayStyle(
-      statusBarColor: Colors.transparent,
-      statusBarIconBrightness: Brightness.light,
-    ),
+
+  appProviderContainer = ProviderContainer(
+    overrides: [
+      sharedPreferencesProvider.overrideWithValue(prefs),
+      sharedPrefsProvider.overrideWithValue(prefs),
+    ],
   );
+
   runApp(
-    ProviderScope(
-      overrides: [sharedPrefsProvider.overrideWithValue(prefs)],
-      child: const AlkheirMosqueApp(),
+    UncontrolledProviderScope(
+      container: appProviderContainer,
+      child: const MyApp(),
     ),
   );
 }
 
-class AlkheirMosqueApp extends ConsumerWidget {
-  const AlkheirMosqueApp({super.key});
-
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final mode = ref.watch(themeModeProvider);
-    return MaterialApp(
-      title: 'مسجد الخير - البوابة التعليمية',
-      debugShowCheckedModeBanner: false,
-      theme: AppTheme.light,
-      darkTheme: AppTheme.dark,
-      themeMode: mode,
-      themeAnimationStyle: AnimationStyle(
-        duration: const Duration(milliseconds: 500),
-        curve: Curves.easeInOut,
-      ),
-      locale: const Locale('ar'),
-      supportedLocales: const [Locale('ar')],
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
-      ],
-      builder: (context, child) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: child!,
-        );
-      },
-      home: const SplashScreen(),
-    );
-  }
+/// `flutter run` بلا `-t`: نفس إعداد التطوير.
+Future<void> main() async {
+  configureDev();
+  await bootstrap();
 }
+
+// shortcut: dev uses the production server until a staging server exists;
+// change baseUrl here when one does.
+void configureDev() => FlavorConfig.initialize(
+      flavor: AppFlavor.dev,
+      appName: 'مسجد الخير',
+      baseUrl: 'https://alkheir.saas.alkheir-platform.com',
+      apiPrefix: '/api/v1',
+    );

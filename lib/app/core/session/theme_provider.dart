@@ -1,0 +1,22 @@
+import 'package:alkheir_mosque/app/core/l10n/l10n_gateway.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:alkheir_mosque/di/di_locator.dart';
+
+export 'package:alkheir_mosque/di/di_locator.dart'
+    show themeProvider, ThemeModeNotifier;
+
+/// نسخة SharedPreferences الجاهزة — تُهيّأ في `main()` عبر override
+/// قبل تشغيل التطبيق حتى تكون متاحة بشكل متزامن لبقية المزوّدات.
+///
+/// ملاحظة: المظهر (فاتح/داكن) واللغة يُداران من `themeProvider` و`languageProvider`
+/// في `di/di_locator.dart` — هما المصدر الوحيد الذي يقرؤه `MyApp`.
+final sharedPrefsProvider = Provider<SharedPreferences>(
+  (ref) => throw UnimplementedError(
+      L10nGateway.current.initializedInMainViaProviderscope),
+);
+
+/// وضع المظهر (فاتح/داكن) — يُحفظ في التخزين المحلي ويُسترجع عند الإقلاع.
+/// مواءم مع [themeProvider] في `di_locator.dart`.
+final themeModeProvider = themeProvider;

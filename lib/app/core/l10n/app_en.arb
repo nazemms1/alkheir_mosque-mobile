@@ -1,0 +1,1693 @@
+{
+  "@@locale": "en",
+  "appName": "Alkheir Mosque",
+  "@appName": {
+    "description": "Application title"
+  },
+  "errorsConnection": "Unable to connect. Please check your internet connection.",
+  "@errorsConnection": {
+    "description": "Connection error message"
+  },
+  "errorsServer": "A server error occurred. Please try again later.",
+  "@errorsServer": {
+    "description": "Server error message"
+  },
+  "errorsUnknown": "An unexpected error occurred.",
+  "@errorsUnknown": {
+    "description": "Unknown error message"
+  },
+  "errorsNotFound": "The requested resource was not found.",
+  "@errorsNotFound": {
+    "description": "Not found error message"
+  },
+  "errorsUnauthorized": "You are not authorized to perform this action.",
+  "@errorsUnauthorized": {
+    "description": "Unauthorized error message"
+  },
+  "errorsForbidden": "Access is forbidden.",
+  "@errorsForbidden": {
+    "description": "Forbidden error message"
+  },
+  "errorsTimeout": "The connection timed out. Please try again.",
+  "@errorsTimeout": {
+    "description": "Timeout error message"
+  },
+  "errorsBadRequest": "Invalid request. Please verify your input.",
+  "@errorsBadRequest": {
+    "description": "Bad request error message"
+  },
+  "maintenanceRetry": "Retry",
+  "@maintenanceRetry": {
+    "description": "Retry button label"
+  },
+  "generalCancel": "Cancel",
+  "@generalCancel": {
+    "description": "Cancel button label"
+  },
+  "generalSave": "Save",
+  "@generalSave": {
+    "description": "Save button label"
+  },
+  "aCourseWithLinkedRecords": "A course with linked records cannot be deleted.",
+  "aGroupCannotBeLeft": "A group cannot be left without sessions.",
+  "aStudentWithEnrollmentsCannot": "A student with enrollments cannot be deleted. Their academic record will be removed.",
+  "absences": "Absences",
+  "absences2": "Absences",
+  "absent": "Absent",
+  "absent2": "Absent",
+  "academicYear": "Academic year",
+  "academicYear2": "Academic year",
+  "accepted": "Accepted",
+  "acceptedAmount": "Accepted amount",
+  "account": "Account",
+  "accountActive": "Account active",
+  "accountDetails": "Account details",
+  "active": "Active",
+  "active2": "Active",
+  "active3": "Active",
+  "active4": "Active",
+  "activeEnrollment": "Active enrollment",
+  "activeEnrollments": "Active enrollments",
+  "activeGroup": "Active group",
+  "activeGroups": "Active groups",
+  "activeGroups2": "Active groups",
+  "activeGroupsAndEnrolledStudent": "Active groups and enrolled student counts",
+  "activeGroupsWillAppearHere": "Active groups will appear here once created",
+  "activeStudents": "Active students",
+  "activeStudentsQuickSearchBy": "Active students, quick search by name or number",
+  "activities": "Activities",
+  "activitiesCollected": "Activities collected",
+  "activitiesExpenses": "Activities expenses",
+  "activitiesNet": "Activities net",
+  "add": "Add",
+  "addExpense": "Add expense",
+  "addGroup": "Add group",
+  "addItem": "Add item",
+  "addNew": "Add new",
+  "addPhoto": "Add photo",
+  "addSession": "Add session",
+  "additionalInformation": "Additional information",
+  "address": "Address",
+  "adjust": "Adjust",
+  "adminDashboard": "Admin dashboard",
+  "administration": "Administration",
+  "alKhairMosque": "Al Khair Mosque",
+  "all": "All",
+  "allOpenSessionsForYour": "All open sessions for your account on every device will be cancelled.",
+  "allowAParallelCycle": "Allow a parallel cycle",
+  "amount": "Amount",
+  "amountBalance": "Amount (balance {p0})",
+  "@amountBalance": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "amountExceedsTheBalance": "Amount exceeds the balance ({p0})",
+  "@amountExceedsTheBalance": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "amountReceivedOptional": "Amount received (optional)",
+  "amountSent": "Amount sent",
+  "anyNotesFromTheTeacher": "Any notes from the teacher or management will appear here",
+  "applyFilters": "Apply filters",
+  "areYouSureYouWant": "Are you sure you want to delete \"{p0}\"? This action cannot be undone.",
+  "@areYouSureYouWant": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "assessment": "Assessment",
+  "assessmentResultsAndRecordingThem": "Assessment results and recording them",
+  "assessments": "Assessments",
+  "assessmentsAndCurricula": "Assessments and curricula",
+  "assessmentsAndExamsAndTheir": "Assessments and exams, and their results",
+  "assessmentsStudentGroups": "Assessments (student groups)",
+  "assessmentsTests": "Assessments & tests",
+  "assistant": "Assistant",
+  "assistingGroups": "Assisting groups",
+  "assistingTeacher": "Assisting teacher",
+  "assistingTeacher2": "Assisting teacher",
+  "attachments": "Attachments",
+  "attempt": "Attempt {p0}",
+  "@attempt": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "attemptMistakes": "Attempt {p0}: {p1} mistakes · {p2}",
+  "@attemptMistakes": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "attemptNumber": "Attempt number",
+  "attempts": "Attempts: {p0}",
+  "@attempts": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "attempts2": "Attempts",
+  "attemptsRetakeS": "{p0} attempts • {p1} retake(s)",
+  "@attemptsRetakeS": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      }
+    }
+  },
+  "attendance": "Attendance",
+  "attendanceAndMemorization": "Attendance and memorization",
+  "attendanceDate": "Attendance date",
+  "attendanceDay": "Attendance day",
+  "attendanceDayS": "{p0} attendance day(s)",
+  "@attendanceDayS": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "attendanceDays": "Attendance days",
+  "attendanceDays2": "Attendance days",
+  "attendanceDaysAndTakingA": "Attendance days and taking a group attendance",
+  "attendanceForThisDayCan": "Attendance for this day can be edited again.",
+  "attendanceLog": "Attendance log",
+  "attendanceRate": "Attendance rate",
+  "attendanceRecorded": "Attendance recorded",
+  "attendanceRecords": "Attendance records",
+  "attendanceScan": "Attendance scan",
+  "attended": "Attended",
+  "average": "Average",
+  "averageAssessment": "Average assessment",
+  "averageScore": "Average score",
+  "awardsPoints": "Awards points",
+  "awqaf": "Awqaf",
+  "awqafTest": "Awqaf test",
+  "awqafTests": "Awqaf tests",
+  "balance": "Balance: {p0}",
+  "@balance": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "blocked": "Blocked",
+  "bonus": "Bonus",
+  "bonusPoints": "Bonus points",
+  "callThisNumber": "Call this number",
+  "cancel": "Cancel",
+  "cancelled": "Cancelled",
+  "cancelsAllOpenSessionsFor": "Cancels all open sessions for this account",
+  "cashBox": "Cash box",
+  "cashBoxes": "Cash boxes",
+  "cashBoxesLedgerTransfersAnd": "Cash boxes, ledger, transfers and requests",
+  "cashCollected": "Cash collected",
+  "category": "Category",
+  "changePassword": "Change password",
+  "changePhoto": "Change photo",
+  "changeProfilePhoto": "Change profile photo",
+  "changeServerAddress": "Change server address",
+  "chapter": "Chapter {p0}",
+  "@chapter": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "charactersMinimum": "8 characters minimum",
+  "charactersMinimumOrLeaveBlank": "8 characters minimum, or leave blank",
+  "choose": "Choose…",
+  "chooseACashBox": "Choose a cash box",
+  "chooseACashBoxFirst": "Choose a cash box first",
+  "chooseACurrency": "Choose a currency",
+  "chooseADate": "Choose a date",
+  "chooseAGroupToView": "Choose a group to view its progress",
+  "chooseAStudentFirst": "Choose a student first",
+  "chooseAnAcademicYear": "Choose an academic year",
+  "chooseAnExpenseCategory": "Choose an expense category",
+  "chooseAssistingTeacher": "Choose assisting teacher",
+  "chooseCategory": "Choose category",
+  "chooseCourse": "Choose course",
+  "chooseCourse2": "Choose course",
+  "chooseEnrollment": "Choose enrollment",
+  "chooseGradeLevel": "Choose grade level",
+  "chooseGroup": "Choose group",
+  "chooseJuz": "Choose juz",
+  "chooseParent": "Choose parent",
+  "choosePaymentMethod": "Choose payment method",
+  "choosePointType": "Choose point type",
+  "chooseStudent": "Choose student",
+  "chooseTeacher": "Choose teacher",
+  "chooseTestType": "Choose test type",
+  "chooseTheAttendanceTypeBefore": "Choose the attendance type before scanning",
+  "chooseTheTeacherWhoConducted": "Choose the teacher who conducted the test",
+  "clearFilter": "Clear filter",
+  "close": "Close",
+  "closeDay": "Close day",
+  "closed": "Closed",
+  "collected": "Collected",
+  "collectedExpenses": "Collected: {p0}  ·  Expenses: {p1}",
+  "@collectedExpenses": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      }
+    }
+  },
+  "completed": "Completed",
+  "completedJuz": "Completed juz",
+  "completionRate": "Completion rate",
+  "confirmNewPassword": "Confirm new password",
+  "connectionTimedOutPleaseTry": "Connection timed out. Please try again.",
+  "contactAdministration": "Contact administration",
+  "contactAndAddress": "Contact and address",
+  "contactDetails": "Contact details",
+  "contactTheMosqueAdministration": "Contact the mosque administration",
+  "contactTheMosqueAdministrationVia": "Contact the mosque administration via WhatsApp to get login details",
+  "contactViaWhatsapp": "Contact via WhatsApp",
+  "correction": "Correction",
+  "couldNotConnectToServer": "Could not connect to server (connection reset). Please ensure VPN is active on your phone or check the server address.",
+  "count": "Count",
+  "counterparty": "Counterparty",
+  "course": "Course",
+  "course2": "Course",
+  "course3": "Course",
+  "courseDeleted": "Course deleted",
+  "courseDetails": "Course details",
+  "courseFinished": "Course finished",
+  "courseFinishedReadOnlyRecord": "Course finished — read-only record",
+  "courseName": "Course name",
+  "courseReactivated": "Course reactivated",
+  "courseSettings": "Course settings",
+  "courses": "Courses",
+  "createFinishAndReactivateCourses": "Create, finish and reactivate courses",
+  "createGroup": "Create group",
+  "currency": "Currency",
+  "currencyExchange": "Currency exchange",
+  "currentJuz": "Current juz",
+  "currentPassword": "Current password",
+  "currentlyMemorizing": "Currently memorizing",
+  "curricula": "Curricula",
+  "curriculum": "Curriculum",
+  "curriculumFiles": "Curriculum files",
+  "dAgo": "{p0} d ago",
+  "@dAgo": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "darkMode": "Dark mode",
+  "dashboard": "Dashboard",
+  "date": "Date",
+  "dateOfBirth": "Date of birth",
+  "datesAndStatus": "Dates and status",
+  "dayStatusUpdated": "Day status updated",
+  "daysAgo": "{p0} days ago",
+  "@daysAgo": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "daysRecorded": "Days recorded",
+  "declined": "Declined",
+  "declined2": "Declined",
+  "defaultCourse": "Default course",
+  "delete": "Delete",
+  "deleteCourse": "Delete course",
+  "deleteEnrollment": "Delete enrollment",
+  "deleteExpense": "Delete expense",
+  "deleteFile": "Delete file",
+  "deleteGroup": "Delete group",
+  "deleteItem": "Delete item",
+  "deleteNote": "Delete note",
+  "deleteParent": "Delete parent",
+  "deletePhoto": "Delete photo",
+  "deleteSession": "Delete session",
+  "deleteStudent": "Delete student",
+  "deleteTeacher": "Delete teacher",
+  "description": "Description",
+  "discount": "Discount",
+  "discount2": "Discount: {p0}",
+  "@discount2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "doYouWantToSign": "Do you want to sign out of this device?",
+  "doYouWantToSign2": "Do you want to sign out of your account?",
+  "download": "Download",
+  "downloadBooks": "Download books",
+  "dueDate": "Due date",
+  "dueDate2": "Due date: {p0}",
+  "@dueDate2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "duesPayments": "Dues & payments",
+  "earlyDeparture": "Early departure",
+  "earlyLeave": "Early leave",
+  "edit": "Edit",
+  "editCourse": "Edit course",
+  "editEnrollment": "Edit enrollment",
+  "editExpense": "Edit expense",
+  "editGroup": "Edit group",
+  "editNote": "Edit note",
+  "editParent": "Edit parent",
+  "editSession": "Edit session",
+  "editStudent": "Edit student",
+  "editStudentDetails": "Edit student details",
+  "editTeacher": "Edit teacher",
+  "editUsername": "Edit username",
+  "educationalPortal": "Educational portal",
+  "email": "Email",
+  "emailUsernamePhone": "Email / username / phone",
+  "enableOnlyAfterConfirmingThe": "Enable only after confirming the student has an open cycle and you want to open another.",
+  "endDate": "End date",
+  "endDate2": "End date",
+  "endDateMustBeAfter": "End date must be after the start date",
+  "ended": "Ended",
+  "ended2": "Ended",
+  "enrollParticipant": "Enroll participant",
+  "enrollStudentsInGroupsAnd": "Enroll students in groups and end enrollments",
+  "enrolledGroups": "Enrolled groups",
+  "enrolledStudents": "Enrolled students ({p0})",
+  "@enrolledStudents": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "enrolledStudents2": "{p0} enrolled students",
+  "@enrolledStudents2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "enrollment": "Enrollment",
+  "enrollmentDate": "Enrollment date",
+  "enrollmentDeleted": "Enrollment deleted",
+  "enrollmentDetails": "Enrollment details",
+  "enrollmentOptional": "Enrollment (optional)",
+  "enrollmentYear": "Enrollment year",
+  "enrollments": "Enrollments: {p0}",
+  "@enrollments": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "enrollmentsCount": "Enrollments count",
+  "enrollmentsPaymentsAndExpenses": "Enrollments, payments and expenses",
+  "enterADescriptionForThe": "Enter a description for the transaction",
+  "enterAMistakeCountBetween": "Enter a mistake count between 0 and 999",
+  "enterAQuantityAboveZero": "Enter a quantity above zero and a valid price",
+  "enterAScoreBetweenAnd": "Enter a score between 0 and 100",
+  "enterAValidAmountGreater": "Enter a valid amount greater than zero",
+  "enterAValidCapacityOf": "Enter a valid capacity of zero or more",
+  "enterAValidFee": "Enter a valid fee",
+  "enterAWholeNumberOther": "Enter a whole number other than zero",
+  "enterYourEmailUsernameOr": "Enter your email, username or phone number",
+  "enteredBy": "Entered by",
+  "enteredOn": "Entered on",
+  "entryType": "Entry type",
+  "entryVoided": "Entry voided",
+  "errors": "{p0} errors",
+  "@errors": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "evaluation": "Evaluation",
+  "examiner": "Examiner",
+  "excellent": "Excellent",
+  "exchange": "Exchange",
+  "exchangeDate": "Exchange date",
+  "excuseRecordedFor": "Excuse recorded for {p0}",
+  "@excuseRecordedFor": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "excused": "Excused",
+  "excused2": "Excused",
+  "excusedAbsence": "Excused absence",
+  "expected": "Expected",
+  "expenseDeleted": "Expense deleted",
+  "expenseRequest": "Expense request",
+  "expenses": "Expenses",
+  "expensesCount": "Expenses count",
+  "failed": "Failed",
+  "failedFinalTests": "Failed final tests",
+  "failedPartialTests": "Failed partial tests",
+  "father": "Father",
+  "fatherDetails": "Father details",
+  "fatherName": "Father name",
+  "feePaidBalance": "Fee: {p0}  ·  Paid: {p1}  ·  Balance: {p2}",
+  "@feePaidBalance": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "fees": "Fees",
+  "female": "Female",
+  "fileDeleted": "File deleted",
+  "fileSizeExceedsMb": "File size exceeds 10 MB",
+  "fileType": "File type",
+  "fileUploaded": "File uploaded",
+  "files": "Files",
+  "finalPassed": "Final passed",
+  "finalRecitationTest": "Final recitation test",
+  "finalTest": "Final test",
+  "finalTest2": "Final test",
+  "finalTest3": "Final test",
+  "finalTestResults": "Final test results",
+  "finance": "Finance",
+  "finish": "Finish",
+  "finishCourse": "Finish course",
+  "finished": "Finished",
+  "finishedOn": "Finished on",
+  "firstName": "First name",
+  "flash": "Flash",
+  "forExampleBirthCertificateReport": "For example: birth certificate, report, contract",
+  "forgotPassword": "Forgot password?",
+  "friday": "Friday",
+  "from": "From",
+  "fromCashBox": "From cash box",
+  "fromCurrency": "From currency",
+  "fromDate": "From date",
+  "fromPage": "From page",
+  "fromPageToPages": "From page {p0} to {p1}  ·  {p2} pages",
+  "@fromPageToPages": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "fullMark": "Full mark",
+  "fullName": "Full name",
+  "gender": "Gender",
+  "general": "General",
+  "generalNotes": "General notes",
+  "good": "Good",
+  "goodEvening": "Good evening",
+  "goodMorning": "Good morning",
+  "grade": "Grade",
+  "gradeLevel": "Grade level",
+  "gradeLevel2": "Grade level",
+  "graduated": "Graduated",
+  "group": "Group",
+  "group2": "Group",
+  "groupDetails": "Group details",
+  "groupName": "Group name",
+  "groupProgress": "Group progress",
+  "groupReports": "Group reports",
+  "groupSchedules": "Group schedules",
+  "groupStudents": "Group students",
+  "groups": "Groups",
+  "groups2": "Groups",
+  "groups3": "Groups: {p0}",
+  "@groups3": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "groupsEnrollmentsAssessmentsAndAttendance": "Groups, enrollments, assessments and attendance linked to the course will be restored.",
+  "hAgo": "{p0} h ago",
+  "@hAgo": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "heard": "Heard",
+  "heardRecitationSessions": "Heard recitation sessions",
+  "helpSupport": "Help & support",
+  "hireDate": "Hire date",
+  "home": "Home",
+  "homePhone": "Home phone",
+  "hoursAgo": "{p0} hours ago",
+  "@hoursAgo": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "ifLeftEmptyTheSystem": "If left empty, the system calculates it from exchange rates",
+  "importance": "Importance",
+  "inProgress": "In progress",
+  "inProgress2": "In progress",
+  "inTrialTest": "In trial test",
+  "inactive": "Inactive",
+  "inactive2": "Inactive",
+  "incoming": "Incoming",
+  "incomplete": "Incomplete",
+  "incorrectLoginDetails": "Incorrect login details",
+  "info": "Info",
+  "initializedInMainViaProviderscope": "Initialized in main() via ProviderScope.overrides",
+  "invalid": "Invalid",
+  "invalidQrCode": "Invalid QR code",
+  "invoice": "Invoice",
+  "invoiceDetails": "Invoice details",
+  "invoices": "Invoices",
+  "invoicesActivities": "Invoices & activities",
+  "invoicesActivitiesAndCollection": "Invoices, activities and collection",
+  "invoicesCollected": "Invoices collected",
+  "issueDate": "Issue date",
+  "issueDate2": "Issue date: {p0}",
+  "@issueDate2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "issued": "Issued",
+  "item": "item",
+  "itemDeleted": "Item deleted",
+  "items": "Items",
+  "items2": "Items",
+  "itemsPaymentsAndPaymentVoiding": "Items, payments and payment voiding",
+  "jobTitle": "Job title",
+  "jpgPngOrWebpImage": "JPG, PNG or WebP image",
+  "juz": "Juz {p0}",
+  "@juz": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "juz10": "Juz 6",
+  "juz11": "Juz 7",
+  "juz12": "Juz 8",
+  "juz13": "Juz 9",
+  "juz14": "Juz 10",
+  "juz15": "Juz 11",
+  "juz16": "Juz 12",
+  "juz17": "Juz 13",
+  "juz18": "Juz 14",
+  "juz19": "Juz 15",
+  "juz2": "Juz {p0}",
+  "@juz2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "juz20": "Juz 16",
+  "juz21": "Juz 17",
+  "juz22": "Juz 18",
+  "juz23": "Juz 19",
+  "juz24": "Juz 20",
+  "juz25": "Juz 21",
+  "juz26": "Juz 22",
+  "juz27": "Juz 23",
+  "juz28": "Juz 24",
+  "juz29": "Juz 25",
+  "juz3": "Juz",
+  "juz30": "Juz 26",
+  "juz31": "Juz 27",
+  "juz32": "Juz 28",
+  "juz33": "Juz 29",
+  "juz34": "Juz 30",
+  "juz4": "Juz",
+  "juz5": "Juz 1",
+  "juz6": "Juz 2",
+  "juz7": "Juz 3",
+  "juz8": "Juz 4",
+  "juz9": "Juz 5",
+  "juzCompleted": "Juz completed",
+  "juzOfPages": "Juz {p0}  •  {p1} of {p2} pages",
+  "@juzOfPages": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "k": "{p0}K",
+  "@k": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "lastName": "Last name",
+  "lastRecitation": "Last recitation: ",
+  "late": "Late",
+  "late2": "Late",
+  "late3": "Late",
+  "leaveEmptyToUseThe": "Leave empty to use the default",
+  "ledger": "Ledger",
+  "leftOn": "Left on",
+  "lesson": "Lesson",
+  "lessons": "Lessons: {p0}",
+  "@lessons": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "lessonsCompleted": "Lessons completed",
+  "lightMode": "Light mode",
+  "loadMore": "Load more",
+  "loading": "Loading…",
+  "localEquivalent": "Local equivalent",
+  "loginAccount": "Login account",
+  "m": "{p0}M",
+  "@m": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "mainGroups": "Main groups",
+  "male": "Male",
+  "manageGroups": "Manage groups",
+  "management": "Management",
+  "managementAndTeacherNotes": "Management and teacher notes",
+  "managementModulesBasedOnYour": "Management modules based on your permissions",
+  "managementOnly": "Management only",
+  "manager": "Manager",
+  "manual": "Manual",
+  "manualAdjustment": "Manual adjustment",
+  "manualPoints": "Manual points",
+  "maximumCapacity": "Maximum capacity",
+  "memorization": "Memorization",
+  "memorization2": "Memorization",
+  "memorizationAndReviewLogAnd": "Memorization and review log and page recording",
+  "memorizationPoints": "Memorization points",
+  "memorizationProgress": "Memorization progress",
+  "memorizationQuranTests": "Memorization & Quran tests",
+  "memorizationRate": "Memorization rate",
+  "memorizationRecordedSuccessfully": "Memorization recorded successfully",
+  "memorizationRecords": "Memorization records",
+  "memorizationSessions": "Memorization sessions",
+  "memorized": "Memorized",
+  "metric": "metric",
+  "metrics": "{p0} metrics",
+  "@metrics": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "minAgo": "{p0} min ago",
+  "@minAgo": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "minAgo2": "{p0} min ago",
+  "@minAgo2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "mistakeCount": "Mistake count",
+  "modulesAvailable": "Modules available",
+  "monday": "Monday",
+  "monthlyFee": "Monthly fee",
+  "more": "More",
+  "mother": "Mother",
+  "motherDetails": "Mother details",
+  "motherName": "Mother name",
+  "myAccount": "My account",
+  "name": "Name",
+  "needHelp": "Need help?",
+  "needsImprovement": "Needs improvement",
+  "net": "Net",
+  "newCourse": "New course",
+  "newEnrollment": "New enrollment",
+  "newGroup": "New group",
+  "newMemorization": "New memorization",
+  "newMemorizationRecord": "New memorization record",
+  "newNote": "New note",
+  "newParent": "New parent",
+  "newPassword": "New password",
+  "newStudent": "New student",
+  "newTeacher": "New teacher",
+  "no": "No",
+  "noActiveEnrollmentForThis": "No active enrollment for this student",
+  "noActiveGroupsRightNow": "No active groups right now",
+  "noActiveStudentsInThis": "No active students in this group",
+  "noActiveTeachers": "No active teachers",
+  "noActivities": "No activities",
+  "noActivitiesAvailableRightNow": "No activities available right now",
+  "noActivitiesRightNow": "No activities right now",
+  "noActivity": "No activity",
+  "noActivityOnThisDay": "No activity on this day",
+  "noAssessments": "No assessments",
+  "noAssessmentsYet": "No assessments yet",
+  "noAttemptsYet": "No attempts yet",
+  "noAttendanceDaysRecorded": "No attendance days recorded",
+  "noAwqafTests": "No Awqaf tests",
+  "noBalancesYet": "No balances yet",
+  "noCashBoxesAvailable": "No cash boxes available",
+  "noCourse": "No course",
+  "noDataForThisPeriod": "No data for this period",
+  "noEnrollments": "No enrollments",
+  "noExchanges": "No exchanges",
+  "noExpenses": "No expenses",
+  "noFinalTestCyclesFor": "No final test cycles for this student",
+  "noGroups": "No groups",
+  "noGroupsOnThisDay": "No groups on this day",
+  "noInvoices": "No invoices",
+  "noItems": "No items",
+  "noJuzEligibleToStart": "No juz eligible to start",
+  "noLedgerEntries": "No ledger entries",
+  "noLinkedGroups": "No linked groups",
+  "noManagementModulesAreAvailable": "No management modules are available for your account",
+  "noMatchingCourses": "No matching courses",
+  "noMatchingCurricula": "No matching curricula",
+  "noMemorizationRecords": "No memorization records",
+  "noMessagesYet": "No messages yet",
+  "noNotes": "No notes",
+  "noParentsMatchTheSearch": "No parents match the search",
+  "noPartialTestCyclesFor": "No partial test cycles for this student",
+  "noPartsForThisCycle": "No parts for this cycle",
+  "noPayments": "No payments",
+  "noPaymentsRecorded": "No payments recorded",
+  "noPointEntries": "No point entries",
+  "noPointsYet": "No points yet",
+  "noRecitationSessionsYet": "No recitation sessions yet",
+  "noRecords": "No records",
+  "noRecordsForThisStudent": "No records for this student",
+  "noRecordsMatchThisFilter": "No records match this filter",
+  "noRegisteredStudents": "No registered students",
+  "noRegistrationsForThisActivity": "No registrations for this activity",
+  "noRequests": "No requests",
+  "noResults": "No results",
+  "noResultsFor": "No results for \"{p0}\"",
+  "@noResultsFor": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "noResultsRecordedYet": "No results recorded yet",
+  "noSelection": "No selection",
+  "noSessionsForThisGroup": "No sessions for this group",
+  "noStudents": "No students",
+  "noStudentsEnrolledYet": "No students enrolled yet",
+  "noStudentsInThisGroup": "No students in this group",
+  "noStudentsMatchTheSearch": "No students match the search",
+  "noStudentsRegisteredInThis": "No students registered in this group",
+  "noSubjectsInThisCurriculum": "No subjects in this curriculum",
+  "noTeacherAttendanceDays": "No teacher attendance days",
+  "noTeacherListAvailable": "No teacher list available",
+  "noTeachersMatchTheSearch": "No teachers match the search",
+  "noTestRecords": "No test records",
+  "noTransfers": "No transfers",
+  "noUploadedFiles": "No uploaded files",
+  "notAvailable": "Not available",
+  "notHeardYet": "Not heard yet",
+  "notSpecified": "Not specified",
+  "notStarted": "Not started",
+  "notTaught": "Not taught",
+  "noteDate": "Note date",
+  "noteDeleted": "Note deleted",
+  "noteS": "{p0} note(s)",
+  "@noteS": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "noteText": "Note text",
+  "notes": "Notes",
+  "notes2": "Notes",
+  "notifications": "Notifications",
+  "numberOfChildren": "Number of children",
+  "numberOfEntries": "Number of entries",
+  "numberOfGroups": "Number of groups",
+  "numberOfInvoices": "Number of invoices",
+  "numberOfStudents": "Number of students",
+  "numberOfTeachers": "Number of teachers",
+  "ofPages": "of {p0} pages",
+  "@ofPages": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "ofPagesCurrentlyMemorizing": "{p0} of {p1} pages • currently memorizing: {p2}",
+  "@ofPagesCurrentlyMemorizing": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "ofTheHolyQuran": "{p0}% of the Holy Quran",
+  "@ofTheHolyQuran": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "open": "Open",
+  "open2": "Open",
+  "openDay": "Open day",
+  "outOfSchoolDays": "out of {p0} school days",
+  "@outOfSchoolDays": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "outgoing": "Outgoing",
+  "overview": "Overview",
+  "overviewTeachersSummary": "Overview & teachers summary",
+  "overviewWithFiltersAndDaily": "Overview with filters and daily teacher summary",
+  "p": "p. {p0} – {p1}",
+  "@p": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      }
+    }
+  },
+  "p2": "p. {p0}",
+  "@p2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "p3": "{p0} p.",
+  "@p3": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "p4": "p. {p0}–{p1} — {p2}",
+  "@p4": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "pageRange": "Page range",
+  "pages": "Pages: {p0}",
+  "@pages": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "pages2": "{p0} pages",
+  "@pages2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "pages3": "Pages",
+  "pagesNotYetHeard": "Pages not yet heard",
+  "pagesPages": "Pages {p0} – {p1} ({p2} pages)",
+  "@pagesPages": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      },
+      "p2": {
+        "type": "Object"
+      }
+    }
+  },
+  "pagesTested": "Pages tested:",
+  "paid": "Paid",
+  "paid2": "Paid",
+  "paid3": "Paid",
+  "paidBalance": "Paid: {p0}  ·  Balance: {p1}",
+  "@paidBalance": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      }
+    }
+  },
+  "parent": "Parent",
+  "parent2": "Parent: {p0}",
+  "@parent2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "parent3": "Parent: {p0}",
+  "@parent3": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "parent4": "Parent",
+  "parent5": "Parent\n{p0}",
+  "@parent5": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentAndGrade": "Parent and grade",
+  "parentDeleted": "Parent deleted",
+  "parentDetails": "Parent details",
+  "parentFilesAndAccounts": "Parent files and accounts",
+  "parentNumber": "Parent number: {p0}",
+  "@parentNumber": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "parentStudentInformation": "Parent & student information",
+  "parents": "Parents",
+  "part": "Part {p0}",
+  "@part": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "partial": "Partial",
+  "partialAndFinalQuranTests": "Partial and final Quran tests per student",
+  "partialPassed": "Partial passed",
+  "partialTest": "Partial test",
+  "partlyTaught": "Partly taught",
+  "partsOfPassed": "Parts: {p0} of 4 passed",
+  "@partsOfPassed": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "partsOfTheHolyQuran": "Parts of the Holy Quran",
+  "passed": "Passed",
+  "passedOn": "Passed on: {p0}",
+  "@passedOn": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "passedOn2": "Passed on",
+  "passedTest": "Passed test",
+  "passedTheTest": "Passed the test",
+  "passingScore": "Passing score",
+  "password": "Password",
+  "passwordChanged": "Password changed",
+  "passwordIsTooShort": "Password is too short",
+  "passwordMustBeAtLeast": "Password must be at least 8 characters",
+  "passwordsDoNotMatch": "Passwords do not match",
+  "pause": "Pause",
+  "paymentDate": "Payment date",
+  "paymentMethod": "Payment method",
+  "paymentVoided": "Payment voided",
+  "payments": "Payments",
+  "payments2": "Payments",
+  "paymentsCount": "Payments count",
+  "pending": "Pending",
+  "pending2": "Pending",
+  "pendingRequests": "Pending requests",
+  "percentage": "Percentage",
+  "personalDetailsPasswordAndPhoto": "Personal details, password and photo",
+  "personalDetailsPasswordAndSessions": "Personal details, password and sessions",
+  "phone": "Phone",
+  "phoneNumber": "Phone number",
+  "photoDeleted": "Photo deleted",
+  "pleaseEnterYourPassword": "Please enter your password",
+  "pleaseSelectAStudentFirst": "Please select a student first",
+  "point": "Point",
+  "pointS": "{p0} point(s)",
+  "@pointS": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "pointType": "Point type",
+  "points": "Points",
+  "points2": "Points",
+  "pointsAssessments": "Points & assessments",
+  "pointsLog": "Points log",
+  "pointsManualPointsAndVoiding": "Points, manual points and voiding entries",
+  "pointsPages": "Points: {p0}  ·  Pages: {p1}",
+  "@pointsPages": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      },
+      "p1": {
+        "type": "Object"
+      }
+    }
+  },
+  "positiveToAddNegativeTo": "Positive to add, negative to deduct",
+  "present": "Present",
+  "present2": "Present",
+  "profilePhotoUpdated": "Profile photo updated",
+  "progress": "Progress",
+  "pullRequest": "Pull request",
+  "quantity": "Quantity",
+  "quranTests": "Quran tests",
+  "reactivate": "Reactivate",
+  "reactivateCourse": "Reactivate course",
+  "reason": "Reason",
+  "recentAssessments": "Recent assessments",
+  "recentNotifications": "Recent notifications",
+  "recentStudents": "Recent students",
+  "recentTestResults": "Recent test results",
+  "recentlyRegisteredStudents": "Recently registered students",
+  "recitation": "Recitation",
+  "recordAndViewAwqafTests": "Record and view Awqaf tests",
+  "recordAttempt": "Record attempt",
+  "recordAttemptPart": "Record attempt - part {p0}",
+  "@recordAttemptPart": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "recordAwqafTest": "Record Awqaf test",
+  "recordFinalAttempt": "Record final attempt",
+  "recordMemorization": "Record memorization",
+  "recordPayment": "Record payment",
+  "recordResult": "Record result",
+  "recordTeacherAttendance": "Record teacher attendance",
+  "recordTeacherAttendanceForEach": "Record teacher attendance for each day",
+  "recordTest": "Record test",
+  "recordedResults": "Recorded results",
+  "recordingAttendance": "Recording attendance…",
+  "records": "Records: {p0}",
+  "@records": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "recordsActivities": "Records & activities",
+  "referenceNumber": "Reference number",
+  "regarding": "Regarding: {p0}",
+  "@regarding": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "register": "Register",
+  "register2": "Register: {p0}",
+  "@register2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "registered": "Registered",
+  "registered2": "{p0} registered",
+  "@registered2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "registered3": "Registered",
+  "registrationFailed": "Registration failed",
+  "registrations": "Registrations",
+  "remaining": "Remaining",
+  "rememberMe": "Remember me",
+  "reports": "Reports",
+  "requestedAmount": "Requested amount",
+  "requestedBy": "Requested by",
+  "requests": "Requests",
+  "required": "Required",
+  "result": "Result",
+  "resultS": "{p0} result(s)",
+  "@resultS": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "results": "Results: {p0}",
+  "@results": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "results2": "Results",
+  "resumeScanning": "Resume scanning",
+  "returnRequest": "Return request",
+  "returned": "Returned",
+  "revenueRequest": "Revenue request",
+  "review": "Review",
+  "reviewNotes": "Review notes",
+  "reviewedBy": "Reviewed by",
+  "role": "Role",
+  "saturday": "Saturday",
+  "save": "Save",
+  "saveAttempt": "Save attempt",
+  "saveChanges": "Save changes",
+  "savePayment": "Save payment",
+  "saveRecord": "Save record",
+  "savedPage": "Saved page",
+  "savedPages": "Saved pages",
+  "savedPages2": "Saved pages",
+  "saving": "Saving…",
+  "scan": "Scan",
+  "scanQrCode": "Scan QR code",
+  "scanTheStudentQrCode": "Scan the student QR code",
+  "scanningPaused": "Scanning paused",
+  "school": "School",
+  "schoolName": "School name",
+  "scoreBetweenAnd": "Score between 0 and {p0}",
+  "@scoreBetweenAnd": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "scoreOptional": "Score (optional)",
+  "scoreOutOf": "Score (out of {p0})",
+  "@scoreOutOf": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "scoreOutOf2": "Score (out of 100)",
+  "screensForThisRoleAre": "Screens for this role are under construction",
+  "search": "Search…",
+  "searchByCourseName": "Search by course name",
+  "searchByCurriculumName": "Search by curriculum name",
+  "searchByNameOrPhone": "Search by name or phone number",
+  "searchByNameOrStudent": "Search by name or student number",
+  "searchByStudentNameOr": "Search by student name or number…",
+  "sections": "Sections",
+  "selectedGroup": "Selected group",
+  "send": "Send",
+  "serverError": "Server error ({p0})",
+  "@serverError": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "sessionDeleted": "Session deleted",
+  "sessionLog": "Session log",
+  "sessions": "Sessions",
+  "sessionsAndTimesForEach": "Sessions and times for each group",
+  "settled": "Settled",
+  "sharedCurrency": "Shared currency",
+  "sharedInternally": "Shared internally",
+  "signIn": "Sign in",
+  "signOut": "Sign out",
+  "signOutEverywhere": "Sign out everywhere",
+  "signOutOfAllDevices": "Sign out of all devices",
+  "signOutOfThisDevice": "Sign out of this device",
+  "singleAttempt": "Single attempt",
+  "somethingWentWrong": "Something went wrong",
+  "somethingWentWrongPleaseTry": "Something went wrong. Please try again.",
+  "source": "Source",
+  "stage": "Stage",
+  "stage2": "Stage {p0}",
+  "@stage2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "startDate": "Start date",
+  "startDate2": "Start date",
+  "startTest": "Start {p0} test",
+  "@startTest": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "startTest2": "Start test",
+  "status": "Status",
+  "student": "Student",
+  "student2": "Student",
+  "studentAndGroup": "Student and group",
+  "studentAttendance": "Student attendance",
+  "studentAttendanceLog": "Student attendance log",
+  "studentCard": "Student card",
+  "studentDeleted": "Student deleted",
+  "studentDetails": "Student details",
+  "studentFile": "Student file",
+  "studentGroupNotes": "Student & group notes",
+  "studentList": "Student list",
+  "studentNotes": "Student notes",
+  "studentNumber": "Student number",
+  "studentOptional": "Student (optional)",
+  "studentPhotoUpdated": "Student photo updated",
+  "studentPoints": "Student points",
+  "studentProgress": "Student progress",
+  "studentSummary": "Student summary",
+  "students": "Students",
+  "students2": "Students: {p0}",
+  "@students2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "students3": "{p0} students",
+  "@students3": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "studentsAndGroups": "Students and groups",
+  "subPart": "Sub-part {p0}",
+  "@subPart": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "subParts": "Sub-parts",
+  "subjects": "Subjects: {p0}",
+  "@subjects": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "subjectsLessonsGroupProgressAnd": "Subjects, lessons, group progress and PDF files",
+  "subtotal": "Subtotal",
+  "summary": "Summary",
+  "sunday": "Sunday",
+  "supervisor": "Supervisor",
+  "switchLanguage": "Switch language",
+  "switchToArabic": "Switch to Arabic",
+  "switchToDarkTheme": "Switch to dark theme",
+  "switchToEnglish": "Switch to English",
+  "switchToLightTheme": "Switch to light theme",
+  "system": "System",
+  "system2": "System",
+  "tContinue": "Continue",
+  "tDefault": "Default",
+  "tFinal": "Final",
+  "tNew": "{p0} new",
+  "@tNew": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "takeAScreenshotToSave": "Take a screenshot to save your card as a Pass to use it in the group.",
+  "takeAttendance": "Take attendance",
+  "targetGroups": "Target groups",
+  "taught": "Taught",
+  "teacher": "Teacher",
+  "teacher2": "Teacher",
+  "teacherAdministration": "Teacher & administration",
+  "teacherAttendance": "Teacher attendance",
+  "teacherBreakdown": "Teacher breakdown",
+  "teacherDeleted": "Teacher deleted",
+  "teacherDetails": "Teacher details",
+  "teacherFilesAccountsAndCourses": "Teacher files, accounts and courses",
+  "teacherName": "Teacher name",
+  "teacherOnly": "Teacher only",
+  "teachers": "Teachers",
+  "teachersInScope": "Teachers in scope",
+  "teachersSummary": "Teachers summary",
+  "test": "Test",
+  "test2": "Test {p0}",
+  "@test2": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "testDate": "Test date",
+  "testDetails": "Test details",
+  "testLog": "Test log",
+  "testType": "Test type",
+  "tests": "Tests",
+  "pageNotFound": "Page not found",
+  "testEntry": "Test entry",
+  "testEntrySubtitle": "Record tests for quarters, parts and students",
+  "invalidPhoneNumber": "Invalid phone number",
+  "backToHome": "Back to home",
+  "call": "Call",
+  "noBookFilesToDownload": "No book files available to download",
+  "chooseBookToDownload": "Choose a book to download",
+  "myCurriculum": "My curriculum",
+  "lessonMarkedTaught": "Lesson marked as taught",
+  "lessonUnmarkedTaught": "Lesson unmarked as taught",
+  "lessonRecordedForGroup": "Lesson recorded for the group",
+  "lessonTaughtCancelled": "Lesson cancelled",
+  "preparingCurriculumBooks": "Preparing curriculum books for download...",
+  "lessonTaught": "Lesson taught",
+  "autoSaveSaving": "Saving…",
+  "groupSessionDetails": "Group session details",
+  "noAttendanceStatusesDefined": "No attendance statuses are defined",
+  "attendanceNotTakenYet": "Attendance hasn't been recorded for this day yet. The first change saves the whole group's attendance.",
+  "attendanceReadOnly": "The day is closed or the course has ended — read only",
+  "editAttendance": "Edit attendance",
+  "editTeacherAttendance": "Edit teacher attendance",
+  "autoSaveSaved": "Saved",
+  "chooseCourseToAutoSave": "Choose the course first to start auto-saving",
+  "choosePageToRecite": "Choose the page to recite",
+  "pageAlreadyRecited": "Page already recited: {p0}",
+  "@pageAlreadyRecited": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "pageRecitationRecorded": "Recitation of page {p0} recorded",
+  "@pageRecitationRecorded": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "recordRecitation": "Record recitation",
+  "studentNameLabel": "Student name",
+  "nextPart": "Next part",
+  "previousPart": "Previous part",
+  "allPartPagesRecited": "Every page of this part has been recited",
+  "autoSaveFailed": "Couldn't save — tap to retry",
+  "chooseStudentForRecitation": "Choose a student to see the parts and pages to recite",
+  "serverAddressFixed": "The server address is fixed to the mosque's official server",
+  "resetPasswordViaWhatsapp": "To reset your password, please contact the mosque administration on WhatsApp.",
+  "forgotPasswordWhatsappMessage": "Assalamu alaikum, I forgot the password for my account on the education portal.",
+  "menu": "Menu",
+  "autoSaveHint": "Changes are saved as you edit",
+  "profile": "Profile",
+  "noPartAvailableForTest": "No part is available for testing right now.",
+  "enterMistakeCount": "Enter the number of mistakes",
+  "mistakeCountRange": "Enter a valid number of mistakes between 0 and 999",
+  "quarterNotFoundInCourse": "Couldn't find the selected quarter in the course",
+  "quarterTestRecorded": "Test for quarter {p0} recorded",
+  "@quarterTestRecorded": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "loadingEllipsis": "Loading...",
+  "availableQuarters": "Available quarters",
+  "mistakes": "Mistakes",
+  "quarterN": "Quarter {p0}",
+  "@quarterN": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "saveAsPass": "Save as pass",
+  "invoicesAndPaymentsLog": "Invoices and payments log",
+  "alkheirMosqueActivities": "Alkheir Mosque activities",
+  "activity": "Activity",
+  "adminWhatsappUnavailable": "The admin's WhatsApp number isn't available right now",
+  "couldNotOpenWhatsapp": "Couldn't open WhatsApp",
+  "theCourseItsGroupsAnd": "The course, its groups and enrollments will be finished using the website finish cycle.",
+  "theFileWillBePermanently": "The file \"{p0}\" will be permanently deleted.",
+  "@theFileWillBePermanently": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "theFourParts": "The four parts",
+  "theStudentHasNoActive": "The student has no active enrollment to start a test",
+  "theTestIsRecordedUnder": "The test is recorded under your linked teacher profile",
+  "theUsernameCanBeChanged": "The username can be changed",
+  "theUsernameCannotBeChanged": "The username cannot be changed for this account",
+  "thisAmountWillBeRemoved": "This amount will be removed from the collected total. This cannot be undone.",
+  "thisAmountWillBeRemoved2": "This amount will be removed from payments. This cannot be undone.",
+  "thisEnrollmentWillBeRemoved": "This enrollment will be removed from the group.",
+  "thisEntryWillBeRemoved": "This entry will be removed from the student balance. Voiding cannot be undone.",
+  "thisExpenseWillBeRemoved": "This expense will be removed from the activity total.",
+  "thisFieldIsRequired": "This field is required",
+  "thisItemWillBeDeleted": "This item will be deleted and the invoice total recalculated.",
+  "thisNoteWillBePermanently": "This note will be permanently deleted.",
+  "thisSessionStaysOpenAnd": "This session stays open and other devices are signed out",
+  "thursday": "Thursday",
+  "timeSlot": "Time slot",
+  "to": "To",
+  "toCashBox": "To cash box",
+  "toCurrency": "To currency",
+  "toDate": "To date",
+  "toPage": "To page",
+  "today": "Today",
+  "tooManyAttemptsPleaseTry": "Too many attempts. Please try again shortly.",
+  "total": "Total",
+  "totalAssessments": "Total assessments",
+  "totalInvoices": "Total invoices",
+  "totalPages": "Total pages",
+  "totalPoints": "Total points",
+  "totalPoints2": "Total points",
+  "totalScore": "Total score",
+  "totalStudents": "Total students",
+  "totalTests": "Total tests",
+  "totalsByCurrency": "Totals by currency",
+  "transactionSaved": "Transaction saved",
+  "transfer": "Transfer",
+  "transferBetweenCashBoxes": "Transfer between cash boxes",
+  "transferDate": "Transfer date",
+  "transfers": "Transfers",
+  "trial": "Trial",
+  "trialFinalAwqaf": "Trial • Final • Awqaf",
+  "trialTest": "Trial test",
+  "trialTest2": "Trial test",
+  "trialTestNotStartedYet": "Trial test not started yet",
+  "trialTestResults": "Trial test results",
+  "trialTestResultsAndTests": "Trial test results and tests",
+  "tryADifferentSearchTerm": "Try a different search term",
+  "tryAgain": "Try again",
+  "tuesday": "Tuesday",
+  "type": "Type",
+  "typeTheStudentNameTo": "Type the student name to search…",
+  "underConstruction": "Under construction",
+  "unitPrice": "Unit price",
+  "unpaid": "Unpaid",
+  "unspecifiedParent": "— Unspecified parent",
+  "uploadFile": "Upload file",
+  "usedAutomaticallyInScreensThat": "Used automatically in screens that do not specify a course",
+  "username": "Username",
+  "usernameUpdated": "Username updated",
+  "veryGood": "Very good",
+  "viaWhatsappToInquireAbout": "Via WhatsApp to inquire about the student",
+  "view": "View",
+  "viewAll": "View all",
+  "viewFinalTestResultsNo": "View final test results (no recording permission)",
+  "viewMemorizationRecordsNoRecording": "View memorization records (no recording permission)",
+  "viewTrialTestResultsNo": "View trial test results (no recording permission)",
+  "visibility": "Visibility",
+  "visibleToParent": "Visible to parent",
+  "voidEntry": "Void entry",
+  "voidPayment": "Void payment",
+  "voidReason": "Void reason",
+  "voided": "Voided",
+  "wednesday": "Wednesday",
+  "welcome": "Welcome — {p0}",
+  "@welcome": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "welcome2": "Welcome",
+  "welcome3": "Welcome, {p0}",
+  "@welcome3": {
+    "placeholders": {
+      "p0": {
+        "type": "Object"
+      }
+    }
+  },
+  "welcomeToAlKhairMosque": "Welcome to Al Khair Mosque",
+  "wholeNumberOfZeroOr": "Whole number of zero or more",
+  "work": "Work",
+  "workplace": "Workplace",
+  "writeANoteAboutThe": "Write a note about the session",
+  "writeYourMessageToThe": "Write your message to the teacher or administration…",
+  "year": "Year 2025-2026",
+  "yes": "Yes",
+  "yesterday": "Yesterday",
+  "youCanTakeAScreenshot": "You can take a screenshot to save the card as a Pass",
+  "youDoNotHavePermission": "You do not have permission to record attendance",
+  "yourChildrenSFiles": "Your children's files",
+  "yourSessionHasExpiredPlease": "Your session has expired. Please sign in again.",
+  "couldnTReachTheServer": "Couldn't reach the server. Check your network and server address.",
+  "youDonTHavePermission": "You don't have permission to access this data",
+  "theTeacherSFileAnd": "The teacher's file and linked account will be deleted. This cannot be undone.",
+  "motherSPhone": "Mother's phone",
+  "theParentSFileAnd": "The parent's file and account will be deleted. This cannot be undone.",
+  "fatherSPhone": "Father's phone",
+  "youDonTHavePermission2": "You don't have permission to view this screen",
+  "youDonTHavePermission3": "You don't have permission",
+  "pointTheCameraAtThe": "Point the camera at the student's QR code",
+  "text76": "?",
+  "recordTodaySAttendance": "Record today's attendance",
+  "afterClosingThisDayS": "After closing, this day's attendance cannot be changed until it is reopened.",
+  "enterYourDetailsToFollow": "Enter your details to follow your child's progress in the group",
+  "couldnTReadSignIn": "Couldn't read sign-in data from the server. Try again.",
+  "theMobileApiIsnT": "The mobile API isn't available on this server. Check the server address.",
+  "theStudentSPhotoWill": "The student's photo will be removed from the system.",
+  "teacherSNote": "Teacher's note",
+  "couldnTCompleteTheRequest": "Couldn't complete the request. Try again.",
+  "teacherSMobileNumber": "Teacher's mobile number",
+  "couldnTDetermineTheCurrent": "Couldn't determine the current teacher",
+  "roleTeacher": "Teacher",
+  "roleAdmin": "Administrative supervisor",
+  "roleSupervisor": "Group supervisor",
+  "roleAssistantSupervisor": "Group assistant supervisor",
+  "roleReciter": "Listener",
+  "roleTrialExamSupervisor": "Trial test supervisor",
+  "roleFinalExamSupervisor": "Final test supervisor"
+}
