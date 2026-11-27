@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
-import 'package:alkheir_mosque/features/account/data/repositories/account_repository_impl.dart';
-import '../api/api_service.dart';
-import 'service_providers.dart';
+import 'package:alkheir_mosque/features/shared/auth/domain/entities/auth_token.dart';
+import 'package:alkheir_mosque/app/core/http/api_error.dart';
+import 'package:alkheir_mosque/features/shared/account/di/account_providers.dart';
+import 'package:alkheir_mosque/features/shared/auth/di/auth_providers.dart';
 
 /// جلسة المستخدم الحالية — المصدر الوحيد لبيانات الحساب المسجّل دخوله
 /// (الـ token + المستخدم + الأدوار + الصلاحيات).
@@ -22,7 +22,7 @@ class AuthSessionNotifier extends Notifier<AuthToken?> {
 
   /// استرجاع الجلسة المحفوظة من التخزين المحلي (تُستدعى من شاشة البداية).
   Future<AuthToken?> restore() async {
-    final token = await ref.read(authServiceProvider).getSavedToken();
+    final token = await ref.read(authRepositoryProvider).getSavedToken();
     state = token;
     return token;
   }
@@ -37,7 +37,11 @@ class AuthSessionNotifier extends Notifier<AuthToken?> {
     final current = state;
     if (current == null) return null;
     try {
-      final info = await AccountRepositoryImpl().bootstrap().timeout(_serverTimeout);
+      final info = (await ref
+              .read(accountRepositoryProvider)
+              .bootstrap()
+              .timeout(_serverTimeout))
+          .data;
       final user = info.user;
       final refreshed = AuthToken(
         token: current.token,
@@ -52,10 +56,10 @@ class AuthSessionNotifier extends Notifier<AuthToken?> {
           teacherId: user.teacherId,
         ),
       );
-      await ref.read(authServiceProvider).saveSession(refreshed);
+      await ref.read(authRepositoryProvider).saveSession(refreshed);
       state = refreshed;
       return refreshed;
-    } on ApiException catch (error) {
+    } on ApiError catch (error) {
       if (error.isUnauthorized || error.isForbidden) {
         await logout();
         return null;
@@ -68,7 +72,7 @@ class AuthSessionNotifier extends Notifier<AuthToken?> {
 
   /// تسجيل الخروج — يمسح الـ token من الخادم والتخزين المحلي.
   Future<void> logout() async {
-    await ref.read(authServiceProvider).logout();
+    await ref.read(authRepositoryProvider).logout();
     state = null;
   }
 }

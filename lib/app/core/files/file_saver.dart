@@ -2,4 +2,5 @@
 //
 // المنصات الأصلية تكتب الملف في المجلد المؤقت ثم تفتحه بتطبيق النظام،
 // والمتصفح يُطلق تنزيلاً عادياً. الاختيار يتم وقت الترجمة عبر الاستيراد الشرطي.
-export 'file_saver_io.dart' if (dart.library.js_interop) 'file_saver_web.dart';
+export 'package:alkheir_mosque/app/core/files/file_saver_io.dart'
+    if (dart.library.js_interop) 'file_saver_web.dart';

@@ -5,8 +5,7 @@
 const Map<String, String> enDictionary = {
   'تعذّر الاتصال بالخادم (تم قطع الاتصال). يرجى التأكد من تشغيل الـ VPN على هاتفك أو التحقق من عنوان الخادم.':
       'Could not connect to server (connection reset). Please ensure VPN is active on your phone or check the server address.',
-  'انتهت مهلة الاتصال بالخادم.':
-      'Connection timed out.',
+  'انتهت مهلة الاتصال بالخادم.': 'Connection timed out.',
   'تنبيه: أنت تستخدم localhost على جهاز أندرويد. في المحاكي استخدم 10.0.2.2 أو نفذ adb reverse على الهاتف الحقيقي':
       'Notice: You are using localhost on Android. In the emulator use 10.0.2.2 or run adb reverse on a physical phone.',
   'يرجى التحقق من اتصال الإنترنت أو تشغيل الـ VPN على هاتفك':
@@ -1091,15 +1090,18 @@ const Map<String, String> enDictionary = {
   'عنصر': 'item',
   'اتصال بالرقم': 'Call this number',
   'جرّب كلمة بحث مختلفة': 'Try a different search term',
-  'الطلاب النشطون وبحث سريع بالاسم أو الرقم': 'Active students, quick search by name or number',
+  'الطلاب النشطون وبحث سريع بالاسم أو الرقم':
+      'Active students, quick search by name or number',
   'إجمالي التقييمات': 'Total assessments',
   'رجوع': 'Back',
   'إلغاء التصفية': 'Clear filter',
   'لا توجد نتائج لـ "{0}"': 'No results for "{0}"',
   'لا توجد حلقات نشطة حالياً': 'No active groups right now',
-  'الحلقات النشطة وعدد الطلاب المسجّلين': 'Active groups and enrolled student counts',
+  'الحلقات النشطة وعدد الطلاب المسجّلين':
+      'Active groups and enrolled student counts',
   'الفواتير والأنشطة والتحصيل': 'Invoices, activities and collection',
-  'ستظهر الحلقات النشطة هنا فور إنشائها': 'Active groups will appear here once created',
+  'ستظهر الحلقات النشطة هنا فور إنشائها':
+      'Active groups will appear here once created',
   'إضافة جديد': 'Add new',
   'لا يوجد طلاب مسجّلون بعد': 'No students enrolled yet',
   'حلقة جديدة': 'New group',
@@ -1122,7 +1124,8 @@ const Map<String, String> enDictionary = {
   'مسح الحضور': 'Attendance scan',
   'مسح رمز QR للطالب': 'Scan the student QR code',
   'الفلاش': 'Flash',
-  'ليس لديك صلاحية لتسجيل الحضور': 'You do not have permission to record attendance',
+  'ليس لديك صلاحية لتسجيل الحضور':
+      'You do not have permission to record attendance',
   'المزيد': 'More',
   'صباح الخير': 'Good morning',
   'مساء الخير': 'Good evening',

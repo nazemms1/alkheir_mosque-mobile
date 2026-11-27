@@ -1,7 +1,10 @@
+import 'package:alkheir_mosque/app/core/l10n/l10n_gateway.dart';
+import 'dart:developer' as developer;
+
 import 'package:dio/dio.dart';
 
-import 'api_error.dart';
-import 'dio_client.dart';
+import 'package:alkheir_mosque/app/core/http/api_error.dart';
+import 'package:alkheir_mosque/app/core/http/dio_client.dart';
 
 mixin ApiHelperMixin {
   Future<T?> executeApi<T>({
@@ -23,10 +26,12 @@ mixin ApiHelperMixin {
         errorHandler(apiError);
       }
       return null;
-    } catch (error) {
+    } catch (error, stack) {
+      developer.log('$error',
+          name: 'executeApi', error: error, stackTrace: stack);
       final apiError = ApiError(
         type: ApiErrorType.unexpected,
-        message: error.toString(),
+        message: L10nGateway.current.couldnTCompleteTheRequest,
       );
       if (errorHandler != null) {
         errorHandler(apiError);
@@ -35,5 +40,17 @@ mixin ApiHelperMixin {
     } finally {
       after?.call();
     }
+  }
+
+  /// ينفّذ عملية كتابة ويعيد قيمتها أو الخطأ (`'$error'` نصه الجاهز للعرض).
+  Future<({T? value, ApiError? error})> runAction<T>(
+    Future<T> Function() action,
+  ) async {
+    ApiError? error;
+    final value = await executeApi(
+      action: action,
+      errorHandler: (e) => error = e,
+    );
+    return (value: value, error: error);
   }
 }

@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
-import 'package:alkheir_mosque/app/core/theme/app_theme.dart';
-import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
+import 'package:alkheir_mosque/ui/themes/app_style.dart';
+import 'package:alkheir_mosque/ui/widgets/admin_ui.dart';
 import 'package:alkheir_mosque/ui/themes/dark.dart';
 import 'package:alkheir_mosque/ui/themes/light.dart';
 
@@ -48,7 +48,7 @@ Widget _adminPage() {
                 icon: Icons.people_rounded,
                 label: tr(label),
                 value: '123456',
-                color: AppColors.info,
+                color: AppPalette.info,
                 onTap: () {},
               ),
           ],
@@ -57,7 +57,7 @@ Widget _adminPage() {
         AdminCard(
           child: Row(
             children: [
-              AdminAvatar(text: 'مح', color: AppColors.gold),
+              AdminAvatar(text: 'مح', color: AppPalette.gold),
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
@@ -67,7 +67,7 @@ Widget _adminPage() {
                 ),
               ),
               const SizedBox(width: 8),
-              AdminBadge(label: tr('نشط'), color: AppColors.success),
+              AdminBadge(label: tr('نشط'), color: AppPalette.success),
             ],
           ),
         ),
@@ -162,7 +162,7 @@ void main() {
       );
       expect(
         text,
-        mode == ThemeMode.dark ? AppColors.textOnDark : AppColors.textPrimary,
+        mode == ThemeMode.dark ? AppPalette.textOnDark : AppPalette.textPrimary,
       );
     });
   }

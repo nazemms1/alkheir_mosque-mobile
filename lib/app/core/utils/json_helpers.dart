@@ -65,3 +65,35 @@ class PagedResult<T> {
     );
   }
 }
+
+// Lenient `@JsonKey(fromJson: ...)` readers for freezed models: the server
+// sometimes sends numbers as strings and booleans as 0/1.
+int? jsonIntLenient(Object? v) => jsonIntOrNull(v);
+
+bool? jsonBoolLenient(Object? v) => v == null ? null : jsonBool(v);
+
+String? jsonStringLenient(Object? v) => jsonStringOrNull(v);
+
+List<String>? jsonStringListLenient(Object? v) =>
+    v is List ? [for (final e in v) '$e'] : null;
+
+/// قيمة استعلام نصية تُحذف من الطلب إن كانت فارغة.
+String? queryText(String? v) => v == null || v.isEmpty ? null : v;
+
+/// قيمة استعلام منطقية بصيغة 1/0 تُحذف إن كانت null.
+int? queryFlag(bool? v) => v == null ? null : (v ? 1 : 0);
+
+double? jsonDoubleLenient(Object? v) => jsonDoubleOrNull(v);
+
+/// مثل [jsonString] لكن يُبقي `null` ليضع المُحوِّل القيمة الافتراضية.
+String? jsonStringValue(Object? v) => v?.toString();
+
+/// `readValue` لكائن متداخل: يُرجع الخريطة أو `null` (مثل `[]` بدل `{}`).
+Object? readJsonMap(Map<dynamic, dynamic> json, String key) =>
+    jsonMap(json[key]);
+
+/// `readValue` لقائمة كائنات: يتجاهل العناصر غير الصالحة كما كان [jsonList].
+Object? readJsonList(Map<dynamic, dynamic> json, String key) {
+  final v = json[key];
+  return v is List ? v.whereType<Map<String, dynamic>>().toList() : null;
+}

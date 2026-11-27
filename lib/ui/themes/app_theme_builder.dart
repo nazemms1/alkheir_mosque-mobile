@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'app_color.dart';
-import 'font_size.dart';
-import 'ui_constants.dart';
+import 'package:alkheir_mosque/ui/themes/app_color.dart';
+import 'package:alkheir_mosque/ui/font_size.dart';
+import 'package:alkheir_mosque/ui/ui_constants.dart';
 
 /// المصدر الوحيد لـ ThemeData (فاتح وداكن) — يُبنى من رموز [AppColors].
 ThemeData buildAppTheme(AppColors c, Brightness brightness) {
@@ -20,9 +20,11 @@ ThemeData buildAppTheme(AppColors c, Brightness brightness) {
     displayLarge: s(FontSize.displayLarge, FontWeight.w700, c.textPrimary, 1.2),
     displayMedium: s(FontSize.display, FontWeight.w700, c.textPrimary, 1.25),
     displaySmall: s(FontSize.displaySmall, FontWeight.w700, c.textPrimary, 1.3),
-    headlineLarge: s(FontSize.headlineLarge, FontWeight.w700, c.textPrimary, 1.3),
+    headlineLarge:
+        s(FontSize.headlineLarge, FontWeight.w700, c.textPrimary, 1.3),
     headlineMedium: s(FontSize.headline, FontWeight.w700, c.textPrimary, 1.35),
-    headlineSmall: s(FontSize.headlineSmall, FontWeight.w700, c.textPrimary, 1.35),
+    headlineSmall:
+        s(FontSize.headlineSmall, FontWeight.w700, c.textPrimary, 1.35),
     titleLarge: s(FontSize.title, FontWeight.w700, c.textPrimary, 1.4),
     titleMedium: s(FontSize.bodyLarge, FontWeight.w600, c.textPrimary, 1.4),
     titleSmall: s(FontSize.body, FontWeight.w600, c.textSecondary, 1.4),
@@ -162,9 +164,8 @@ ThemeData buildAppTheme(AppColors c, Brightness brightness) {
       labelBehavior: NavigationDestinationLabelBehavior.alwaysShow,
       iconTheme: WidgetStateProperty.resolveWith((states) => IconThemeData(
             size: 24,
-            color: states.contains(WidgetState.selected)
-                ? c.primary
-                : c.textMuted,
+            color:
+                states.contains(WidgetState.selected) ? c.primary : c.textMuted,
           )),
       labelTextStyle: WidgetStateProperty.resolveWith((states) {
         final selected = states.contains(WidgetState.selected);

@@ -3,8 +3,8 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
-import 'package:alkheir_mosque/features/admin/presentation/widgets/admin_ui.dart';
-import 'package:alkheir_mosque/features/management/presentation/widgets/module_form_fields.dart';
+import 'package:alkheir_mosque/ui/widgets/admin_ui.dart';
+import 'package:alkheir_mosque/features/admin/management/ui/widgets/module_form_fields.dart';
 import 'package:alkheir_mosque/ui/themes/dark.dart';
 import 'package:alkheir_mosque/ui/themes/light.dart';
 
@@ -56,10 +56,13 @@ Widget _form(ThemeData theme) {
                 helper: tr('8 أحرف على الأقل، أو اتركها فارغة'),
                 obscure: true,
               ),
-              moduleSwitch(
-                label: tr('الحساب نشط'),
-                value: true,
-                onChanged: (_) {},
+              Builder(
+                builder: (context) => moduleSwitch(
+                  context,
+                  label: tr('الحساب نشط'),
+                  value: true,
+                  onChanged: (_) {},
+                ),
               ),
             ],
           ),

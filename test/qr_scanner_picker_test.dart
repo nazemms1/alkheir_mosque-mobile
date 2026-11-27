@@ -4,8 +4,8 @@ import 'package:flutter_test/flutter_test.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
-import 'package:alkheir_mosque/features/admin/presentation/screens/qr_scanner_screen.dart';
-import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
+import 'package:alkheir_mosque/features/admin/dashboard/ui/pages/qr_scanner_screen.dart';
+import 'package:alkheir_mosque/features/shared/auth/domain/entities/auth_token.dart';
 
 AuthToken _account(List<String> permissions) {
   return AuthToken(

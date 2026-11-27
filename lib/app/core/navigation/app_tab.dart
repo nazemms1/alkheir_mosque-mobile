@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
-import 'package:alkheir_mosque/features/students/data/models/student_model.dart';
+import 'package:alkheir_mosque/features/shared/auth/domain/entities/auth_token.dart';
+import 'package:alkheir_mosque/features/shared/students/domain/entities/student_entity.dart';
 
 /// سياق يُمرَّر لبنّاء كل تبويب — يحمل الجلسة وبيانات لوحة ولي الأمر
 /// (إن وُجدت) وأدوات التنقل، حتى لا يحتاج أي تبويب لتمرير يدوي للبيانات.

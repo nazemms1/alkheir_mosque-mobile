@@ -1,5 +1,5 @@
-import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
-import 'permissions.dart';
+import 'package:alkheir_mosque/features/shared/auth/domain/entities/auth_token.dart';
+import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
 
 /// بوابات الوحدات — كل شاشة وتبويب وزر يسأل هنا بدل مقارنة أسماء الأدوار.
 /// القرار مبني على الصلاحيات الفعلية القادمة من تسجيل الدخول (`user.permissions`).

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_color.dart';
+import 'package:alkheir_mosque/ui/themes/app_color.dart';
 
 extension BuildContextThemeX on BuildContext {
   ThemeData get theme => Theme.of(this);

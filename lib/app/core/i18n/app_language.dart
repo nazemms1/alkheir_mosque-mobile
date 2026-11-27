@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 
-import '../../../di/di_locator.dart';
-import 'en_dictionary.dart';
+import 'package:alkheir_mosque/di/di_locator.dart';
+import 'package:alkheir_mosque/app/core/i18n/en_dictionary.dart';
 
-export '../../../di/di_locator.dart' show languageProvider, LanguageNotifier;
+export 'package:alkheir_mosque/di/di_locator.dart'
+    show languageProvider, LanguageNotifier;
 
 /// اللغات المدعومة في التطبيق: العربية (الأساسية) والإنجليزية.
 abstract final class AppLanguage {

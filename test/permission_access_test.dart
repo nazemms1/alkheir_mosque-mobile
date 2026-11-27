@@ -1,12 +1,12 @@
-import 'package:dio/dio.dart';
 import 'package:flutter_test/flutter_test.dart';
 
-import 'package:alkheir_mosque/app/core/api/api_service.dart';
 import 'package:alkheir_mosque/app/core/navigation/tab_registry.dart';
 import 'package:alkheir_mosque/app/core/rbac/permissions.dart';
-import 'package:alkheir_mosque/features/admin/data/repositories/admin_repository_impl.dart';
-import 'package:alkheir_mosque/features/auth/data/models/auth_token.dart';
-import 'package:alkheir_mosque/features/auth/domain/repositories/auth_repository.dart';
+import 'package:alkheir_mosque/features/admin/management/ui/pages/management_hub_tab.dart';
+import 'package:alkheir_mosque/features/admin/dashboard/data/apis/admin_apis.dart';
+import 'package:alkheir_mosque/features/admin/dashboard/domain/repository/admin_repository.dart';
+import 'package:alkheir_mosque/features/shared/auth/domain/entities/auth_token.dart';
+import 'package:alkheir_mosque/ui/themes/app_color.dart';
 
 /// حساب بأدوار وصلاحيات محددة — الصلاحيات هي المصدر الوحيد لما يظهر.
 AuthToken _account(List<String> roles, List<String> permissions) {
@@ -26,22 +26,28 @@ AuthToken _account(List<String> roles, List<String> permissions) {
 List<String> _tabIds(AuthToken token) =>
     tabsFor(token).map((tab) => tab.id).toList();
 
-/// مستودع اتصال يسجّل المسارات المطلوبة دون شبكة.
-class _RecordingApi extends ApiService {
-  _RecordingApi() : super(dio: Dio(), auth: _NoAuth());
+/// وحدات الإدارة التي تظهر للحساب في القائمة الجانبية.
+List<String> _drawerModules(AuthToken token) => [
+      for (final section
+          in managementSections(AppColors.light(), token, (_, __, {extra}) {}))
+        for (final entry in section.entries) entry.title,
+    ];
 
+/// واجهة API تسجّل المسارات المطلوبة دون شبكة.
+class _RecordingApi implements AdminApis {
   final List<String> paths = [];
 
   @override
-  Future<dynamic> get(String path, {Map<String, dynamic>? query}) async {
+  Future<dynamic> count(String path, Map<String, dynamic> query) async {
     paths.add(path);
     return {'total': 3};
   }
-}
 
-class _NoAuth implements AuthRepository {
   @override
-  dynamic noSuchMethod(Invocation invocation) => null;
+  dynamic noSuchMethod(Invocation invocation) {
+    paths.add('${invocation.memberName}');
+    return Future<dynamic>.value({'total': 3});
+  }
 }
 
 void main() {
@@ -56,7 +62,9 @@ void main() {
 
     test('معلم يملك صلاحية التقارير يراها (لم تعد محصورة بالمشرف)', () {
       final token = _account(['teacher'], [Permissions.reportsView]);
-      expect(_tabIds(token), ['sup-home', 'sup-reports', 'management']);
+      expect(_tabIds(token), ['sup-home', 'sup-reports']);
+      // الوحدات الإدارية للطاقم في القائمة الجانبية لا في الشريط السفلي.
+      expect(_drawerModules(token), isNotEmpty);
     });
 
     test('حساب بلا دور إشرافي يرى تبويب الإدارة فقط إذا كانت له وحدة', () {
@@ -69,14 +77,15 @@ void main() {
 
     test('إداري يملك الفواتير فقط: يرى المالية ولا يرى الطلاب أو الحلقات', () {
       final token = _account(['admin'], [Permissions.invoicesView]);
-      expect(_tabIds(token), ['admin-home', 'admin-finance', 'management']);
+      expect(_tabIds(token), ['admin-home', 'admin-finance']);
+      expect(_drawerModules(token), isNotEmpty);
     });
   });
 
   group('إحصاءات لوحة الإداري', () {
     test('لا تطلب إلا ما تسمح به صلاحيات الحساب', () async {
       final api = _RecordingApi();
-      final repo = AdminRepositoryImpl(api: api);
+      final repo = AdminRepositoryImpl(api);
       final token = _account(
         ['admin'],
         [Permissions.studentsView, Permissions.invoicesView],
@@ -93,7 +102,7 @@ void main() {
 
     test('بلا أي صلاحية لا يُرسل أي طلب للخادم', () async {
       final api = _RecordingApi();
-      final repo = AdminRepositoryImpl(api: api);
+      final repo = AdminRepositoryImpl(api);
 
       final dashboard = await repo.fetchDashboard(_account(['admin'], []));
 

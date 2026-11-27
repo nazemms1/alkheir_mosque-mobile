@@ -1,17 +1,17 @@
+import 'package:alkheir_mosque/app/core/l10n/l10n_gateway.dart';
 import 'dart:convert';
 import 'dart:io';
 import 'package:dio/dio.dart';
 import 'package:dio/io.dart';
 import 'package:flutter/foundation.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:alkheir_mosque/app/core/config/server_config.dart';
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
-import '../config/flavor_config.dart';
-import '../services/secure_storage_service.dart';
-import '../services/shared_prefs_service.dart';
-import 'api_error.dart';
+import 'package:alkheir_mosque/app/core/config/flavor_config.dart';
+import 'package:alkheir_mosque/app/core/services/secure_storage_service.dart';
+import 'package:alkheir_mosque/app/core/services/shared_prefs_service.dart';
+import 'package:alkheir_mosque/app/core/http/api_error.dart';
 
 class AuthInterceptor extends QueuedInterceptor {
   final SecureStorageService _secureStorage;
@@ -42,28 +42,17 @@ class AuthInterceptor extends QueuedInterceptor {
       options.path = options.path.substring(1);
     }
 
-    // Inject Bearer token from SecureStorageService or fallback to SharedPreferences
+    // Bearer token lives only in secure storage.
     if (!options.headers.containsKey('Authorization')) {
-      String? token = await _secureStorage.getAccessToken();
-      if (token == null || token.isEmpty) {
-        final prefs = await SharedPreferences.getInstance();
-        final raw = prefs.getString('auth_token_json');
-        if (raw != null) {
-          try {
-            final map = jsonDecode(raw);
-            if (map is Map && map['token'] is String) {
-              token = map['token'] as String;
-            }
-          } catch (_) {}
-        }
-      }
+      final token = await _secureStorage.getAccessToken();
       if (token != null && token.isNotEmpty) {
         options.headers['Authorization'] = 'Bearer ${token.trim()}';
       }
     }
 
     // Inject language code into headers (not queryParameters to keep endpoints clean)
-    final lang = _sharedPrefs?.getLanguageCode() ?? AppLanguage.current.languageCode;
+    final lang =
+        _sharedPrefs?.getLanguageCode() ?? AppLanguage.current.languageCode;
     options.headers['Accept-Language'] = lang;
     options.headers['X-Locale'] = AppLanguage.current.languageCode;
 
@@ -83,14 +72,16 @@ class RetryOnConnectionResetInterceptor extends Interceptor {
   RetryOnConnectionResetInterceptor(this.dio);
 
   @override
-  Future<void> onError(DioException err, ErrorInterceptorHandler handler) async {
+  Future<void> onError(
+      DioException err, ErrorInterceptorHandler handler) async {
     final rawError = '${err.error ?? ''} ${err.message ?? ''}';
     final isConnectionReset = err.type == DioExceptionType.connectionError &&
         (rawError.contains('Connection reset') ||
             rawError.contains('Connection closed') ||
             rawError.contains('Broken pipe'));
 
-    final isAlreadyRetried = err.requestOptions.extra['is_connection_retry'] == true;
+    final isAlreadyRetried =
+        err.requestOptions.extra['is_connection_retry'] == true;
 
     if (isConnectionReset && !isAlreadyRetried) {
       try {
@@ -130,8 +121,7 @@ class _BinarySafePrettyDioLogger extends Interceptor {
   void onResponse(Response response, ResponseInterceptorHandler handler) {
     if (response.requestOptions.responseType == ResponseType.bytes ||
         response.data is List<int>) {
-      final count =
-          response.data is List ? (response.data as List).length : 0;
+      final count = response.data is List ? (response.data as List).length : 0;
       final safeResponse = Response(
         requestOptions: response.requestOptions,
         data: '<Binary data: $count bytes>',
@@ -154,6 +144,22 @@ class _NoopResponseHandler extends ResponseInterceptorHandler {
   @override
   void next(Response response) {}
 }
+
+/// مهلة رفع وتنزيل الملفات (أطول من مهلة الطلبات العادية).
+const kUploadTimeout = Duration(seconds: 90);
+
+/// خيارات طلبات رفع الملفات (`@DioOptions`).
+RequestOptions get kFileRequestOptions => RequestOptions(
+      sendTimeout: kUploadTimeout,
+      receiveTimeout: kUploadTimeout,
+    );
+
+/// خيارات تنزيل الملفات كبايتات خام (`@DioOptions`).
+RequestOptions get kBytesRequestOptions => RequestOptions(
+      responseType: ResponseType.bytes,
+      sendTimeout: kUploadTimeout,
+      receiveTimeout: kUploadTimeout,
+    );
 
 class DioClient {
   final Dio dio;
@@ -197,8 +203,12 @@ class DioClient {
     if (!kIsWeb && dio.httpClientAdapter is IOHttpClientAdapter) {
       (dio.httpClientAdapter as IOHttpClientAdapter).createHttpClient = () {
         final client = HttpClient();
-        // Allow self-signed or custom CA SSL certificates (mirrors Postman with SSL verification disabled)
-        client.badCertificateCallback = (cert, host, port) => true;
+        // Self-signed certificates are accepted only in debug builds (local
+        // test servers). Release builds verify TLS: the production server has a
+        // valid Let's Encrypt certificate.
+        if (kDebugMode) {
+          client.badCertificateCallback = (cert, host, port) => true;
+        }
         client.connectionTimeout = const Duration(seconds: 15);
         return client;
       };
@@ -238,132 +248,86 @@ class DioClient {
     }
   }
 
+  /// يحوّل أي [DioException] إلى [ApiError] برسالة جاهزة للعرض.
   static ApiError handleDioError(DioException error) {
-    String? extractMessage(dynamic data) {
-      if (data is Map) {
-        if (data['message'] is String) return data['message'] as String;
-        if (data['error'] is String) return data['error'] as String;
-        if (data['detail'] is String) return data['detail'] as String;
-      } else if (data is String && data.isNotEmpty) {
-        return data;
-      }
-      return null;
-    }
-
     final response = error.response;
     final statusCode = response?.statusCode;
-    final customMsg = extractMessage(response?.data);
+    dynamic data = response?.data;
+    if (data is String && data.isNotEmpty) {
+      try {
+        data = jsonDecode(data);
+      } catch (_) {}
+    }
+
+    ApiError build(ApiErrorType type, String message) => ApiError(
+          type: type,
+          message: message,
+          statusCode: statusCode,
+          data: data,
+        );
 
     switch (error.type) {
       case DioExceptionType.connectionTimeout:
       case DioExceptionType.sendTimeout:
       case DioExceptionType.receiveTimeout:
-        final host = error.requestOptions.uri.host;
-        String hint = '';
-        if (host == 'localhost' || host == '127.0.0.1') {
-          hint = ' (${tr('تنبيه: أنت تستخدم localhost على جهاز أندرويد. في المحاكي استخدم 10.0.2.2 أو نفذ adb reverse على الهاتف الحقيقي')})';
-        } else {
-          hint = ' (${tr('يرجى التحقق من اتصال الإنترنت أو تشغيل الـ VPN على هاتفك')})';
-        }
-        return ApiError(
-          type: ApiErrorType.requestTimeout,
-          message: customMsg ?? '${tr('انتهت مهلة الاتصال بالخادم.')}$hint',
-          statusCode: statusCode,
-          data: response?.data,
-        );
-
+        return build(ApiErrorType.requestTimeout,
+            L10nGateway.current.connectionTimedOutPleaseTry);
       case DioExceptionType.connectionError:
-        final rawError = '${error.error ?? ''} ${error.message ?? ''}';
-        final isReset = rawError.contains('Connection reset') || rawError.contains('Connection closed');
-        final message = isReset
-            ? tr('تعذّر الاتصال بالخادم (تم قطع الاتصال). يرجى التأكد من تشغيل الـ VPN على هاتفك أو التحقق من عنوان الخادم.')
-            : (customMsg ?? tr('تعذّر الاتصال بالخادم. تحقق من الشبكة وعنوان الخادم.'));
-        return ApiError(
-          type: ApiErrorType.network,
-          message: message,
-          statusCode: statusCode,
-          data: response?.data,
+        final raw = '${error.error ?? ''} ${error.message ?? ''}';
+        final isReset = raw.contains('Connection reset') ||
+            raw.contains('Connection closed');
+        return build(
+          ApiErrorType.network,
+          isReset
+              ? L10nGateway.current.couldNotConnectToServer
+              : L10nGateway.current.couldnTReachTheServer,
         );
-
       case DioExceptionType.cancel:
-        return ApiError(
-          type: ApiErrorType.cancelled,
-          message: customMsg ?? 'Request was cancelled',
-          statusCode: statusCode,
-          data: response?.data,
-        );
-
-      case DioExceptionType.badResponse:
-        switch (statusCode) {
-          case 400:
-            return ApiError(
-              type: ApiErrorType.badRequest,
-              message: customMsg ?? 'Bad request',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          case 401:
-            return ApiError(
-              type: ApiErrorType.unauthorized,
-              message: customMsg ?? 'Unauthorized',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          case 403:
-            return ApiError(
-              type: ApiErrorType.forbidden,
-              message: customMsg ?? 'Forbidden access',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          case 404:
-            return ApiError(
-              type: ApiErrorType.notFound,
-              message: customMsg ?? 'Resource not found',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          case 409:
-            return ApiError(
-              type: ApiErrorType.conflict,
-              message: customMsg ?? 'Conflict',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          case 500:
-            return ApiError(
-              type: ApiErrorType.internalServer,
-              message: customMsg ?? 'Internal server error',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          case 502:
-          case 503:
-          case 504:
-            return ApiError(
-              type: ApiErrorType.badGateway,
-              message: customMsg ?? 'Bad gateway / Service unavailable',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-          default:
-            return ApiError(
-              type: ApiErrorType.unexpected,
-              message: customMsg ?? 'Unexpected HTTP error: $statusCode',
-              statusCode: statusCode,
-              data: response?.data,
-            );
-        }
-
-      case DioExceptionType.badCertificate:
-      case DioExceptionType.unknown:
+        return build(ApiErrorType.cancelled, 'Request was cancelled');
       default:
-        return ApiError(
-          type: ApiErrorType.unexpected,
-          message: customMsg ?? 'Unknown network error occurred',
-          statusCode: statusCode,
-          data: response?.data,
-        );
+        break;
     }
+
+    if (statusCode == 401) {
+      return build(ApiErrorType.unauthorized,
+          L10nGateway.current.yourSessionHasExpiredPlease);
+    }
+    if (statusCode == 403) {
+      return build(
+          ApiErrorType.forbidden, L10nGateway.current.youDonTHavePermission);
+    }
+
+    final message = _firstValidationError(data) ??
+        (data is Map && data['message'] is String
+            ? data['message'] as String
+            : null) ??
+        (statusCode == null
+            ? error.message
+            : L10nGateway.current.serverError(statusCode)) ??
+        L10nGateway.current.somethingWentWrong;
+    final type = switch (statusCode) {
+      400 => ApiErrorType.badRequest,
+      404 => ApiErrorType.notFound,
+      409 => ApiErrorType.conflict,
+      422 => ApiErrorType.validation,
+      500 => ApiErrorType.internalServer,
+      502 || 503 || 504 => ApiErrorType.badGateway,
+      _ => ApiErrorType.unexpected,
+    };
+    return build(type, message);
+  }
+
+  /// أول رسالة من `errors` في رد التحقق (422) من Laravel.
+  static String? _firstValidationError(dynamic body) {
+    if (body is! Map) return null;
+    final errors = body['errors'];
+    if (errors is! Map) return null;
+    for (final value in errors.values) {
+      if (value is List && value.isNotEmpty && value.first is String) {
+        final text = (value.first as String).trim();
+        if (text.isNotEmpty) return text;
+      }
+    }
+    return null;
   }
 }

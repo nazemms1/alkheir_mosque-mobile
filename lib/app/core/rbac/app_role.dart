@@ -1,29 +1,39 @@
-import '../i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/l10n/l10n_gateway.dart';
 
 /// أدوار التطبيق — المكان الوحيد الذي تُترجم فيه أسماء الأدوار القادمة من الـ API
 /// (بالعربية أو الإنجليزية) إلى قيم ثابتة يستخدمها بقية الكود.
 ///
 /// لإضافة دور جديد:
-/// 1. أضف قيمة جديدة إلى الـ enum مع اسمها العربي.
+/// 1. أضف قيمة جديدة إلى الـ enum واسمها المعروض في ملفات ARB و[displayName].
 /// 2. أضف أسماءه القادمة من الـ API إلى [_apiAliases].
 /// 3. أضفه إلى [staffRoles] إذا كان دوراً إشرافياً.
 /// 4. اربطه بالتبويبات/الويدجتس المناسبة في tab_registry.dart و home_widget_registry.dart.
 enum AppRole {
-  parent('ولي أمر'),
-  student('طالب'),
-  teacher('معلم'),
-  admin('مشرف إداري'),
-  supervisor('مشرف حلقة'),
-  assistantSupervisor('مساعد مشرف حلقة'),
-  reciter('مسمّع'),
-  trialExamSupervisor('مشرف سبر تجريبي'),
-  finalExamSupervisor('مشرف سير نهائي');
-
-  final String _arabicName;
-  const AppRole(this._arabicName);
+  parent,
+  student,
+  teacher,
+  admin,
+  supervisor,
+  assistantSupervisor,
+  reciter,
+  trialExamSupervisor,
+  finalExamSupervisor;
 
   /// الاسم المعروض للمستخدم (مترجم حسب اللغة الحالية).
-  String get displayName => tr(_arabicName);
+  String get displayName {
+    final l = L10nGateway.current;
+    return switch (this) {
+      parent => l.parent4,
+      student => l.student2,
+      teacher => l.roleTeacher,
+      admin => l.roleAdmin,
+      supervisor => l.roleSupervisor,
+      assistantSupervisor => l.roleAssistantSupervisor,
+      reciter => l.roleReciter,
+      trialExamSupervisor => l.roleTrialExamSupervisor,
+      finalExamSupervisor => l.roleFinalExamSupervisor,
+    };
+  }
 
   /// الأدوار الإشرافية (كل ما ليس ولي أمر / طالب).
   static const Set<AppRole> staffRoles = {

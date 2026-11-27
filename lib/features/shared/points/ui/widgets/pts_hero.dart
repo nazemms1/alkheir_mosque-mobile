@@ -1,0 +1,175 @@
+part of '../pages/points_screen.dart';
+
+class _PointsHero extends StatelessWidget {
+  final int total;
+  final List<PointRecord> records;
+  const _PointsHero({required this.total, required this.records});
+
+  @override
+  Widget build(BuildContext context) {
+    final bonus =
+        records.where((r) => r.isBonus).fold<int>(0, (s, r) => s + r.points);
+    final earned =
+        records.where((r) => !r.isBonus).fold<int>(0, (s, r) => s + r.points);
+
+    return Container(
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            context.appColors.bgDeep,
+            Color(0xFF1A3D0A),
+            context.appColors.brandMid
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      padding: const EdgeInsets.fromLTRB(20, 24, 20, 28),
+      child: Column(
+        children: [
+          _ScoreRow(total: total),
+          const SizedBox(height: 20),
+          Row(
+            children: [
+              _MiniStatCard(
+                  icon: Icons.menu_book_rounded,
+                  label: context.l10n.memorizationPoints,
+                  value: '$earned',
+                  color: context.appColors.primaryGlow),
+              const SizedBox(width: 10),
+              _MiniStatCard(
+                  icon: Icons.card_giftcard_rounded,
+                  label: context.l10n.bonusPoints,
+                  value: '$bonus',
+                  color: context.appColors.gold),
+              const SizedBox(width: 10),
+              _MiniStatCard(
+                  icon: Icons.receipt_long_rounded,
+                  label: context.l10n.numberOfEntries,
+                  value: '${records.length}',
+                  color: context.appColors.info),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _ScoreRow extends StatelessWidget {
+  final int total;
+  const _ScoreRow({required this.total});
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Stack(
+          alignment: Alignment.center,
+          children: [
+            Container(
+              width: 80,
+              height: 80,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    context.appColors.gold.withValues(alpha: 0.3),
+                    Colors.transparent
+                  ],
+                ),
+              ),
+            ),
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: context.appColors.gradientGold,
+                boxShadow: [
+                  BoxShadow(
+                      color: context.appColors.gold.withValues(alpha: 0.5),
+                      blurRadius: 20,
+                      spreadRadius: 2),
+                ],
+              ),
+              child:
+                  const Icon(Icons.star_rounded, color: Colors.white, size: 32),
+            ),
+          ],
+        ),
+        const SizedBox(width: 16),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ShaderMask(
+              shaderCallback: (b) =>
+                  context.appColors.gradientGold.createShader(b),
+              child: Text(
+                '$total',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: FontSize.hero,
+                  fontWeight: FontWeight.w900,
+                  fontFamily: 'Dubai',
+                  height: 1,
+                ),
+              ),
+            ),
+            Text(
+              context.l10n.totalPoints,
+              style: TextStyle(
+                  color: Colors.white.withValues(alpha: 0.6),
+                  fontSize: FontSize.body,
+                  fontFamily: 'Dubai'),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _MiniStatCard extends StatelessWidget {
+  final IconData icon;
+  final String label, value;
+  final Color color;
+  const _MiniStatCard(
+      {required this.icon,
+      required this.label,
+      required this.value,
+      required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
+        decoration: BoxDecoration(
+          color: Colors.white.withValues(alpha: 0.08),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(color: color.withValues(alpha: 0.25)),
+        ),
+        child: Column(
+          children: [
+            Icon(icon, color: color, size: 20),
+            const SizedBox(height: 5),
+            Text(value,
+                style: TextStyle(
+                    color: color,
+                    fontSize: FontSize.headlineSmall,
+                    fontWeight: FontWeight.w900,
+                    fontFamily: 'Dubai')),
+            Text(label,
+                style: TextStyle(
+                    color: Colors.white.withValues(alpha: 0.6),
+                    fontSize: FontSize.caption,
+                    fontFamily: 'Dubai'),
+                textAlign: TextAlign.center),
+          ],
+        ),
+      ),
+    );
+  }
+}

@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
 import 'package:alkheir_mosque/app/core/utils/json_helpers.dart';
-import 'package:alkheir_mosque/features/management/presentation/widgets/module_widgets.dart';
+import 'package:alkheir_mosque/features/admin/management/ui/widgets/module_widgets.dart';
 
 Widget _app(Widget body) {
-  return MaterialApp(
+  final app = MaterialApp(
     debugShowCheckedModeBanner: false,
     locale: AppLanguage.current,
     supportedLocales: AppLanguage.supported,
@@ -18,6 +19,7 @@ Widget _app(Widget body) {
     ],
     home: Scaffold(body: body),
   );
+  return ProviderScope(child: app);
 }
 
 void main() {

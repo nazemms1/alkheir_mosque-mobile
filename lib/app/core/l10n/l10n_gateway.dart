@@ -1,7 +1,8 @@
 import 'package:flutter/widgets.dart';
-import 'app_localizations.dart';
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/l10n/app_localizations.dart';
 
-export 'app_localizations.dart';
+export 'package:alkheir_mosque/app/core/l10n/app_localizations.dart';
 
 extension AppLocalizationsX on BuildContext {
   AppLocalizations get l10n => AppLocalizations.of(this)!;
@@ -18,6 +19,7 @@ class L10nGateway {
     if (_current != null) {
       return _current!;
     }
-    return lookupAppLocalizations(const Locale('ar'));
+    // Before the first frame: follow the saved language like tr() did.
+    return lookupAppLocalizations(AppLanguage.current);
   }
 }

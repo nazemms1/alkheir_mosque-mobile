@@ -3,11 +3,11 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:form_builder_validators/form_builder_validators.dart';
 
-import '../di/di_locator.dart';
-import '../ui/themes/dark.dart';
-import '../ui/themes/light.dart';
-import 'core/config/flavor_config.dart';
-import 'core/l10n/l10n_gateway.dart';
+import 'package:alkheir_mosque/di/di_locator.dart';
+import 'package:alkheir_mosque/ui/themes/dark.dart';
+import 'package:alkheir_mosque/ui/themes/light.dart';
+import 'package:alkheir_mosque/app/core/config/flavor_config.dart';
+import 'package:alkheir_mosque/app/core/l10n/l10n_gateway.dart';
 
 class MyApp extends ConsumerStatefulWidget {
   const MyApp({super.key});

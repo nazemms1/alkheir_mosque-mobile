@@ -4,13 +4,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../app/core/http/dio_client.dart';
-import '../app/core/i18n/app_language.dart';
-import '../app/core/services/package_info_service.dart';
-import '../app/core/services/secure_storage_service.dart';
-import '../app/core/services/shared_prefs_service.dart';
-import '../app/core/services/url_launcher_service.dart';
-import '../ui/app_routes.dart';
+import 'package:alkheir_mosque/app/core/http/dio_client.dart';
+import 'package:alkheir_mosque/app/core/i18n/app_language.dart';
+import 'package:alkheir_mosque/app/core/services/package_info_service.dart';
+import 'package:alkheir_mosque/app/core/services/secure_storage_service.dart';
+import 'package:alkheir_mosque/app/core/services/shared_prefs_service.dart';
+import 'package:alkheir_mosque/app/core/services/url_launcher_service.dart';
+import 'package:alkheir_mosque/ui/app_routes.dart';
+
+/// الحاوية التي يستخدمها `ProviderScope` في `main` — لقراءة المزوّدات من كود
+/// خارج الويدجت (دوال مساعدة عامة). داخل الويدجت استخدم `ref` دائماً.
+late final ProviderContainer appProviderContainer;
 
 /// SharedPreferences raw instance provider (must be overridden in main)
 final sharedPreferencesProvider = Provider<SharedPreferences>((ref) {

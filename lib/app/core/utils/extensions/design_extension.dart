@@ -8,10 +8,12 @@ extension DesignExtension on num {
   Widget get horizontalSpace => SizedBox(width: toDouble());
 
   /// Sliver vertical spacing
-  Widget get sliverVerticalSpace => SliverToBoxAdapter(child: SizedBox(height: toDouble()));
+  Widget get sliverVerticalSpace =>
+      SliverToBoxAdapter(child: SizedBox(height: toDouble()));
 
   /// Sliver horizontal spacing
-  Widget get sliverHorizontalSpace => SliverToBoxAdapter(child: SizedBox(width: toDouble()));
+  Widget get sliverHorizontalSpace =>
+      SliverToBoxAdapter(child: SizedBox(width: toDouble()));
 
   /// Circular border radius
   BorderRadius get radius => BorderRadius.circular(toDouble());
@@ -20,7 +22,8 @@ extension DesignExtension on num {
   EdgeInsets get allPadding => EdgeInsets.all(toDouble());
 
   /// Horizontal padding
-  EdgeInsets get horizontalPadding => EdgeInsets.symmetric(horizontal: toDouble());
+  EdgeInsets get horizontalPadding =>
+      EdgeInsets.symmetric(horizontal: toDouble());
 
   /// Vertical padding
   EdgeInsets get verticalPadding => EdgeInsets.symmetric(vertical: toDouble());

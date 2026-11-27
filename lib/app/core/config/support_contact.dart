@@ -1,8 +1,8 @@
+import 'package:alkheir_mosque/app/core/l10n/l10n_gateway.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-import '../i18n/app_language.dart';
-import '../widgets/app_feedback.dart';
+import 'package:alkheir_mosque/ui/widgets/app_feedback.dart';
 
 /// بيانات التواصل مع إدارة المسجد.
 abstract final class SupportContact {
@@ -15,11 +15,12 @@ abstract final class SupportContact {
 }
 
 /// يفتح محادثة واتساب مع إدارة المسجد، مع رسالة مبدئية اختيارية.
-Future<void> openSupportWhatsApp(BuildContext context, {String? message}) async {
+Future<void> openSupportWhatsApp(BuildContext context,
+    {String? message}) async {
   if (!SupportContact.hasWhatsapp) {
     showAppSnack(
       context,
-      tr('رقم واتساب الإدارة غير متوفر حالياً'),
+      L10nGateway.current.adminWhatsappUnavailable,
       error: true,
     );
     return;
@@ -36,6 +37,7 @@ Future<void> openSupportWhatsApp(BuildContext context, {String? message}) async 
     opened = false;
   }
   if (!opened && context.mounted) {
-    showAppSnack(context, tr('تعذّر فتح واتساب'), error: true);
+    showAppSnack(context, L10nGateway.current.couldNotOpenWhatsapp,
+        error: true);
   }
 }

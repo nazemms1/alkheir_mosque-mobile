@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../session/auth_session.dart';
-import 'app_role.dart';
+import 'package:alkheir_mosque/app/core/session/auth_session.dart';
+import 'package:alkheir_mosque/app/core/rbac/app_role.dart';
 
 /// يعرض [child] فقط إذا كان المستخدم الحالي يملك إحدى الصلاحيات في [anyOf]
 /// (أو كل الصلاحيات في [allOf] إن حُدّدت). خلاف ذلك يعرض [fallback].
